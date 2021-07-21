@@ -10,7 +10,11 @@ Welcome to EpiGraphHub's Documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   overview
+   Overview<overview>
+   Data Sources<datasources>
+   Data Transformation and Harmonization<harmonization>
+   Data Storage<datastorage>
+   Data Querying, Analysis, and Visualizations<dataanalysis>
 
 
 
