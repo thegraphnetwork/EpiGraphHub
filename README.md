@@ -1,3 +1,4 @@
+
 <!--
 *** Template found on 
 *** https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md
@@ -28,7 +29,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/thegraphnetwork/EpiGraphHub">
-    <img src="EGH.png" alt="Logo" >
+    <img src="EGH.png" alt="Logo" width="300" height=300" >
   </a>
 
   <h3 align="center">EPIGRAPHHUB</h3>
@@ -110,7 +111,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 See Sphynx demo
 <!-- ARCHITECURE -->
 
-![architecture](architecture.png)
+![archi2](EPIHUB_DOCU-ARCHITECTURE_DATA.svg)
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -164,15 +165,15 @@ Linked-in : https://www.linkedin.com/company/the-graph-network
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/thegraphnetwork/GRAPHnetEpiApp.svg?style=for-the-badge
+[contributors-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/thegraphnetwork/GRAPHnetEpiApp.svg?style=for-the-badge
+[forks-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/network/members
+[stars-shield]: https://img.shields.io/github/stars/thegraphnetwork/GRAPHnetEpiApp.svg?style=for-the-badge
+[stars-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/stargazers
+[issues-shield]: https://img.shields.io/github/issues/thegraphnetwork/GRAPHnetEpiApp.svg?style=for-the-badge
+[issues-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/issues
+[license-shield]: https://img.shields.io/github/license/thegraphnetwork/GRAPHnetEpiApp.svg?style=for-the-badge
+[license-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/the-graph-network
