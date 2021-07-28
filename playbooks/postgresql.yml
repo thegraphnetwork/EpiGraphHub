@@ -9,30 +9,34 @@
       apt: name={{ item }} update_cache=true state=latest
       with_items:
         - openssl
+        - build-essential
+        - python3-dev
         - libssl-dev
         - postgresql
-        - postgresql-server
         - postgresql-contrib
         - libpq-dev
         - postgis
+        - postgresql-{{pg_version}}-postgis-2.4
+        - python3-pip
 
     - name: "Install Python Packages"
       pip: "name={{ item }}  state=present"
       with_items:
+        - setuptools
         - psycopg2-binary
         - sqlalchemy
         - pgcli
 
   tasks:
-    -name: "Make sure PostgreSQL is running"
-    service: name=postgresql state=started enabled=yes
+    - name: "Make sure PostgreSQL is running"
+      service: name=postgresql state=started enabled=yes
 
-    - name: "Create app database"
-        postgresql_db:
-          state: present
-          name: "{{ db_name }}"
-        become: yes
-        become_user: postgres
+    - name: "Create epigraphhub database"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
 
     - name: "Create db user"
       postgresql_user:
@@ -54,7 +58,7 @@
 
     - name: "Allow md5 connection for the db user"
       postgresql_pg_hba:
-        dest: "~/data/pg_hba.conf"
+        dest: "/etc/postgresql/10/main/pg_hba.conf"
         contype: host
         databases: all
         method: md5
@@ -67,8 +71,7 @@
     - name: Adds postgis extension to the database epigraphhub in the schema public
       community.postgresql.postgresql_ext:
         name: postgis
-        db: { { db_name } }
-        schema: public
+        db: "{{ db_name }}"
       become: yes
       become_user: postgres
 
