@@ -17,6 +17,7 @@
         - libpq-dev
         - postgis
         - postgresql-{{pg_version}}-postgis-2.4
+        - postgresql-{{pg_version}}-postgis-scripts
         - python3-pip
 
     - name: "Install Python Packages"
@@ -68,7 +69,12 @@
       become_user: postgres
       notify: restart postgres
 
-    - name: Adds postgis extension to the database epigraphhub in the schema public
+#    - name: Enable Postgis
+#      command: "psql {{db_name}} -c 'CREATE EXTENSION postgis;'"
+#      become_user: postgres
+#      register: sql_response_variable
+
+    - name: Adds postgis extension to the database in the schema public
       community.postgresql.postgresql_ext:
         name: postgis
         db: "{{ db_name }}"
