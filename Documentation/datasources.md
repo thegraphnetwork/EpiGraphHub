@@ -17,3 +17,20 @@ from sqlalchemy import create_engine
 
 engine = create_engine("postgres://epigraph:epigraph@localhost:5432/epigraphhub")
 ```
+
+Suppose you want to upload a map, in this case you will need Geopandas:
+
+```python
+import geopandas as gpd
+
+mymap = gpd.read_file('mymap.shp')
+mymap.to_postgis("map.mymap", engine, if_exists='replace')
+```
+
+Above, `map` is the schema created to hold all the maps.
+
+## Data sources
+The sources below are kept uptodate in the epigraphhub database.
+
+1. Our world in data COVID-19 data
+2. [GADM](https://gadm.org) maps.
