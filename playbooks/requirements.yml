@@ -1,0 +1,6 @@
+---
+collections:
+  - name: nginxinc.nginx_core
+    version: 0.3.0
+  - name: community.postgresql
+  - name: nginxinc.nginx_config

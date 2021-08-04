@@ -1,0 +1,86 @@
+---
+- hosts: hetzner # or all or local
+  become: yes
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: "Install packages"
+      apt: name={{ item }} update_cache=true state=latest
+      with_items:
+        - openssl
+        - build-essential
+        - python3-dev
+        - libssl-dev
+        - postgresql
+        - postgresql-contrib
+        - libpq-dev
+        - postgis
+        - postgresql-{{pg_version}}-postgis-2.4
+        - postgresql-{{pg_version}}-postgis-scripts
+        - python3-pip
+
+    - name: "Install Python Packages"
+      pip: "name={{ item }}  state=present"
+      with_items:
+        - setuptools
+        - psycopg2-binary
+        - sqlalchemy
+        - pgcli
+
+  tasks:
+    - name: "Make sure PostgreSQL is running"
+      service: name=postgresql state=started enabled=yes
+
+    - name: "Create epigraphhub database"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+    - name: "Create db user"
+      postgresql_user:
+        state: present
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+      become: yes
+      become_user: postgres
+
+    - name: "Grant db user access to app db"
+      postgresql_privs:
+        type: database
+        database: "{{ db_name }}"
+        roles: "{{ db_user }}"
+        grant_option: no
+        privs: all
+      become: yes
+      become_user: postgres
+
+    - name: "Allow md5 connection for the db user"
+      postgresql_pg_hba:
+        dest: "/etc/postgresql/10/main/pg_hba.conf"
+        contype: host
+        databases: all
+        method: md5
+        users: "{{ db_user }}"
+        create: true
+      become: yes
+      become_user: postgres
+      notify: restart postgres
+
+#    - name: Enable Postgis
+#      command: "psql {{db_name}} -c 'CREATE EXTENSION postgis;'"
+#      become_user: postgres
+#      register: sql_response_variable
+
+    - name: Adds postgis extension to the database in the schema public
+      community.postgresql.postgresql_ext:
+        name: postgis
+        db: "{{ db_name }}"
+      become: yes
+      become_user: postgres
+
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
