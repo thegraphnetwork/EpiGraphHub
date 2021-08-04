@@ -5,7 +5,7 @@ import glob
 import os
 from sqlalchemy import create_engine
 
-load_dotenv('.env_db')
+
 PGUSER = 'epigraph'
 PGPASS = 'epigraph'
 PGHOST = 'localhost'
