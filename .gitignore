@@ -138,6 +138,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+<<<<<<< HEAD
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -277,6 +278,8 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+=======
+>>>>>>> origin/main
 
 # Pycharm IDE settings
 .idea/
