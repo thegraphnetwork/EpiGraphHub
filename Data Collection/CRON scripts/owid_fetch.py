@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 '''
 This script fetches updated csvs from OWID and uploads them to the Epigraphhub database
 It can be run remotely as long as the user has a public key in the server.
@@ -43,7 +43,7 @@ def load_into_db(remote=True):
 
 
 if __name__ == '__main__':
-    if 'local' in sys.args:
+    if 'local' in sys.argv:
         load_into_db(False)
     else:
         load_into_db()
