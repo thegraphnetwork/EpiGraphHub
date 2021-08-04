@@ -3,14 +3,13 @@ import geopandas as gpd
 import inquirer
 import glob
 import os
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
 load_dotenv('.env_db')
-PGUSER = os.getenv('POSTGRES_USER')
-PGPASS = os.getenv('POSTGRES_PASSWORD')
-PGHOST = 'postgresql'
-PGDB = os.getenv('POSTGRES_DB')
+PGUSER = 'epigraph'
+PGPASS = 'epigraph'
+PGHOST = 'localhost'
+PGDB = 'epigraphhub'
 
 questions = [
     inquirer.Path('maps_dir',
@@ -33,11 +32,6 @@ def insert_into_postgis(pth):
         except Exception as e:
             print(f"Loading of the {country_name} maps failed:/n{e}")
 
-        # splitname = m.split('_')
-        # country_name = splitname[0]
-        # country_ISO_code = splitname[2].split('.')[0]
-        # os.system(
-        # f'ogr2ogr -f PostgreSQL PG:"dbname=\'{PGDB}\' host=\'{PGHOST}\' port=\'5432\' user=\'{PGUSER}\' password=\'{PGPASS}\'" {m}')
 
 
 def main(answers):
