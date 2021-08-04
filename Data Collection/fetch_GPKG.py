@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from subprocess import Popen, run
 import shlex
 import os
@@ -10,7 +12,7 @@ questions = [
     inquirer.Path('maps_dir',
                   message="Enter directory where the gpkg should be downloaded to (don't forget the trailing '/')",
                   path_type=inquirer.Path.DIRECTORY,
-                  )
+                  ),
     inquirer.Confirm('clean',message='Do you want to delete the zipped after GPKGs have been extracted?')
 ]
 
