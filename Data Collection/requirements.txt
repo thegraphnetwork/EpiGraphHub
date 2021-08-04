@@ -1,0 +1,6 @@
+pandas
+geopandas
+inquirer
+python-dotenv
+sqlalchemy
+
