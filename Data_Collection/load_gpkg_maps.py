@@ -7,7 +7,6 @@ import json
 from sqlalchemy import create_engine
 import fiona
 
-
 PGUSER = 'epigraph'
 PGPASS = 'epigraph'
 PGHOST = 'localhost'
@@ -19,6 +18,7 @@ questions = [
                   path_type=inquirer.Path.DIRECTORY,
                   )
 ]
+
 
 def process_maps(gdf):
     """
@@ -40,15 +40,15 @@ def insert_into_postgis(pth):
         fname_noext = fname.split('.')[0]
         layers = fiona.listlayers(m)
         print(f"Inserting {len(layers)} layers of {fname} into PostGIS.")
-        for layer in layers:  # Importing all layers separately
+        for i, layer in enumerate(layers):  # Importing all layers separately
             Map = gpd.read_file(m, layer=f'{fname_noext}_{layer}', driver='GPKG')
             Map = process_maps(Map)
             country_name = fname_noext.split('_')[1]
-        try:
-            Map.to_postgis(country_name, engine, if_exists='replace')
-        except Exception as e:
-            print(f"Loading of the {country_name} maps failed:/n{e}")
-            raise(e)
+            try:
+                Map.to_postgis(f"{country_name}_{i}", engine, if_exists='replace')
+            except Exception as e:
+                print(f"Loading of {country_name}_{i} map failed:/n{e}")
+                raise e
 
 
 def main(answers):
