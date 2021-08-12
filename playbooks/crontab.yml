@@ -1,0 +1,25 @@
+---
+- hosts: hetzner # or all or local
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Creates an entry like "PATH=/opt/bin" on top of crontab
+      ansible.builtin.cron:
+        name: JOBPATH
+        env: yes
+        job: /opt
+
+    - name: Creates an entry like "HUB_HOME=/opt/EpiGraphHub/Data_Collection/CRON_scripts" and insert it after PATH declaration
+      ansible.builtin.cron:
+        name: HUB_HOME
+        env: yes
+        job: /EpiGraphHub/Data_Collection/CRON_scripts
+        insertafter: JOBPATH
+
+    - name: create owid download job
+      ansible.builtin.cron:
+        name: "Fetch owid data"
+        minute: "0"
+        hour: "1"
+        job: "cd $JOBPATH && ./owid_fetch.py local"

@@ -44,8 +44,8 @@ def load_into_db(remote=True):
         data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
         logger.info('OWID data inserted into database')
         with engine.connect() as connection:
-            connection.execute('CREATE INDEX country_idx IF NOT EXISTS ON owid_covid (location) INCLUDE (continent,iso_code);')
-            connection.execute('CREATE INDEX date_idx IF NOT EXISTS ON owid_covid (date);')
+            connection.execute('CREATE INDEX IF NOT EXISTS country_idx  ON owid_covid (location) INCLUDE (continent,iso_code);')
+            connection.execute('CREATE INDEX IF NOT EXISTS date_idx ON owid_covid (date);')
         logger.info('Database indices created on OWID table')
     except Exception as e:
         logger.error(f"Could not update OWID table\n{e}")
