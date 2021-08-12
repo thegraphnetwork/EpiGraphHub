@@ -9,6 +9,9 @@ import os, sys
 import shlex
 import subprocess
 from sqlalchemy import create_engine
+import logging
+
+logger = logging.getLogger("owid_fetch")
 
 HOST = '135.181.41.20'
 TEMP_PATH = '/tmp/owid'
@@ -20,11 +23,13 @@ FILENAME = OWID_URL.split('/')[-1]
 
 def download_csv():
     subprocess.run(['curl', '--silent', '-f', '-o', f'{DATA_PATH}/{FILENAME}', f'{OWID_URL}'])
+    logger.info("OWID csv downloaded.")
 
 
 def parse_types(df):
     df = df.convert_dtypes()
     df['date'] = pd.to_datetime(df.date)
+    logger.info("OWID data types parsed.")
     return df
 
 
@@ -36,10 +41,14 @@ def load_into_db(remote=True):
         data = pd.read_csv(os.path.join(DATA_PATH, FILENAME))
         data = parse_types(data)
         engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
-        data.to_sql('owid_covid', engine, index=False, if_exists='replace')#, method='multi', chunksize=10000)
+        data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
+        logger.info('OWID data inserted into database')
         with engine.connect() as connection:
             connection.execute('CREATE INDEX country_idx IF NOT EXISTS ON owid_covid (location) INCLUDE (continent,iso_code);')
             connection.execute('CREATE INDEX date_idx IF NOT EXISTS ON owid_covid (date);')
+        logger.info('Database indices created on OWID table')
+    except Exception as e:
+        logger.error(f"Could not update OWID table\n{e}")
     finally:
         if remote:
             proc.kill()
