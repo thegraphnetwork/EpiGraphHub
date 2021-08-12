@@ -49,6 +49,7 @@ def load_into_db(remote=True):
         logger.info('Database indices created on OWID table')
     except Exception as e:
         logger.error(f"Could not update OWID table\n{e}")
+        raise(e)
     finally:
         if remote:
             proc.kill()
