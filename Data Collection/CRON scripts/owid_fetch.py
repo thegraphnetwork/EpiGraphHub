@@ -36,7 +36,10 @@ def load_into_db(remote=True):
         data = pd.read_csv(os.path.join(DATA_PATH, FILENAME))
         data = parse_types(data)
         engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
-        data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
+        data.to_sql('owid_covid', engine, index=False, if_exists='replace')#, method='multi', chunksize=10000)
+        with engine.connect() as connection:
+            connection.execute('CREATE INDEX country_idx IF NOT EXISTS ON owid_covid (location) INCLUDE (continent,iso_code);')
+            connection.execute('CREATE INDEX date_idx IF NOT EXISTS ON owid_covid (date);')
     finally:
         if remote:
             proc.kill()
