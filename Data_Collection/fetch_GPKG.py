@@ -13,15 +13,17 @@ questions = [
                   message="Enter directory where the gpkg should be downloaded to (don't forget the trailing '/')",
                   path_type=inquirer.Path.DIRECTORY,
                   ),
-    inquirer.Confirm('clean',message='Do you want to delete the zipped after GPKGs have been extracted?')
+    inquirer.Confirm('clean', message='Do you want to delete the zipped after GPKGs have been extracted?')
 ]
+
 
 def get_codes():
     codes = []
-    with open('ISO-alpha3-codes.csv','r', encoding='utf8') as f:
+    with open('ISO-alpha3-codes.csv', 'r', encoding='utf8') as f:
         for l in f.readlines():
             codes.append(l.split(';')[0])
     return codes
+
 
 def fetch_files(savepath, clean=False):
     for code in get_codes():
@@ -33,8 +35,6 @@ def fetch_files(savepath, clean=False):
         os.unlink('*.zip')
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     answers = inquirer.prompt(questions)
     fetch_files(answers['maps_dir'], answers['clean'])
-
-

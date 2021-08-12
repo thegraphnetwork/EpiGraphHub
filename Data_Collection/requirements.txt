@@ -3,4 +3,4 @@ geopandas
 inquirer
 python-dotenv
 sqlalchemy
-
+fiona
