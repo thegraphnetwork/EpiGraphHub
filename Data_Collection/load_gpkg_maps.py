@@ -41,14 +41,14 @@ def insert_into_postgis(pth):
         layers = fiona.listlayers(m)
         print(f"Inserting {len(layers)} layers of {fname} into PostGIS.")
         for i, layer in enumerate(layers):  # Importing all layers separately
-            Map = gpd.read_file(m, layer=f'{fname_noext}_{layer}', driver='GPKG')
+            Map = gpd.read_file(m, layer=f'{layer}', driver='GPKG')
             Map = process_maps(Map)
             country_name = fname_noext.split('_')[1]
             try:
                 Map.to_postgis(f"{country_name}_{i}", engine, if_exists='replace')
             except Exception as e:
                 print(f"Loading of {country_name}_{i} map failed:/n{e}")
-                raise e
+
 
 
 def main(answers):
