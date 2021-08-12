@@ -22,4 +22,4 @@
         name: "Fetch owid data"
         minute: "0"
         hour: "1"
-        job: "cd $JOBPATH && ./owid_fetch.py local"
+        job: "cd $HUB_HOME && ./owid_fetch.py local"
