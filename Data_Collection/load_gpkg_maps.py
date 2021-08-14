@@ -47,7 +47,7 @@ def insert_into_postgis(pth):
             try:
                 Map.to_postgis(f"{country_name}_{i}", engine, if_exists='replace')
             except Exception as e:
-                print(f"Loading of {country_name}_{i} map failed:/n{e}")
+                print(f"Loading of {country_name}_{i} map failed:\n{e}")
 
 
 
