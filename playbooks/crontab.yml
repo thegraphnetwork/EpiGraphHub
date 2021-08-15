@@ -14,8 +14,7 @@
       ansible.builtin.cron:
         name: HUB_HOME
         env: yes
-        job: /EpiGraphHub/Data_Collection/CRON_scripts
-        insertafter: JOBPATH
+        job: /opt/EpiGraphHub/Data_Collection/CRON_scripts
 
     - name: create owid download job
       ansible.builtin.cron:
