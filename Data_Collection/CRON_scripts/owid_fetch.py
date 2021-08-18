@@ -13,7 +13,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 logger = logging.getLogger("owid_fetch")
-fh = TimedRotatingFileHandler('/var/log/owid_fetch.log', interval='W6', backupCount=3)
+fh = TimedRotatingFileHandler('/var/log/owid_fetch.log', when='W6', backupCount=3)
 logger.addHandler(fh)
 
 HOST = '135.181.41.20'
