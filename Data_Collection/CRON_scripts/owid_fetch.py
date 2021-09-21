@@ -10,8 +10,14 @@ import shlex
 import subprocess
 from sqlalchemy import create_engine
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
 logger = logging.getLogger("owid_fetch")
+fh = TimedRotatingFileHandler('/var/log/owid_fetch.log', when='W6', backupCount=3)
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 HOST = '135.181.41.20'
 TEMP_PATH = '/tmp/owid'
