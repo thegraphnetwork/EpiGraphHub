@@ -10,11 +10,11 @@ import shlex
 import subprocess
 from sqlalchemy import create_engine
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger("owid_fetch")
-fh = TimedRotatingFileHandler('/var/log/owid_fetch.log', when='W6', backupCount=3)
-fh.setLevel(logging.DEBUG)
+fh = RotatingFileHandler('/var/log/owid_fetch.log', maxBytes=2000, backupCount=5)
+logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
@@ -29,13 +29,13 @@ FILENAME = OWID_URL.split('/')[-1]
 
 def download_csv():
     subprocess.run(['curl', '--silent', '-f', '-o', f'{DATA_PATH}/{FILENAME}', f'{OWID_URL}'])
-    logger.info("OWID csv downloaded.")
+    logger.warning("OWID csv downloaded.")
 
 
 def parse_types(df):
     df = df.convert_dtypes()
     df['date'] = pd.to_datetime(df.date)
-    logger.info("OWID data types parsed.")
+    logger.warning("OWID data types parsed.")
     return df
 
 
@@ -48,12 +48,12 @@ def load_into_db(remote=True):
         data = parse_types(data)
         engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
         data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
-        logger.info('OWID data inserted into database')
+        logger.warning('OWID data inserted into database')
         with engine.connect() as connection:
             connection.execute('CREATE INDEX IF NOT EXISTS country_idx  ON owid_covid (location);')
             connection.execute('CREATE INDEX IF NOT EXISTS iso_idx  ON owid_covid (iso_code);')
             connection.execute('CREATE INDEX IF NOT EXISTS date_idx ON owid_covid (date);')
-        logger.info('Database indices created on OWID table')
+        logger.warning('Database indices created on OWID table')
     except Exception as e:
         logger.error(f"Could not update OWID table\n{e}")
         raise(e)
