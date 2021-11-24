@@ -4,6 +4,8 @@ If you have you public key registered with the EpigraphHub server, you can easil
 
 First you need to establish an encrypted connection using the following command:
 
+## Direct access to the database
+
 ```bash
 ssh -f epigraph@epigraphhub.org -L 5432:localhost:5432 -NC
 ```
@@ -12,7 +14,7 @@ This command let's you access the database as if it was a local database.
 
 Below are instructions about how to fetch data for analysis
 
-## Python
+### Using Python
 In a Python environment we will use two libraries: [Pandas](https://pandas.pydata.org) and SQLAlchemy.
 
 ```python
@@ -28,7 +30,7 @@ Then suppose you want to download the "Our World in Data" covid table:
 owid = pd.read_sql_table('owid_covid', engine, schema='public')
 ```
 
-## R
+### Using R
 In R-studio or the R console, we will need the following packages: `RPostgreSQL`.
 
 ```R
@@ -55,3 +57,43 @@ df_owid <- dbGetQuery(con, "SELECT * from public.owid_covid")
 ```
 
 That's it! you can now explore the data on your local computer as you wish.
+
+## Access through the API
+
+In order to access contents  via the Hub's API, it is a bit more involved, and it gives access mostly to metadata instead of raw data.
+
+
+### Getting the authentication token
+you need to authenticate using your user and password you will get a token following this authentication that you can save and use for future requests.
+
+```python
+import requests
+import json
+
+base_url = 'https://epigraphhub.org/api/v1/'
+payload = {'username':'guest', 'password':'guest','provider':'db'}
+
+r = requests.post('https://epigraphhub.org/api/v1/security/login', json=payload)
+access_token = r.json()
+```
+
+the content of `access_token` will look like this:
+
+```json
+{'access_token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NTYzMjksIm5iZiI7MTYzNzc2NjMyOSwianRpIjoiZjEyNGVlMjEtNmUwOS00ZmNmLTgwN2EtOTYzMDYyODQ2ZWQ3IiwiZXhwIjoxNjM3NzU3MjI5LCJpZGVudGl0eSI6MSwiZnJlc2giOnRydWUsInR5cGUiOiJhY2Nlc3MifQ.aObdxq9ECwvgFEz22FRCct2kEv-EgFDf_3XPnaSfx-4'}
+```
+
+### Making an authenticated request
+With the token, you can prepare an authentication header to use with your requests:
+
+```python
+headersAuth = {'Authorization': 'Bearer'+access_token['access_token']}
+```
+
+and with that you can finally request some database table:
+
+```python
+r2 = requests.get('https://epigraphhub.org/api/v1/database/2/select_star/owid_covid', headers=headersAuth)
+
+r2.json() # This with return you the results
+```
