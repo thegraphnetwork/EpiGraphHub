@@ -8,7 +8,7 @@ All the data coming from an external source should give origin to on or more tab
 Data can be uploaded manually via the Epigraphhub Superset web interface or programatically, by connecting directly to the database. In order to connect a SSH tunnel must be established using the user `epigraph`
 
 ```bash
-!ssh -f epigraph@epigraphhub.org -L 5432:localhost:5432 -NC
+ssh -f epigraph@epigraphhub.org -L 5432:localhost:5432 -NC
 ```
 
 Once the tunnel is established data can be sent to the data base using Pandas:
