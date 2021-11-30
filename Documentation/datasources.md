@@ -31,7 +31,7 @@ mymap.to_postgis("public.mymap", engine, if_exists='replace')
 
 Above, `public` is the schema holding all the maps. 
 
-For a more complete example for loading all the GADM maps, check this [script](/Data_Collection/load_gpkg_maps.py).
+For a more complete example for loading all the GADM maps, check this [script](../Data_Collection/load_gpkg_maps.py).
 
 To Import CSVs you can use the web interface. Or the direct database connection as shown above  
 
@@ -43,7 +43,7 @@ df.to_sql('myspreadsheet', engine, if_exists='replace')
 ### Spreadsheets
 To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub, permission to anyone that has the link to view the file.
 
-![sheets](/Documentation/gsheets.png)
+![sheets](../Documentation/gsheets.png)
 
 Don't forget to select the `Google sheets` first.
 
