@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'EpiGraphHub'
-copyright = '2021, Flávio Codeço Coelho'
+copyright = '2021, The Graph Network'
 author = 'Flávio Codeço Coelho'
 
 # The full version, including alpha/beta/rc tags
