@@ -4,8 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data Querying, Analysis, and Visualizations &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
@@ -32,9 +31,93 @@
 
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="data-querying-analysis-and-visualizations">
+  <div class="tex2jax_ignore mathjax_ignore section" id="data-querying-analysis-and-visualizations">
 <h1>Data Querying, Analysis, and Visualizations<a class="headerlink" href="#data-querying-analysis-and-visualizations" title="Permalink to this headline">¶</a></h1>
-</section>
+<p>If you have you public key registered with the EpigraphHub server, you can easily connect directly to the database from your programming environment.</p>
+<p>First you need to establish an encrypted connection using the following command:</p>
+<div class="section" id="direct-access-to-the-database">
+<h2>Direct access to the database<a class="headerlink" href="#direct-access-to-the-database" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh -f epigraph@epigraphhub.org -L <span class="m">5432</span>:localhost:5432 -NC
+</pre></div>
+</div>
+<p>This command let’s you access the database as if it was a local database.</p>
+<p>Below are instructions about how to fetch data for analysis</p>
+<div class="section" id="using-python">
+<h3>Using Python<a class="headerlink" href="#using-python" title="Permalink to this headline">¶</a></h3>
+<p>In a Python environment we will use two libraries: <a class="reference external" href="https://pandas.pydata.org">Pandas</a> and SQLAlchemy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s2">&quot;postgres://epigraph:epigraph@localhost:5432/epigraphhub&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then suppose you want to download the “Our World in Data” covid table:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">owid</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_table</span><span class="p">(</span><span class="s1">&#39;owid_covid&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-r">
+<h3>Using R<a class="headerlink" href="#using-r" title="Permalink to this headline">¶</a></h3>
+<p>In R-studio or the R console, we will need the following packages: <code class="docutils literal notranslate"><span class="pre">RPostgreSQL</span></code>.</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># install.packages(&quot;RPostgreSQL&quot;)</span>
+<span class="nf">require</span><span class="p">(</span><span class="s">&quot;RPostgreSQL&quot;</span><span class="p">)</span>
+
+<span class="c1"># loads the PostgreSQL driver</span>
+<span class="n">drv</span> <span class="o">&lt;-</span> <span class="nf">dbDriver</span><span class="p">(</span><span class="s">&quot;PostgreSQL&quot;</span><span class="p">)</span>
+<span class="c1"># creates a connection to the postgres database</span>
+<span class="c1"># note that &quot;con&quot; will be used later in each connection to the database</span>
+<span class="n">con</span> <span class="o">&lt;-</span> <span class="nf">dbConnect</span><span class="p">(</span><span class="n">drv</span><span class="p">,</span> 
+                <span class="n">dbname</span> <span class="o">=</span> <span class="s">&quot;epigraphhub&quot;</span><span class="p">,</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="s">&quot;localhost&quot;</span><span class="p">,</span> 
+                <span class="n">port</span> <span class="o">=</span> <span class="m">5432</span><span class="p">,</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="s">&quot;epigraph&quot;</span><span class="p">,</span> 
+                <span class="n">password</span> <span class="o">=</span> <span class="s">&#39;epigraph&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then to fetch the “Our World in Data” covid table:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># query the data from postgreSQL </span>
+<span class="n">df_owid</span> <span class="o">&lt;-</span> <span class="nf">dbGetQuery</span><span class="p">(</span><span class="n">con</span><span class="p">,</span> <span class="s">&quot;SELECT * from public.owid_covid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That’s it! you can now explore the data on your local computer as you wish.</p>
+</div>
+</div>
+<div class="section" id="access-through-the-api">
+<h2>Access through the API<a class="headerlink" href="#access-through-the-api" title="Permalink to this headline">¶</a></h2>
+<p>In order to access contents  via the Hub’s API, it is a bit more involved, and it gives access mostly to metadata instead of raw data.</p>
+<div class="section" id="getting-the-authentication-token">
+<h3>Getting the authentication token<a class="headerlink" href="#getting-the-authentication-token" title="Permalink to this headline">¶</a></h3>
+<p>you need to authenticate using your user and password you will get a token following this authentication that you can save and use for future requests.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://epigraphhub.org/api/v1/&#39;</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;username&#39;</span><span class="p">:</span><span class="s1">&#39;guest&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">:</span><span class="s1">&#39;guest&#39;</span><span class="p">,</span><span class="s1">&#39;provider&#39;</span><span class="p">:</span><span class="s1">&#39;db&#39;</span><span class="p">}</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://epigraphhub.org/api/v1/security/login&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
+<span class="n">access_token</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>the content of <code class="docutils literal notranslate"><span class="pre">access_token</span></code> will look like this:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{&#39;access_token&#39;: &#39;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NTYzMjksIm5iZiI7MTYzNzc2NjMyOSwianRpIjoiZjEyNGVlMjEtNmUwOS00ZmNmLTgwN2EtOTYzMDYyODQ2ZWQ3IiwiZXhwIjoxNjM3NzU3MjI5LCJpZGVudGl0eSI6MSwiZnJlc2giOnRydWUsInR5cGUiOiJhY2Nlc3MifQ.aObdxq9ECwvgFEz22FRCct2kEv-EgFDf_3XPnaSfx-4&#39;}
+</pre></div>
+</div>
+</div>
+<div class="section" id="making-an-authenticated-request">
+<h3>Making an authenticated request<a class="headerlink" href="#making-an-authenticated-request" title="Permalink to this headline">¶</a></h3>
+<p>With the token, you can prepare an authentication header to use with your requests:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headersAuth</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer&#39;</span><span class="o">+</span><span class="n">access_token</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>and with that you can finally request some database table:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r2</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://epigraphhub.org/api/v1/database/2/select_star/owid_covid&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headersAuth</span><span class="p">)</span>
+
+<span class="n">r2</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="c1"># This with return you the results</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 
 
           </div>
@@ -59,7 +142,11 @@
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Querying, Analysis, and Visualizations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Querying, Analysis, and Visualizations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#direct-access-to-the-database">Direct access to the database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#access-through-the-api">Access through the API</a></li>
+</ul>
+</li>
 </ul>
 
 <div class="relations">
@@ -96,7 +183,7 @@
       &copy;2021, Flávio Codeço Coelho.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.1.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
