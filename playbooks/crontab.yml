@@ -22,3 +22,11 @@
         minute: "0"
         hour: "1"
         job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/owid.sh"
+
+    - name: create FOPH download job
+      ansible.builtin.cron:
+        name: "Fetch FOPH data"
+        minute: "0"
+        hour: "13"
+        job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/foph.sh"
+
