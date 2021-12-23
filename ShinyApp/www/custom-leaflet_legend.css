@@ -1,0 +1,7 @@
+.info.legend.leaflet-control {
+    position: absolute;
+    width: 180px;
+    right: 460px;
+    bottom: 10px;
+    box-shadow: none;
+}

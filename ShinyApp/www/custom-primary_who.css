@@ -1,0 +1,14 @@
+.content-wrapper {background-color:white;}
+
+.box.box-solid.box-primary>.box-header {
+                    color:#fff;
+                    background:linear-gradient( to right, #0a99ff ,#24ccff)
+                    }
+
+.box.box-solid.box-primary{
+                    border-bottom-color:#e3e3e3;
+                    border-left-color:#e3e3e3;
+                    border-right-color:#e3e3e3;
+                    border-top-color:#e3e3e3;
+                    background:#ffffff
+                    }

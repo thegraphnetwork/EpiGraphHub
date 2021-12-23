@@ -1,0 +1,10 @@
+
+
+.navbar1 .navbar-nav {float: right}
+
+.navbar1 .navbar-nav li a:hover, .navbar1 .navbar-nav > .active > a {
+color: #fff !important;
+background-color:#00b8bd !important;
+background-image: #fff !important;
+}
+
