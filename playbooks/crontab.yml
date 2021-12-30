@@ -27,6 +27,13 @@
       ansible.builtin.cron:
         name: "Fetch FOPH data"
         minute: "0"
-        hour: "13"
+        hour: "15"
         job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/foph.sh"
+
+    - name: create make_forecast job
+      ansible.builtin.cron:
+        name: "Make forecasts"
+        minute: "0"
+        hour: "16"
+        job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh"
 
