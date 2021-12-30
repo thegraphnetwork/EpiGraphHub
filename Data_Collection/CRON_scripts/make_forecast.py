@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Wed Dec 22 15:51:51 2021
 
-@author: eduardoaraujo
-"""
-
-#!/usr/bin/env python3
-"""
-Created on Wed Dec 22 15:51:51 2021
 @author: eduardoaraujo
 """
 
@@ -20,6 +13,10 @@ from sklearn.model_selection import train_test_split
 from datetime import datetime, timedelta
 from get_data import *
 from sqlalchemy import create_engine
+from loguru import logger
+
+logger.add("/var/log/forecast.log", retention="7 days")
+
 engine = create_engine("postgresql://epigraph:epigraph@localhost:5432/epigraphhub")
 
 
@@ -383,6 +380,9 @@ def make_forecast(target_curve_name, canton, predictors, vaccine = True, smooth=
     df['upper'] = forecast95
     return df 
 
+@logger.catch
+def save_to_database(df, table_name):
+    df.to_sql(table_name, engine, schema= 'switzerland', if_exists = 'replace')
 
 if __name__ == '__main__':
     #target_curve_name = 'hosp'
@@ -392,6 +392,7 @@ if __name__ == '__main__':
     # compute the predictions in sample and out sample for validation 
     df_val_hosp_up = make_single_prediction('hosp', canton, predictors, vaccine = True, smooth= True, hosp_as_predict = True ,ini_date = '2020-03-01', title = None, updated_data = True)
     df_val_icu = make_single_prediction('ICU_patients', canton, predictors, vaccine = True, smooth= True, hosp_as_predict = True,ini_date = '2020-03-01', title = None, updated_data = False)
+    logger.info('Generated validation prediction tables')
 
 
     # compute the forecast
@@ -399,12 +400,19 @@ if __name__ == '__main__':
     df_for_icu = make_forecast('ICU_patients', canton, predictors, vaccine = True, smooth= True, hosp_as_predict = True,ini_date = '2020-03-01', title = None, updated_data = False)
     
     df_for_hosp_up = make_forecast('hosp', canton, predictors, vaccine = True, smooth= True, hosp_as_predict = True,ini_date = '2020-03-01', title = None,updated_data = True)
-    
+    logger.info('Finished running forecasts')
+
+
     # save the datasets 
-    df_val_hosp_up.to_sql('ml_validation_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
-    df_val_icu.to_sql('ml_validation_icu', engine, schema= 'switzerland', if_exists = 'replace')
+    # df_val_hosp_up.to_sql('ml_validation_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
+    save_to_database(df_val_hosp_up, 'ml_validation_hosp_up')
+    # df_val_icu.to_sql('ml_validation_icu', engine, schema= 'switzerland', if_exists = 'replace')
+    save_to_database(df_val_icu,'ml_validation_icu')
     
-    df_for_hosp.to_sql('ml_forecast_hosp', engine, schema= 'switzerland', if_exists = 'replace') 
-    df_for_icu.to_sql('ml_forecast_icu', engine, schema= 'switzerland', if_exists = 'replace') 
-    
-    df_for_hosp_up.to_sql('ml_forecast_hosp_up', engine, schema= 'switzerland', if_exists = 'replace') 
+    # df_for_hosp.to_sql('ml_forecast_hosp', engine, schema= 'switzerland', if_exists = 'replace') 
+    save_to_database(df_for_hosp,'ml_forecast_hosp')
+    # df_for_icu.to_sql('ml_forecast_icu', engine, schema= 'switzerland', if_exists = 'replace') 
+    save_to_database(df_for_icu,'ml_forecast_icu')
+    # df_for_hosp_up.to_sql('ml_forecast_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
+    save_to_database(df_for_hosp_up,'ml_forecast_hosp_up')
+    logger.info('Data saved to DB')
