@@ -38,12 +38,14 @@ def load_into_db(table, url, log=True):
             try:
                 connection.execute(f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} (geoRegion);')
             except Exception as e:
-                logger.info(f'Could not create region index')
-                
-            connection.execute(f'CREATE INDEX IF NOT EXISTS date_idx ON switzerland.foph_{table.lower()} (date);')
+                logger.info(f'Could not create region index: {e}')
+            try:
+                connection.execute(f'CREATE INDEX IF NOT EXISTS date_idx ON switzerland.foph_{table.lower()} (date);')
+            except Exception as e:
+                logger.info(f'Could not create date index: {e}')
 
 
 if __name__ == "__main__":
     for t,u in TABLES.items():
-        print (u)
+        logger.info(f'Attempting to Download {t} from {u}.')
         load_into_db(t,u)
