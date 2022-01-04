@@ -1,0 +1,11 @@
+FROM postgis/postgis:10-2.5
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -y \
+    && apt-get install -y \
+      postgresql-10-plr \
+      postgresql-10-postgis-2.5-scripts \
+      postgresql-plpython-10 \
+      postgresql-plpython3-10 \
+      postgresql-contrib \
+    && rm -rf /var/lib/apt/lists/*

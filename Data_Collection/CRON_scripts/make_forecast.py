@@ -3,6 +3,7 @@
 Created on Wed Dec 22 15:51:51 2021
 @author: eduardoaraujo
 """
+import os
 
 import pandas as pd 
 import numpy as np 
@@ -17,9 +18,12 @@ from get_data import build_lagged_features, compute_clusters, get_combined_data,
 from sqlalchemy import create_engine
 from loguru import logger
 
+import config
+
+os.makedirs("/var/log/", exist_ok=True)
 logger.add("/var/log/forecast.log", retention="7 days")
 
-engine = create_engine("postgresql://epigraph:epigraph@localhost:5432/epigraphhub")
+engine = create_engine(config.DB_URI)
 
 
 def rolling_predictions(target_name, data, ini_date = '2020-03-01',split = 0.75, horizon_forecast = 14, maxlag=15):

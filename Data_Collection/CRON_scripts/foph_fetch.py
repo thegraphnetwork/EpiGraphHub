@@ -2,17 +2,11 @@ import pandas as pd
 from pangres import upsert
 from sqlalchemy import create_engine, text, VARCHAR
 import requests
-import logging
-from logging.handlers import RotatingFileHandler
+from loguru import logger
 
-logger = logging.getLogger("foph_fetch")
-fh = RotatingFileHandler('/var/log/foph_fetch.log', maxBytes=2000, backupCount=5)
-logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+import config
 
-HOST = 'epihraphhub.org'  #'135.181.41.20'
+logger.add("/var/log/foph_fetch.log", retention="7 days")
 
 context_url = "https://www.covid19.admin.ch/api/data/context"
 context = requests.get(context_url).json()
@@ -29,7 +23,7 @@ def load_into_db(table, url, log=True):
     if log:
         logger.info(f'Table {table} downloaded')
     
-    engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
+    engine = create_engine(config.DB_URI)
     with engine.connect() as conn:
         upsert(con=conn, df=new_df, table_name=f'foph_{table.lower()}', schema='switzerland', if_row_exists='update',
             chunksize=1000, add_new_columns=True, create_table=True) 
@@ -37,7 +31,7 @@ def load_into_db(table, url, log=True):
         logger.info(f'Table {table} updated')
     with engine.connect() as connection:
             try:
-                connection.execute(f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} (geoRegion);')
+                connection.execute(f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} ("geoRegion");')
             except Exception as e:
                 logger.info(f'Could not create region index: {e}')
             try:

@@ -14,8 +14,11 @@ from sqlalchemy import create_engine
 import matplotlib.pyplot as plt 
 #import streamlit as st 
 
-engine_public = create_engine("postgresql://epigraph:epigraph@localhost:5432/epigraphhub")
-engine_private = create_engine("postgresql://epigraph:epigraph@localhost:5432/privatehub")
+import config
+
+engine_public = create_engine(config.DB_URI)
+engine_private = create_engine(config.DB_URI_PRIVATE)
+
 
 def build_lagged_features(dt, maxlag=2, dropna=True):
     '''
@@ -103,11 +106,14 @@ def compute_clusters(curve, t, plot = False):
     
     # Computing the correlation matrix based on the maximum correlation lag 
     
-    del inc_canton['CHFL']
+    if "CHFL" in inc_canton:
+        del inc_canton['CHFL']
     
-    del inc_canton['CH']
+    if "CH" in inc_canton:
+        del inc_canton['CH']
     
-    del inc_canton['FL']
+    if "FL" in inc_canton:
+        del inc_canton['FL']
     
     cm,lm=lag_ccf(inc_canton.rolling(7).mean().dropna().values)
     
@@ -303,5 +309,3 @@ def get_canton_data(curve, canton, ini_date = None):
         df = df[ini_date:]
     
     return df
-    
-
