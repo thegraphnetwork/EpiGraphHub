@@ -1,14 +1,21 @@
 # Building Web-apps based on the Hub
 
-It is possible and very easy to build simple web applications based of the EpiGraphHub.
+It is possible and very easy to build simple web applications based on the EpiGraphHub platform. For simplicity we will refer to these applications as **Hub apps** in this document.
 
+## General Guidelines
+All Hub apps, must be developed in their own reposotory under the [The Graph Network](https://github.com/thegraphnetwork) GitHub organization.
+
+The app code, independently of the framework used, should be written and configured to work in you local development computer, assuming that the epigraphhub database is available on `localhost` which can be achieved through the activation of the SSH tunnel as decribed [here](https://epigraphhub.readthedocs.io/en/latest/dataanalysis.html). Having the code ready to runas a local app, will help our deployment engineers to configure CI and CD of the app in the EpigraphHub server.
+
+
+## Examples
 The examples that will be explored in this tutorial are dashboard-like, but go one step further than the interactive dashboards that can be created using the standard web interface of EpiGraphHub. This extra step is the ability to run custom code in the background of you dashboard, beyond just simple figure manipulation. But we will still be able to take advantage of the interactive graphs and dashboards created and published through EpiGraphHub's web interface.
 
-## Streamlit-based apps
+### Streamlit-based apps
 
 We will start this tutorial building an app based on [Streamlit](https://streamlit.io), one of the fastest ways to build data apps available today. 
 
-### Embedding a dashboard
+#### Embedding a dashboard
 Let's take A simple dashboard developed and published in EpiGraphHub. In order to embed it in a very simple Streamlit app: Would require these lines of code:
 
 ```python
