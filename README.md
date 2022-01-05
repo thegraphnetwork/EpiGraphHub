@@ -37,10 +37,10 @@
   <p align="center">
     Health Data Hub & Data Analysis Ecosystem for Rapid Epidemic Outbreak Response
     <br />
-    <a href="https://github.com/thegraphnetwork/GRAPHnetEpiApp"><strong>Explore the docs »</strong></a>
+    <a href="https://epigraphhub.readthedocs.io"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/thegraphnetwork/GRAPHnetEpiApp">View Demo</a>
+    <a href="https://epigraphhub.org">View Platform</a>
     ·
     <a href="https://github.com/thegraphnetwork/GRAPHnetEpiApp/issues">Report Bug</a>
     ·
