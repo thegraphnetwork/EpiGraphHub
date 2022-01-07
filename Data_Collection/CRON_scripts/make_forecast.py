@@ -272,7 +272,8 @@ def make_predictions_all_cantons(target_curve_name,  predictors, vaccine = True,
 
             # get predictions and forecast 
             #date_predsknn, predsknn, targetknn, train_size, date_forecastknn, forecastknn = rolling_predictions(model_knn, 'knn', target_name, df , ini_date = '2021-01-01',split = 0.75,   horizon_forecast = horizon, maxlag=maxlag,)
-            x, y5,y50, y95,  target,train_size, forecast_dates, forecasts5, forecasts50,forecasts95 = rolling_predictions(target_name, df , hosp_as_predict,  ini_date = ini_date,split = 0.75,   horizon_forecast = horizon, maxlag=maxlag)
+            # x, y5,y50, y95,  target,train_size, forecast_dates, forecasts5, forecasts50,forecasts95 = rolling_predictions(target_name, df , hosp_as_predict,  ini_date = ini_date,split = 0.75,   horizon_forecast = horizon, maxlag=maxlag)
+            x, y5,y50, y95,  target,train_size = rolling_predictions(target_name, df , hosp_as_predict,  ini_date = ini_date,split = 0.75,   horizon_forecast = horizon, maxlag=maxlag)
             
             #fig = plot_predictions(target_curve_name, canton, target, train_size, x, y5,y50, y95, forecast_dates, forecasts5, forecasts50,forecasts95, title, path)
 
