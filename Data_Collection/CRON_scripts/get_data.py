@@ -177,22 +177,19 @@ def get_cluster_data(curve, georegion):
 
         
     df = get_canton_data(curve, georegion)
-    #print(df)
-    # dataframe where will the curve for each region
     
     df_end = pd.DataFrame()
     
     for i in georegion:
-    
+        df_aux = df.loc[df.geoRegion == i]
         #print(i)
         
-        if curve == 'hospcapacity':
-            df_aux = df.loc[df.geoRegion == i].resample('D').mean()   
-            df_end['ICU_patients_'+i] = df_aux.ICU_Covid19Patients
+        if curve == 'hospcapacity':  
+            df_end[f'ICU_patients_{i}'] = df_aux.ICU_Covid19Patients.resample('D').mean()
         else:
-            df_end[curve+'_'+i] = df.loc[df.geoRegion == i].entries
+            df_end[f'{curve}_{i}'] = df_aux.entries.resample('D').mean()
             
-    df_end = df_end.resample('D').mean()   
+    df_end = df_end.resample('D').mean()  
         
     return df_end
 
