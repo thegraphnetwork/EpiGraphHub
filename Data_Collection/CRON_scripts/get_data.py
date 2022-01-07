@@ -167,7 +167,7 @@ def get_cluster_data(curve, georegion):
     This function provide a dataframe with the curve selected in the param curve for each region selected in the 
     param georegion
     
-    param curve: string. The following options are accepted: ['cases', 'death',
+    param curve: string. one of the following options are accepted: ['cases', 'death',
                                                               'hosp', 'hospCapacity', 
                                                               're', 'test', 'testPcrAntigen', 'virusVariantsWgs']
     param georegion: array with all the geoRegions of interest.
