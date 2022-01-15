@@ -469,15 +469,15 @@ if __name__ == '__main__':
     predictors2 = ['cases', 'hosp', 'test', 'hospcapacity']
 
     # compute the predictions in sample and out sample for validation 
-    df_val_hosp_up = make_single_prediction('hosp', canton, predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = True)
-    df_val_icu = make_single_prediction('ICU_patients', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
-    df_val_total = make_single_prediction('total_hosp', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    #df_val_hosp_up = make_single_prediction('hosp', canton, predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = True)
+    #df_val_icu = make_single_prediction('ICU_patients', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    #df_val_total = make_single_prediction('total_hosp', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
     
-    df_val_hosp_cantons = make_predictions_all_cantons('hosp',  predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
-    df_val_icu_cantons = make_predictions_all_cantons('ICU_patients',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
-    df_val_total_cantons = make_predictions_all_cantons('total_hosp',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
+    #df_val_hosp_cantons = make_predictions_all_cantons('hosp',  predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
+    #df_val_icu_cantons = make_predictions_all_cantons('ICU_patients',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
+    #df_val_total_cantons = make_predictions_all_cantons('total_hosp',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
 
-    logger.info('Generated validation prediction tables')
+    #logger.info('Generated validation prediction tables')
 
 
     # compute the forecast
@@ -496,14 +496,14 @@ if __name__ == '__main__':
 
     # save the datasets 
     # df_val_hosp_up.to_sql('ml_validation_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
-    save_to_database(df_val_hosp_up, 'ml_validation_hosp_up')
-    save_to_database(df_val_icu, 'ml_validation_icu')
-    save_to_database(df_val_total, 'ml_validation_total')
+    #save_to_database(df_val_hosp_up, 'ml_validation_hosp_up')
+    #save_to_database(df_val_icu, 'ml_validation_icu')
+    #save_to_database(df_val_total, 'ml_validation_total')
     
     
-    save_to_database(df_val_hosp_cantons, 'ml_val_hosp_all_cantons')
-    save_to_database(df_val_icu_cantons, 'ml_val_icu_all_cantons')
-    save_to_database(df_val_total_cantons, 'ml_val_total_all_cantons')
+    #save_to_database(df_val_hosp_cantons, 'ml_val_hosp_all_cantons')
+    #save_to_database(df_val_icu_cantons, 'ml_val_icu_all_cantons')
+    #save_to_database(df_val_total_cantons, 'ml_val_total_all_cantons')
     
     # df_for_hosp.to_sql('ml_forecast_hosp', engine, schema= 'switzerland', if_exists = 'replace') 
     save_to_database(df_for_hosp,'ml_forecast_hosp')
