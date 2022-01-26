@@ -48,4 +48,4 @@ dependencies:
   - r-isocodes
   # - r-dm
   - pip:
-    - pangres==3.1
+    - pangres>=4.1
