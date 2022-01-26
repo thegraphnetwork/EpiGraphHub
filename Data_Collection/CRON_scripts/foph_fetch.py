@@ -30,8 +30,9 @@ def load_into_db(table, url, log=True):
         logger.info(f'Table {table} downloaded')
     
     engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
-    upsert(engine=engine, df=new_df, table_name=f'foph_{table.lower()}', schema='switzerland', if_row_exists='update',
-       chunksize=1000, create_table=True) 
+    with engine.connect() as conn:
+        upsert(con=conn, df=new_df, table_name=f'foph_{table.lower()}', schema='switzerland', if_row_exists='update',
+            chunksize=1000, add_new_columns=True, create_table=True) 
     if log:
         logger.info(f'Table {table} updated')
     with engine.connect() as connection:
