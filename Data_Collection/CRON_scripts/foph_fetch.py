@@ -37,7 +37,7 @@ def load_into_db(table, url, log=True):
         logger.info(f'Table {table} updated')
     with engine.connect() as connection:
             try:
-                connection.execute(f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} (geoRegion);')
+                connection.execute(f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} ("geoRegion");')
             except Exception as e:
                 logger.info(f'Could not create region index: {e}')
             try:
