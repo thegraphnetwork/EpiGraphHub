@@ -472,14 +472,21 @@ if __name__ == '__main__':
 
 
     # compute the forecast
+    logger.info('forecast 1')
     df_for_hosp = make_forecast('hosp', canton, predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    logger.info('forecast 2')
     df_for_icu = make_forecast('ICU_patients', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    logger.info('forecast 3')
     df_for_total = make_forecast('total_hosp', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
     
+    logger.info('forecast 4')
     df_for_hosp_cantons = make_forecast_all_cantons('hosp',  predictors1, vaccine = True, smooth= True, ini_date = '2020-03-01', title = None)
+    logger.info('forecast 5')
     df_for_icu_cantons = make_forecast_all_cantons('ICU_patients',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
+    logger.info('forecast 6')
     df_for_total_cantons = make_forecast_all_cantons('total_hosp',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
 
+    logger.info('forecast 7')
     df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine = True, smooth= True, ini_date = '2020-03-01', title = None,updated_data = True)
     
     logger.info('Finished running forecasts')
