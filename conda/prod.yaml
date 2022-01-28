@@ -1,0 +1,54 @@
+name: epigraphhub
+channels:
+  - conda-forge
+  - r
+  - nodefaults
+dependencies:
+  - python 3.7.*
+  - setuptools
+  - superset 1.3.2
+  - myst-parser
+  - pandas
+  - pip
+  - geopandas
+  - inquirer
+  - python-dotenv
+  - sqlalchemy
+  - fiona
+  - psycopg2
+  - lightgbm
+  - loguru
+  # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
+  # - ngboost >=0.3.12
+  # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
+  - wtforms <3
+  # dev
+  - virtualenv
+  - ansible
+  - sphinx
+  - pip
+  - docker-compose
+  # TypeError: entry_points() got an unexpected keyword argument 'group'
+  - markdown 3.3.4
+  # R
+  - r-base 3.6.*
+  - r-tidyverse
+  - r-shiny
+  - r-stringr
+  - r-readxl
+  - r-dplyr
+  - r-dbi
+  - r-vroom
+  - r-odbc
+  - r-rsocrata
+  - r-glue
+  - r-janitor
+  - r-here
+  - r-desctools
+  - r-lubridate
+  - r-isocodes
+  # - r-dm
+  - pip:
+    - pangres>=4.1
+    # remove it when https://github.com/stanfordmlgroup/ngboost/issues/283 is done
+    - https://github.com/stanfordmlgroup/ngboost/archive/refs/tags/v0.3.12.tar.gz

@@ -12,7 +12,10 @@ from sqlalchemy import create_engine
 import logging
 from logging.handlers import RotatingFileHandler
 
+import config
+
 logger = logging.getLogger("owid_fetch")
+
 fh = RotatingFileHandler('/var/log/owid_fetch.log', maxBytes=2000, backupCount=5)
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -20,9 +23,9 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 HOST = '135.181.41.20'
-TEMP_PATH = '/tmp/owid'
-DATA_PATH = os.path.join(TEMP_PATH, 'releases')
-if not os.path.exists(DATA_PATH): os.mkdir(DATA_PATH)
+DATA_PATH = '/tmp/owid/releases'
+os.makedirs(DATA_PATH, exist_ok=True)
+
 OWID_URL = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
 FILENAME = OWID_URL.split('/')[-1]
 
@@ -46,7 +49,7 @@ def load_into_db(remote=True):
         download_csv()
         data = pd.read_csv(os.path.join(DATA_PATH, FILENAME))
         data = parse_types(data)
-        engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
+        engine = create_engine(config.DB_URI)
         data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
         logger.warning('OWID data inserted into database')
         with engine.connect() as connection:

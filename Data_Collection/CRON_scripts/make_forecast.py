@@ -3,6 +3,7 @@
 Created on Wed Dec 22 15:51:51 2021
 @author: eduardoaraujo
 """
+import os
 
 import pandas as pd 
 import numpy as np 
@@ -17,9 +18,12 @@ from get_data import build_lagged_features, compute_clusters, get_combined_data,
 from sqlalchemy import create_engine
 from loguru import logger
 
+import config
+
+os.makedirs("/var/log/", exist_ok=True)
 logger.add("/var/log/forecast.log", retention="7 days")
 
-engine = create_engine("postgresql://epigraph:epigraph@localhost:5432/epigraphhub")
+engine = create_engine(config.DB_URI)
 
 
 def rolling_predictions(target_name, data, ini_date = '2020-03-01',split = 0.75, horizon_forecast = 14, maxlag=15):
@@ -468,14 +472,21 @@ if __name__ == '__main__':
 
 
     # compute the forecast
+    logger.info('forecast 1')
     df_for_hosp = make_forecast('hosp', canton, predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    logger.info('forecast 2')
     df_for_icu = make_forecast('ICU_patients', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
+    logger.info('forecast 3')
     df_for_total = make_forecast('total_hosp', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
     
+    logger.info('forecast 4')
     df_for_hosp_cantons = make_forecast_all_cantons('hosp',  predictors1, vaccine = True, smooth= True, ini_date = '2020-03-01', title = None)
+    logger.info('forecast 5')
     df_for_icu_cantons = make_forecast_all_cantons('ICU_patients',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
+    logger.info('forecast 6')
     df_for_total_cantons = make_forecast_all_cantons('total_hosp',  predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None)
 
+    logger.info('forecast 7')
     df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine = True, smooth= True, ini_date = '2020-03-01', title = None,updated_data = True)
     
     logger.info('Finished running forecasts')
