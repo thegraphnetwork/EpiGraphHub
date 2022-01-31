@@ -78,7 +78,6 @@ def load_into_db(client):
         # If we have fetched all of the records, bail out
         if (start > int(record_count['COUNT'])):
             break
-        
         #break
         
 if __name__ == "__main__":
