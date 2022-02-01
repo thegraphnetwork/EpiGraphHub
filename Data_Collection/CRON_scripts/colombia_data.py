@@ -59,11 +59,12 @@ def load_into_db(client):
     chunk_size = 10000
     maxrecords = int(record_count['COUNT'])
     
+    engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
+    
     for df_new in chunked_fetch(start, chunk_size, maxrecords):
         # separate the part of the df that will be set as `ignore` and `update` in the if_row_exists params.
  
         # put the data into the bank
-        engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
         with engine.connect() as conn:
             upsert(con=conn, df = df_new, table_name='casos_positivos_covid', schema='colombia', if_row_exists= 'update',
                 chunksize=1000, add_new_columns=True, create_table=True) 
