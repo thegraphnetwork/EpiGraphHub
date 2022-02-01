@@ -278,9 +278,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+=======
+>>>>>>> origin/main
 
 # Pycharm IDE settings
 .idea/
 .Rproj.user
-Data_Collection/.Rhistory
-Data_Collection/.RData
+
