@@ -9,11 +9,20 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  POSTGRES_HOST: localhost
+  POSTGRES_PORT: 25432
+  POSTGRES_USER: dev_epigraph
+  POSTGRES_PASSWORD: dev_epigraph
+  POSTGRES_DB: dev_epigraphhub
+  POSTGRES_DB_PRIVATE: dev_privatehub
+  POSTGRES_DB_SANDBOX: dev_sandbox
+
 jobs:
   main:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     defaults:
       run:
         shell: bash -l {0}
@@ -23,3 +32,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Create environment variables file
+      run: |
+        envsubst < .env.tpl > .env
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: "latest"
+        mamba-version: "*"
+        environment-file: conda/ci.yaml
+        channels: conda-forge,r,nodefaults
+        activate-environment: epigraphhub
+        use-mamba: true
+        miniforge-variant: Mambaforge
+
+    - name: load docker
+      run: |
+        make docker-build
+        make docker-up SERVICES=dev-epigraphhub
+        docker ps
+        ./docker/healthcheck.sh
+
+    - name: prepare database
+      run: make docker-prepare-db
+
+    - name: test cron scripts
+      run: |
+        make docker-run-cron SERVICE=dev-epigraphhub

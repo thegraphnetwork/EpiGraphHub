@@ -135,12 +135,71 @@ Contact us to get involved in the project and join our team on discord
 5. Open a Pull Request
 
 
+<!-- LICENSE -->
+## Development
+
+To create a new environment for EpiGraphHub, you can use it using
+conda or docker.
+
+Also, ensure you have the `.env` file with the correct configuration.
+You can copy its structure from `.env.tpl`.
+
+### Conda
+
+If you don't have **conda** installed, you can install it from
+[here](https://github.com/mamba-org/mamba#micromamba). Micromamba 
+is a miniconda version with mamba, a powerful installer that is much
+faster than the conda installer.
+
+Create your new environtment running the following command:
+
+```bash
+$ mamba env create -n conda/prod.yaml
+```
+
+To activate your new environment with all the packages installed, run:
+
+```bash
+$ conda activate epigraphhub
+```
+
+### Docker
+
+The project provides a **docker-compose** file with one service for production
+and the other two services for development. Also, there is a **Makefile**
+that helps to manage the docker services.
+
+NOTE: The following instructions are focused on development, but could be also used
+for production with small changes.
+
+First, let's pull and build the images:
+
+```bash
+$ make docker-build
+```
+
+Start the services:
+
+```bash
+$ docker-up SERVICES=dev-epigraphhub
+```
+
+Before moving forward, check if the services are working properly:
+
+```bash
+$ ./docker/healthcheck.sh dev-epigraphhub
+```
+
+Now, prepare the development database:
+
+```bash
+$ make docker-prepare-db
+```
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
 
 
 <!-- CONTACT -->
