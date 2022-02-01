@@ -15,6 +15,7 @@ Welcome to EpiGraphHub's Documentation!
    Data Transformation and Harmonization<harmonization>
    Data Storage<datastorage>
    Data Querying, Analysis, and Visualizations<dataanalysis>
+   Building Hub Apps<hubapps>
 
 
 
