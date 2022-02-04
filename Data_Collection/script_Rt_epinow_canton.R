@@ -4,6 +4,7 @@ library(pacman)
 
 p_load(char = c("tidyverse",
                 "RPostgreSQL",
+                "dotenv",
                 "EpiNow2",
                 "EpiEstim",
                 "lubridate",
@@ -11,26 +12,28 @@ p_load(char = c("tidyverse",
                 "janitor",
                 "linelist"))
 
+
 # Create a SSH tunnel to connect to the database ------------------------
 # Type the following in your PowerShell
 # ssh -f epigraph@epigraphhub.org -L 5432:localhost:5432 -NC
 
 
 ### Connecting to the database and transferring data ------------------------
+load_dot_env(file = ".env")
+
 con <- dbConnect(
   PostgreSQL(),
-  host = 'localhost',
-  port = 5432,
-  user = 'epigraph',
-  password = 'epigraph',
-  dbname = "epigraphhub"
+  host = Sys.getenv("POSTGRES_HOST"),
+  port = Sys.getenv("POSTGRES_PORT"),
+  user = Sys.getenv("POSTGRES_USER"),
+  password = Sys.getenv("POSTGRES_PASSWORD"),
+  dbname = Sys.getenv("POSTGRES_DB")
   )
 
 
 ### Querying FOPH cases database ------------------------------
-df <- dbGetQuery(con, "SELECT datum, \"geoRegion\", entries FROM switzerland.foph_cases")
-
-df <- df %>% 
+df <- dbGetQuery(con, "SELECT datum, \"geoRegion\", entries FROM switzerland.foph_cases") %>% 
+  # changing variable class to 'date'
   mutate(datum = as.Date(datum)) %>% 
   as_tibble()
 
@@ -38,12 +41,12 @@ df <- df %>%
 ### Important definitions ------------------------------
 
 # Defining canton of interest
-unique(df$geoRegion)
+# unique(df$geoRegion) # chose between one canton for individual analysis
 
-my_canton <- "CH"
+# my_canton <- "CH"
 
 
-# Defining period of interest (default to last 4 weeks of data)
+# Defining period of interest (default to last 14 days of data)
 interval <- 14
 
 
@@ -61,61 +64,74 @@ incubation_period <- get_incubation_period(disease = "SARS-CoV-2", source = "lau
 # Period of analysis
 my_period <- max(df$datum) - interval
 
-# Subsetting linelist to my_canton
-reported_cases <- df %>% 
-  filter(geoRegion == my_canton,
-         datum >= my_period) %>% 
-  group_by(datum) %>% 
+# Subsetting linelist to my_canton for individual analysis
+# reported_cases <- df %>% 
+#   filter(geoRegion == my_canton,
+#          datum >= my_period) %>% 
+#   group_by(datum) %>% 
+#   summarise(entries = sum(entries, na.rm = TRUE)) %>% 
+#   rename(date = datum,
+#          confirm = entries)
+
+# For regional analysis, data must be aggregated by day and canton
+reported_regional_cases <- df %>% 
+  filter(datum >= my_period) %>% 
+  group_by(datum, geoRegion) %>% 
   summarise(entries = sum(entries, na.rm = TRUE)) %>% 
-  complete(datum = seq.Date(my_period, max(df$datum), by = "day")) %>% 
-  select(datum, entries) %>% 
   rename(date = datum,
-         confirm = entries)
+         confirm = entries,
+         region = geoRegion)
 
 
-### Running model (it may take a while) ------------------------------
-estimates <- epinow(reported_cases = reported_cases, 
-                    generation_time = generation_time,
-                    delays = delay_opts(incubation_period, reporting_delay),
-                    horizon = 7,
-                    rt = rt_opts(prior = list(mean = 2, sd = 0.2)),
-                    stan = stan_opts(samples = 2000, warmup = 250, chains = 4, cores = 8),
-                    verbose = TRUE)
+### Running model for selected canton (it may take a while) ------------------------------
+# estimates <- epinow(reported_cases = reported_cases, 
+#                     generation_time = generation_time,
+#                     delays = delay_opts(incubation_period, reporting_delay),
+#                     horizon = 7,
+#                     rt = rt_opts(prior = list(mean = 2, sd = 0.2)),
+#                     verbose = TRUE)
 
 
-### Summary of estimates ------------------------------
-summary(estimates)
+### Running regional model for all cantons (it may take a while) ------------------------------
+estimates_regional <- regional_epinow(reported_cases = reported_regional_cases, 
+                                      generation_time = generation_time,
+                                      delays = delay_opts(incubation_period, reporting_delay),
+                                      horizon = 7,
+                                      rt = rt_opts(prior = list(mean = 2, sd = 0.2)),
+                                      verbose = TRUE)
 
-summary(estimates, type = "parameters", params = "R")
+# initial time: 14:17:07
+# end time: 14:28:38
+# ymd_hms("2022-02-04 14:28:38 -03") - ymd_hms("2022-02-04 14:17:07 -03")
+# Time difference of 11.51667 mins
 
+### Summary of estimates for each canton ------------------------------
+# regional_summary <- estimates_regional$summary$summarised_results$table %>% 
+#   as.data.frame()
 
-### Plotting model output ------------------------------
+### Exporting tables to database ------------------------------
 
-# Reported cases
-plot(estimates$plots$reports) +
-  ggtitle(label = my_canton,
-          subtitle = paste0("Estimates using data from the last ", interval, " days", "\n",
-                            estimates$summary$measure[1], ": ", estimates$summary$estimate[1], "\n",
-                            estimates$summary$measure[2], ": ", estimates$summary$estimate[2]))
+# Exporting Rt
+regional_rt <- estimates_regional$summary$summarised_measures$rt %>% 
+  as.data.frame()
 
-# Rt
-plot(estimates$plots$R) +
-  ggtitle(label = my_canton,
-          subtitle = paste0("Estimates using data from the last ", interval, " days", "\n",
-                            estimates$summary$measure[2], ": ", estimates$summary$estimate[2], "\n",
-                            estimates$summary$measure[3], ": ", estimates$summary$estimate[3]))
+dbWriteTable(con, c(schema = 'switzerland', table = 'epinow_rt'), value = regional_rt, overwrite = TRUE)
 
+# Exporting Growth Rate
+regional_growth_rate <- estimates_regional$summary$summarised_measures$growth_rate %>% 
+  as.data.frame()
 
+dbWriteTable(con, c(schema = 'switzerland', table = 'epinow_growth_rate'), value = regional_growth_rate, overwrite = TRUE)
 
-# Next: compare to FOPH estimates?
+# Exporting Cases by Infection Date
+regional_cases_infection <- estimates_regional$summary$summarised_measures$cases_by_infection %>% 
+  as.data.frame()
 
-df_rt <- dbGetQuery(con, "SELECT date, \"geoRegion\", \"median_R_mean\" 
-                    FROM switzerland.foph_re 
-                    WHERE \"geoRegion\" = 'CH' AND date >= '2021-12-13' 
-                    ORDER BY date ASC") 
+dbWriteTable(con, c(schema = 'switzerland', table = 'epinow_cases_infection'), value = regional_cases_infection, overwrite = TRUE)
 
-df_rt %>% 
-  left_join(summary(estimates, type = "parameters", params = "R") %>% 
-              as_tibble() %>% 
-              select(date, type, median))
+# Exporting Cases by Reporting Date
+regional_cases_report <- estimates_regional$summary$summarised_measures$cases_by_report %>% 
+  as.data.frame()
+
+dbWriteTable(con, c(schema = 'switzerland', table = 'epinow_cases_report'), value = regional_cases_report, overwrite = TRUE)
 
