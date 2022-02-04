@@ -258,6 +258,7 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+.DS_Store
 
 # Rope project settings
 .ropeproject
@@ -284,3 +285,4 @@ cython_debug/
 # Pycharm IDE settings
 .idea/
 .Rproj.user
+
