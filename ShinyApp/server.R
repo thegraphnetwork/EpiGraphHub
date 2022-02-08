@@ -6,26 +6,26 @@ shinyServer(function(input, output, session) {
   output$select_country <- renderUI({
     selectInput("selected_country",
                 label = "Select a country:",
-                choices = c("Senegal", "Burkina Faso"), #countries_list,
-                selected = "Senegal") #countries_list[1]
+                choices = countries_list,
+                selected = countries_list[1])
   })
   
   output$select_region <- renderUI({
     selectInput("selected_region",
                 label = "Select a region:",
-                choices = c("Central Africa", "Eastern Africa",  "Northern Africa", "Southern Africa", "Western Africa"),
-                selected = "Central Africa")
+                choices = regions_list,
+                selected = regions_list[1])
   })
   
-  output$select_date <- renderUI({
-    dateRangeInput("selected_dates", "Date range:",
-                   start  = min(df_country$Reporting_Date),
-                   end    = max(df_country$Reporting_Date),
-                   min    = min(df_country$Reporting_Date),
-                   max    = max(df_country$Reporting_Date),
-                   format = "dd/mm/yy",
-                   separator = " - ")
-  })
+  # output$select_date <- renderUI({
+  #   dateRangeInput("selected_dates", "Date range:",
+  #                  start  = min(df_daily$date),
+  #                  end    = max(df_daily$date),
+  #                  min    = min(df_daily$date),
+  #                  max    = max(df_daily$date),
+  #                  format = "dd/mm/yy",
+  #                  separator = " - ")
+  # })
   
   observeEvent(input$selected_country,{
     
@@ -33,19 +33,32 @@ shinyServer(function(input, output, session) {
       paste0("<b>Country: </b>", input$selected_country)
     })
     
+    # country_selected <- df_daily %>% 
+    #   filter(date >= ymd("2020-02-06") & date <= ymd("2022-02-02")) %>% 
+    #   filter(location == "Algeria")
+    
     country_selected <- reactive({
-      df_country %>% 
-        filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        filter(Country == input$selected_country)
-       })
+      df_daily %>% 
+        # filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+        filter(location == input$selected_country)
+    })
+    
+    iso_code_aux <- reactive({
+      africa_map_final %>%
+        filter(admin %in% input$selected_country) %>%
+        pull()
+    })
+    
+    weekly_country_selected <- reactive({
+      df_weekly_plots %>% 
+        filter(location == input$selected_country)
+    })
     
     date_reactive <- reactive({
       country_selected() %>% 
-        arrange(desc(Reporting_Date)) %>% 
-        distinct(Country, .keep_all = T) %>% 
-        dplyr::select(Reporting_Date) %>% 
-        table() %>% 
-        names()
+        dplyr::select(date) %>% 
+        tail(1) %>% 
+        pull
     })
     
     output$last_update <- renderText({
@@ -60,91 +73,95 @@ shinyServer(function(input, output, session) {
     output$confirmedCases <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          arrange(desc(Reporting_Date)) %>% 
-          distinct(Country, .keep_all = T) %>% 
-          dplyr::select(Cum_cases),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          arrange(desc(date)) %>% 
+          distinct(location, .keep_all = T) %>% 
+          dplyr::select(total_cases) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
     output$newCases <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          group_by(Epiweek) %>% 
-          mutate(NewCases = sum(Cases_this_day ,na.rm = T)) %>% 
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          filter(epiweek == max(epiweek)) %>% 
+          group_by(epiweek) %>% 
+          mutate(NewCases = sum(new_cases ,na.rm = T)) %>% 
           ungroup() %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(NewCases),
+          distinct(epiweek,.keep_all = T) %>% 
+          dplyr::select(NewCases) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," cases this week")
     })
     
     output$Deaths <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          arrange(desc(Reporting_Date)) %>% 
-          distinct(Country, .keep_all = T) %>% 
-          dplyr::select(Cum_deaths),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          arrange(desc(date)) %>% 
+          distinct(location, .keep_all = T) %>% 
+          dplyr::select(total_deaths) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
     output$newDeaths <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          group_by(Epiweek) %>% 
-          mutate(NewDeaths = sum(Deaths_this_day ,na.rm = T)) %>% 
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          filter(epiweek == max(epiweek)) %>% 
+          group_by(epiweek) %>% 
+          mutate(NewDeaths = sum(new_deaths ,na.rm = T)) %>% 
           ungroup() %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(NewDeaths),
+          distinct(epiweek,.keep_all = T) %>% 
+          dplyr::select(NewDeaths) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," deaths this week")
     })
     
     output$CasesPerMillion <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(Cases_per_million),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          filter(epiweek == max(epiweek)) %>% 
+          distinct(epiweek,.keep_all = T) %>% 
+          dplyr::select(total_cases_per_million) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
     output$DeathsPerMillion <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(Deaths_per_million),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+          filter(epiweek == max(epiweek)) %>% 
+          distinct(epiweek,.keep_all = T) %>% 
+          dplyr::select(total_deaths_per_million) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," deaths per million")
     })
     
     growth_rate_tab <- reactive({
-      country_selected() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        dplyr::select(Reporting_Date, Cases_past_week, Epiweek) %>% 
-        group_by(Epiweek) %>% 
-        # take the last day of each epiweek
-        slice(which.max(Reporting_Date)) %>% 
-        ungroup() %>% 
+      weekly_country_selected() %>% 
+        # filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+        dplyr::select(total_cases, epiweek, start_on) %>% 
         # Cases in the past week vs cases two weeks ago
-        mutate(diff_cases = Cases_past_week - lag(Cases_past_week,1), 
-               week_growth = diff_cases/lag(Cases_past_week,1),
+        mutate(diff_cases = total_cases - lag(total_cases,1), 
+               week_growth = diff_cases/lag(total_cases,1),
                week_growth_perc = 100 * week_growth, 
                # formula to convert weekly_growth to daily_growth equivalent
                growth = (((1 + week_growth) ^ (1/7)) - 1), 
-               growth_perc = 100 * growth)
+               growth_perc = 100 * growth) %>% 
+        mutate_if(is.numeric, list(~na_if(., Inf))) %>% 
+        replace(is.na(.), 0)
     })
     
     # plot
     output$ts_growth_rate_tab <- renderPlotly({
-      plot_ly(growth_rate_tab(), x = ~Reporting_Date) %>%
+      plot_ly(growth_rate_tab(), x = ~start_on) %>%
         # ribbons are polygons in the background
-        add_ribbons(x = ~Reporting_Date, ymin = 0, 
+        add_ribbons(x = ~start_on, ymin = 0, 
                     # ymax needs to remove Inf or otherwise plotly will explode to a large ymax
                     ymax = max(growth_rate_tab()$week_growth_perc[growth_rate_tab()$week_growth_perc != Inf], 
                                na.rm = TRUE),
@@ -153,7 +170,7 @@ shinyServer(function(input, output, session) {
                     hoverinfo = "none", # removes the hovering text (it is not needed in here)
                     showlegend = FALSE, # to remove the unneeded trace info 
                     line = list(color = "rgba(0, 0, 0, 0)")) %>% # red for increase in growth rate
-        add_ribbons(x = ~Reporting_Date, ymax = 0, 
+        add_ribbons(x = ~start_on, ymax = 0, 
                     ymin = min(growth_rate_tab()$week_growth_perc[growth_rate_tab()$week_growth_perc != Inf], 
                                na.rm = TRUE),
                     color = I("green"), # green for decrease in growth rate
@@ -167,17 +184,17 @@ shinyServer(function(input, output, session) {
                   mode = "markers+lines", # lines + points
                   color = I("black"),
                   hoverinfo = "text+x",
-                  text = ~paste0("<b>Date of reporting: </b>", Reporting_Date,
-                                 "<br><b>Epidemiological week: </b>", Epiweek,
-                                 "<br><b>Weekly growth rate: </b>", paste0(round(week_growth_perc, 2), "%"))) %>%
+                  text = ~paste0(
+                    "<br><b>Epidemiological week: </b>", epiweek,
+                    "<br><b>Weekly growth rate: </b>", paste0(round(week_growth_perc, 2), "%"))) %>%
         layout(
           title = paste0("<br>Week-on-week growth rate of new COVID-19 cases in ", input$selected_country),
           yaxis = list(
             title = "Average daily growth rate (%)<br>each week"),
           xaxis = list(
-            title = "Date of Reporting",
+            title = "Week of Reporting",
             type = "date",
-            tickformat = "%b<br>%d (%a)",
+            tickformat = "%b<br>%Y",
             rangeslider = list(type = "date")
           )
         )
@@ -185,26 +202,26 @@ shinyServer(function(input, output, session) {
     
     epi_curve_ll <- reactive({
       country_selected() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        dplyr::select(Reporting_Date, Cases_this_day, Deaths_this_day) %>% 
-        mutate(seven_day_case_avg = rollmean(x = Cases_this_day, k = 7, align = "right",  
-                                             fill = na.fill(Cases_this_day, 0)),
-               fourteen_day_case_avg = rollmean(x = Cases_this_day, k = 14, align = "right",  
-                                                fill = na.fill(Cases_this_day, 0)),
-               seven_day_death_avg = rollmean(x = Deaths_this_day, k = 7, align = "right",  
-                                              fill = na.fill(Deaths_this_day, 0)),
-               fourteen_day_death_avg = rollmean(x = Deaths_this_day, k = 14, align = "right",  
-                                                 fill = na.fill(Deaths_this_day, 0)))
+        # filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+        dplyr::select(date, new_cases, new_deaths) %>% 
+        mutate(seven_day_case_avg = rollmean(x = new_cases, k = 7, align = "right",  
+                                             fill = na.fill(new_cases, 0)),
+               fourteen_day_case_avg = rollmean(x = new_cases, k = 14, align = "right",  
+                                                fill = na.fill(new_cases, 0)),
+               seven_day_death_avg = rollmean(x = new_deaths, k = 7, align = "right",  
+                                              fill = na.fill(new_deaths, 0)),
+               fourteen_day_death_avg = rollmean(x = new_deaths, k = 14, align = "right",  
+                                                 fill = na.fill(new_deaths, 0)))
     })
     
     output$ts_epi_curve_ll_confirmed <- renderPlotly({
       epi_curve_ll() %>%
-        plot_ly(x = ~Reporting_Date) %>%
-        add_bars(y = ~Cases_this_day, 
+        plot_ly(x = ~date) %>%
+        add_bars(y = ~new_cases, 
                  colors = mycolors_1,
                  name = "Cases this day", 
                  hoverinfo = "text+x",
-                 text = ~paste0("<b>Confirmed cases in ", input$selected_country, ": </b>", Cases_this_day)) %>%
+                 text = ~paste0("<b>Confirmed cases in ", input$selected_country, ": </b>", new_cases)) %>%
         add_trace(y = ~seven_day_case_avg, 
                   name = "7-day rolling avg. cases", 
                   type = "scatter", 
@@ -231,12 +248,12 @@ shinyServer(function(input, output, session) {
     
     output$ts_epi_curve_ll_deaths<- renderPlotly({
       epi_curve_ll() %>%
-        plot_ly(x = ~Reporting_Date) %>%
-        add_bars(y = ~Deaths_this_day, 
+        plot_ly(x = ~date) %>%
+        add_bars(y = ~new_deaths, 
                  colors = mycolors_1,
                  name = "Cases this day", 
                  hoverinfo = "text+x",
-                 text = ~paste0("<b>Deaths in ", input$selected_country, ": </b>", Deaths_this_day)) %>%
+                 text = ~paste0("<b>Deaths in ", input$selected_country, ": </b>", new_deaths)) %>%
         add_trace(y = ~seven_day_death_avg, 
                   name = "7-day rolling avg. cases", 
                   type = "scatter", 
@@ -261,93 +278,93 @@ shinyServer(function(input, output, session) {
         )
     })
     
-    df_age_sex <- reactive({
-      df_LL %>% 
-        filter(Country == input$selected_country) %>%
-        # filtering out individuals with missing sex or age
-        # creating age categories
-        mutate(age_group = cut(as.numeric(Age), 
-                               breaks = c(0, 5, 9, 19, 29, 39, 49, 59, 69, 79, Inf),
-                               labels = c("< 5", "5-9", "10-19", "20-29", "30-39", "40-49",
-                                          "50-59", "60-69", "70-79", "> 80"), 
-                               right = TRUE)) %>% 
-        # for each age group and sex, sum the number of cases and the number of deaths
-        filter(!is.na(age_group)) %>%
-        filter(!is.na(Sex)) %>%
-        group_by(age_group, Sex) %>%
-        summarise(
-          confirmed = sum(FinalEpiClassification == "Confirmed", na.rm = TRUE),
-          deaths = sum(FinalOutcome == "Dead", na.rm = TRUE)
-        ) %>%
-        ungroup()
-    })
+    # df_age_sex <- reactive({
+    #   df_LL %>% 
+    #     filter(location == input$selected_country) %>%
+    #     # filtering out individuals with missing sex or age
+    #     # creating age categories
+    #     mutate(age_group = cut(as.numeric(Age), 
+    #                            breaks = c(0, 5, 9, 19, 29, 39, 49, 59, 69, 79, Inf),
+    #                            labels = c("< 5", "5-9", "10-19", "20-29", "30-39", "40-49",
+    #                                       "50-59", "60-69", "70-79", "> 80"), 
+    #                            right = TRUE)) %>% 
+    #     # for each age group and sex, sum the number of cases and the number of deaths
+    #     filter(!is.na(age_group)) %>%
+    #     filter(!is.na(Sex)) %>%
+    #     group_by(age_group, Sex) %>%
+    #     summarise(
+    #       confirmed = sum(FinalEpiClassification == "Confirmed", na.rm = TRUE),
+    #       deaths = sum(FinalOutcome == "Dead", na.rm = TRUE)
+    #     ) %>%
+    #     ungroup()
+    # })
     
     
     # long format for the stacked bar chart
-    df_age_sex_long <-  reactive({
-      df_age_sex() %>% 
-        # subtract out deaths from reported count to get CASES ALONE 
-        # needed since we're going to build a STACKED bar chart.
-        mutate(
-          `Confirmed cases` = confirmed - deaths,
-          Deaths = deaths,
-          Sex = recode_factor(Sex,
-                              "M" = "Male",
-                              "F" = "Female")) %>% 
-        pivot_longer(names_to = "classification", cols = c(
-          `Confirmed cases`, 
-          Deaths)) %>% 
-        mutate(classification = fct_relevel(classification, c( 
-          "Confirmed cases", 
-          "Deaths")),
-          # in order for the pyramid to be correctly displayed, one of the groups should be negative
-          # we will hack the axis later to make it the absolute number
-          value = ifelse(Sex == "Female", value * (-1), value),
-          # value to be passed to hoverinfo in plotly
-          text_value = paste0("<b>", classification, ": </b>", abs(value)),
-          # creating a variable with the absolute number of reported cases
-          color_info = paste0(Sex, " ", classification),
-          color_info = fct_relevel(color_info, c("Female Confirmed cases", "Female Deaths",
-                                                 "Male Confirmed cases","Male Deaths")),
-          # calculating CFR
-          CFR_confirmed = round(deaths / confirmed * 100, 2))
-    })
+    # df_age_sex_long <-  reactive({
+    #   df_age_sex() %>% 
+    #     # subtract out deaths from reported count to get CASES ALONE 
+    #     # needed since we're going to build a STACKED bar chart.
+    #     mutate(
+    #       `Confirmed cases` = confirmed - deaths,
+    #       Deaths = deaths,
+    #       Sex = recode_factor(Sex,
+    #                           "M" = "Male",
+    #                           "F" = "Female")) %>% 
+    #     pivot_longer(names_to = "classification", cols = c(
+    #       `Confirmed cases`, 
+    #       Deaths)) %>% 
+    #     mutate(classification = fct_relevel(classification, c( 
+    #       "Confirmed cases", 
+    #       "Deaths")),
+    #       # in order for the pyramid to be correctly displayed, one of the groups should be negative
+    #       # we will hack the axis later to make it the absolute number
+    #       value = ifelse(Sex == "Female", value * (-1), value),
+    #       # value to be passed to hoverinfo in plotly
+    #       text_value = paste0("<b>", classification, ": </b>", abs(value)),
+    #       # creating a variable with the absolute number of reported cases
+    #       color_info = paste0(Sex, " ", classification),
+    #       color_info = fct_relevel(color_info, c("Female Confirmed cases", "Female Deaths",
+    #                                              "Male Confirmed cases","Male Deaths")),
+    #       # calculating CFR
+    #       CFR_confirmed = round(deaths / confirmed * 100, 2))
+    # })
     
     # age-sex pyramid plot of confirmed cases
-    output$piramid_age_sex <- renderPlotly({
-      df_age_sex_long() %>%
-        plot_ly(x = ~value, # inverting x axis
-                y = ~age_group, # inverting x axis
-                color = ~color_info,
-                colors = c("Female Confirmed cases" = "#66C2A5",
-                           "Female Deaths" = "red",
-                           "Male Confirmed cases" = "#8DA0CB",
-                           "Male Deaths" = "red"),
-                customdata = ~text_value,
-                hoverinfo = "text",
-                text = ~paste0("<b>Sex: </b>", Sex,
-                               "<br><b>Age group: </b>", age_group,
-                               "<br>", text_value,
-                               "<br><b>CFR (based on confirmed cases): </b>", CFR_confirmed, "%")) %>%
-        # changing orientations to horizontal
-        add_bars(orientation = "h") %>%
-        layout(bargap = 0.1,
-               # needed to make bars correctly placed
-               barmode = "relative",
-               title = paste0("Age-sex distribution of all COVID-19 confirmed cases in "),
-               yaxis = list(title = "Age group"),
-               xaxis = list(title = "COVID-19 confirmed cases and deaths")
-               # legend = list(orientation = "h",   # show entries horizontally
-               #               xanchor = "center",  # use center of legend as anchor
-               #               x = 0.5)
-        )
-    })
+    # output$piramid_age_sex <- renderPlotly({
+    #   df_age_sex_long() %>%
+    #     plot_ly(x = ~value, # inverting x axis
+    #             y = ~age_group, # inverting x axis
+    #             color = ~color_info,
+    #             colors = c("Female Confirmed cases" = "#66C2A5",
+    #                        "Female Deaths" = "red",
+    #                        "Male Confirmed cases" = "#8DA0CB",
+    #                        "Male Deaths" = "red"),
+    #             customdata = ~text_value,
+    #             hoverinfo = "text",
+    #             text = ~paste0("<b>Sex: </b>", Sex,
+    #                            "<br><b>Age group: </b>", age_group,
+    #                            "<br>", text_value,
+    #                            "<br><b>CFR (based on confirmed cases): </b>", CFR_confirmed, "%")) %>%
+    #     # changing orientations to horizontal
+    #     add_bars(orientation = "h") %>%
+    #     layout(bargap = 0.1,
+    #            # needed to make bars correctly placed
+    #            barmode = "relative",
+    #            title = paste0("Age-sex distribution of all COVID-19 confirmed cases in "),
+    #            yaxis = list(title = "Age group"),
+    #            xaxis = list(title = "COVID-19 confirmed cases and deaths")
+    #            # legend = list(orientation = "h",   # show entries horizontally
+    #            #               xanchor = "center",  # use center of legend as anchor
+    #            #               x = 0.5)
+    #     )
+    # })
     
   })
   
   # Cases per Million map
-  output$map_cases_per_million <- renderLeaflet({
-    africa_map %>% 
+  output$map_total_cases_per_million <- renderLeaflet({
+    africa_map_final %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -357,7 +374,7 @@ shinyServer(function(input, output, session) {
                   highlightOptions = highlightOptions(color = "white", weight = 2,
                                                       bringToFront = TRUE),
                   popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
-                                  "<b>", "Region: ", "</b>", Region, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
                                   "<b>", "Cases: ", "</b>", format(Cases,
                                                                    decimal.mark = ".",
                                                                    big.mark = ","), "<br>",
@@ -385,8 +402,8 @@ shinyServer(function(input, output, session) {
   })
   
   # Deaths per Million map
-  output$map_deaths_per_million <- renderLeaflet({
-    africa_map %>% 
+  output$map_total_deaths_per_million <- renderLeaflet({
+    africa_map_final %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -396,7 +413,7 @@ shinyServer(function(input, output, session) {
                   highlightOptions = highlightOptions(color = "white", weight = 2,
                                                       bringToFront = TRUE),
                   popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
-                                  "<b>", "Region: ", "</b>", Region, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
                                   "<b>", "Cases: ", "</b>", format(Cases,
                                                                    decimal.mark = ".",
                                                                    big.mark = ","), "<br>",
@@ -425,7 +442,7 @@ shinyServer(function(input, output, session) {
   
   # Cumulative cases map
   output$map_cumulative_cases <- renderLeaflet({
-    africa_map %>% 
+    africa_map_final %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -435,7 +452,7 @@ shinyServer(function(input, output, session) {
                   highlightOptions = highlightOptions(color = "white", weight = 2,
                                                       bringToFront = TRUE),
                   popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
-                                  "<b>", "Region: ", "</b>", Region, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
                                   "<b>", "Cases: ", "</b>", format(Cases,
                                                                    decimal.mark = ".",
                                                                    big.mark = ","), "<br>",
@@ -464,7 +481,7 @@ shinyServer(function(input, output, session) {
   
   # Cumulative deaths map
   output$map_cumulative_deaths <- renderLeaflet({
-    africa_map %>% 
+    africa_map_final %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
@@ -474,7 +491,7 @@ shinyServer(function(input, output, session) {
                   highlightOptions = highlightOptions(color = "white", weight = 2,
                                                       bringToFront = TRUE),
                   popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
-                                  "<b>", "Region: ", "</b>", Region, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
                                   "<b>", "Cases: ", "</b>", format(Cases,
                                                                    decimal.mark = ".",
                                                                    big.mark = ","), "<br>",
@@ -504,273 +521,272 @@ shinyServer(function(input, output, session) {
   # Risk maps
   
   # Mortality Risk Index (raw and not including distance from medical facility)
-  output$map_mri_lvl1_1 <- renderLeaflet({
-    df_risk_MRI_1 %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.MRI_RIDX(MRI_RIDX_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Mortality Risk Index (raw and not including<br> distance from medical facility): </b>", round(MRI_RIDX, 2))) %>%  
-      addLegend("bottomright", 
-                pal = pallete.MRI_RIDX,
-                values = ~MRI_RIDX_quintile,
-                title = ~paste0("Mortality Risk Index <br> (raw and not including<br> distance from medical facility)"),
-                opacity = 1)
-  })
+  # output$map_mri_lvl1_1 <- renderLeaflet({
+  #   df_risk_MRI_1 %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron) %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.MRI_RIDX(MRI_RIDX_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Mortality Risk Index (raw and not including<br> distance from medical facility): </b>", round(MRI_RIDX, 2))) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.MRI_RIDX,
+  #               values = ~MRI_RIDX_quintile,
+  #               title = ~paste0("Mortality Risk Index <br> (raw and not including<br> distance from medical facility)"),
+  #               opacity = 1)
+  # })
   
   # Mortality Risk Index (raw and including distance from medical facility)
-  output$map_mri_lvl1_2 <- renderLeaflet({
-    df_risk_MRI_1 %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.MRI_RIDX2(MRI_RIDX2_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Mortality Risk Index (raw and including<br> distance from medical facility): </b>", round(MRI_RIDX2, 2))) %>%  
-      addLegend("bottomright", 
-                pal = pallete.MRI_RIDX2,
-                values = ~MRI_RIDX2_quintile,
-                title = ~paste0("Mortality Risk Index <br> (raw and including<br> distance from medical facility)"),
-                opacity = 1)
-  })
+  # output$map_mri_lvl1_2 <- renderLeaflet({
+  #   df_risk_MRI_1 %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron) %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.MRI_RIDX2(MRI_RIDX2_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Mortality Risk Index (raw and including<br> distance from medical facility): </b>", round(MRI_RIDX2, 2))) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.MRI_RIDX2,
+  #               values = ~MRI_RIDX2_quintile,
+  #               title = ~paste0("Mortality Risk Index <br> (raw and including<br> distance from medical facility)"),
+  #               opacity = 1)
+  # })
   
   # Normalized Mortality Risk Index
-  output$map_mri_lvl1_3 <- renderLeaflet({
-    df_risk_MRI_1 %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.MRI_IDX(MRI_IDX_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Mortality Risk Index (standardized and including<br> distance from medical facility): </b>",
-                                  round(MRI_IDX, 2))) %>%  
-      addLegend("bottomright", 
-                pal = pallete.MRI_IDX,
-                values = ~MRI_IDX_quintile,
-                title = ~paste0("Mortality Risk Index <br> (standardized and including<br> distance from medical facility)"),
-                opacity = 1)
-  })
+  # output$map_mri_lvl1_3 <- renderLeaflet({
+  #   df_risk_MRI_1 %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron) %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.MRI_IDX(MRI_IDX_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Mortality Risk Index (standardized and including<br> distance from medical facility): </b>",
+  #                                 round(MRI_IDX, 2))) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.MRI_IDX,
+  #               values = ~MRI_IDX_quintile,
+  #               title = ~paste0("Mortality Risk Index <br> (standardized and including<br> distance from medical facility)"),
+  #               opacity = 1)
+  # })
   
   # Risk Index (raw and not including distance from medical facility)
-  output$bar_mri_lvl1_1 <- renderPlotly({
-    df_risk_MRI_1 %>% 
-      plot_ly(x = ~reorder(NAME_1, -MRI_RIDX)) %>%
-      add_bars(y = ~MRI_RIDX, 
-               color = ~NAME_1,
-               colors = mycolors_2,
-               hoverinfo = "text+x", 
-               # presenting reported cases info
-               text = ~paste0("<b>Region: </b>", NAME_1,
-                              "<br><b>Mortality Risk Index (raw): </b>", round(MRI_RIDX, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Mortality Risk Index"))
-  })
+  # output$bar_mri_lvl1_1 <- renderPlotly({
+  #   df_risk_MRI_1 %>% 
+  #     plot_ly(x = ~reorder(NAME_1, -MRI_RIDX)) %>%
+  #     add_bars(y = ~MRI_RIDX, 
+  #              color = ~NAME_1,
+  #              colors = mycolors_2,
+  #              hoverinfo = "text+x", 
+  #              # presenting reported cases info
+  #              text = ~paste0("<b>Region: </b>", NAME_1,
+  #                             "<br><b>Mortality Risk Index (raw): </b>", round(MRI_RIDX, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Mortality Risk Index"))
+  # })
   
   # Risk Index (raw and including distance from medical facility)
-  output$bar_mri_lvl1_2 <- renderPlotly({
-    df_risk_MRI_1 %>% 
-      plot_ly(x = ~reorder(NAME_1, -MRI_RIDX2)) %>%
-      add_bars(y = ~MRI_RIDX2, 
-               color = ~NAME_1,
-               colors = mycolors_2,
-               hoverinfo = "text+x", 
-               # presenting reported cases info
-               text = ~paste0("<b>Region: </b>", NAME_1,
-                              "<br><b>Mortality Risk Index</b>(raw and including distance from medical facility): </b>", 
-                              round(MRI_RIDX2, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Mortality Risk Index"))
-  })
+  # output$bar_mri_lvl1_2 <- renderPlotly({
+  #   df_risk_MRI_1 %>% 
+  #     plot_ly(x = ~reorder(NAME_1, -MRI_RIDX2)) %>%
+  #     add_bars(y = ~MRI_RIDX2, 
+  #              color = ~NAME_1,
+  #              colors = mycolors_2,
+  #              hoverinfo = "text+x", 
+  #              # presenting reported cases info
+  #              text = ~paste0("<b>Region: </b>", NAME_1,
+  #                             "<br><b>Mortality Risk Index</b>(raw and including distance from medical facility): </b>", 
+  #                             round(MRI_RIDX2, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Mortality Risk Index"))
+  # })
   
   # Standardized Risk Index
-  output$bar_mri_lvl1_3 <- renderPlotly({
-    df_risk_MRI_1 %>% 
-      plot_ly(x = ~reorder(NAME_1, -MRI_IDX)) %>%
-      add_bars(y = ~MRI_IDX, 
-               color = ~NAME_1,
-               colors = mycolors_2,
-               hoverinfo = "text+x", 
-               # presenting reported cases info
-               text = ~paste0("<b>Region: </b>", NAME_1,
-                              "<br><b>Mortality Risk Index<br>(standardized and including distance from medical facility): </b>", 
-                              round(MRI_IDX, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Mortality Risk Index"))
-  })
+  # output$bar_mri_lvl1_3 <- renderPlotly({
+  #   df_risk_MRI_1 %>% 
+  #     plot_ly(x = ~reorder(NAME_1, -MRI_IDX)) %>%
+  #     add_bars(y = ~MRI_IDX, 
+  #              color = ~NAME_1,
+  #              colors = mycolors_2,
+  #              hoverinfo = "text+x", 
+  #              # presenting reported cases info
+  #              text = ~paste0("<b>Region: </b>", NAME_1,
+  #                             "<br><b>Mortality Risk Index<br>(standardized and including distance from medical facility): </b>", 
+  #                             round(MRI_IDX, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Mortality Risk Index"))
+  # })
   
   # Transmission Risk Index (raw and not including distance from medical facility)
-  output$map_tri_lvl1_1 <- renderLeaflet({
-    # Transmission Risk Index (raw)
-    df_risk_TRI_1 %>%
-      # filtering for the last date (could be replaced by a slider in shiny)
-      filter(report_date == max(report_date, na.rm = TRUE)) %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
-      addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.TRI_RIDX(TRI_RIDX_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Transmission Risk Index (raw): </b>", round(TRI_RIDX, 2))) %>%  
-      addLayersControl(
-        baseGroups = c("Map", "Satellite"),
-        options = layersControlOptions(collapsed = TRUE)
-      ) %>%  
-      addLegend("bottomright", 
-                pal = pallete.TRI_RIDX,
-                values = ~TRI_RIDX_quintile,
-                title = ~paste0("Transmission Risk Index<br>(raw)"),
-                opacity = 1)
-  })
+  # output$map_tri_lvl1_1 <- renderLeaflet({
+  #   # Transmission Risk Index (raw)
+  #   df_risk_TRI_1 %>%
+  #     # filtering for the last date (could be replaced by a slider in shiny)
+  #     filter(report_date == max(report_date, na.rm = TRUE)) %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
+  #     addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.TRI_RIDX(TRI_RIDX_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Transmission Risk Index (raw): </b>", round(TRI_RIDX, 2))) %>%  
+  #     addLayersControl(
+  #       baseGroups = c("Map", "Satellite"),
+  #       options = layersControlOptions(collapsed = TRUE)
+  #     ) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.TRI_RIDX,
+  #               values = ~TRI_RIDX_quintile,
+  #               title = ~paste0("Transmission Risk Index<br>(raw)"),
+  #               opacity = 1)
+  # })
   
   
   
   # Transmission Risk Index (raw and including distance from medical facility)
-  output$map_tri_lvl1_2 <- renderLeaflet({
-    # Transmission Risk Index Normalized between 0 and 100 by the maximum raw value for each day)
-    df_risk_TRI_1 %>%
-      # filtering for the last date (could be replaced by a slider in shiny)
-      filter(report_date == max(report_date, na.rm = TRUE)) %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
-      addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.TRI_IDX(TRI_IDX_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Transmission Risk Index (standardized by day): </b>", round(TRI_IDX, 2))) %>%  
-      addLayersControl(
-        baseGroups = c("Map", "Satellite"),
-        options = layersControlOptions(collapsed = TRUE)
-      ) %>%  
-      addLegend("bottomright", 
-                pal = pallete.TRI_IDX,
-                values = ~TRI_IDX_quintile,
-                title = ~paste0("Transmission Risk Index (standardized by day)"),
-                opacity = 1)
-  })
+  # output$map_tri_lvl1_2 <- renderLeaflet({
+  #   # Transmission Risk Index Normalized between 0 and 100 by the maximum raw value for each day)
+  #   df_risk_TRI_1 %>%
+  #     # filtering for the last date (could be replaced by a slider in shiny)
+  #     filter(report_date == max(report_date, na.rm = TRUE)) %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
+  #     addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.TRI_IDX(TRI_IDX_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Transmission Risk Index (standardized by day): </b>", round(TRI_IDX, 2))) %>%  
+  #     addLayersControl(
+  #       baseGroups = c("Map", "Satellite"),
+  #       options = layersControlOptions(collapsed = TRUE)
+  #     ) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.TRI_IDX,
+  #               values = ~TRI_IDX_quintile,
+  #               title = ~paste0("Transmission Risk Index (standardized by day)"),
+  #               opacity = 1)
+  # })
   
   # Normalized Transmission Risk Index
-  output$map_tri_lvl1_3 <- renderLeaflet({
-    # Transmission Risk Index Normalized between 0 and 100 by the maximum raw value for each day
-    # but exluding outliers)
-    df_risk_TRI_1 %>%
-      # filtering for the last date (could be replaced by a slider in shiny)
-      filter(report_date == max(report_date, na.rm = TRUE)) %>%
-      leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
-      addTiles() %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
-      addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
-                  opacity = 1.0, fillOpacity = 0.75,
-                  fillColor = ~pallete.TRI_IDX2(TRI_IDX2_quintile),
-                  highlightOptions = highlightOptions(color = "white", weight = 2,
-                                                      bringToFront = TRUE),
-                  popup = ~paste0("<b>Country: </b>", NAME_0,
-                                  "<br><b>Department: </b>", NAME_1,
-                                  "<br><b>Transmission Risk Index (standardized by day and without outliers): </b>",
-                                  round(TRI_IDX2, 2))) %>%  
-      addLayersControl(
-        baseGroups = c("Map", "Satellite"),
-        options = layersControlOptions(collapsed = TRUE)
-      ) %>%  
-      addLegend("bottomright", 
-                pal = pallete.TRI_IDX2,
-                values = ~TRI_IDX2_quintile,
-                title = ~paste0("Transmission Risk Index<br>(standardized by day and<br>without outliers)"),
-                opacity = 1)
-  })
+  # output$map_tri_lvl1_3 <- renderLeaflet({
+  #   # Transmission Risk Index Normalized between 0 and 100 by the maximum raw value for each day
+  #   # but exluding outliers)
+  #   df_risk_TRI_1 %>%
+  #     # filtering for the last date (could be replaced by a slider in shiny)
+  #     filter(report_date == max(report_date, na.rm = TRUE)) %>%
+  #     leaflet(options = leafletOptions(minZoom = 7, maxZoom = 7)) %>%
+  #     addTiles() %>%
+  #     addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
+  #     addProviderTiles(providers$HERE.satelliteDay, group = "Satellite") %>%
+  #     addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+  #                 opacity = 1.0, fillOpacity = 0.75,
+  #                 fillColor = ~pallete.TRI_IDX2(TRI_IDX2_quintile),
+  #                 highlightOptions = highlightOptions(color = "white", weight = 2,
+  #                                                     bringToFront = TRUE),
+  #                 popup = ~paste0("<b>Country: </b>", NAME_0,
+  #                                 "<br><b>Department: </b>", NAME_1,
+  #                                 "<br><b>Transmission Risk Index (standardized by day and without outliers): </b>",
+  #                                 round(TRI_IDX2, 2))) %>%  
+  #     addLayersControl(
+  #       baseGroups = c("Map", "Satellite"),
+  #       options = layersControlOptions(collapsed = TRUE)
+  #     ) %>%  
+  #     addLegend("bottomright", 
+  #               pal = pallete.TRI_IDX2,
+  #               values = ~TRI_IDX2_quintile,
+  #               title = ~paste0("Transmission Risk Index<br>(standardized by day and<br>without outliers)"),
+  #               opacity = 1)
+  # })
   
   # Risk Index (raw and not including distance from medical facility)
-  output$bar_tri_lvl1_1 <- renderPlotly({
-    # interactive time series plot: Transmission Risk Index (raw)
-    df_risk_TRI_1 %>% 
-      plot_ly(x = ~report_date) %>%
-      add_lines(y = ~TRI_RIDX, 
-                color = ~NAME_1,
-                colors = mycolors_2,
-                hoverinfo = "text+x", 
-                # presenting reported cases info
-                text = ~paste0("<b>Region: </b>", NAME_1,
-                               "<br><b>Transmission Risk Index (raw): </b>", round(TRI_RIDX, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Transmission Risk Index"),
-             xaxis = list(title = "Date of Reporting",
-                          type = "date",
-                          tickformat = "%b %d (%a)",
-                          rangeslider = list(type = "date")
-             )
-      )
-  })
+  # output$bar_tri_lvl1_1 <- renderPlotly({
+  #   # interactive time series plot: Transmission Risk Index (raw)
+  #   df_risk_TRI_1 %>% 
+  #     plot_ly(x = ~report_date) %>%
+  #     add_lines(y = ~TRI_RIDX, 
+  #               color = ~NAME_1,
+  #               colors = mycolors_2,
+  #               hoverinfo = "text+x", 
+  #               # presenting reported cases info
+  #               text = ~paste0("<b>Region: </b>", NAME_1,
+  #                              "<br><b>Transmission Risk Index (raw): </b>", round(TRI_RIDX, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Transmission Risk Index"),
+  #            xaxis = list(title = "Date of Reporting",
+  #                         type = "date",
+  #                         tickformat = "%b %d (%a)",
+  #                         rangeslider = list(type = "date")
+  #            )
+  #     )
+  # })
   
   # Risk Index (raw and including distance from medical facility)
-  output$bar_tri_lvl1_2 <- renderPlotly({
-    # interactive time series plot: Transmission Risk Index (standardized by day)
-    df_risk_TRI_1 %>% 
-      plot_ly(x = ~report_date) %>%
-      add_lines(y = ~TRI_IDX, 
-                color = ~NAME_1,
-                colors = mycolors_2,
-                hoverinfo = "text+x", 
-                # presenting reported cases info
-                text = ~paste0("<b>Region: </b>", NAME_1,
-                               "<br><b>Transmission Risk Index (standardized by day): </b>", round(TRI_IDX, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Transmission Risk Index"),
-             xaxis = list(title = "Date of Reporting",
-                          type = "date",
-                          tickformat = "%b %d (%a)",
-                          rangeslider = list(type = "date")
-             )
-      )
-  })
+  # output$bar_tri_lvl1_2 <- renderPlotly({
+  #   # interactive time series plot: Transmission Risk Index (standardized by day)
+  #   df_risk_TRI_1 %>% 
+  #     plot_ly(x = ~report_date) %>%
+  #     add_lines(y = ~TRI_IDX, 
+  #               color = ~NAME_1,
+  #               colors = mycolors_2,
+  #               hoverinfo = "text+x", 
+  #               # presenting reported cases info
+  #               text = ~paste0("<b>Region: </b>", NAME_1,
+  #                              "<br><b>Transmission Risk Index (standardized by day): </b>", round(TRI_IDX, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Transmission Risk Index"),
+  #            xaxis = list(title = "Date of Reporting",
+  #                         type = "date",
+  #                         tickformat = "%b %d (%a)",
+  #                         rangeslider = list(type = "date")
+  #            )
+  #     )
+  # })
   
   # Standardized Risk Index
-  output$bar_tri_lvl1_3 <- renderPlotly({
-    # interactive time series plot: Transmission Risk Index (standardized by day)
-    df_risk_TRI_1 %>% 
-      plot_ly(x = ~report_date) %>%
-      add_lines(y = ~TRI_IDX2, 
-                color = ~NAME_1,
-                colors = mycolors_2,
-                hoverinfo = "text+x", 
-                # presenting reported cases info
-                text = ~paste0("<b>Region: </b>", NAME_1,
-                               "<br><b>Transmission Risk Index <br> (standardized by day and without outliers): </b>", round(TRI_IDX2, 2))) %>%
-      layout(hovermode = "unified x",
-             yaxis = list(title = "Transmission Risk Index"),
-             xaxis = list(title = "Date of Reporting",
-                          type = "date",
-                          tickformat = "%b %d (%a)",
-                          rangeslider = list(type = "date")
-             )
-      )
-  })
-  
+  # output$bar_tri_lvl1_3 <- renderPlotly({
+  #   # interactive time series plot: Transmission Risk Index (standardized by day)
+  #   df_risk_TRI_1 %>% 
+  #     plot_ly(x = ~report_date) %>%
+  #     add_lines(y = ~TRI_IDX2, 
+  #               color = ~NAME_1,
+  #               colors = mycolors_2,
+  #               hoverinfo = "text+x", 
+  #               # presenting reported cases info
+  #               text = ~paste0("<b>Region: </b>", NAME_1,
+  #                              "<br><b>Transmission Risk Index <br> (standardized by day and without outliers): </b>", round(TRI_IDX2, 2))) %>%
+  #     layout(hovermode = "unified x",
+  #            yaxis = list(title = "Transmission Risk Index"),
+  #            xaxis = list(title = "Date of Reporting",
+  #                         type = "date",
+  #                         tickformat = "%b %d (%a)",
+  #                         rangeslider = list(type = "date")
+  #            )
+  #     )
+  # })
   
   arq_data1 <- reactiveValues(data = NULL)
   observeEvent(input$file_data1,{
@@ -970,27 +986,30 @@ shinyServer(function(input, output, session) {
     assign("pop_data", pop_data, envir = .GlobalEnv)
   })
   
-  
   df_regional_comparison <- reactive({
-    df_country %>% 
-      filter(Region == input$selected_region) %>% 
-      #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-      dplyr::select(Reporting_Date, Cases_per_million, Deaths_per_million, Country) %>%
-      group_by(Country) 
+    df_daily %>% 
+      dplyr::select(subregion, date, total_cases_per_million, total_deaths_per_million, location)
+    # filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+  })
+  
+  df_regional_selected <- reactive({
+    df_regional_comparison() %>% 
+      filter(subregion %in% input$selected_region)
   })
   
   output$ts_df_regional_comparison <- renderPlotly({
-    plot_ly(df_regional_comparison(), x = ~Reporting_Date, y = ~Cases_per_million, 
-            color = ~Country, type = "scatter", mode = "lines",
+    plot_ly(df_regional_selected(), x = ~date, y = ~total_cases_per_million, 
+            colors = ~mycolors_1,
+            color = ~location, type = "scatter", mode = "lines",
             hoverinfo = "text", visible = TRUE,
-            text = ~paste("<b>Country: </b>", Country, 
-                          "<br><b>Date: </b>", Reporting_Date,
-                          "<br><b>Confirmed cases per million: </b>", round(Cases_per_million, 2))) %>%
-      add_trace(y = ~Deaths_per_million, color = ~Country, type = "scatter", mode = "lines",
+            text = ~paste("<b>Country: </b>", location, 
+                          "<br><b>Date: </b>", date,
+                          "<br><b>Confirmed cases per million: </b>", round(df_regional_selected()$total_cases_per_million, 2))) %>%
+      add_trace(y = ~total_deaths_per_million, color = ~location, type = "scatter", mode = "lines",
                 hoverinfo = "text", visible = FALSE,
-                text = ~paste("<b>Country: </b>", Country, 
-                              "<br><b>Date: </b>", Reporting_Date,
-                              "<br><b>Deaths cases per million: </b>", round(Deaths_per_million, 2))) %>%
+                text = ~paste("<b>Country: </b>", location, 
+                              "<br><b>Date: </b>", date,
+                              "<br><b>Deaths cases per million: </b>", round(df_regional_selected()$total_deaths_per_million, 2))) %>%
       layout(updatemenus = list(
         list(
           y = 0,
@@ -1014,17 +1033,17 @@ shinyServer(function(input, output, session) {
   })
   
   output$table_all_contries <- DT::renderDT(
-    df_country %>% 
-      #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-      group_by(Country) %>% 
-      slice(which.max(Reporting_Date)) %>% 
-      dplyr::rename(Cases = Cum_cases, Deaths = Cum_deaths) %>% 
+    df_daily %>% 
+      #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+      group_by(location) %>% 
+      slice(which.max(date)) %>% 
+      dplyr::rename(Cases = total_cases, Deaths = total_deaths) %>% 
       mutate(
         `Crude \nCFR (%)` = round(100 * Deaths / Cases, digits = 1),
-        `Cases per million` = round((Cases / Population) * 1e6, 2),
-        `Deaths per million` = round((Deaths / Population) * 1e6, 2)
+        `Cases per million` = round((Cases / population) * 1e6, 2),
+        `Deaths per million` = round((Deaths / population) * 1e6, 2)
       ) %>% 
-      dplyr::select(Country, Cases,`Cases per million`, Deaths, `Deaths per million`) %>% 
+      dplyr::select(location, Cases,`Cases per million`, Deaths, `Deaths per million`) %>% 
       arrange(-Cases) %>% 
       left_join(country_info) %>% 
       ungroup(),
@@ -1037,23 +1056,23 @@ shinyServer(function(input, output, session) {
   )
   
   output$table_all_regions <- DT::renderDT(
-    df_country %>% 
-      #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-      dplyr::select(Reporting_Date, Country, Cum_cases, Cum_deaths, Region, Population) %>% 
-      group_by(Country) %>% 
-      slice(which.max(Reporting_Date)) %>% 
-      group_by(Region) %>% 
-      mutate(Cum_cases_region = sum(Cum_cases),
-             Cum_deaths_region = sum(Cum_deaths),
-             Population = sum(Population)) %>% 
-      slice(which.max(Reporting_Date)) %>% 
-      rename(Cases = Cum_cases_region, Deaths = Cum_deaths_region) %>% 
+    df_daily %>% 
+      #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+      dplyr::select(date, location, total_cases, total_deaths, subregion, population) %>% 
+      group_by(location) %>% 
+      slice(which.max(date)) %>% 
+      group_by(subregion) %>% 
+      mutate(total_cases_region = sum(total_cases),
+             total_deaths_region = sum(total_deaths),
+             population = sum(population)) %>% 
+      slice(which.max(date)) %>% 
+      rename(Cases = total_cases_region, Deaths = total_deaths_region) %>% 
       mutate(
         `Crude \nCFR (%)` = round(100 * Deaths / Cases, digits = 1),
-        `Cases per million` = round((Cases / Population) * 1e6, 2),
-        `Deaths per million` = round((Deaths / Population) * 1e6, 2)
+        `Cases per million` = round((Cases / population) * 1e6, 2),
+        `Deaths per million` = round((Deaths / population) * 1e6, 2)
       ) %>% 
-      dplyr::select(Region, Cases,`Cases per million`, Deaths, `Deaths per million`) %>% 
+      dplyr::select(subregion, Cases,`Cases per million`, Deaths, `Deaths per million`) %>% 
       arrange(-Cases) %>% 
       ungroup(),
     options = list(pageLength = 5, language = list(search = 'Search:'),
@@ -1064,321 +1083,476 @@ shinyServer(function(input, output, session) {
     )
   )
   
-  
-  output$combine_data <- renderUI({
-    actionButton("combine_data_button", label = "Combine data",
-                 style="color: #000000; background-color: #fff; border-color: #24ccff")
+  # Cases per Million map
+  output$map_cases_per_million <- renderLeaflet({
+    africa_map_final %>% 
+      leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
+      addTiles() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+                  opacity = 1.0, fillOpacity = 1,
+                  fillColor = ~cases.rate.color, fill = ~cases.rate.color,
+                  highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                      bringToFront = TRUE),
+                  popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
+                                  "<b>", "Cases: ", "</b>", format(Cases,
+                                                                   decimal.mark = ".",
+                                                                   big.mark = ","), "<br>",
+                                  "<b>", "Deaths: ", "</b>", format(Deaths,
+                                                                    decimal.mark = ".",
+                                                                    big.mark = ","), "<br>",
+                                  "<b>", "Cases per million: ", "</b>", format(round(`Cases per million`, 2),
+                                                                               decimal.mark = ".",
+                                                                               big.mark = ","), "<br>",
+                                  "<b>", "Deaths per million: ", "</b>", format(round(`Deaths per million`, 2), 
+                                                                                decimal.mark = ".", 
+                                                                                big.mark = ","), "<br>"),
+                  group = "Cases per Million") %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-globe", title = "Reset zoom",
+                               onClick = JS("function(btn, map){ map.setView([2, 10], 3); }"))) %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-map-marker", title = "Find-me",
+                               onClick = JS("function(btn, map){ map.locate({setView: true, maxZoom: 6}); }"))) %>%
+      addLegend("bottomright", title= "Cases per million", opacity = 0.92, group = "Cases per Million",
+                colors =  RColorBrewer::brewer.pal(n = 9, name = "YlOrRd"),
+                labels = c("No cases", "[0 - 10]", "[10 - 100]", 
+                           "[100 - 500]", "[500 - 1000]", "[1000 - 5000]", 
+                           "[5000 - 10000]", "[10000 - 100000]", "Higher than 100,000"))
   })
   
-  
-  # Data tab
-  observeEvent(input$combine_data_button, {
-    if(exists("data1") & exists("df_gpkg") & exists("country_info")){
-      showNotification("Combining both .csv and .gpkg files.",duration = 5,type = "message")
-      
-      # Creating new object with country linelist
-      df2 <- arq_data1$data
-      
-      # Calculate daily reported cases
-      reported_region <- df2 %>%
-        # summarise the number of reported each day in each region
-        group_by(resadmin1_correct, report_date) %>%
-        summarise(reported_this_day = sum(is_reported, na.rm = T))
-      
-      # Calculate daily confirmed cases
-      confirmed_region <-  df2 %>%
-        # summarise the number of confirmed cases each day in each region
-        group_by(resadmin1_correct, report_date) %>%
-        summarise(confirmed_this_day = sum(is_reported[report_classif == "CONFIRMED"], na.rm = T))
-      
-      # Calculate daily deaths
-      deaths_region <- df2 %>%
-        # summarise the number of deaths each day in each region
-        group_by(resadmin1_correct, report_date) %>%
-        summarise(deaths_this_day = sum(is_reported[patcourse_status == "DEAD"], na.rm = T))
-      
-      # Calculate daily discharges as above
-      discharges_region <- df2 %>%
-        # summarise the number of deaths each day in each region
-        group_by(resadmin1_correct, report_date) %>%
-        summarise(discharges_this_day = sum(is_reported[!is.na(patcourse_datedischarge)], na.rm = T))
-      
-      # Combine reported cases, confirmed cases, deaths and discharges into a single df
-      df_daily <- inner_join(reported_region, confirmed_region,
-                             by= c("report_date", "resadmin1_correct"))  %>%
-        right_join(deaths_region,
-                   by= c("report_date", "resadmin1_correct")) %>%
-        left_join(discharges_region,
-                  by= c("report_date", "resadmin1_correct")) %>%
-        # sort by date within each region
-        arrange(resadmin1_correct, report_date) %>%
-        # delete useless vars
-        dplyr::select(report_date, resadmin1_correct, reported_this_day,
-                      confirmed_this_day, deaths_this_day, discharges_this_day) %>%
-        # arranging by regions and report dates (cumsum seems to work only when arranging or grouping;
-        # in this case, it only worked correctly when arranging)
-        arrange(resadmin1_correct, report_date) %>%
-        # Calculating cumulative totals
-        mutate(epiweek = MMWRweek(report_date)$MMWRweek,
-               cum_reported = cumsum(reported_this_day),
-               cum_confirmed = cumsum(confirmed_this_day),
-               cum_deaths = cumsum(deaths_this_day),
-               cum_discharges = cumsum(discharges_this_day)) %>%
-        # removing NA regions and dates (artifacts that may have been up to this step)
-        filter(!is.na(resadmin1_correct) | is.na(report_date)) %>%
-        group_by(resadmin1_correct) %>%
-        # calculating crude case fatality rate at each time point
-        mutate(CFR = round(100 * cum_deaths/cum_confirmed, digits = 2)) %>%
-        # inserting population data
-        left_join(pop_data, by = c("resadmin1_correct" = "NAME_1")) %>%
-        # calculating incidence and mortality rates per 100,000 for maps
-        mutate(incidence_reported = cum_reported / pop_sum * 100000,
-               incidence_confirmed = cum_confirmed / pop_sum * 100000,
-               mortality = cum_deaths / pop_sum * 100000) %>%
-        # calculating log of each variable
-        mutate(reported_log = log10(reported_this_day + 1),
-               confirmed_log = log10(confirmed_this_day + 1),
-               deaths_log = log10(deaths_this_day + 1),
-               discharges_log = log10(discharges_this_day + 1),
-               cum_reported_log = log10(cum_reported + 1),
-               cum_confirmed_log = log10(cum_confirmed + 1),
-               cum_deaths_log = log10(cum_deaths + 1),
-               cum_discharges_log = log10(cum_discharges + 1),
-               incidence_reported_log = log10(incidence_reported + 1),
-               incidence_confirmed_log = log10(incidence_confirmed + 1),
-               mortality_log = log10(mortality + 1)) %>%
-        # calculating number and log of cases, deaths and discharges in the past week
-        mutate(reported_past_7 = rollsum(x = reported_this_day, k = 7, align = "right",
-                                         fill = na.fill(reported_this_day, 0)),
-               confirmed_past_7 = rollsum(x = confirmed_this_day, k = 7, align = "right",
-                                          fill = na.fill(confirmed_this_day, 0)),
-               deaths_past_7 = rollsum(x = deaths_this_day, k = 7, align = "right",
-                                       fill = na.fill(deaths_this_day, 0)),
-               discharges_past_7 = rollsum(x = discharges_this_day, k = 7, align = "right",
-                                           fill = na.fill(discharges_this_day, 0)),
-               reported_past_7_log = log10(reported_past_7 + 1),
-               confirmed_past_7_log = log10(confirmed_past_7 + 1),
-               deaths_past_7_log = log10(deaths_past_7 + 1),
-               discharges_past_7_log = log10(discharges_past_7 + 1)) %>%
-        # calculating number and log of cases, deaths and discharges in the past two weeks
-        mutate(reported_past_14 = rollsum(x = reported_this_day, k = 14, align = "right",
-                                          fill = na.fill(reported_this_day, 0)),
-               confirmed_past_14 = rollsum(x = confirmed_this_day, k = 14, align = "right",
-                                           fill = na.fill(confirmed_this_day, 0)),
-               deaths_past_14 = rollsum(x = deaths_this_day, k = 14, align = "right",
-                                        fill = na.fill(deaths_this_day, 0)),
-               discharges_past_14 = rollsum(x = discharges_this_day, k = 14, align = "right",
-                                            fill = na.fill(discharges_this_day, 0)),
-               reported_past_14_log = log10(reported_past_14 + 1),
-               confirmed_past_14_log = log10(confirmed_past_14 + 1),
-               deaths_past_14_log = log10(deaths_past_14 + 1),
-               discharges_past_14_log = log10(discharges_past_14 + 1)) %>%
-        # calculating number and log of cases, deaths and discharges in the 14 day of the previous two weeks
-        mutate(reported_prev_14 = lag(n = 14, reported_past_14),
-               confirmed_prev_14 = lag(n = 14, confirmed_past_14),
-               deaths_prev_14 = lag(n = 14, deaths_past_14),
-               discharges_prev_14 = lag(n = 14, discharges_past_14),
-               reported_prev_14_log = log10(reported_prev_14 + 1),
-               confirmed_prev_14_log = log10(confirmed_prev_14 + 1),
-               deaths_prev_14_log = log10(deaths_prev_14 + 1),
-               discharges_prev_14_log = log10(discharges_prev_14 + 1)) %>%
-        # calculating trend and log cases, deaths and discharges in the past week
-        mutate(reported_trend = rollmean(x = reported_this_day, k = 7, align = "right",
-                                         fill = na.fill(reported_this_day, NA)),
-               confirmed_trend = rollmean(x = confirmed_this_day, k = 7, align = "right",
-                                          fill = na.fill(confirmed_this_day, NA)),
-               deaths_trend =rollmean(x = deaths_this_day, k = 7, align = "right",
-                                      fill = na.fill(deaths_this_day, NA)),
-               discharges_trend =rollmean(x = discharges_this_day, k = 7, align = "right",
-                                          fill = na.fill(discharges_this_day, NA)),
-               reported_trend_log = log10(reported_trend + 1),
-               confirmed_trend_log = log10(confirmed_trend + 1),
-               deaths_trend_log = log10(deaths_trend + 1),
-               discharges_trend_log = log10(discharges_trend + 1))
-      
-      # Combine into national plot
-      df_daily_national <- df_daily %>%
-        dplyr::select(report_date, resadmin1_correct, reported_this_day, confirmed_this_day,
-                      deaths_this_day, discharges_this_day) %>%
-        # pulling values from dplyr::selected columns
-        pivot_wider(id_cols = report_date, names_from = resadmin1_correct,
-                    values_from = c(reported_this_day, confirmed_this_day,
-                                    deaths_this_day, discharges_this_day))
-      assign("df_daily_national",df_daily_national, envir = .GlobalEnv)
-      # identifying which columns pertain to cases, deaths and discharges
-      # there should be a more elegant way to do this.
-      reported_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "reported")))
-      confirmed_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "confirmed")))
-      deaths_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "deaths")))
-      discharges_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "discharges")))
-      
-      # sum across rows to generate national values
-      df_daily_national <- df_daily_national%>% 
-        mutate(reported_this_day = rowSums(.[reported_cols],na.rm = T),
-               confirmed_this_day = rowSums(.[confirmed_cols],na.rm = T),
-               deaths_this_day = rowSums(.[deaths_cols],na.rm = T),
-               discharges_this_day = rowSums(.[discharges_cols],na.rm = T)) %>% 
-        dplyr::select(report_date, reported_this_day, confirmed_this_day, 
-                      deaths_this_day, discharges_this_day) %>% 
-        # creating a cumulative sum, 7- and 14-day average of cases, deaths and discharges
-        mutate(epiweek = MMWRweek(report_date)$MMWRweek,
-               cum_reported = cumsum(reported_this_day),
-               cum_confirmed = cumsum(confirmed_this_day),
-               cum_deaths = cumsum(deaths_this_day),
-               cum_discharges = cumsum(discharges_this_day),
-               reported_7day_avg = rollmean(x = reported_this_day, k = 7, align = "right",  
-                                            fill = na.fill(reported_this_day, "extend")),
-               confirmed_7day_avg = rollmean(x = confirmed_this_day, k = 7, align = "right",  
-                                             fill = na.fill(confirmed_this_day, "extend")),
-               deaths_7day_avg = rollmean(x = deaths_this_day, k = 7, align = "right",  
-                                          fill = na.fill(deaths_this_day, "extend")),
-               discharges_7day_avg = rollmean(x = discharges_this_day, k = 7, align = "right",  
-                                              fill = na.fill(discharges_this_day, "extend")),
-               reported_14day_avg = rollmean(x = reported_this_day, k = 14, align = "right",  
-                                             fill = na.fill(reported_this_day, "extend")),
-               confirmed_14day_avg = rollmean(x = confirmed_this_day, k = 14, align = "right",  
-                                              fill = na.fill(confirmed_this_day, "extend")),
-               deaths_14day_avg = rollmean(x = deaths_this_day, k = 14, align = "right",  
-                                           fill = na.fill(deaths_this_day, "extend")),
-               discharges_14day_avg = rollmean(x = discharges_this_day, k = 14, align = "right",  
-                                               fill = na.fill(discharges_this_day, "extend"))) 
-      
-      count_of_cases_reported <- max(df_daily_national$cum_reported, na.rm = T)
-      count_of_cases_confirmed <- max(df_daily_national$cum_confirmed, na.rm = T)
-      count_of_deaths <- max(df_daily_national$cum_deaths, na.rm = T)
-      count_of_discharges <- max(df_daily_national$cum_discharges, na.rm = T)
-      
-      current_crude_CFR <-  round(100 * max(df_daily_national$cum_deaths, na.rm = T) / 
-                                    max(df_daily_national$cum_confirmed, na.rm = T), 2)
-      
-      # Similar to daily df, but grouped by epiweek
-      df_ew <- df_daily %>%
-        group_by(resadmin1_correct, epiweek) %>%
-        summarise(reported_this_week = sum(reported_this_day),
-                  confirmed_this_week = sum(confirmed_this_day),
-                  deaths_this_week = sum(deaths_this_day),
-                  discharges_this_week = sum(discharges_this_day)) %>%
-        mutate(cum_reported = cumsum(reported_this_week),
-               cum_confirmed = cumsum(confirmed_this_week),
-               cum_deaths = cumsum(deaths_this_week),
-               cum_discharges = cumsum(discharges_this_week)) %>%
-        group_by(resadmin1_correct) %>%
-        # Calculate crude CFR at each time point
-        mutate(CFR = round(100 * cum_deaths/cum_confirmed, digits = 2)) %>% 
-        left_join(pop_data, by = c("resadmin1_correct" = "NAME_1")) %>%
-        # calculating incidence and mortality rates per 100,000 for maps
-        mutate(incidence_reported = cum_reported / pop_sum * 100000,
-               incidence_confirmed = cum_confirmed / pop_sum * 100000,
-               mortality = cum_deaths / pop_sum * 100000) %>%
-        # calculating log of each variable
-        mutate(reported_log = log10(reported_this_week + 1),
-               confirmed_log = log10(confirmed_this_week + 1),
-               deaths_log = log10(deaths_this_week + 1),
-               discharges_log = log10(discharges_this_week + 1),
-               cum_reported_log = log10(cum_reported + 1),
-               cum_confirmed_log = log10(cum_confirmed + 1),
-               cum_deaths_log = log10(cum_deaths + 1),
-               cum_discharges_log = log10(cum_discharges + 1),
-               incidence_reported_log = log10(incidence_reported + 1),
-               incidence_confirmed_log = log10(incidence_confirmed + 1),
-               mortality_log = log10(mortality + 1)) %>%
-        # calculating trend and log cases, deaths and discharges in the past week
-        mutate(reported_trend = rollmean(x = reported_this_week, k = 7, align = "right",  
-                                         fill = na.fill(reported_this_week, NA)),
-               confirmed_trend = rollmean(x = confirmed_this_week, k = 7, align = "right",  
-                                          fill = na.fill(confirmed_this_week, NA)),
-               deaths_trend =rollmean(x = deaths_this_week, k = 7, align = "right",  
-                                      fill = na.fill(deaths_this_week, NA)),
-               discharges_trend =rollmean(x = discharges_this_week, k = 7, align = "right",  
-                                          fill = na.fill(discharges_this_week, NA)),
-               reported_trend_log = log10(reported_trend + 1),
-               confirmed_trend_log = log10(confirmed_trend + 1),
-               deaths_trend_log = log10(deaths_trend + 1),
-               discharges_trend_log = log10(discharges_trend + 1))
-      
-      df_gpkg_daily <- df_gpkg %>%
-        # converting to sf, easier to make maps
-        st_as_sf() %>%
-        # joining daily df with gpkg
-        full_join(df_daily, by = c("NAME_1" = "resadmin1_correct")) %>%
-        # this part of the code is aimed to fill the regions without cases with data
-        # this way plotting the maps wont show holes
-        # replacing NA with zeros in all epidemiological variables 
-        mutate_at(vars(reported_this_day:discharges_trend_log), ~replace_na(., 0)) %>%
-        # inserting the max report_date in the regions with missing data
-        mutate(report_date = if_else(is.na(report_date), max(na.omit(report_date)), report_date))
-      
-      # Merging country daily EW and gpkg
-      df_gpkg_ew <- df_gpkg %>%
-        st_as_sf() %>%
-        full_join(df_ew, by = c("NAME_1" = "resadmin1_correct")) %>%
-        # this part of the code is aimed to fill the regions without cases with data
-        # this way plotting the maps wont show holes
-        # replacing NA with zeros in all epidemiological variables 
-        mutate_at(vars(reported_this_week:discharges_trend_log), ~replace_na(., 0)) %>%
-        # inserting the max epiweek in the regions with missing data
-        mutate(epiweek = if_else(is.na(epiweek), max(na.omit(epiweek)), epiweek))
-    }else{
-      showModal(modalDialog(
-        title = "Info",
-        "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
-        easyClose = TRUE,
-        footer = NULL
-      ))
-    }
-    
+  # Deaths per Million map
+  output$map_deaths_per_million <- renderLeaflet({
+    africa_map_final %>% 
+      leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
+      addTiles() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+                  opacity = 1.0, fillOpacity = 1,
+                  fillColor = ~deaths.rate.color, fill = ~deaths.rate.color,
+                  highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                      bringToFront = TRUE),
+                  popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
+                                  "<b>", "Cases: ", "</b>", format(Cases,
+                                                                   decimal.mark = ".",
+                                                                   big.mark = ","), "<br>",
+                                  "<b>", "Deaths: ", "</b>", format(Deaths,
+                                                                    decimal.mark = ".",
+                                                                    big.mark = ","), "<br>",
+                                  "<b>", "Cases per million: ", "</b>", format(round(`Cases per million`, 2),
+                                                                               decimal.mark = ".",
+                                                                               big.mark = ","), "<br>",
+                                  "<b>", "Deaths per million: ", "</b>", format(round(`Deaths per million`, 2), 
+                                                                                decimal.mark = ".", 
+                                                                                big.mark = ","), "<br>"),
+                  group = "Deaths per Million") %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-globe", title = "Reset zoom",
+                               onClick = JS("function(btn, map){ map.setView([2, 10], 3); }"))) %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-map-marker", title = "Find-me",
+                               onClick = JS("function(btn, map){ map.locate({setView: true, maxZoom: 6}); }"))) %>%
+      addLegend("bottomright", title= "Deaths per million", opacity = 0.92, group = "Deaths per Million",
+                colors =  RColorBrewer::brewer.pal(n = 9, name = "YlOrRd"),
+                labels = c("No deaths", "[0,1 - 1]", "[1 - 5]",
+                           "[5 - 10]", "[10 - 50]", "[50 - 100]", 
+                           "[100 - 500]", "[500 - 1,000]", "Higher than 1,000"))
   })
   
-  
-  output$clean_data <- renderUI({
-    if(!is.null(arq_data1$data)){
-      actionButton("clean_data_button", label = "Clean data",
-                   style="color: #000000; background-color: #fff; border-color: #24ccff")
-    }
+  # Cumulative cases map
+  output$map_cumulative_cases <- renderLeaflet({
+    africa_map_final %>% 
+      leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
+      addTiles() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+                  opacity = 1.0, fillOpacity = 1,
+                  fillColor = ~cases.color, fill = ~cases.color,
+                  highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                      bringToFront = TRUE),
+                  popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
+                                  "<b>", "Cases: ", "</b>", format(Cases,
+                                                                   decimal.mark = ".",
+                                                                   big.mark = ","), "<br>",
+                                  "<b>", "Deaths: ", "</b>", format(Deaths,
+                                                                    decimal.mark = ".",
+                                                                    big.mark = ","), "<br>",
+                                  "<b>", "Cases per million: ", "</b>", format(round(`Cases per million`, 2),
+                                                                               decimal.mark = ".",
+                                                                               big.mark = ","), "<br>",
+                                  "<b>", "Deaths per million: ", "</b>", format(round(`Deaths per million`, 2), 
+                                                                                decimal.mark = ".", 
+                                                                                big.mark = ","), "<br>"),
+                  group = "Cumulative Cases") %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-globe", title = "Reset zoom",
+                               onClick = JS("function(btn, map){ map.setView([2, 10], 3); }"))) %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-map-marker", title = "Find-me",
+                               onClick = JS("function(btn, map){ map.locate({setView: true, maxZoom: 6}); }"))) %>%
+      addLegend("bottomright", title= "Cumulative cases", opacity = 0.92, group = "Cumulative Cases",
+                colors =  RColorBrewer::brewer.pal(n = 9, name = "YlOrRd"),
+                labels = c("No cases", "[1 - 1,000]", "[1,001 - 5,000]",
+                           "[5,001 - 10,000]", "[10,001 - 50,000]", "[50,001 - 100,000]", 
+                           "[100,001 - 500,000]", "[500,001 - 1,000,000]", "Higher than 1,000,000"))
   })
   
-  observeEvent(input$clean_data_button,{
-    showNotification("Data is being cleaning.",duration = 5,type = "message")
+  # Cumulative deaths map
+  output$map_cumulative_deaths <- renderLeaflet({
+    africa_map_final %>% 
+      leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
+      addTiles() %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+                  opacity = 1.0, fillOpacity = 1,
+                  fillColor = ~deaths.color, fill = ~deaths.color,
+                  highlightOptions = highlightOptions(color = "white", weight = 2,
+                                                      bringToFront = TRUE),
+                  popup = ~paste0("<b>", "Country: ", "</b>", name, "<br>",
+                                  "<b>", "Region: ", "</b>", subregion, "<br>",
+                                  "<b>", "Cases: ", "</b>", format(Cases,
+                                                                   decimal.mark = ".",
+                                                                   big.mark = ","), "<br>",
+                                  "<b>", "Deaths: ", "</b>", format(Deaths,
+                                                                    decimal.mark = ".",
+                                                                    big.mark = ","), "<br>",
+                                  "<b>", "Cases per million: ", "</b>", format(round(`Cases per million`, 2),
+                                                                               decimal.mark = ".",
+                                                                               big.mark = ","), "<br>",
+                                  "<b>", "Deaths per million: ", "</b>", format(round(`Deaths per million`, 2), 
+                                                                                decimal.mark = ".", 
+                                                                                big.mark = ","), "<br>"),
+                  group = "Cumulative Deaths") %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-globe", title = "Reset zoom",
+                               onClick = JS("function(btn, map){ map.setView([2, 10], 3); }"))) %>%
+      addEasyButton(easyButton(position = "topleft",
+                               icon    = "glyphicon glyphicon-map-marker", title = "Find-me",
+                               onClick = JS("function(btn, map){ map.locate({setView: true, maxZoom: 6}); }"))) %>%
+      addLegend("bottomright", title= "Cumulative deaths", opacity = 0.92, group = "Cumulative Deaths",
+                colors =  RColorBrewer::brewer.pal(n = 9, name = "YlOrRd"),
+                labels = c("No deaths", "[1 - 100]", "[101 - 500]", "[501 - 1000]", 
+                           "[1,001 - 5,000]", "[5,001 - 10,000]", "[10,001 - 50,000]", 
+                           "[50,001 - 100,000]", "Higher than 100,000"))
   })
   
-  observeEvent(input$HelpBox_data1,{
-    showModal(modalDialog(
-      title = "Info",
-      "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
-      easyClose = TRUE,
-      footer = NULL
-    ))
-  })
-  
-  observeEvent(input$HelpBox_gpkg,{
-    showModal(modalDialog(
-      title = "Info",
-      "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
-      easyClose = TRUE,
-      footer = NULL
-    ))
-  })
-  
-  output$downloadReport <- downloadHandler(
-    filename = function(){
-      if(input$selected_pdf_file=="Senegal"){
-        "Senegal_Covid_Report.pdf"
-      }else{
-        "BurkinaFaso_Covid_Report.pdf"
-      }
-    },
-    content = function(file) {
-      if(input$selected_pdf_file=="Senegal"){
-        file.copy('Others/Senegal.pdf', file)
-      }else{
-        file.copy('Others/BurkinaFaso.pdf', file)
-      }
-    }
-  )
-  
-  output$select_pdf_file <- renderUI({
-    selectInput("selected_pdf_file","",
-                choices = list("Senegal", "Burkina Faso"))
-  })
+  # output$combine_data <- renderUI({
+  #   actionButton("combine_data_button", label = "Combine data",
+  #                style="color: #000000; background-color: #fff; border-color: #24ccff")
+  # })
+  # 
+  # 
+  # # Data tab
+  # observeEvent(input$combine_data_button, {
+  #   if(exists("data1") & exists("df_gpkg") & exists("country_info")){
+  #     showNotification("Combining both .csv and .gpkg files.",duration = 5,type = "message")
+  #     
+  #     # Creating new object with country linelist
+  #     df2 <- arq_data1$data
+  #     
+  #     # Calculate daily reported cases
+  #     reported_region <- df2 %>%
+  #       # summarise the number of reported each day in each region
+  #       group_by(resadmin1_correct, report_date) %>%
+  #       summarise(reported_this_day = sum(is_reported, na.rm = T))
+  #     
+  #     # Calculate daily confirmed cases
+  #     confirmed_region <-  df2 %>%
+  #       # summarise the number of confirmed cases each day in each region
+  #       group_by(resadmin1_correct, report_date) %>%
+  #       summarise(confirmed_this_day = sum(is_reported[report_classif == "CONFIRMED"], na.rm = T))
+  #     
+  #     # Calculate daily deaths
+  #     deaths_region <- df2 %>%
+  #       # summarise the number of deaths each day in each region
+  #       group_by(resadmin1_correct, report_date) %>%
+  #       summarise(new_deaths = sum(is_reported[patcourse_status == "DEAD"], na.rm = T))
+  #     
+  #     # Calculate daily discharges as above
+  #     discharges_region <- df2 %>%
+  #       # summarise the number of deaths each day in each region
+  #       group_by(resadmin1_correct, report_date) %>%
+  #       summarise(discharges_this_day = sum(is_reported[!is.na(patcourse_datedischarge)], na.rm = T))
+  #     
+  #     # Combine reported cases, confirmed cases, deaths and discharges into a single df
+  #     df_daily <- inner_join(reported_region, confirmed_region,
+  #                            by= c("report_date", "resadmin1_correct"))  %>%
+  #       right_join(deaths_region,
+  #                  by= c("report_date", "resadmin1_correct")) %>%
+  #       left_join(discharges_region,
+  #                 by= c("report_date", "resadmin1_correct")) %>%
+  #       # sort by date within each region
+  #       arrange(resadmin1_correct, report_date) %>%
+  #       # delete useless vars
+  #       dplyr::select(report_date, resadmin1_correct, reported_this_day,
+  #                     confirmed_this_day, new_deaths, discharges_this_day) %>%
+  #       # arranging by regions and report dates (cumsum seems to work only when arranging or grouping;
+  #       # in this case, it only worked correctly when arranging)
+  #       arrange(resadmin1_correct, report_date) %>%
+  #       # Calculating cumulative totals
+  #       mutate(epiweek = MMWRweek(report_date)$MMWRweek,
+  #              cum_reported = cumsum(reported_this_day),
+  #              cum_confirmed = cumsum(confirmed_this_day),
+  #              total_deaths = cumsum(new_deaths),
+  #              cum_discharges = cumsum(discharges_this_day)) %>%
+  #       # removing NA regions and dates (artifacts that may have been up to this step)
+  #       filter(!is.na(resadmin1_correct) | is.na(report_date)) %>%
+  #       group_by(resadmin1_correct) %>%
+  #       # calculating crude case fatality rate at each time point
+  #       mutate(CFR = round(100 * total_deaths/cum_confirmed, digits = 2)) %>%
+  #       # inserting population data
+  #       left_join(pop_data, by = c("resadmin1_correct" = "NAME_1")) %>%
+  #       # calculating incidence and mortality rates per 100,000 for maps
+  #       mutate(incidence_reported = cum_reported / pop_sum * 100000,
+  #              incidence_confirmed = cum_confirmed / pop_sum * 100000,
+  #              mortality = total_deaths / pop_sum * 100000) %>%
+  #       # calculating log of each variable
+  #       mutate(reported_log = log10(reported_this_day + 1),
+  #              confirmed_log = log10(confirmed_this_day + 1),
+  #              deaths_log = log10(new_deaths + 1),
+  #              discharges_log = log10(discharges_this_day + 1),
+  #              cum_reported_log = log10(cum_reported + 1),
+  #              cum_confirmed_log = log10(cum_confirmed + 1),
+  #              total_deaths_log = log10(total_deaths + 1),
+  #              cum_discharges_log = log10(cum_discharges + 1),
+  #              incidence_reported_log = log10(incidence_reported + 1),
+  #              incidence_confirmed_log = log10(incidence_confirmed + 1),
+  #              mortality_log = log10(mortality + 1)) %>%
+  #       # calculating number and log of cases, deaths and discharges in the past week
+  #       mutate(reported_past_7 = rollsum(x = reported_this_day, k = 7, align = "right",
+  #                                        fill = na.fill(reported_this_day, 0)),
+  #              confirmed_past_7 = rollsum(x = confirmed_this_day, k = 7, align = "right",
+  #                                         fill = na.fill(confirmed_this_day, 0)),
+  #              deaths_past_7 = rollsum(x = new_deaths, k = 7, align = "right",
+  #                                      fill = na.fill(new_deaths, 0)),
+  #              discharges_past_7 = rollsum(x = discharges_this_day, k = 7, align = "right",
+  #                                          fill = na.fill(discharges_this_day, 0)),
+  #              reported_past_7_log = log10(reported_past_7 + 1),
+  #              confirmed_past_7_log = log10(confirmed_past_7 + 1),
+  #              deaths_past_7_log = log10(deaths_past_7 + 1),
+  #              discharges_past_7_log = log10(discharges_past_7 + 1)) %>%
+  #       # calculating number and log of cases, deaths and discharges in the past two weeks
+  #       mutate(reported_past_14 = rollsum(x = reported_this_day, k = 14, align = "right",
+  #                                         fill = na.fill(reported_this_day, 0)),
+  #              confirmed_past_14 = rollsum(x = confirmed_this_day, k = 14, align = "right",
+  #                                          fill = na.fill(confirmed_this_day, 0)),
+  #              deaths_past_14 = rollsum(x = new_deaths, k = 14, align = "right",
+  #                                       fill = na.fill(new_deaths, 0)),
+  #              discharges_past_14 = rollsum(x = discharges_this_day, k = 14, align = "right",
+  #                                           fill = na.fill(discharges_this_day, 0)),
+  #              reported_past_14_log = log10(reported_past_14 + 1),
+  #              confirmed_past_14_log = log10(confirmed_past_14 + 1),
+  #              deaths_past_14_log = log10(deaths_past_14 + 1),
+  #              discharges_past_14_log = log10(discharges_past_14 + 1)) %>%
+  #       # calculating number and log of cases, deaths and discharges in the 14 day of the previous two weeks
+  #       mutate(reported_prev_14 = lag(n = 14, reported_past_14),
+  #              confirmed_prev_14 = lag(n = 14, confirmed_past_14),
+  #              deaths_prev_14 = lag(n = 14, deaths_past_14),
+  #              discharges_prev_14 = lag(n = 14, discharges_past_14),
+  #              reported_prev_14_log = log10(reported_prev_14 + 1),
+  #              confirmed_prev_14_log = log10(confirmed_prev_14 + 1),
+  #              deaths_prev_14_log = log10(deaths_prev_14 + 1),
+  #              discharges_prev_14_log = log10(discharges_prev_14 + 1)) %>%
+  #       # calculating trend and log cases, deaths and discharges in the past week
+  #       mutate(reported_trend = rollmean(x = reported_this_day, k = 7, align = "right",
+  #                                        fill = na.fill(reported_this_day, NA)),
+  #              confirmed_trend = rollmean(x = confirmed_this_day, k = 7, align = "right",
+  #                                         fill = na.fill(confirmed_this_day, NA)),
+  #              deaths_trend =rollmean(x = new_deaths, k = 7, align = "right",
+  #                                     fill = na.fill(new_deaths, NA)),
+  #              discharges_trend =rollmean(x = discharges_this_day, k = 7, align = "right",
+  #                                         fill = na.fill(discharges_this_day, NA)),
+  #              reported_trend_log = log10(reported_trend + 1),
+  #              confirmed_trend_log = log10(confirmed_trend + 1),
+  #              deaths_trend_log = log10(deaths_trend + 1),
+  #              discharges_trend_log = log10(discharges_trend + 1))
+  #     
+  #     # Combine into national plot
+  #     df_daily_national <- df_daily %>%
+  #       dplyr::select(report_date, resadmin1_correct, reported_this_day, confirmed_this_day,
+  #                     new_deaths, discharges_this_day) %>%
+  #       # pulling values from dplyr::selected columns
+  #       pivot_wider(id_cols = report_date, names_from = resadmin1_correct,
+  #                   values_from = c(reported_this_day, confirmed_this_day,
+  #                                   new_deaths, discharges_this_day))
+  #     assign("df_daily_national",df_daily_national, envir = .GlobalEnv)
+  #     # identifying which columns pertain to cases, deaths and discharges
+  #     # there should be a more elegant way to do this.
+  #     reported_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "reported")))
+  #     confirmed_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "confirmed")))
+  #     deaths_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "deaths")))
+  #     discharges_cols <- which(!is.na(str_extract(names(df_daily_national), pattern = "discharges")))
+  #     
+  #     # sum across rows to generate national values
+  #     df_daily_national <- df_daily_national%>% 
+  #       mutate(reported_this_day = rowSums(.[reported_cols],na.rm = T),
+  #              confirmed_this_day = rowSums(.[confirmed_cols],na.rm = T),
+  #              new_deaths = rowSums(.[deaths_cols],na.rm = T),
+  #              discharges_this_day = rowSums(.[discharges_cols],na.rm = T)) %>% 
+  #       dplyr::select(report_date, reported_this_day, confirmed_this_day, 
+  #                     new_deaths, discharges_this_day) %>% 
+  #       # creating a cumulative sum, 7- and 14-day average of cases, deaths and discharges
+  #       mutate(epiweek = MMWRweek(report_date)$MMWRweek,
+  #              cum_reported = cumsum(reported_this_day),
+  #              cum_confirmed = cumsum(confirmed_this_day),
+  #              total_deaths = cumsum(new_deaths),
+  #              cum_discharges = cumsum(discharges_this_day),
+  #              reported_7day_avg = rollmean(x = reported_this_day, k = 7, align = "right",  
+  #                                           fill = na.fill(reported_this_day, "extend")),
+  #              confirmed_7day_avg = rollmean(x = confirmed_this_day, k = 7, align = "right",  
+  #                                            fill = na.fill(confirmed_this_day, "extend")),
+  #              deaths_7day_avg = rollmean(x = new_deaths, k = 7, align = "right",  
+  #                                         fill = na.fill(new_deaths, "extend")),
+  #              discharges_7day_avg = rollmean(x = discharges_this_day, k = 7, align = "right",  
+  #                                             fill = na.fill(discharges_this_day, "extend")),
+  #              reported_14day_avg = rollmean(x = reported_this_day, k = 14, align = "right",  
+  #                                            fill = na.fill(reported_this_day, "extend")),
+  #              confirmed_14day_avg = rollmean(x = confirmed_this_day, k = 14, align = "right",  
+  #                                             fill = na.fill(confirmed_this_day, "extend")),
+  #              deaths_14day_avg = rollmean(x = new_deaths, k = 14, align = "right",  
+  #                                          fill = na.fill(new_deaths, "extend")),
+  #              discharges_14day_avg = rollmean(x = discharges_this_day, k = 14, align = "right",  
+  #                                              fill = na.fill(discharges_this_day, "extend"))) 
+  #     
+  #     count_of_cases_reported <- max(df_daily_national$cum_reported, na.rm = T)
+  #     count_of_cases_confirmed <- max(df_daily_national$cum_confirmed, na.rm = T)
+  #     count_of_deaths <- max(df_daily_national$total_deaths, na.rm = T)
+  #     count_of_discharges <- max(df_daily_national$cum_discharges, na.rm = T)
+  #     
+  #     current_crude_CFR <-  round(100 * max(df_daily_national$total_deaths, na.rm = T) / 
+  #                                   max(df_daily_national$cum_confirmed, na.rm = T), 2)
+  #     
+  #     # Similar to daily df, but grouped by epiweek
+  #     df_ew <- df_daily %>%
+  #       group_by(resadmin1_correct, epiweek) %>%
+  #       summarise(reported_this_week = sum(reported_this_day),
+  #                 confirmed_this_week = sum(confirmed_this_day),
+  #                 deaths_this_week = sum(new_deaths),
+  #                 discharges_this_week = sum(discharges_this_day)) %>%
+  #       mutate(cum_reported = cumsum(reported_this_week),
+  #              cum_confirmed = cumsum(confirmed_this_week),
+  #              total_deaths = cumsum(deaths_this_week),
+  #              cum_discharges = cumsum(discharges_this_week)) %>%
+  #       group_by(resadmin1_correct) %>%
+  #       # Calculate crude CFR at each time point
+  #       mutate(CFR = round(100 * total_deaths/cum_confirmed, digits = 2)) %>% 
+  #       left_join(pop_data, by = c("resadmin1_correct" = "NAME_1")) %>%
+  #       # calculating incidence and mortality rates per 100,000 for maps
+  #       mutate(incidence_reported = cum_reported / pop_sum * 100000,
+  #              incidence_confirmed = cum_confirmed / pop_sum * 100000,
+  #              mortality = total_deaths / pop_sum * 100000) %>%
+  #       # calculating log of each variable
+  #       mutate(reported_log = log10(reported_this_week + 1),
+  #              confirmed_log = log10(confirmed_this_week + 1),
+  #              deaths_log = log10(deaths_this_week + 1),
+  #              discharges_log = log10(discharges_this_week + 1),
+  #              cum_reported_log = log10(cum_reported + 1),
+  #              cum_confirmed_log = log10(cum_confirmed + 1),
+  #              total_deaths_log = log10(total_deaths + 1),
+  #              cum_discharges_log = log10(cum_discharges + 1),
+  #              incidence_reported_log = log10(incidence_reported + 1),
+  #              incidence_confirmed_log = log10(incidence_confirmed + 1),
+  #              mortality_log = log10(mortality + 1)) %>%
+  #       # calculating trend and log cases, deaths and discharges in the past week
+  #       mutate(reported_trend = rollmean(x = reported_this_week, k = 7, align = "right",  
+  #                                        fill = na.fill(reported_this_week, NA)),
+  #              confirmed_trend = rollmean(x = confirmed_this_week, k = 7, align = "right",  
+  #                                         fill = na.fill(confirmed_this_week, NA)),
+  #              deaths_trend =rollmean(x = deaths_this_week, k = 7, align = "right",  
+  #                                     fill = na.fill(deaths_this_week, NA)),
+  #              discharges_trend =rollmean(x = discharges_this_week, k = 7, align = "right",  
+  #                                         fill = na.fill(discharges_this_week, NA)),
+  #              reported_trend_log = log10(reported_trend + 1),
+  #              confirmed_trend_log = log10(confirmed_trend + 1),
+  #              deaths_trend_log = log10(deaths_trend + 1),
+  #              discharges_trend_log = log10(discharges_trend + 1))
+  #     
+  #     df_gpkg_daily <- df_gpkg %>%
+  #       # converting to sf, easier to make maps
+  #       st_as_sf() %>%
+  #       # joining daily df with gpkg
+  #       full_join(df_daily, by = c("NAME_1" = "resadmin1_correct")) %>%
+  #       # this part of the code is aimed to fill the regions without cases with data
+  #       # this way plotting the maps wont show holes
+  #       # replacing NA with zeros in all epidemiological variables 
+  #       mutate_at(vars(reported_this_day:discharges_trend_log), ~replace_na(., 0)) %>%
+  #       # inserting the max report_date in the regions with missing data
+  #       mutate(report_date = if_else(is.na(report_date), max(na.omit(report_date)), report_date))
+  #     
+  #     # Merging country daily EW and gpkg
+  #     df_gpkg_ew <- df_gpkg %>%
+  #       st_as_sf() %>%
+  #       full_join(df_ew, by = c("NAME_1" = "resadmin1_correct")) %>%
+  #       # this part of the code is aimed to fill the regions without cases with data
+  #       # this way plotting the maps wont show holes
+  #       # replacing NA with zeros in all epidemiological variables 
+  #       mutate_at(vars(reported_this_week:discharges_trend_log), ~replace_na(., 0)) %>%
+  #       # inserting the max epiweek in the regions with missing data
+  #       mutate(epiweek = if_else(is.na(epiweek), max(na.omit(epiweek)), epiweek))
+  #   }else{
+  #     showModal(modalDialog(
+  #       title = "Info",
+  #       "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
+  #       easyClose = TRUE,
+  #       footer = NULL
+  #     ))
+  #   }
+  #   
+  # })
+  # 
+  # 
+  # output$clean_data <- renderUI({
+  #   if(!is.null(arq_data1$data)){
+  #     actionButton("clean_data_button", label = "Clean data",
+  #                  style="color: #000000; background-color: #fff; border-color: #24ccff")
+  #   }
+  # })
+  # 
+  # observeEvent(input$clean_data_button,{
+  #   showNotification("Data is being cleaning.",duration = 5,type = "message")
+  # })
+  # 
+  # observeEvent(input$HelpBox_data1,{
+  #   showModal(modalDialog(
+  #     title = "Info",
+  #     "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
+  #     easyClose = TRUE,
+  #     footer = NULL
+  #   ))
+  # })
+  # 
+  # observeEvent(input$HelpBox_gpkg,{
+  #   showModal(modalDialog(
+  #     title = "Info",
+  #     "Please, in order to get all charts updated, it is required to upload the country data file in .csv and its correspondent .gpkg file.",
+  #     easyClose = TRUE,
+  #     footer = NULL
+  #   ))
+  # })
+  # 
+  # output$downloadReport <- downloadHandler(
+  #   filename = function(){
+  #     if(input$selected_pdf_file=="Senegal"){
+  #       "Senegal_Covid_Report.pdf"
+  #     }else{
+  #       "BurkinaFaso_Covid_Report.pdf"
+  #     }
+  #   },
+  #   content = function(file) {
+  #     if(input$selected_pdf_file=="Senegal"){
+  #       file.copy('Others/Senegal.pdf', file)
+  #     }else{
+  #       file.copy('Others/BurkinaFaso.pdf', file)
+  #     }
+  #   }
+  # )
+  # 
+  # output$select_pdf_file <- renderUI({
+  #   selectInput("selected_pdf_file","",
+  #               choices = list("Senegal", "Burkina Faso"))
+  # })
   
 })
