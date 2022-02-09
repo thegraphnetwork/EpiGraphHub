@@ -11,8 +11,10 @@ import pandas as pd
 from pangres import upsert
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
-#from loguru import logger
+from loguru import logger
 from sodapy import Socrata
+
+logger.add("/var/log/colombia_pos.log", retention="7 days")
 
 client = Socrata("www.datos.gov.co", '078u4PCGpnDfH157kAkVFoWea')
 
@@ -75,6 +77,8 @@ def load_into_db(client):
         with engine.connect() as conn:
             upsert(con=conn, df = df_new, table_name='casos_positivos_covid', schema='colombia', if_row_exists= 'update',
                 chunksize=1000, add_new_columns=True, create_table= False) 
+            
+    logger.info('table casos_positivos_covid updated')
                 
             
         
