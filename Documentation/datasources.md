@@ -11,6 +11,10 @@ Data can be uploaded manually via the Epigraphhub Superset web interface or prog
 ssh -f epigraph@epigraphhub.org -L 5432:localhost:5432 -NC
 ```
 
+Now we can use either Python or R to upload the data. 
+
+### Using Python
+
 Once the tunnel is established data can be sent to the data base using Pandas:
 
 ```python
@@ -40,6 +44,36 @@ import pandas as pd
 df = pd.read_csv('myspreadsheet.csv', delimiter=',')
 df.to_sql('myspreadsheet', engine, if_exists='replace')
 ```
+
+### Using R
+Once the tunnel is established data can be sent to the data base using the package: `RPostgreSQL`
+
+```R
+# install.packages("RPostgreSQL")
+require("RPostgreSQL")
+
+# loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+# creates a connection to the postgres database
+# note that "con" will be used later in each connection to the database
+con <- dbConnect(drv, 
+                dbname = "epigraphhub",
+                host = "localhost", 
+                port = 5432,
+                user = "epigraph", 
+                password = 'epigraph')
+```
+
+To Import CSVs you can use the web interface. Or the direct database connection as shown above using the code below:
+
+```R
+require("RPostgreSQL")
+data <- read.csv('myspreadsheet.csv')
+dbWriteTable(con, c('public', 'myspreadsheet'), data, overwrite = TRUE)
+```
+
+The first value in `c('public', 'myspreadsheet')` represents the **schema** where the table will be saved, and the second the table name.
+
 ### Spreadsheets
 To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub, permission to anyone that has the link to view the file.
 

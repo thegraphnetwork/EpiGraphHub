@@ -33,15 +33,21 @@ def chunked_fetch(start, chunk_size, maxrecords):
         df_new = pd.DataFrame.from_records(client.get("gt2j-8ykr", offset=start, limit=chunk_size,
                                     order = 'fecha_reporte_web', where = f'fecha_reporte_web > "{slice_date}"'))
         df_new.index.name = 'id_'
-        
+        df_new.reset_index(inplace = True)
+        df_new.set_index(['id_', 'id_de_caso'] , inplace = True)
+                
         df_new = df_new.convert_dtypes()
         
         # transform the datetime columns in the correct time 
-        df_new['fecha_reporte_web'] = pd.to_datetime(df_new['fecha_reporte_web'], errors='coerce')
-        df_new['fecha_de_notificaci_n'] = pd.to_datetime(df_new['fecha_de_notificaci_n'], errors='coerce')
-        
+        for c in df_new.columns:
+            if c.lower().startswith('fecha'):
+                df_new[c] = pd.to_datetime(df_new[c], errors='coerce')
         # Move up the starting record
         start = start + chunk_size
+        
+        #print(start)
+        
+        #print(df_new.index)
         
         yield df_new
         
@@ -65,9 +71,11 @@ def load_into_db(client):
         # separate the part of the df that will be set as `ignore` and `update` in the if_row_exists params.
  
         # put the data into the bank
+        
         with engine.connect() as conn:
             upsert(con=conn, df = df_new, table_name='casos_positivos_covid', schema='colombia', if_row_exists= 'update',
-                chunksize=1000, add_new_columns=True, create_table=True) 
+                chunksize=1000, add_new_columns=True, create_table= False) 
+                
             
         
 if __name__ == "__main__":
