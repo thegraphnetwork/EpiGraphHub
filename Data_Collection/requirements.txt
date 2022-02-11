@@ -6,3 +6,7 @@ sqlalchemy
 fiona
 loguru
 lightgbm
+pangres==4.1
+sodapy==2.1.0
+
+
