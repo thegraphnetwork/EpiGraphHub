@@ -13,7 +13,21 @@ services:
         #       the .env file
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-        
+
+  prod-epigraphhub:
+    image: epigraphhub
+    env_file:
+      - ../.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SUPERSET_PORT}/health"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+      start_period: 40s  # requires docker-compose 3.4
+    volumes:
+      - ..:/opt/EpiGraphHub
+    network_mode: host
+
   dev-epigraphhub:
     image: epigraphhub
     env_file:
