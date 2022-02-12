@@ -18,6 +18,8 @@ dependencies:
   - psycopg2
   - lightgbm
   - loguru
+  - pangres
+  - sodapy
   # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
   # - ngboost >=0.3.12
   # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
