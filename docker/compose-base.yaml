@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+
+  epigraphhub-base:
+    image: epigraphhub
+    env_file:
+      - ../.env
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        # note: if you want to use a specific UID and GID, ensure to add it to
+        #       the .env file
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+
+  epigraphhub-db-base:
+    hostname: epigraphhub-db
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.db
+    env_file:
+      - ../.env
