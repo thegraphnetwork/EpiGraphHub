@@ -181,13 +181,13 @@ $ make docker-build
 Start the services:
 
 ```bash
-$ docker-up SERVICES=dev-epigraphhub
+$ docker-up SERVICES=epigraphhub
 ```
 
 Before moving forward, check if the services are working properly:
 
 ```bash
-$ ./docker/healthcheck.sh dev-epigraphhub
+$ ./docker/healthcheck.sh epigraphhub
 ```
 
 Now, prepare the development database:
