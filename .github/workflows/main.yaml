@@ -55,7 +55,7 @@ jobs:
         ./docker/healthcheck.sh
 
     - name: prepare database
-      run: make docker-prepare-db
+      run: make docker-dev-prepare-db
 
     - name: test cron scripts
       run: |
