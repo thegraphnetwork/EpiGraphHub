@@ -2,9 +2,6 @@ version: '3.4'
 services:
 
   epigraphhub:
-    image: epigraphhub
-    env_file:
-      - ../.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${SUPERSET_PORT}/health"]
       interval: 20s

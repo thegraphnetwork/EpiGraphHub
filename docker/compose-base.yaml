@@ -1,7 +1,7 @@
 version: '3.4'
-services:
 
-  epigraphhub-base:
+services:
+  epigraphhub:
     image: epigraphhub
     env_file:
       - ../.env
@@ -14,7 +14,7 @@ services:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
 
-  epigraphhub-db-base:
+  epigraphhub-db:
     hostname: epigraphhub-db
     build:
       context: ..

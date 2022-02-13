@@ -2,9 +2,6 @@ version: '3.4'
 services:
 
   epigraphhub:
-    image: epigraphhub
-    env_file:
-      - ../.env
     depends_on:
       - epigraphhub-db
     healthcheck:
@@ -18,9 +15,6 @@ services:
     network_mode: host
 
   epigraphhub-db:
-    image: epigraphhub-db
-    env_file:
-      - ../.env
     environment:
       # overwrite .env default variables
       - POSTGRES_USER=postgres
