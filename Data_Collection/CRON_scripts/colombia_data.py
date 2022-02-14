@@ -30,12 +30,18 @@ def chunked_fetch(start, chunk_size, maxrecords):
         
     while start < maxrecords:
         
+        
         # Fetch the set of records starting at 'start'
         # create a df with this chunk files
         df_new = pd.DataFrame.from_records(client.get("gt2j-8ykr", offset=start, limit=chunk_size,
                                     order = 'fecha_reporte_web', where = f'fecha_reporte_web > "{slice_date}"'))
+        
+        if df_new.empty:
+            break 
+            
         df_new.index.name = 'id_'
         df_new.reset_index(inplace = True)
+    
         df_new.set_index(['id_', 'id_de_caso'] , inplace = True)
                 
         df_new = df_new.convert_dtypes()
@@ -56,7 +62,12 @@ def chunked_fetch(start, chunk_size, maxrecords):
 
 def load_into_db(client):
     # count the total number of records in the dataframe
-    records = client.get_all("gt2j-8ykr", select = 'COUNT(*)')
+    
+    slice_date = datetime.date(datetime.today()) - timedelta(200)
+
+    slice_date = slice_date.strftime('%Y-%m-%d')
+    
+    records = client.get_all("gt2j-8ykr", select = 'COUNT(*)', where = f'fecha_reporte_web > "{slice_date}"')
     for i in records:
         record_count = i
         break
