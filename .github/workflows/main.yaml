@@ -50,13 +50,13 @@ jobs:
     - name: load docker
       run: |
         make docker-build
-        make docker-up SERVICES=dev-epigraphhub
+        make docker-up SERVICES=epigraphhub
         docker ps
         ./docker/healthcheck.sh
 
     - name: prepare database
-      run: make docker-prepare-db
+      run: make docker-dev-prepare-db
 
     - name: test cron scripts
       run: |
-        make docker-run-cron SERVICE=dev-epigraphhub
+        make docker-run-cron SERVICE=epigraphhub

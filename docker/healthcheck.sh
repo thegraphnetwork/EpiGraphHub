@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export CONTAINER_NAME=${1:-"dev-epigraphhub"}
+export CONTAINER_NAME=${1:-"epigraphhub"}
 export CONTAINER_NAME="docker_${CONTAINER_NAME}_1"
 
 echo "[II] Checking ${CONTAINER_NAME} ..."
