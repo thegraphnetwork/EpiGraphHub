@@ -2,24 +2,8 @@ version: '3.4'
 services:
 
   epigraphhub:
-    image: epigraphhub
-    env_file:
-      - ../.env
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-      args:
-        # note: if you want to use a specific UID and GID, ensure to add it to
-        #       the .env file
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-        
-  dev-epigraphhub:
-    image: epigraphhub
-    env_file:
-      - ../.env
     depends_on:
-      - dev-epigraphhub-db
+      - epigraphhub-db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 20s
@@ -30,13 +14,7 @@ services:
       - ..:/opt/EpiGraphHub
     network_mode: host
 
-  dev-epigraphhub-db:
-    hostname: dev-epigraphhub-db
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.db
-    env_file:
-      - ../.env
+  epigraphhub-db:
     environment:
       # overwrite .env default variables
       - POSTGRES_USER=postgres
