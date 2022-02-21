@@ -37,3 +37,9 @@
         hour: "16"
         job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh"
 
+    - name: create colombia job
+      ansible.builtin.cron:
+        name: "Download Colombia COVID cases"
+        minute: "0"
+        hour: "1"
+        job: "/opt/EpiGraphHub/Data_Collection/CRON_scripts/colombia.sh"
