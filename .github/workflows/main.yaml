@@ -51,7 +51,7 @@ jobs:
     - name: load docker
       run: |
         make docker-build
-        make docker-up SERVICES=epigraphhub
+        make docker-start SERVICES=epigraphhub
         docker ps
         ./docker/healthcheck.sh
 

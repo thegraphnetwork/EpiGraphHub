@@ -181,7 +181,7 @@ $ make docker-build
 Start the services:
 
 ```bash
-$ docker-up SERVICES=epigraphhub
+$ docker-start SERVICES=epigraphhub
 ```
 
 Before moving forward, check if the services are working properly:
