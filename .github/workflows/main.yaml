@@ -17,6 +17,7 @@ env:
   POSTGRES_DB: dev_epigraphhub
   POSTGRES_DB_PRIVATE: dev_privatehub
   POSTGRES_DB_SANDBOX: dev_sandbox
+  SUPERSET_PORT: 8088
 
 jobs:
   main:
