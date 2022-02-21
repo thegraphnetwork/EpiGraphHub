@@ -13,10 +13,7 @@ APP_NAME = "EpiGraphHub"
 MAPBOX_API_KEY = os.getenv("MAPBOX_API_KEY")
 
 # Specify the App icon
-APP_ICON = (
-    "https://raw.githubusercontent.com/thegraphnetwork/"
-    "EpiGraphHub/main/images/epigraphhub.png"
-)
+APP_ICON = "/static/assets/images/epigraphhub.png"
 APP_ICON_WIDTH = 126
 
 # Specify where clicking the logo would take the user

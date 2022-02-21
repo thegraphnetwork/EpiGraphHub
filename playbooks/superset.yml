@@ -4,22 +4,13 @@
   vars_files:
     - vars.yml
 
-  pre_tasks:
-    - name: "Install packages"
-      apt: name={{ item }} update_cache=true state=latest
-      with_items:
-        - build-essential
-        - python3-dev
-        - libssl-dev
-        - libffi-dev
-        - libsasl2-dev
-        - libldap2-dev
-        - python3-pip
-        - python3-setuptools
-        - python3-virtualenv
-    - name: "Install Python Packages"
-      pip: "name={{ item }}  state=latest virtualenv=superset virtualenv_python=python3 virtualenv_site_packages=yes"
-      with_items:
-        - setuptools
-        - apache-superset
+  tasks:
+    - name: "Rebuild"
+      ansible.builtin.shell:
+        chdir: /opt/services/EpiGraphHub
+        cmd: make docker-build ENV=prod
 
+    - name: "Restart Service"
+      ansible.builtin.shell:
+        chdir: /opt/services/EpiGraphHub
+        cmd: make docker-restart ENV=prod

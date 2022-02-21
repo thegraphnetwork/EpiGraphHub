@@ -214,7 +214,7 @@ Linked-in : https://www.linkedin.com/company/the-graph-network
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-*TBD* []()
+*TBD*
 
 
 

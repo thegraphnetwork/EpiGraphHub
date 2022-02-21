@@ -11,10 +11,17 @@ fi
 echo "[II] activate epigraphhub"
 source activate activate epigraphhub
 
+SUPERSET_DIR=${CONDA_PREFIX}/lib/python3.7/site-packages/superset
+TEMPLATE_DIR=${SUPERSET_DIR}/templates/superset
+STATIC_DIR=${SUPERSET_DIR}/static/assets
+
 # link the superset welcome page
-TEMPLATE_DIR=${CONDA_PREFIX}/lib/python3.7/site-packages/superset/templates/superset
 rm -f $TEMPLATE_DIR/public_welcome.html
 ln -s /opt/superset/public_welcome.html $TEMPLATE_DIR
+
+# link logo image
+rm -f $STATIC_DIR/epigraphhub.png
+ln -s /opt/superset/epigraphhub.png $STATIC_DIR
 
 if [ $# -ne 0 ]
   then
