@@ -29,7 +29,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/thegraphnetwork/EpiGraphHub">
-    <img src="EGH.png" alt="Logo" width="300" height=300" >
+    <img src="images/EGH.png" alt="Logo" width="300" height=300" >
   </a>
 
   <h3 align="center">EPIGRAPHHUB</h3>
@@ -111,7 +111,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 See Sphynx demo
 <!-- ARCHITECURE -->
 
-![archi2](EPIHUB_DOCU-ARCHITECTURE_DATA.svg)
+![archi2](images/EPIHUB_DOCU-ARCHITECTURE_DATA.svg)
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -214,9 +214,7 @@ Linked-in : https://www.linkedin.com/company/the-graph-network
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
-* []()
+*TBD* []()
 
 
 

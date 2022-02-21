@@ -62,8 +62,10 @@ RUN mamba env create -n $ENV_NAME \
   && find /opt/conda/ -type f,l -name '*.js.map' -delete \
   && rm -rf /opt/conda/pkgs
 
-EXPOSE 8000
-ENV PYTHONPATH='.'
+RUN sudo mkdir -p /opt/superset \
+  && sudo chown epigraphhub:epigraphhub /opt/superset
+
+ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
 ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
 # note: keeping it to the end of the recipes helps to avoid rebuilding the
@@ -71,9 +73,13 @@ ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 # COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
 
 COPY --chown=epigraphhub:epigraphhub docker/entrypoint.sh /opt/entrypoint.sh
-COPY --chown=epigraphhub:epigraphhub docker/superset.sh /opt/superset.sh
+COPY --chown=epigraphhub:epigraphhub docker/superset/superset.sh /opt/superset.sh
+# note: these files can be overwriten by docker compose volumes in order to
+#       use the last version without building the image again.
+COPY --chown=epigraphhub:epigraphhub docker/superset/public_welcome.html /opt/superset/public_welcome.html
+COPY --chown=epigraphhub:epigraphhub docker/superset/superset_config.py /opt/superset/superset_config.py
 
-RUN chmod +x /opt/entrypoint.sh /opt/superset.sh
+RUN chmod +x /opt/entrypoint.sh
 
 RUN echo "source /opt/entrypoint.sh" > ~/.bashrc 
 

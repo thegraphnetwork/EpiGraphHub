@@ -20,9 +20,24 @@ docker-build:
 	$(DOCKER) pull
 
 
-.PHONY:docker-up
-docker-up:
+.PHONY:docker-start
+docker-start:
 	$(DOCKER) up -d ${SERVICES}
+
+
+.PHONY:docker-stop
+docker-stop:
+	$(DOCKER) stop ${SERVICES}
+
+
+.PHONY:docker-restart
+docker-restart: docker-stop docker-start
+	echo "[II] Docker services restarted!"
+
+
+.PHONY:docker-logs
+docker-logs:
+	$(DOCKER) logs --follow --tail 100 ${SERVICES}
 
 
 .PHONY:docker-dev-prepare-db
