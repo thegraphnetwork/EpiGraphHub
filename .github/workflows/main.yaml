@@ -61,3 +61,13 @@ jobs:
     - name: test cron scripts
       run: |
         make docker-run-cron SERVICE=epigraphhub
+
+    - name: Deploy
+      env:
+        ANSIBLE_VAULT_KEY: ${{ secrets.ANSIBLE_VAULT_KEY }}
+      run: |
+        echo "${ANSIBLE_VAULT_KEY}" > /tmp/.vault_pass.txt
+        ansible-playbook playbooks/superset.yml -vv \
+          -i playbooks/hosts.ini \
+          --vault-password-file /tmp/.vault_pass.txt
+        rm /tmp/.vault_pass.txt

@@ -165,23 +165,40 @@ $ conda activate epigraphhub
 
 ### Docker
 
-The project provides a **docker-compose** file with one service for production
-and the other two services for development. Also, there is a **Makefile**
-that helps to manage the docker services.
+The project provides three **docker-compose** files, where one is the base
+definition (`docker/compose-base.yaml`) and the others are one for 
+development (`docker/compose-dev.yaml`) and other for production
+(`docker/compose-prod.yaml`). Additionally, there is a **Makefile** 
+file that provides `make` targets that helps to manage the docker services:
 
-NOTE: The following instructions are focused on development, but could be also used
-for production with small changes.
+- `docker-build`: builds docker images
+- `docker-start`: starts docker services
+- `docker-stop`: stops docker services
+- `docker-restart`: restarts docker services
+- `docker-logs`: shows docker 
+- `docker-dev-prepare-db`: prepares the development version of the database
+- `docker-run-cron`: run the cron tasks
+- `docker-bash`: opens the docker service bash
 
-First, let's pull and build the images:
+This `make` targets runs by default docker for development. For production,
+it is necessary to pass the argument `ENV=prod` , for example:
+
+```bash
+make docker-build ENV=prod
+```
+
+A common workflow to prepare the system would be:
+
+1. Build the docker image:
 
 ```bash
 $ make docker-build
 ```
 
-Start the services:
+2. Start the services:
 
 ```bash
-$ docker-start SERVICES=epigraphhub
+$ make docker-start
 ```
 
 Before moving forward, check if the services are working properly:
@@ -190,11 +207,27 @@ Before moving forward, check if the services are working properly:
 $ ./docker/healthcheck.sh epigraphhub
 ```
 
-Now, prepare the development database:
+3. Now, prepare the development database (skip it for production):
 
 ```bash
 $ make docker-prepare-db
 ```
+
+## Deployment
+
+The deployment is executed by **Ansible** and trigger by **GitHub Actions**.
+When a new release is triggered, on **GitHub Actions**, there is a step
+there that uses **Ansible** to connect to the **EpiGraphHub** server
+and deploy the new version.
+
+NOTE: Currently, the deployment process is under development.
+
+The deployment is designed in the following structure:
+
+![deployment-graphic](images/deployment.png)
+
+All the services are being migrated to docker containers. It will allows us 
+to isolate the services and keep the host server safer.
 
 <!-- LICENSE -->
 ## License
