@@ -8,7 +8,8 @@
       ansible.builtin.shell:
         # ansible_ssh_private_key_file: "{{ ssh_private_file }}"
         chdir: /opt/services/EpiGraphHub
-        cmd: make docker-build ENV=prod
+        cmd: |
+          /opt/services/EpiGraphHub/docker/entrypoint.sh make docker-build ENV=prod
 
     - name: "Restart Service"
       ansible.builtin.shell:
