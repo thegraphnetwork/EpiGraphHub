@@ -1,6 +1,5 @@
 ---
 - hosts: hetzner # or all or local
-  become: yes
   vars_files:
     - vars.yml
 
