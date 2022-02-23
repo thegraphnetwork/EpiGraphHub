@@ -9,7 +9,7 @@ if [ $is_conda_in_path == 0 ]; then
 fi
 
 echo "[II] activate epigraphhub"
-source activate activate epigraphhub
+source activate epigraphhub
 
 SUPERSET_DIR=${CONDA_PREFIX}/lib/python3.7/site-packages/superset
 TEMPLATE_DIR=${SUPERSET_DIR}/templates/superset

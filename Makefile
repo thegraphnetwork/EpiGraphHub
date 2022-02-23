@@ -56,3 +56,13 @@ docker-run-cron:
 .PHONY:docker-bash
 docker-bash:
 	$(DOCKER) exec ${SERVICE} bash
+
+
+# ANSIBLE
+
+.PHONY:deploy
+deploy:
+	ansible-playbook -vv \
+		-i playbooks/hosts.ini \
+		--vault-password-file .vault_pass.txt \
+		playbooks/deployment.yml

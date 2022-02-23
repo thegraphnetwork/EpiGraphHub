@@ -2,7 +2,7 @@
 - hosts: hetzner # or all or local
   become: yes
   vars_files:
-    - vars.yml
+    - vars/default.yml
   tasks:
     - name: Ensure group "staff" exists
       ansible.builtin.group:

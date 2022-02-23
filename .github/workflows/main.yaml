@@ -63,11 +63,9 @@ jobs:
         make docker-run-cron SERVICE=epigraphhub
 
     - name: Deploy
+      if: ${{ github.event_name == 'push' }}
       env:
         ANSIBLE_VAULT_KEY: ${{ secrets.ANSIBLE_VAULT_KEY }}
       run: |
-        echo "${ANSIBLE_VAULT_KEY}" > /tmp/.vault_pass.txt
-        ansible-playbook playbooks/superset.yml -vv \
-          -i playbooks/hosts.ini \
-          --vault-password-file /tmp/.vault_pass.txt
-        rm /tmp/.vault_pass.txt
+        echo "${ANSIBLE_VAULT_KEY}" > .vault_pass.txt
+        make deploy
