@@ -1,6 +1,6 @@
 ## Database table naming rules
 
-Before uploading a new dataset in the database and createing a new table, the following rules should be followed to name the table:
+Before uploading a new dataset in the database and creating a new table, the following rules should be followed to name the table:
 
 ### All names:
 1. Always in lower case; 
@@ -38,7 +38,7 @@ Examples:
 
 ### About metadata tables:
 
-The metadata tables should be used to store explanatory information about a table's  columns. It should contain at least the columns listed below, but can be enlarged to include other information available on existing data dictionaries for the dataset that is being imported.
+The metadata tables should be used to store explanatory information about a table's columns. It should contain at least the columns listed below, but can be enlarged to include other information available on existing data dictionaries for the dataset that is being imported.
 
 
 ```sql
@@ -52,9 +52,11 @@ type text, # Numeric, categorical, Boolean, date, datetime, etc.
 
 ### Example:
 
-A dataset of hospitalizations from FOPH (Federal Office of Public Health) for Switzerland, which is updated daily can 
+A dataset of hospitalizations from FOPH (Federal Office of Public Health) for Switzerland, which is updated daily, can 
 be named as: 
 
 * `schema`: `switzerland`;
 
-* `table name`: `hospitalizations_D`.
+* `table name`: `foph_hospitalizations_D`.
+
+It's good to indicate the source of the data in the name. 
