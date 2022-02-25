@@ -48,22 +48,23 @@ def chunked_fetch(start, chunk_size, maxrecords):
         for c in df_new.columns:
             if c.lower().startswith('fecha'):
                 df_new[c] = pd.to_datetime(df_new[c], errors='coerce')
+
+        # eliminate any space in the end and start of the string values
+        for i in df_new.select_dtypes(include=['string']).columns:
+            df_new[i] = df_new[i].str.strip()
+
         # Move up the starting record
         start = start + chunk_size
-        
-        #print(start)
-        
-        #print(df_new.index)
         
         yield df_new
         
 
 def load_into_db(client):
-    # count the total number of records in the dataframe
-    records = client.get_all("gt2j-8ykr", select = 'COUNT(*)')
-    
+        
     slice_date = datetime.date(datetime.today()) - timedelta(200)
     slice_date = slice_date.strftime('%Y-%m-%d')
+
+    # count the number of records that will be fetched 
     records = client.get_all("gt2j-8ykr", select = 'COUNT(*)', where = f'fecha_reporte_web > "{slice_date}"')
     
     for i in records:
@@ -79,10 +80,8 @@ def load_into_db(client):
     engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub')
     
     for df_new in chunked_fetch(start, chunk_size, maxrecords):
-        # separate the part of the df that will be set as `ignore` and `update` in the if_row_exists params.
- 
-        # put the data into the bank
-        
+   
+        # save the data
         with engine.connect() as conn:
             upsert(con=conn, df = df_new, table_name='casos_positivos_covid', schema='colombia', if_row_exists= 'update',
                 chunksize=1000, add_new_columns=True, create_table= False) 
@@ -90,7 +89,6 @@ def load_into_db(client):
     logger.info('table casos_positivos_covid updated')
                 
             
-        
 if __name__ == "__main__":
     start_time = time.time()
     load_into_db(client)
