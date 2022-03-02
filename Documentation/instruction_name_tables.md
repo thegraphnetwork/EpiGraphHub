@@ -14,6 +14,10 @@ If the table is related to a single country data, use the full ISO country name.
 
 If the data is on a global scale data use the schema: `global`.
 
+#### Example: 
+
+For a table that belongs to the United States data, for the schema, should be used the name: `united_states`.
+
 
 ### Table names:
 
@@ -29,14 +33,18 @@ The `<locality>` will be filled if the data in the table belongs to a specific a
 
 The `<semantic single word name>` means that the words chosen to represent the data frame must express the content of the table and not be a simple abbreviation of the content. 
 
-The `<0|D|W|M>` portion informs about the periodicity of the update. It should use D for daily, W for weekly, M for monthly, and 0 for static.
+The `<0|d|w|m>` portion informs about the periodicity of the update. It should use `d` for daily, `w` for weekly, `m` for monthly, and 0 for static.
 
-The Optional suffixes are: meta for metadata tables and result for analysis results.
+The `<optional suffixes>` are: `meta` for metadata tables and `result` for analysis results.
 
 Examples:
 
-- `geneva_hospitalizations_D`
-- `geneva_caseforecasts_D_result`
+- `geneva_hospitalizations_d`
+- `geneva_hospitalizations_d_meta`
+- `geneva_hospitalizations_forecasts_d_result`
+
+For a PosGIS table representing a map for Geneva, if the map represent new hospitalizations, for example, and is updated daily you can use the name: 
+`gis_geneva_new_hospitalizations_d` 
 
 ### About metadata tables:
 
@@ -59,6 +67,6 @@ be named as:
 
 * `schema`: `switzerland`;
 
-* `table name`: `foph_hospitalizations_D`.
+* `table name`: `foph_hospitalizations_d`.
 
-It's good to indicate the source of the data in the name. 
+It's good to indicate the source of the data in the name. In this case the source was indicated by the `foph`. 
