@@ -1,9 +1,18 @@
 FROM condaforge/mambaforge:latest
 
+LABEL maintainer="Ivan Ogasawara <ivan.ogasawara@gmail.com>"
+LABEL org.opencontainers.image.title="EpiGraphHub"
+LABEL org.opencontainers.image.authors="EpiGraphHub Team"
+LABEL org.opencontainers.image.source="https://github.com/thegraphnetwork/EpiGraphHub"
+LABEL org.opencontainers.image.version="latest"
+LABEL org.opencontainers.image.description="EpiGraphHub"
+LABEL org.thegraphnetwork.epigraphhub.version="latest"
+
 # it is the default, but using it here to have it explicitly
 USER root
 
 ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update -y \
     && apt-get install -y \
       build-essential \
@@ -16,8 +25,8 @@ RUN apt-get update -y \
       wget \
       sudo \
       libssl-dev \
-      libffi-dev \ 
-      libsasl2-dev \ 
+      libffi-dev \
+      libsasl2-dev \
       libldap2-dev \
     && rm -rf /var/lib/apt/lists/*
 
@@ -35,24 +44,24 @@ ARG GID=1000  # default value 1000
 
 RUN addgroup --gid ${GID} epigraphhub \
   && useradd --uid ${UID} --gid ${GID} -ms /bin/bash epigraphhub \
-  && mkdir -p /opt/conda /opt/EpiGraphHub \
+  && mkdir -p /opt/EpiGraphHub \
   && chmod -R a+rwx /opt/conda /opt/EpiGraphHub \
   && export ENV_NAME="$ENV_NAME" \
   && echo "epigraphhub ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/epigraphhub \
-  && chmod 0440 /etc/sudoers.d/epigraphhub
-
-RUN chmod a+rw /var/log/
+  && chmod 0440 /etc/sudoers.d/epigraphhub \
+  && mkdir -p /opt/superset \
+  && chown epigraphhub:epigraphhub /opt/superset \
+  && chmod a+rw /var/log/
 
 USER epigraphhub
 
 WORKDIR /opt/EpiGraphHub
 
-# ssh keys for ansible deployment
-RUN mkdir -p ${HOME}/.ssh
-
 COPY --chown=epigraphhub:epigraphhub conda/prod.yaml /tmp/envs/epigraphhub.yml
 
 ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
+ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
+ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
 RUN mamba env create -n $ENV_NAME \
     --file /tmp/envs/epigraphhub.yml \
@@ -62,11 +71,6 @@ RUN mamba env create -n $ENV_NAME \
   && find /opt/conda/ -type f,l -name '*.js.map' -delete \
   && rm -rf /opt/conda/pkgs
 
-RUN sudo mkdir -p /opt/superset \
-  && sudo chown epigraphhub:epigraphhub /opt/superset
-
-ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
-ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
 # note: keeping it to the end of the recipes helps to avoid rebuilding the
 #       image after every change.
@@ -80,9 +84,8 @@ COPY --chown=epigraphhub:epigraphhub docker/superset/public_welcome.html /opt/su
 COPY --chown=epigraphhub:epigraphhub images/epigraphhub.png /opt/superset/epigraphhub.png
 COPY --chown=epigraphhub:epigraphhub docker/superset/superset_config.py /opt/superset/superset_config.py
 
-RUN chmod +x /opt/entrypoint.sh
-
-RUN echo "source /opt/entrypoint.sh" > ~/.bashrc 
+RUN chmod +x /opt/entrypoint.sh \
+  && echo "source /opt/entrypoint.sh" > ~/.bashrc
 
 ENTRYPOINT ["/opt/entrypoint.sh"]
 CMD ["/opt/superset.sh"]
