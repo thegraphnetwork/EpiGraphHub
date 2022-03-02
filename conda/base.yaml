@@ -6,3 +6,4 @@ dependencies:
   - docker-compose
   - ansible
   - git
+  - make
