@@ -19,7 +19,7 @@ If the data is on a global scale data use the schema: `global`.
 
 Table names should follow this basic structure:
 
-`<locality>_<semantic single word name>_<0|D|W|M>_<optional suffix>`
+`<locality>_<semantic single word name>_<0|d|w|m>_<optional suffix>`
 
 The symbols <> are just delimiters. On PostGIS tables representing maps, a `gis` prefix should be added. 
 
