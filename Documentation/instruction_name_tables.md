@@ -10,7 +10,7 @@ Before uploading a new dataset into the database and creating a new table, the f
 
 ### Schema names:
 
-If the table it's single country data use the full ISO country name. This name for each country of the world can be found [here](https://gadm.org/maps.html).
+If the table is related to a single country data, use the full ISO country name. The name for each country can be found [here](https://gadm.org/maps.html).
 
 If the data is on a global scale data use the schema: `global`.
 
