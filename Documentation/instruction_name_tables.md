@@ -1,6 +1,6 @@
 ## Database table naming rules
 
-Before uploading a new dataset in the database and creating a new table, the following rules should be followed to name the table:
+Before uploading a new dataset into the database and creating a new table, the following rules should be followed for naming the table:
 
 ### All names:
 1. Always in lower case; 
