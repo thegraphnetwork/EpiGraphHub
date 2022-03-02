@@ -21,7 +21,9 @@ Table names should follow this basic structure:
 
 `<locality>_<semantic single word name>_<0|d|w|m>_<optional suffix>`
 
-The symbols <> are just delimiters. On PostGIS tables representing maps, a `gis` prefix should be added. 
+The symbols `<>` are just delimiters for the placeholder, it means that one of the values inside should be used.
+
+On PostGIS tables, when representing maps, a `gis` prefix should be added. 
 
 The `<locality>` will be filled if the data in the table belongs to a specific administrative region of the country. In this case, you should name the locality according to the nomenclature adopted in [GADM](https://gadm.org/maps.html). You can omit this term if the data refers to the entire region that named the schema, e.g., the whole country.
 
