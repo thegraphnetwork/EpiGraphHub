@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -42,7 +42,7 @@ jobs:
       with:
         miniconda-version: "latest"
         mamba-version: "*"
-        environment-file: conda/ci.yaml
+        environment-file: conda/base.yaml
         channels: conda-forge,r,nodefaults
         activate-environment: epigraphhub
         use-mamba: true

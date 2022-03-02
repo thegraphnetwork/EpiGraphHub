@@ -10,6 +10,5 @@
   tasks:
     - name: "Update"
       shell:
-        ansible_ssh_private_key_file: "{{ ssh_private_file }}"
         chdir: /opt/services/EpiGraphHub
         cmd: git pull --rebase
