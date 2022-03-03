@@ -9,6 +9,9 @@
     PATH: "{{ HOST_PATH }}"
 
   tasks:
+    - name: "Create .ssh folder"
+      shell: mkdir -p ~/.ssh
+
     - name: Create an SSH Key Pair Secret
       copy:
         content: "{{ ssh_private_key }}"
