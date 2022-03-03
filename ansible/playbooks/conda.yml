@@ -1,0 +1,15 @@
+---
+- hosts: hetzner # or all or local
+  vars_files:
+    - ../vars/docker.yml
+
+  environment:
+    CONDA_PREFIX: "{{ HOST_CONDA_PREFIX }}"
+    PATH: "{{ HOST_PATH }}"
+
+  tasks:
+    - name: "Re-create conda environment"
+      shell: mamba env create --file conda/base.yaml --force
+      args:
+        chdir: /opt/services/EpiGraphHub
+        executable: /bin/bash

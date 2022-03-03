@@ -143,3 +143,6 @@ cython_debug/
 # Pycharm IDE settings
 .idea/
 .Rproj.user
+
+# Ansible
+.vault_pass.txt

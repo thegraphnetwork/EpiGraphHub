@@ -1,0 +1,20 @@
+---
+- hosts: hetzner # or all or local
+  vars_files:
+    - ../vars/docker.yml
+
+  environment:
+    CONDA_PREFIX: "{{ HOST_CONDA_PREFIX }}"
+    PATH: "{{ HOST_CONDA_PREFIX }}/bin:{{ HOST_PATH }}"
+
+  tasks:
+
+    - name: "Rebuild"
+      args:
+        chdir: /opt/services/EpiGraphHub
+      shell: make docker-build ENV=prod
+
+    - name: "Restart Service"
+      args:
+        chdir: /opt/services/EpiGraphHub
+      shell: make docker-restart ENV=prod

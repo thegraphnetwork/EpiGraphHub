@@ -20,9 +20,24 @@ docker-build:
 	$(DOCKER) pull
 
 
-.PHONY:docker-up
-docker-up:
+.PHONY:docker-start
+docker-start:
 	$(DOCKER) up -d ${SERVICES}
+
+
+.PHONY:docker-stop
+docker-stop:
+	$(DOCKER) stop ${SERVICES}
+
+
+.PHONY:docker-restart
+docker-restart: docker-stop docker-start
+	echo "[II] Docker services restarted!"
+
+
+.PHONY:docker-logs
+docker-logs:
+	$(DOCKER) logs --follow --tail 100 ${SERVICES}
 
 
 .PHONY:docker-dev-prepare-db
@@ -41,3 +56,13 @@ docker-run-cron:
 .PHONY:docker-bash
 docker-bash:
 	$(DOCKER) exec ${SERVICE} bash
+
+
+# ANSIBLE
+
+.PHONY:deploy
+deploy:
+	ansible-playbook -vv \
+		-i ansible/inventories/hosts.ini \
+		--vault-password-file .vault_pass.txt \
+		ansible/deployment.yml

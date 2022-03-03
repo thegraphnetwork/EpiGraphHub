@@ -1,5 +1,7 @@
-from celery.schedules import crontab
 import os
+
+from celery.schedules import crontab
+from cachelib.redis import RedisCache
 
 # Superset specific config
 ROW_LIMIT = 5000
@@ -24,16 +26,21 @@ LOGO_TOOLTIP = "EpiGraphHub"
 PUBLIC_ROLE_LIKE = "Gamma"
 
 # Redis caching
-from cachelib.redis import RedisCache
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_URI = f'redis://localhost:{REDIS_PORT}/0'
+
 RESULTS_BACKEND = RedisCache(
-    host='localhost', port=6379, key_prefix='superset_results')
+    host='localhost', 
+    port=REDIS_PORT,
+    key_prefix='superset_results'
+)
 
 
 DATA_CACHE_CONFIG = {
     'CACHE_TYPE': 'redis',
     'CACHE_DEFAULT_TIMEOUT': 60 * 60 * 24, # 1 day default (in secs)
     'CACHE_KEY_PREFIX': 'superset_results',
-    'CACHE_REDIS_URL': 'redis://localhost:6379/0',
+    'CACHE_REDIS_URL': REDIS_URI,
 }
 
 CELERYBEAT_SCHEDULE = {
@@ -49,12 +56,12 @@ CELERYBEAT_SCHEDULE = {
 }
 
 class CeleryConfig:
-    BROKER_URL = 'redis://localhost:6379/0'
+    BROKER_URL = REDIS_URI
     CELERY_IMPORTS = (
         'superset.sql_lab',
         'superset.tasks',
     )
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = REDIS_URI
     CELERYD_LOG_LEVEL = 'DEBUG'
     CELERYD_PREFETCH_MULTIPLIER = 10
     CELERY_ACKS_LATE = True

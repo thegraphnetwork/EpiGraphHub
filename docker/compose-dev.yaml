@@ -4,12 +4,6 @@ services:
   epigraphhub:
     depends_on:
       - epigraphhub-db
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
-      interval: 20s
-      timeout: 10s
-      retries: 5
-      start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
     network_mode: host

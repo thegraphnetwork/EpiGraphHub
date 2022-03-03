@@ -30,6 +30,8 @@ dependencies:
   - docker-compose
   # TypeError: entry_points() got an unexpected keyword argument 'group'
   - markdown 3.3.4
+  # ImportError: cannot import name 'soft_unicode' from 'markupsafe'
+  - markupsafe==2.0.1
   # R
   - r-base 3.6.*
   - r-tidyverse

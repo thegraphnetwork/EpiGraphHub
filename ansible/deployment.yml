@@ -1,0 +1,5 @@
+---
+- import_playbook: playbooks/local.yml
+- import_playbook: playbooks/git.yml
+- import_playbook: playbooks/conda.yml
+- import_playbook: playbooks/superset.yml
