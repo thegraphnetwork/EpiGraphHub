@@ -1,6 +1,6 @@
 
 <!--
-*** Template found on 
+*** Template found on
 *** https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md
 *** To avoid retyping too much info. Do a search and replace for the following:
 *** github_username, repo_name, twitter_handle, email, project_title, project_description
@@ -147,7 +147,7 @@ You can copy its structure from `.env.tpl`.
 ### Conda
 
 If you don't have **conda** installed, you can install it from
-[here](https://github.com/mamba-org/mamba#micromamba). Micromamba 
+[here](https://github.com/mamba-org/mamba#micromamba). Micromamba
 is a miniconda version with mamba, a powerful installer that is much
 faster than the conda installer.
 
@@ -166,16 +166,16 @@ $ conda activate epigraphhub
 ### Docker
 
 The project provides three **docker-compose** files, where one is the base
-definition (`docker/compose-base.yaml`) and the others are one for 
+definition (`docker/compose-base.yaml`) and the others are one for
 development (`docker/compose-dev.yaml`) and other for production
-(`docker/compose-prod.yaml`). Additionally, there is a **Makefile** 
+(`docker/compose-prod.yaml`). Additionally, there is a **Makefile**
 file that provides `make` targets that helps to manage the docker services:
 
 - `docker-build`: builds docker images
 - `docker-start`: starts docker services
 - `docker-stop`: stops docker services
 - `docker-restart`: restarts docker services
-- `docker-logs`: shows docker 
+- `docker-logs`: shows docker
 - `docker-dev-prepare-db`: prepares the development version of the database
 - `docker-run-cron`: run the cron tasks
 - `docker-bash`: opens the docker service bash
@@ -215,7 +215,7 @@ $ make docker-prepare-db
 
 ## Deployment
 
-The deployment is executed by **Ansible** and trigger by **GitHub Actions**.
+The deployment is executed by **Ansible** and triggered by **GitHub Actions**.
 When a new release is triggered, on **GitHub Actions**, there is a step
 there that uses **Ansible** to connect to the **EpiGraphHub** server
 and deploy the new version.
@@ -226,7 +226,7 @@ The deployment is designed in the following structure:
 
 ![deployment-graphic](images/deployment.png)
 
-All the services are being migrated to docker containers. It will allows us 
+All the services are being migrated to docker containers. It will allows us
 to isolate the services and keep the host server safer.
 
 <!-- LICENSE -->
