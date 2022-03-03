@@ -2,7 +2,7 @@
 - hosts: hetzner # or all or local
   become: yes
   vars_files:
-    - vars/default.yml
+    - ../vars/default.yml
 
   pre_tasks:
     - name: "Install packages"

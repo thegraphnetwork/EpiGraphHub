@@ -2,7 +2,7 @@
 - hosts: localhost
   connection: local
   vars_files:
-    - vars/docker.yml
+    - ../vars/docker.yml
 
   environment:
     CONDA_PREFIX: "{{ HOST_CONDA_PREFIX }}"

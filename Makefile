@@ -63,6 +63,6 @@ docker-bash:
 .PHONY:deploy
 deploy:
 	ansible-playbook -vv \
-		-i playbooks/hosts.ini \
+		-i ansible/inventories/hosts.ini \
 		--vault-password-file .vault_pass.txt \
-		playbooks/deployment.yml
+		ansible/deployment.yml

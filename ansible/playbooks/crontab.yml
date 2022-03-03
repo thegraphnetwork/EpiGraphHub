@@ -2,7 +2,7 @@
 - hosts: hetzner # or all or local
   become: yes
   vars_files:
-    - vars/default.yml
+    - ../vars/default.yml
   tasks:
     - name: Creates an entry like "PATH=/opt/bin" on top of crontab
       ansible.builtin.cron:
