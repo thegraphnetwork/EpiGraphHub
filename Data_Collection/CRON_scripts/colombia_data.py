@@ -34,6 +34,8 @@ def chunked_fetch(start, chunk_size, maxrecords):
         # create a df with this chunk files
         df_new = pd.DataFrame.from_records(client.get("gt2j-8ykr", offset=start, limit=chunk_size,
                                     order = 'fecha_reporte_web', where = f'fecha_reporte_web > "{slice_date}"'))
+
+        df_new = df_new.rename(columns = str.lower)
         
         if df_new.empty:
             break 
@@ -84,7 +86,7 @@ def load_into_db(client):
         # put the data into the bank
         
         with engine.connect() as conn:
-            upsert(con=conn, df = df_new, table_name='casos_positivos_covid', schema='colombia', if_row_exists= 'update',
+            upsert(con=conn, df = df_new, table_name='positive_cases_covid_d', schema='colombia', if_row_exists= 'update',
                 chunksize=1000, add_new_columns=True, create_table= False) 
             
     logger.info('table casos_positivos_covid updated')
