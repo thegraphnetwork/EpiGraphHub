@@ -69,3 +69,12 @@ deploy:
 		-i ansible/inventories/hosts.ini \
 		--vault-password-file .vault_pass.txt \
 		ansible/deployment.yml
+
+
+# conda
+
+.ONESHELL:
+.PHONY: conda-lock
+conda-lock:
+	cd conda
+	conda-lock --conda $(which mamba) -f prod.yaml  -p osx-64 -p linux-64

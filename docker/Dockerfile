@@ -51,14 +51,18 @@ USER epigraphhub
 
 WORKDIR /opt/EpiGraphHub
 
-COPY --chown=epigraphhub:epigraphhub conda/prod.yaml /tmp/envs/epigraphhub.yml
+COPY --chown=epigraphhub:epigraphhub conda/ /tmp/conda
 
 ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
 ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
 ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
-RUN mamba env create -n $ENV_NAME \
-    --file /tmp/envs/epigraphhub.yml \
+RUN mamba install conda-lock \
+  && conda-lock install \
+    -n $ENV_NAME \
+    --conda $(which mamba) \
+    /tmp/conda/conda-linux-64.lock \
+  && pip install -r /tmp/conda/pip.txt \
   && conda clean --all \
   && find /opt/conda/ -type f,l -name '*.a' -delete \
   && find /opt/conda/ -type f,l -name '*.pyc' -delete \
