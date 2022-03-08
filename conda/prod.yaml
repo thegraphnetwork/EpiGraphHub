@@ -6,7 +6,7 @@ channels:
 dependencies:
   - python 3.7.*
   - setuptools
-  - superset 1.3.2
+  - superset 1.4.0
   - myst-parser
   - pandas
   - pip
@@ -51,7 +51,4 @@ dependencies:
   - r-isocodes
   # - r-dm
   - pip:
-    # remove it when https://github.com/stanfordmlgroup/ngboost/issues/283 is done
-    - https://github.com/stanfordmlgroup/ngboost/archive/refs/tags/v0.3.12.tar.gz
-    - pangres>=4.1
-    - sodapy
+    - -r pip.txt

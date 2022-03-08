@@ -30,7 +30,7 @@ REDIS_PORT = os.getenv("REDIS_PORT")
 REDIS_URI = f'redis://localhost:{REDIS_PORT}/0'
 
 RESULTS_BACKEND = RedisCache(
-    host='localhost', 
+    host='localhost',
     port=REDIS_PORT,
     key_prefix='superset_results'
 )
@@ -84,3 +84,4 @@ class CeleryConfig:
     }
 
 CELERY_CONFIG = CeleryConfig
+SQLALCHEMY_DATABASE_URI = "sqlite:////opt/data/superset/superset.db"

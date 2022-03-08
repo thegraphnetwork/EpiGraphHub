@@ -4,11 +4,11 @@ SERVICE:=epigraphhub
 ENV:=dev
 
 ifeq ($(ENV), dev)
-DOCKER=docker-compose --file docker/compose-base.yaml --file docker/compose-dev.yaml
+DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-dev.yaml
 endif
 
 ifeq ($(ENV), prod)
-DOCKER=docker-compose --file docker/compose-base.yaml --file docker/compose-prod.yaml
+DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-prod.yaml
 endif
 
 
@@ -39,6 +39,9 @@ docker-restart: docker-stop docker-start
 docker-logs:
 	$(DOCKER) logs --follow --tail 100 ${SERVICES}
 
+.PHONY: docker-wait
+docker-wait:
+	echo ${SERVICES} | xargs -t -n1 ./docker/healthcheck.sh
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:

@@ -4,9 +4,6 @@ services:
   epigraphhub:
     depends_on:
       - epigraphhub-db
-    volumes:
-      - ..:/opt/EpiGraphHub
-    network_mode: host
 
   epigraphhub-db:
     environment:

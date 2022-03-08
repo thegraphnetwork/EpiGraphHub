@@ -7,3 +7,4 @@ dependencies:
   - ansible
   - git
   - make
+  - conda-lock

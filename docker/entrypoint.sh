@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -ex
 
 # prepare the conda environment
 is_conda_in_path=$(echo $PATH|grep -m 1 --count /opt/conda/)
@@ -20,8 +21,10 @@ rm -f $TEMPLATE_DIR/public_welcome.html
 ln -s /opt/superset/public_welcome.html $TEMPLATE_DIR
 
 # link logo image
-rm -f $STATIC_DIR/epigraphhub.png
-ln -s /opt/superset/epigraphhub.png $STATIC_DIR
+rm -f $STATIC_DIR/images/epigraphhub.png
+ln -s /opt/superset/epigraphhub.png $STATIC_DIR/images/
+
+set +ex
 
 if [ $# -ne 0 ]
   then
