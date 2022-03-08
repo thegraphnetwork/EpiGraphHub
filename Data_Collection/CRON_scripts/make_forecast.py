@@ -475,8 +475,8 @@ if __name__ == '__main__':
     df_for_total_cantons = make_forecast_all_cantons('total_hosp', predictors2, vaccine=True, smooth=True,
                                                      ini_date='2020-03-01', title=None)
 
-    df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine=True, smooth=True, ini_date='2020-03-01',
-                                   title=None, updated_data=True)
+    # df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine=True, smooth=True, ini_date='2020-03-01',
+    #                                title=None, updated_data=True)
 
     logger.info(f'Finished generating forecasts for {canton}')
 
@@ -500,5 +500,5 @@ if __name__ == '__main__':
     save_to_database(df_for_icu_cantons, 'ml_for_icu_all_cantons')
     save_to_database(df_for_total_cantons, 'ml_for_total_all_cantons')
     # df_for_hosp_up.to_sql('ml_forecast_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
-    save_to_database(df_for_hosp_up, 'ml_forecast_hosp_up')
+    # save_to_database(df_for_hosp_up, 'ml_forecast_hosp_up')
 
