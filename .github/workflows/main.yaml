@@ -19,6 +19,7 @@ env:
   POSTGRES_DB_SANDBOX: dev_sandbox
   SUPERSET_PORT: 8088
   ENV: dev
+  SUPERSET_SECRET_KEY: superset-on-ci
 
 jobs:
   main:

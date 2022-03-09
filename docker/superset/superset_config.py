@@ -4,6 +4,8 @@ from celery.schedules import crontab
 from cachelib.redis import RedisCache
 
 # Superset specific config
+SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY")
+
 ROW_LIMIT = 5000
 
 SIP_15_ENABLED = True
