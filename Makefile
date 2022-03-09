@@ -60,6 +60,10 @@ docker-run-cron:
 docker-bash:
 	$(DOCKER) exec ${SERVICE} bash
 
+.PHONY:docker-run-bash
+docker-run-bash:
+	$(DOCKER) run --rm ${SERVICE} bash
+
 
 # ANSIBLE
 
