@@ -77,4 +77,5 @@ deploy:
 .PHONY: conda-lock
 conda-lock:
 	cd conda
-	conda-lock --conda $(which mamba) -f prod.yaml  -p osx-64 -p linux-64
+	rm -f conda-*.lock
+	conda-lock --conda `which mamba` -f prod.yaml  -p osx-64 -p linux-64

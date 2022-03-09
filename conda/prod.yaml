@@ -4,9 +4,9 @@ channels:
   - r
   - nodefaults
 dependencies:
-  - python 3.7.*
+  - python <3.10
   - setuptools
-  - superset 1.4.0
+  - superset >=1.4.1
   - myst-parser
   - pandas
   - pip
@@ -21,7 +21,7 @@ dependencies:
   # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
   # - ngboost >=0.3.12
   # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
-  - wtforms <3
+  # - wtforms <3
   # dev
   - virtualenv
   - ansible
@@ -29,9 +29,7 @@ dependencies:
   - pip
   - docker-compose
   # TypeError: entry_points() got an unexpected keyword argument 'group'
-  - markdown 3.3.4
-  # ImportError: cannot import name 'soft_unicode' from 'markupsafe'
-  - markupsafe==2.0.1
+  # - markdown 3.3.4
   # R
   - r-base 3.6.*
   - r-tidyverse
