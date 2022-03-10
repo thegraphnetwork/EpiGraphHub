@@ -4,11 +4,11 @@ SERVICE:=epigraphhub
 ENV:=dev
 
 ifeq ($(ENV), dev)
-DOCKER=docker-compose --file docker/compose-base.yaml --file docker/compose-dev.yaml
+DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-dev.yaml
 endif
 
 ifeq ($(ENV), prod)
-DOCKER=docker-compose --file docker/compose-base.yaml --file docker/compose-prod.yaml
+DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-prod.yaml
 endif
 
 
@@ -39,6 +39,9 @@ docker-restart: docker-stop docker-start
 docker-logs:
 	$(DOCKER) logs --follow --tail 100 ${SERVICES}
 
+.PHONY: docker-wait
+docker-wait:
+	echo ${SERVICES} | xargs -t -n1 ./docker/healthcheck.sh
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:
@@ -57,6 +60,10 @@ docker-run-cron:
 docker-bash:
 	$(DOCKER) exec ${SERVICE} bash
 
+.PHONY:docker-run-bash
+docker-run-bash:
+	$(DOCKER) run --rm ${SERVICE} bash
+
 
 # ANSIBLE
 
@@ -66,3 +73,13 @@ deploy:
 		-i ansible/inventories/hosts.ini \
 		--vault-password-file .vault_pass.txt \
 		ansible/deployment.yml
+
+
+# conda
+
+.ONESHELL:
+.PHONY: conda-lock
+conda-lock:
+	cd conda
+	rm -f conda-*.lock
+	conda-lock --conda `which mamba` -f prod.yaml  -p osx-64 -p linux-64

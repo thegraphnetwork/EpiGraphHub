@@ -4,4 +4,4 @@ services:
   epigraphhub:
     volumes:
       - ..:/opt/EpiGraphHub
-    network_mode: host
+      - ${SUPERSET_DB_PATH_HOST}:/opt/data/superset/superset.db
