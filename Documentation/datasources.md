@@ -21,7 +21,7 @@ Once the tunnel is established data can be sent to the data base using Pandas:
 import pandas as pd
 from sqlalchemy import create_engine
 
-engine = create_engine("postgres://epigraph:epigraph@localhost:5432/epigraphhub")
+engine = create_engine("postgresql://epigraph:epigraph@localhost:5432/epigraphhub")
 ```
 
 Suppose you want to upload a map, in this case you will need Geopandas:
