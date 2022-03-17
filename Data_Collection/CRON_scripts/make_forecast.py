@@ -147,7 +147,7 @@ def rolling_predictions(target_name, data, ini_date='2020-03-01', split=0.75, ho
 
     return df_pred
 
-
+@logger.catch
 def make_single_prediction(target_curve_name, canton, predictors, vaccine=True, smooth=True, ini_date='2020-03-01',
                            title=None, updated_data=True):
     '''
@@ -202,7 +202,7 @@ def make_single_prediction(target_curve_name, canton, predictors, vaccine=True, 
     # fig = plot_predictions(target_curve_name, canton, target, train_size, x, y5,y50, y95, forecast_dates, forecasts5, forecasts50,forecasts95, title, path)
     return df
 
-
+@logger.catch
 def make_predictions_all_cantons(target_curve_name, predictors, vaccine=True, smooth=True, ini_date='2020-03-01',
                                  title=None):
     '''
@@ -352,7 +352,7 @@ def rolling_forecast(target_name, data, ini_date, horizon_forecast=14, maxlag=14
 
     return df_for
 
-
+@logger.catch
 def make_forecast(target_curve_name, canton, predictors, vaccine=True, smooth=True, ini_date='2020-03-01', title=None,
                   updated_data=True):
     # compute the clusters
@@ -461,27 +461,25 @@ if __name__ == '__main__':
     # logger.info('Generated validation prediction tables')
 
     # compute the forecast
-    logger.info('forecast 1')
+    df_for_hosp = make_forecast('hosp', canton, predictors1, vaccine=True, smooth=True, ini_date='2020-03-01',
                                 title=None, updated_data=False)
-    logger.info('forecast 2')
+    df_for_icu = make_forecast('ICU_patients', canton, predictors2, vaccine=True, smooth=True, ini_date='2020-03-01',
                                title=None, updated_data=False)
-    logger.info('forecast 3')
+    df_for_total = make_forecast('total_hosp', canton, predictors2, vaccine=True, smooth=True, ini_date='2020-03-01',
                                  title=None, updated_data=False)
-    logger.info('forecast 4')
-    logger.info('forecast 5')
-    logger.info('forecast 6')
 
-    logger.info('forecast 7')
+    df_for_hosp_cantons = make_forecast_all_cantons('hosp', predictors1, vaccine=True, smooth=True,
                                                     ini_date='2020-03-01', title=None)
     df_for_icu_cantons = make_forecast_all_cantons('ICU_patients', predictors2, vaccine=True, smooth=True,
                                                    ini_date='2020-03-01', title=None)
     df_for_total_cantons = make_forecast_all_cantons('total_hosp', predictors2, vaccine=True, smooth=True,
                                                      ini_date='2020-03-01', title=None)
 
-    df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine=True, smooth=True, ini_date='2020-03-01',
-                                   title=None, updated_data=True)
+    # df_for_hosp_up = make_forecast('hosp', canton, predictors1, vaccine=True, smooth=True, ini_date='2020-03-01',
+    #                                title=None, updated_data=True)
 
     logger.info(f'Finished generating forecasts for {canton}')
+
 
     # save the datasets
     # df_val_hosp_up.to_sql('ml_validation_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
@@ -502,5 +500,5 @@ if __name__ == '__main__':
     save_to_database(df_for_icu_cantons, 'ml_for_icu_all_cantons')
     save_to_database(df_for_total_cantons, 'ml_for_total_all_cantons')
     # df_for_hosp_up.to_sql('ml_forecast_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
-    save_to_database(df_for_hosp_up, 'ml_forecast_hosp_up')
+    # save_to_database(df_for_hosp_up, 'ml_forecast_hosp_up')
 
