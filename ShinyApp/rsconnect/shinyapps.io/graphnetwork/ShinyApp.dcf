@@ -4,11 +4,11 @@ username:
 account: graphnetwork
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 5573997
-bundleId: 5557121
+appId: 5872218
+bundleId: 5694336
 url: https://graphnetwork.shinyapps.io/ShinyApp/
-when: 1644334325.10911
-lastSyncTime: 1644334325.10911
+when: 1647502108.3448
+lastSyncTime: 1647502108.3448
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: test_db_connect.R
+ignoredFiles: in_production.R|test_db_connect.R

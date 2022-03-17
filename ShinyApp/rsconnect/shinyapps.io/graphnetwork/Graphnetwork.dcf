@@ -1,0 +1,14 @@
+name: Graphnetwork
+title: Graphnetwork
+username:
+account: graphnetwork
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5146989
+bundleId: 5693895
+url: https://graphnetwork.shinyapps.io/Graphnetwork/
+when: 1647487727.9897
+lastSyncTime: 1647487727.9897
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: in_production.R|README.md|test_db_connect.R
