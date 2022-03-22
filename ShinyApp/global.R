@@ -15,7 +15,6 @@ library(rgdal) # for several spatial functions
 library(ggcharts) 
 library(RColorBrewer) # for palettes
 library(tidyverse)
-# library(tidyr)
 library(forcats)
 library(dplyr) # for data man
 library(shiny)
@@ -53,14 +52,17 @@ df_owid <- read_csv(file = "https://raw.githubusercontent.com/owid/covid-19-data
       Country %in% c("Angola", "Botswana", "Swaziland", "Lesotho", "Malawi", "Mozambique", "Namibia", "South Africa", "Zambia", "Zimbabwe") ~ "Southern Africa",
       Country %in% c("Benin", "Burkina Faso", "Cabo Verde", "Côte d'Ivoire", "The Gambia", "Ghana", "Guinea", "Guinea-Bissau", "Liberia", "Mali", "Mauritania", "Niger", "Nigeria", "Senegal", "Sierra Leone", "Togo") ~ "Western Africa"
     )
-  )
+  ) %>%
+  group_by_(~Region) %>%
+  top_n(n = 10000) %>% 
+  ungroup()
 
 # loading country info for continental Africa analyses (faux LL)
 countries_list <- sort(unique(df_owid$Country))
 regions_list <- sort(unique(df_owid$Region))
 
 # Load Faux LL data
-LL_raw <- fread("Others/ConfirmedCases.csv") %>% 
+LL_raw <- fread("Others/ConfirmedCases_DHIS2_2.csv") %>% 
   mutate(Country = as.character(Country)) %>% 
   # renaming mislabelled countries to merge with map polygon later
   mutate(Country = case_when(Country == "CAF" ~ "Central African Republic",
@@ -75,10 +77,13 @@ LL_raw <- fread("Others/ConfirmedCases.csv") %>%
                              Country == "United Republic of Tanzania" ~ "Tanzania",
                              TRUE ~ Country)
          ) %>% 
-  tibble()
+  tibble() %>%
+  group_by_(~Country) %>%
+  top_n(n = 10000) %>% 
+  ungroup()
 
 # Last date
-lastdate <- mdy(max(LL_raw$Reporting_Date))
+lastdate <- max(LL_raw$Reporting_Date)
 
 # replace spaces with period in all column names
 names(LL_raw) <- str_replace_all(names(LL_raw), " ", ".")
@@ -87,9 +92,9 @@ names(LL_raw) <- str_replace_all(names(LL_raw), " ", ".")
 df_LL <- LL_raw %>%
   mutate(
     # format dates back to dates.
-    Reporting_Date = mdy(Reporting_Date),
-    Date.of.Death = mdy(Date.of.Death),
-    Date.of.Discharge = mdy(Date.of.Discharge),
+    Reporting_Date = ymd(Reporting_Date),
+    Date.of.Death = ymd(Date.of.Death),
+    Date.of.Discharge = ymd(Date.of.Discharge),
     #Outcome
     Outcome = case_when(
     Outcome == "dead" ~ "Dead",
