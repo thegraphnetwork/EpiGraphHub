@@ -11,6 +11,7 @@ dependencies:
   - pandas
   - pip
   - geopandas
+  - gsheetsdb
   - inquirer
   - python-dotenv
   - sqlalchemy
