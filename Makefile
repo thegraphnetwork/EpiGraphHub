@@ -82,4 +82,4 @@ deploy:
 conda-lock:
 	cd conda
 	rm -f conda-*.lock
-	conda-lock --conda `which mamba` -f prod.yaml  -p osx-64 -p linux-64
+	conda-lock --conda `which mamba` -f prod.yaml  -p osx-64 -p linux-64 --kind explicit
