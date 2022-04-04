@@ -4,10 +4,6 @@ shinyServer(function(input, output, session) {
     df_country
   )
   
-  df_LL_server <- reactive(
-    df_LL
-  )
-  
   africa_map_server <- reactive(
     africa_map
   )
@@ -37,10 +33,10 @@ shinyServer(function(input, output, session) {
   
   output$select_date <- renderUI({
     dateRangeInput("selected_dates", "Date range:",
-                   start  = min(df_country_server()$Reporting_Date),
-                   end    = max(df_country_server()$Reporting_Date),
-                   min    = min(df_country_server()$Reporting_Date),
-                   max    = max(df_country_server()$Reporting_Date),
+                   start  = min_date,
+                   end    = max_date,
+                   min    = min_date,
+                   max    = max_date,
                    format = "dd/mm/yy",
                    separator = " - ")
   })
@@ -51,22 +47,21 @@ shinyServer(function(input, output, session) {
       paste0("<b>Country: </b>", input$selected_country)
     })
     
-    # country_selected <- df_country_server %>% 
+    # country_selected <- owid_countries %>% 
     #   filter(Country == "Senegal")
     
     country_selected <- reactive({
       df_country_server() %>% 
-        filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
+        filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
         filter(Country == input$selected_country)
     })
     
     date_reactive <- reactive({
       country_selected() %>% 
-        arrange(desc(Reporting_Date)) %>% 
+        arrange(desc(date)) %>% 
         distinct(Country, .keep_all = T) %>% 
-        dplyr::select(Reporting_Date) %>% 
-        table() %>% 
-        names()
+        dplyr::select(date) %>% 
+        pull
     })
     
     output$last_update <- renderText({
@@ -77,95 +72,89 @@ shinyServer(function(input, output, session) {
         substr(date_reactive(),1,4)
       )
     })
-    
+    names(country_selected)
     output$confirmedCases <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          arrange(desc(Reporting_Date)) %>% 
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>% 
           distinct(Country, .keep_all = T) %>% 
-          dplyr::select(Cum_cases),
+          dplyr::select(total_cases) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
-    output$newCases <- renderText({
+    output$new_cases <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          group_by(Epiweek) %>% 
-          mutate(NewCases = sum(Cases_this_day ,na.rm = T)) %>% 
-          ungroup() %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(NewCases),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>% 
+          dplyr::select(new_cases) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," cases this week")
     })
     
     output$Deaths <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          arrange(desc(Reporting_Date)) %>% 
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>% 
           distinct(Country, .keep_all = T) %>% 
-          dplyr::select(Cum_deaths),
+          dplyr::select(total_deaths) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
     output$newDeaths <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          group_by(Epiweek) %>% 
-          mutate(NewDeaths = sum(Deaths_this_day ,na.rm = T)) %>% 
-          ungroup() %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(NewDeaths),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>%
+          dplyr::select(new_deaths) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," deaths this week")
     })
     
     output$CasesPerMillion <- renderText({
       prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(Cases_per_million),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>%
+          dplyr::select(total_cases_per_million) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")
     })
     
     output$DeathsPerMillion <- renderText({
       paste0(prettyNum(
         country_selected() %>% 
-          #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-          filter(Epiweek == max(Epiweek)) %>% 
-          distinct(Epiweek,.keep_all = T) %>% 
-          dplyr::select(Deaths_per_million),
+          #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+          filter(date == max_date) %>%
+          dplyr::select(total_deaths_per_million) %>% 
+          pull,
         decimal.mark = ",", big.mark = ".")," deaths per million")
     })
     
     growth_rate_tab <- reactive({
       country_selected() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        dplyr::select(Reporting_Date, Cases_past_week, Epiweek) %>% 
-        group_by(Epiweek) %>% 
-        # take the last day of each epiweek
-        slice(which.max(Reporting_Date)) %>% 
-        ungroup() %>% 
+        #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+        dplyr::select(date, Epiweek, weekly_new_cases) %>% 
+        distinct(Epiweek, .keep_all = T) %>% 
         # Cases in the past week vs cases two weeks ago
-        mutate(diff_cases = Cases_past_week - lag(Cases_past_week,1), 
-               week_growth = diff_cases/lag(Cases_past_week,1),
+        mutate(diff_cases = weekly_new_cases - lag(weekly_new_cases,1), 
+               week_growth = diff_cases/lag(weekly_new_cases,1),
                week_growth_perc = 100 * week_growth, 
                # formula to convert weekly_growth to daily_growth equivalent
                growth = (((1 + week_growth) ^ (1/7)) - 1), 
-               growth_perc = 100 * growth)
+               growth_perc = 100 * growth) %>% 
+        slice(-1)
     })
     
     # plot
     output$ts_growth_rate_tab <- renderPlotly({
-      plot_ly(growth_rate_tab(), x = ~Reporting_Date) %>%
+      plot_ly(growth_rate_tab(), x = ~date) %>%
         # ribbons are polygons in the background
-        add_ribbons(x = ~Reporting_Date, ymin = 0, 
+        add_ribbons(x = ~date, ymin = 0, 
                     # ymax needs to remove Inf or otherwise plotly will explode to a large ymax
                     ymax = max(growth_rate_tab()$week_growth_perc[growth_rate_tab()$week_growth_perc != Inf], 
                                na.rm = TRUE),
@@ -174,7 +163,7 @@ shinyServer(function(input, output, session) {
                     hoverinfo = "none", # removes the hovering text (it is not needed in here)
                     showlegend = FALSE, # to remove the unneeded trace info 
                     line = list(color = "rgba(0, 0, 0, 0)")) %>% # red for increase in growth rate
-        add_ribbons(x = ~Reporting_Date, ymax = 0, 
+        add_ribbons(x = ~date, ymax = 0, 
                     ymin = min(growth_rate_tab()$week_growth_perc[growth_rate_tab()$week_growth_perc != Inf], 
                                na.rm = TRUE),
                     color = I("green"), # green for decrease in growth rate
@@ -188,7 +177,7 @@ shinyServer(function(input, output, session) {
                   mode = "markers+lines", # lines + points
                   color = I("black"),
                   hoverinfo = "text+x",
-                  text = ~paste0("<b>Date of reporting: </b>", Reporting_Date,
+                  text = ~paste0("<b>Date of reporting: </b>", date,
                                  "<br><b>Epidemiological week: </b>", Epiweek,
                                  "<br><b>Weekly growth rate: </b>", paste0(round(week_growth_perc, 2), "%"))) %>%
         layout(
@@ -205,15 +194,18 @@ shinyServer(function(input, output, session) {
     })
     
     output$table_all_contries <- DT::renderDT(
-      df_country_server() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        group_by(Country) %>% 
-        slice(which.max(Reporting_Date)) %>% 
-        dplyr::rename(Cases = Cum_cases, Deaths = Cum_deaths) %>% 
+      country_selected() %>% 
+        arrange(desc(date)) %>% 
+        distinct(Epiweek, .keep_all = T) %>% 
+        #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+        dplyr::rename(
+          Cases = total_cases,
+          Deaths = total_deaths,
+          `Cases per million` = total_cases_per_million,
+          `Deaths per million` = total_deaths_per_million
+          ) %>% 
         mutate(
-          `Crude \nCFR (%)` = round(100 * Deaths / Cases, digits = 1),
-          `Cases per million` = round((Cases / Population) * 1e6, 2),
-          `Deaths per million` = round((Deaths / Population) * 1e6, 2)
+          `Crude \nCFR (%)` = round(100 * Deaths / Cases, digits = 1)
         ) %>% 
         dplyr::select(Country, Cases,`Cases per million`, Deaths, `Deaths per million`) %>% 
         arrange(-Cases) %>% 
@@ -228,26 +220,26 @@ shinyServer(function(input, output, session) {
     
     epi_curve_ll <- reactive({
       country_selected() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        dplyr::select(Reporting_Date, Cases_this_day, Deaths_this_day) %>% 
-        mutate(seven_day_case_avg = rollmean(x = Cases_this_day, k = 7, align = "right",  
-                                             fill = na.fill(Cases_this_day, 0)),
-               fourteen_day_case_avg = rollmean(x = Cases_this_day, k = 14, align = "right",  
-                                                fill = na.fill(Cases_this_day, 0)),
-               seven_day_death_avg = rollmean(x = Deaths_this_day, k = 7, align = "right",  
-                                              fill = na.fill(Deaths_this_day, 0)),
-               fourteen_day_death_avg = rollmean(x = Deaths_this_day, k = 14, align = "right",  
-                                                 fill = na.fill(Deaths_this_day, 0)))
+        #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+        dplyr::select(date, new_cases, new_deaths) %>% 
+        mutate(seven_day_case_avg = rollmean(x = new_cases, k = 7, align = "right",  
+                                             fill = na.fill(new_cases, 0)),
+               fourteen_day_case_avg = rollmean(x = new_cases, k = 14, align = "right",  
+                                                fill = na.fill(new_cases, 0)),
+               seven_day_death_avg = rollmean(x = new_deaths, k = 7, align = "right",  
+                                              fill = na.fill(new_deaths, 0)),
+               fourteen_day_death_avg = rollmean(x = new_deaths, k = 14, align = "right",  
+                                                 fill = na.fill(new_deaths, 0)))
     })
     
     output$ts_epi_curve_ll_confirmed <- renderPlotly({
       epi_curve_ll() %>%
-        plot_ly(x = ~Reporting_Date) %>%
-        add_bars(y = ~Cases_this_day, 
+        plot_ly(x = ~date) %>%
+        add_bars(y = ~new_cases, 
                  # colors = ~mycolors,
                  name = "Cases this day", 
                  hoverinfo = "text+x",
-                 text = ~paste0("<b>Confirmed cases in ", input$selected_country, ": </b>", Cases_this_day)) %>%
+                 text = ~paste0("<b>Confirmed cases in ", input$selected_country, ": </b>", total_cases)) %>%
         add_trace(y = ~seven_day_case_avg, 
                   name = "7-day rolling avg. cases", 
                   type = "scatter", 
@@ -274,12 +266,12 @@ shinyServer(function(input, output, session) {
     
     output$ts_epi_curve_ll_deaths<- renderPlotly({
       epi_curve_ll() %>%
-        plot_ly(x = ~Reporting_Date) %>%
-        add_bars(y = ~Deaths_this_day, 
+        plot_ly(x = ~date) %>%
+        add_bars(y = ~new_deaths, 
                  # colors = ~mycolors,
                  name = "Cases this day", 
                  hoverinfo = "text+x",
-                 text = ~paste0("<b>Deaths in ", input$selected_country, ": </b>", Deaths_this_day)) %>%
+                 text = ~paste0("<b>Deaths in ", input$selected_country, ": </b>", new_deaths)) %>%
         add_trace(y = ~seven_day_death_avg, 
                   name = "7-day rolling avg. cases", 
                   type = "scatter", 
@@ -304,92 +296,9 @@ shinyServer(function(input, output, session) {
         )
     })
     
-    df_age_sex <- reactive({
-      df_LL_server() %>% 
-        filter(Country == input$selected_country) %>%
-        # filtering out individuals with missing sex or age
-        # creating age categories
-        mutate(age_group = cut(as.numeric(Age), 
-                               breaks = c(0, 5, 9, 19, 29, 39, 49, 59, 69, 79, Inf),
-                               labels = c("< 5", "5-9", "10-19", "20-29", "30-39", "40-49",
-                                          "50-59", "60-69", "70-79", "> 80"), 
-                               right = TRUE)) %>% 
-        # for each age group and sex, sum the number of cases and the number of deaths
-        filter(!is.na(age_group)) %>%
-        filter(!is.na(Sex)) %>%
-        group_by(age_group, Sex) %>%
-        summarise(
-          confirmed = sum(FinalEpiClassification == "Confirmed", na.rm = TRUE),
-          deaths = sum(FinalOutcome == "Dead", na.rm = TRUE)
-        ) %>%
-        ungroup()
-    })
-    
-    
-    # long format for the stacked bar chart
-    df_age_sex_long <-  reactive({
-      df_age_sex() %>% 
-        # subtract out deaths from reported count to get CASES ALONE 
-        # needed since we're going to build a STACKED bar chart.
-        mutate(
-          `Confirmed cases` = confirmed - deaths,
-          Deaths = deaths,
-          Sex = recode_factor(Sex,
-                              "M" = "Male",
-                              "F" = "Female")) %>% 
-        pivot_longer(names_to = "classification", cols = c(
-          `Confirmed cases`, 
-          Deaths)) %>% 
-        mutate(classification = fct_relevel(classification, c( 
-          "Confirmed cases", 
-          "Deaths")),
-          # in order for the pyramid to be correctly displayed, one of the groups should be negative
-          # we will hack the axis later to make it the absolute number
-          value = ifelse(Sex == "Female", value * (-1), value),
-          # value to be passed to hoverinfo in plotly
-          text_value = paste0("<b>", classification, ": </b>", abs(value)),
-          # creating a variable with the absolute number of reported cases
-          color_info = paste0(Sex, " ", classification),
-          color_info = fct_relevel(color_info, c("Female Confirmed cases", "Female Deaths",
-                                                 "Male Confirmed cases","Male Deaths")),
-          # calculating CFR
-          CFR_confirmed = round(deaths / confirmed * 100, 2))
-    })
-    
-    # age-sex pyramid plot of confirmed cases
-    output$piramid_age_sex <- renderPlotly({
-      df_age_sex_long() %>%
-        plot_ly(x = ~value, # inverting x axis
-                y = ~age_group, # inverting x axis
-                color = ~color_info,
-                colors = c("Female Confirmed cases" = "#66C2A5",
-                           "Female Deaths" = "red",
-                           "Male Confirmed cases" = "#8DA0CB",
-                           "Male Deaths" = "red"),
-                customdata = ~text_value,
-                hoverinfo = "text",
-                text = ~paste0("<b>Sex: </b>", Sex,
-                               "<br><b>Age group: </b>", age_group,
-                               "<br>", text_value,
-                               "<br><b>CFR (based on confirmed cases): </b>", CFR_confirmed, "%")) %>%
-        # changing orientations to horizontal
-        add_bars(orientation = "h") %>%
-        layout(bargap = 0.1,
-               # needed to make bars correctly placed
-               barmode = "relative",
-               title = paste0("Age-sex distribution of all COVID-19 confirmed cases in "),
-               yaxis = list(title = "Age group"),
-               xaxis = list(title = "COVID-19 confirmed cases and deaths")
-               # legend = list(orientation = "h",   # show entries horizontally
-               #               xanchor = "center",  # use center of legend as anchor
-               #               x = 0.5)
-        )
-    })
-    
-  })
-  
+   
   # Cases per Million map
-  output$map_cases_per_million <- renderLeaflet({
+  output$map_total_cases_per_million <- renderLeaflet({
     africa_map_server() %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
@@ -428,7 +337,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Deaths per Million map
-  output$map_deaths_per_million <- renderLeaflet({
+  output$map_total_deaths_per_million <- renderLeaflet({
     africa_map_server() %>% 
       leaflet(options = leafletOptions(minZoom = 3, maxZoom = 3)) %>%
       addTiles() %>%
@@ -819,23 +728,23 @@ shinyServer(function(input, output, session) {
     df_regional_comparison <- reactive({
       df_country_server() %>% 
         filter(Region %in% input$selected_region) %>% 
-        # filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>%
-        dplyr::select(Reporting_Date, Cases_per_million, Deaths_per_million, Country)
+        # filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>%
+        dplyr::select(date, total_cases_per_million, total_deaths_per_million, Country)
     })
     
     output$ts_df_regional_comparison <- renderPlotly({
-      plot_ly(df_regional_comparison(), x = ~Reporting_Date, y = ~Cases_per_million, 
+      plot_ly(df_regional_comparison(), x = ~date, y = ~total_cases_per_million, 
               color = ~Country, 
               type = "scatter", mode = "lines",
               hoverinfo = "text", visible = TRUE,
               text = ~paste("<b>Country: </b>", Country, 
-                            "<br><b>Date: </b>", Reporting_Date,
-                            "<br><b>Confirmed cases per million: </b>", round(Cases_per_million, 2))) %>%
-        add_trace(y = ~Deaths_per_million, color = ~Country, type = "scatter", mode = "lines",
+                            "<br><b>Date: </b>", date,
+                            "<br><b>Confirmed cases per million: </b>", round(total_cases_per_million, 2))) %>%
+        add_trace(y = ~total_deaths_per_million, color = ~Country, type = "scatter", mode = "lines",
                   hoverinfo = "text", visible = FALSE,
                   text = ~paste("<b>Country: </b>", Country, 
-                                "<br><b>Date: </b>", Reporting_Date,
-                                "<br><b>Deaths cases per million: </b>", round(Deaths_per_million, 2))) %>%
+                                "<br><b>Date: </b>", date,
+                                "<br><b>Deaths cases per million: </b>", round(total_deaths_per_million, 2))) %>%
         layout(updatemenus = list(
           list(
             y = 0,
@@ -860,16 +769,16 @@ shinyServer(function(input, output, session) {
     
     output$table_all_regions <- DT::renderDT(
       df_country_server() %>% 
-        #filter(Reporting_Date >= input$selected_dates[1] & Reporting_Date <= input$selected_dates[2]) %>% 
-        dplyr::select(Reporting_Date, Country, Cum_cases, Cum_deaths, Region, Population) %>% 
+        #filter(date >= input$selected_dates[1] & date <= input$selected_dates[2]) %>% 
+        dplyr::select(date, Country, total_cases, total_deaths, Region, Population) %>% 
         group_by(Country) %>% 
-        slice(which.max(Reporting_Date)) %>% 
+        slice(which.max(date)) %>% 
         group_by(Region) %>% 
-        mutate(Cum_cases_region = sum(Cum_cases),
-               Cum_deaths_region = sum(Cum_deaths),
+        mutate(total_cases_region = sum(total_cases),
+               total_deaths_region = sum(total_deaths),
                Population = sum(Population)) %>% 
-        slice(which.max(Reporting_Date)) %>% 
-        rename(Cases = Cum_cases_region, Deaths = Cum_deaths_region) %>% 
+        slice(which.max(date)) %>% 
+        rename(Cases = total_cases_region, Deaths = total_deaths_region) %>% 
         mutate(
           `Crude \nCFR (%)` = round(100 * Deaths / Cases, digits = 1),
           `Cases per million` = round((Cases / Population) * 1e6, 2),
