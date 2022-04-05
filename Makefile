@@ -4,12 +4,15 @@ SERVICE:=superset
 ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
 CRON:=
+ARGS:=
+
 
 DOCKER=docker-compose \
 	--env-file .env \
 	--project-name eph-$(ENV) \
 	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml
+	--file docker/compose-$(ENV).yaml \
+	--file docker/airflow/compose.yaml
 
 # HOST
 
@@ -26,7 +29,15 @@ docker-build:
 
 .PHONY:docker-start
 docker-start: prepare-host-db
+	bash ./scripts/prepare-superset.sh
+	if [ "${ENV}" = "dev" ]; then \
+		$(DOCKER) up -d postgres; \
+		./docker/healthcheck.sh postgres; \
+	fi
+	$(DOCKER) up airflow-initdb
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
+	# ./docker/healthcheck.sh airflow
+	$(DOCKER) exec airflow bash "/tmp/scripts/create-admin.sh"
 
 .PHONY:docker-stop
 docker-stop:
@@ -89,6 +100,12 @@ docker-console:
 .PHONY:docker-run-bash
 docker-run-bash:
 	$(DOCKER) run --rm ${SERVICE} bash
+
+
+.PHONY:docker-down
+docker-down:
+	$(DOCKER) down --volumes --remove-orphans
+
 
 # conda
 
