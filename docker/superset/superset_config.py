@@ -20,6 +20,7 @@ MAPBOX_API_KEY = os.getenv("MAPBOX_API_KEY")
 # Specify the App icon
 APP_ICON = "/static/assets/images/epigraphhub.png"
 APP_ICON_WIDTH = 126
+FAVICONS = [{"href": "/static/assets/images/favicon.png"}]
 
 # Specify where clicking the logo would take the user
 # e.g. setting it to '/' would take the user to '/superset/welcome/'
