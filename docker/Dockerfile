@@ -74,7 +74,6 @@ COPY --chown=epigraphhub:epigraphhub docker/superset/superset.sh /opt/superset.s
 # note: these files can be overwriten by docker compose volumes in order to
 #       use the last version without building the image again.
 COPY --chown=epigraphhub:epigraphhub docker/superset/ /opt/superset
-RUN ls /opt/superset/*
 
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \
