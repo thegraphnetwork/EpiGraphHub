@@ -117,3 +117,16 @@ LANGUAGES = {
     # "sl": {"flag": "si", "name": "Slovenian"},
     # "nl": {"flag": "nl", "name": "Dutch"},
 }
+
+# EMAIL
+
+MAIL_SERVER = 'smtp-relay.sendinblue.com'
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'ivan.ogasawara+epigraphhub@gmail.com'
+MAIL_PASSWORD = 'Q4VY5k0rOAjg6Uvq'
+MAIL_DEFAULT_SENDER = 'noreply@epigraphhub.org'
+
+# REGISTRATION
+
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = "admin"
