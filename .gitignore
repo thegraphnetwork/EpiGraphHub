@@ -146,3 +146,6 @@ cython_debug/
 
 # Ansible
 .vault_pass.txt
+Data_Collection/CRON_scripts/.DS_Store
+Data_Collection/CRON_scripts/.DS_Store
+Documentation/.Rhistory
