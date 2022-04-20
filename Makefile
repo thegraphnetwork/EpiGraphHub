@@ -3,12 +3,16 @@ SERVICE:=epigraphhub
 # options: dev, prod
 ENV:=dev
 
+DOCKER_BASE=docker-compose \
+	--env-file .env \
+	--file docker/compose-base.yaml \
+
 ifeq ($(ENV), dev)
-DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-dev.yaml
+DOCKER=$(DOCKER_BASE) --project-name eph-dev --file docker/compose-dev.yaml
 endif
 
 ifeq ($(ENV), prod)
-DOCKER=docker-compose --env-file .env --file docker/compose-base.yaml --file docker/compose-prod.yaml
+DOCKER=$(DOCKER_BASE) --project-name eph-prod --file docker/compose-prod.yaml
 endif
 
 
