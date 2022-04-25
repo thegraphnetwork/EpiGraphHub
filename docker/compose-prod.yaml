@@ -1,7 +1,10 @@
 version: '3.4'
 services:
 
-  epigraphhub:
+  epigraphhub-superset:
+    depends_on:
+      - epigraphhub-db
+      - epigraphhub-celery
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_HOST}:/opt/data/superset/superset.db

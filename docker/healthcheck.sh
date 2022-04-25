@@ -4,7 +4,7 @@ PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && cd ../ 
 
 env $(cat ${PROJECT_DIR}/.env)
 
-export CONTAINER_NAME=${1:-"epigraphhub"}
+export CONTAINER_NAME=${1:-"epigraphhub-superset"}
 export CONTAINER_NAME="eph-${ENV:-dev}_${CONTAINER_NAME}_1"
 
 echo "[II] Checking ${CONTAINER_NAME} ..."

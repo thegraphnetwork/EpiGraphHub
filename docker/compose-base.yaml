@@ -1,7 +1,8 @@
 version: '3.4'
 
 services:
-  epigraphhub:
+  epigraphhub-base:
+    image: epigraphhub-base
     env_file:
       - ../.env
     build:
@@ -12,6 +13,11 @@ services:
         #       the .env file
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+
+  epigraphhub-superset:
+    image: epigraphhub-base
+    env_file:
+      - ../.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${SUPERSET_PORT}/health"]
       interval: 20s
@@ -22,6 +28,35 @@ services:
       - ..:/opt/EpiGraphHub
     network_mode: host
 
+  epigraphhub-redis:
+    hostname: epigraphhub-redis
+    image: redis:alpine
+    environment:
+      DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
+      ALLOW_EMPTY_PASSWORD: "no"
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s  # requires docker-compose 3.4
+    ports:
+      - ${REDIS_PORT}:6379
+    command: redis-server
+
+  epigraphhub-celery:
+    image: epigraphhub-celery
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.celery
+    depends_on:
+      - epigraphhub-redis
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/opt/EpiGraphHub
+
   epigraphhub-db:
     hostname: epigraphhub-db
     build:
@@ -29,3 +64,18 @@ services:
       dockerfile: docker/Dockerfile.db
     env_file:
       - ../.env
+
+  epigraphhub-flower:
+    image: mher/flower:0.9.7
+    env_file:
+      - ../.env
+    depends_on:
+      - epigraphhub-redis
+    command: [
+      "flower",
+      "--broker=redis://redis:${REDIS_PORT}/0",
+      "--port=8888",
+      "--basic_auth=admin:${FLOWER_PASSWORD}"
+    ]
+    ports:
+      - ${FLOWER_PORT}:8888

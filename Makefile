@@ -1,5 +1,5 @@
-SERVICES:=epigraphhub
-SERVICE:=epigraphhub
+SERVICES:=epigraphhub-superset
+SERVICE:=epigraphhub-superset
 # options: dev, prod
 ENV:=dev
 
@@ -13,8 +13,8 @@ DOCKER=docker-compose \
 
 .PHONY:docker-build
 docker-build:
-	$(DOCKER) build
-	$(DOCKER) pull
+	$(DOCKER) build ${SERVICES}
+	$(DOCKER) pull ${SERVICES}
 
 
 .PHONY:docker-start
