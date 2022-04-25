@@ -80,19 +80,21 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
+![fig1](https://user-images.githubusercontent.com/140123/165057109-f09d6e8d-6ca2-405f-b912-7e068f20e39a.png)
+EpigraphHub is an entirely open source Data integration platform focused on Epidemiological analyses.
+                                   
 
 
 ### Built With
 
-
+EpigraphHub is built on top of the industry-leading opensource BI platform [Apache Superset](https://superset.apache.org) enriched by our own analytical libraries in Python and R.
 
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
+To get a feel of EpigraphHub as a user, please check it out at **[Epigraphhub.org](https://epigraphhub.org)**.
 
-To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
@@ -106,11 +108,9 @@ To get a local copy up and running follow these simple steps.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-See Sphynx demo
 <!-- ARCHITECURE -->
-![fig1](https://user-images.githubusercontent.com/140123/165057109-f09d6e8d-6ca2-405f-b912-7e068f20e39a.png)
+
 
 
 
