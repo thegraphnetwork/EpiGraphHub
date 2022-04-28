@@ -120,11 +120,11 @@ LANGUAGES = {
 
 # EMAIL
 
-MAIL_SERVER = 'smtp-relay.sendinblue.com'
+MAIL_SERVER = 'smtp.gmail.com'
 MAIL_USE_TLS = True
-MAIL_USERNAME = 'ivan.ogasawara+epigraphhub@gmail.com'
-MAIL_PASSWORD = 'Q4VY5k0rOAjg6Uvq'
-MAIL_DEFAULT_SENDER = 'noreply@epigraphhub.org'
+MAIL_USERNAME = 'epigraphhub@thegraphnetwork.org'
+MAIL_PASSWORD = 'vlb_1GqfK7c'
+MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
 
 # REGISTRATION
 
