@@ -122,6 +122,7 @@ LANGUAGES = {
 
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_USE_TLS = True
+MAIL_PORT = 587
 MAIL_USERNAME = 'epigraphhub@thegraphnetwork.org'
 MAIL_PASSWORD = 'vlb_1GqfK7c'
 MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
@@ -129,7 +130,7 @@ MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
 # REGISTRATION
 
 AUTH_USER_REGISTRATION = True
-AUTH_USER_REGISTRATION_ROLE = "admin"
+AUTH_USER_REGISTRATION_ROLE = os.getenv("SUPERSET_DEFAULT_NEW_ROLES", "Public")
 
 # RECAPTCHA
 RECAPTCHA_USE_SSL = False
