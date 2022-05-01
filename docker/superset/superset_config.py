@@ -130,3 +130,9 @@ MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
 
 AUTH_USER_REGISTRATION = True
 AUTH_USER_REGISTRATION_ROLE = "admin"
+
+# RECAPTCHA
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PUBLIC_KEY = 'public'
+RECAPTCHA_PRIVATE_KEY = 'private'
+RECAPTCHA_OPTIONS = {'theme': 'white'}
