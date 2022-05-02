@@ -120,11 +120,14 @@ LANGUAGES = {
 
 # EMAIL
 
-MAIL_SERVER = 'smtp.gmail.com'
-MAIL_USE_TLS = True
-MAIL_PORT = 587
-MAIL_USERNAME = 'epigraphhub@thegraphnetwork.org'
-MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
+MAIL_SERVER = os.getenv("SUPERSET_MAIL_SERVER")
+MAIL_USE_TLS = (
+    os.getenv("SUPERSET_MAIL_USE_TLS").lower() in ["true", "1"]
+)
+MAIL_PORT = int(os.getenv("SUPERSET_MAIL_USE_TLS"))
+MAIL_USERNAME = os.getenv("SUPERSET_MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("SUPERSET_MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER = os.getenv("SUPERSET_MAIL_DEFAULT_SENDER")
 
 # REGISTRATION
 
