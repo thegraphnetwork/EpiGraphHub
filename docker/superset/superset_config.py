@@ -124,7 +124,6 @@ MAIL_SERVER = 'smtp.gmail.com'
 MAIL_USE_TLS = True
 MAIL_PORT = 587
 MAIL_USERNAME = 'epigraphhub@thegraphnetwork.org'
-MAIL_PASSWORD = 'vlb_1GqfK7c'
 MAIL_DEFAULT_SENDER = 'epigraphhub@thegraphnetwork.org'
 
 # REGISTRATION
