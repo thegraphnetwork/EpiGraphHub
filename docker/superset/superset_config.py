@@ -117,3 +117,25 @@ LANGUAGES = {
     # "sl": {"flag": "si", "name": "Slovenian"},
     # "nl": {"flag": "nl", "name": "Dutch"},
 }
+
+# EMAIL
+
+MAIL_SERVER = os.getenv("SUPERSET_MAIL_SERVER")
+MAIL_USE_TLS = (
+    os.getenv("SUPERSET_MAIL_USE_TLS").lower() in ["true", "1"]
+)
+MAIL_PORT = int(os.getenv("SUPERSET_MAIL_PORT"))
+MAIL_USERNAME = os.getenv("SUPERSET_MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("SUPERSET_MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER = os.getenv("SUPERSET_MAIL_DEFAULT_SENDER")
+
+# REGISTRATION
+
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = os.getenv("SUPERSET_DEFAULT_NEW_ROLES", "Public")
+
+# RECAPTCHA
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_OPTIONS = {'theme': 'white'}

@@ -4,21 +4,23 @@ channels:
   - r
   - nodefaults
 dependencies:
-  - python 3.8.*
-  - setuptools
-  - superset >=1.4.1
-  - myst-parser
-  - pandas
-  - pip
+  - fiona
   - geopandas
   - gsheetsdb
   - inquirer
-  - python-dotenv
-  - sqlalchemy
-  - fiona
-  - psycopg2
+  - flask-mail
+  - flask >=1.1.0,<2.0.0
   - lightgbm
   - loguru
+  - myst-parser
+  - pandas
+  - pip
+  - psycopg2
+  - python 3.8.*
+  - python-dotenv
+  - setuptools
+  - sqlalchemy
+  - superset >=1.4.1
   # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
   # - ngboost >=0.3.12
   # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
