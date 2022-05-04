@@ -12,7 +12,7 @@ def load_into_db(table_name, url, engine, log=True):
     
     wget.download(url, out=f'/tmp/temp_{table_name}.csv')
     
-    chunksize = 10**4
+    chunksize = 10**3
     with pd.read_csv(f'/tmp/temp_{table_name}.csv', chunksize = chunksize) as reader:
         
         first = True
