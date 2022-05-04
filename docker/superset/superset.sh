@@ -2,13 +2,13 @@
 
 set -ex
 
+export FLASK_APP=superset
+
 # Initialize the database
 superset db upgrade
 
 if [[ $ENV = "dev" ]]; then
   echo "Running in development mode ..."
-
-  export FLASK_APP=superset
   superset fab create-admin \
     --username admin \
     --firstname Superset \

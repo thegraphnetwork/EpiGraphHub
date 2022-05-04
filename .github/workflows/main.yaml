@@ -50,10 +50,12 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
-    - name: load docker
+    - name: load docker container
       run: |
         make docker-build
         make docker-start SERVICES=epigraphhub
+    - name: load docker
+      run: |
         docker ps
         ./docker/healthcheck.sh
 
