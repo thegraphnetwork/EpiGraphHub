@@ -56,6 +56,7 @@ jobs:
 
     - name: build and start docker containers
       run: |
+        make docker-build SERVICES=epigraphhub-base
         make docker-build
         make docker-start SERVICES=epigraphhub-superset
 
