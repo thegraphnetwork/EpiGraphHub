@@ -2,12 +2,14 @@ version: '3.4'
 
 services:
   epigraphhub-base:
-    image: epigraphhub-base
+    image: epigraphhub/superset-base
     env_file:
       - ../.env
+    profiles:
+      - donotstart
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/superset/Dockerfile.base
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
@@ -15,7 +17,15 @@ services:
         - GID=${GID:-1000}
 
   epigraphhub-superset:
-    image: epigraphhub-base
+    image: epigraphhub/superset
+    build:
+      context: ..
+      dockerfile: docker/superset/Dockerfile.superset
+      args:
+        # note: if you want to use a specific UID and GID, ensure to add it to
+        #       the .env file
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
     env_file:
       - ../.env
     healthcheck:
@@ -49,7 +59,7 @@ services:
     image: epigraphhub-celery
     build:
       context: ..
-      dockerfile: docker/Dockerfile.celery
+      dockerfile: docker/celery/Dockerfile
     depends_on:
       - epigraphhub-redis
     env_file:
@@ -61,7 +71,7 @@ services:
     hostname: epigraphhub-db
     build:
       context: ..
-      dockerfile: docker/Dockerfile.db
+      dockerfile: docker/postgresql/Dockerfile
     env_file:
       - ../.env
 
