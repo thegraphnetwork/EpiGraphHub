@@ -43,7 +43,7 @@ docker-wait:
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:
 	# used for development
-	$(DOCKER) exec -T epigraphhub \
+	$(DOCKER) exec -T epigraphhub-superset \
 		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
 
 
