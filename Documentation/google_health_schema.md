@@ -5,8 +5,7 @@ In the schema `google_health` we have datasets provided by the **Google COVID-19
 
 For example, in the schema `google_health` we have a dataset called `hospitalizations_d` that contains the information related to patients of COVID-19 and hospitals for the regions in the `location_key`. The meaning of the columns of this dataset are explained in the `hospitalizations_d_meta` dataset.
 
-**ATTENTION:**
-You can find information about the strings used in the `location_key` column of the datasets in the `locality_names_0` dataset. 
+> You can find information about the strings used in the `location_key` column of the datasets in the `locality_names_0` dataset.
 
 
 | Table name  | Keys | Content | Source | 
@@ -29,7 +28,7 @@ You can find information about the strings used in the `location_key` column of 
  | vaccinations_search_d | `location_key`, `date`  | Trends in Google searches for COVID-19 vaccination information.| Google COVID-19 Open-Data<sup>1</sup> |
 | weather_d | `location_key`, `date`  | Dated meteorological information for each region. | Google COVID-19 Open-Data<sup>1</sup> |
 
-Google COVID-19 Open-Data<sup>1</sup> - The data was fetched from this reposository:  https://github.com/GoogleCloudPlatform/covid-19-open-data
+> **Google COVID-19 Open-Data<sup>1</sup>** - The data was fetched from this reposository:  https://github.com/GoogleCloudPlatform/covid-19-open-data
 
 
 
