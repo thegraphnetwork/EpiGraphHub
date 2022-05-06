@@ -56,14 +56,17 @@ jobs:
 
     - name: build and start docker containers
       run: |
-        make docker-build SERVICES=epigraphhub-base
         make docker-build
         make docker-start SERVICES=epigraphhub-superset
 
     - name: wait for the services are properly working
       run: |
         docker ps
-        ./docker/healthcheck.sh
+        ./docker/healthcheck.sh epigraphhub-db
+        ./docker/healthcheck.sh epigraphhub-redis
+        # ./docker/healthcheck.sh epigraphhub-celery
+        ./docker/healthcheck.sh epigraphhub-flower
+        ./docker/healthcheck.sh epigraphhub-superset
 
     - name: prepare database
       run: make docker-dev-prepare-db

@@ -2,6 +2,7 @@ SERVICES:=epigraphhub-superset
 SERVICE:=epigraphhub-superset
 # options: dev, prod
 ENV:=dev
+CONSOLE:=bash
 
 DOCKER=docker-compose \
 	--env-file .env \
@@ -13,6 +14,7 @@ DOCKER=docker-compose \
 
 .PHONY:docker-build
 docker-build:
+	$(DOCKER) build epigraphhub-base
 	$(DOCKER) build ${SERVICES}
 	$(DOCKER) pull ${SERVICES}
 
@@ -57,9 +59,10 @@ docker-run-cron:
 	# 	/opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh
 
 
-.PHONY:docker-bash
-docker-bash:
-	$(DOCKER) exec ${SERVICE} bash
+.PHONY:docker-console
+docker-console:
+	$(DOCKER) exec ${SERVICE} ${CONSOLE}
+
 
 .PHONY:docker-run-bash
 docker-run-bash:
