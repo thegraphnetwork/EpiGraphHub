@@ -11,6 +11,7 @@ Welcome to EpiGraphHub's Documentation!
    :caption: Contents:
    
    Overview<overview>
+   Available Datasets<datasets/index.rst>
    Data Sources<datasources>
    Data Transformation and Harmonization<harmonization>
    Data Storage<datastorage>

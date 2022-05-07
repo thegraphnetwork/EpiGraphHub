@@ -1,9 +1,10 @@
 
-## schema = colombia
+## Colombian COVID-19 data
+This dataset is located in the `colombia` schema.
 
-In the schema `colombia` we currently have 3 datasets related to this country. Up to now, the datasets available are related to the COVID-19 and stratified by departamento<sup>1</sup>. They were provided by the **Instituto Nacional de Salud<sup>2</sup>**. In the table below, we have a brief description of the content of each dataset. For each of them, we have another dataset named `{dataset_name}_meta` that contains an explanation of the columns in the dataset.
+In the  `colombia` schema, we currently have 3 tables related to this country. So far, the available data are related to the COVID-19 and stratified by departamento<sup>1</sup>. They were provided by the **Instituto Nacional de Salud<sup>2</sup>**. In the table below, we have a brief description of the content of each dataset. For each of them, we have another dataset named `{dataset_name}_meta` that contains an explanation of the columns in the dataset.
 
-For example, in the schema `colombia` we have a dataset called `casos_positivos_covid` that represents the daily records timelines for positive cases in each `departamento`<sup>1</sup> of Colombia. The meaning of the columns of this dataset are explained in the `casos_positivos_covid_meta` dataset.
+For example, in the `colombia` schema, we have a table called `casos_positivos_covid` that represents the daily records timelines for positive cases in each `departamento`<sup>1</sup> of Colombia. The meaning of the columns of this dataset are explained in the `casos_positivos_covid_meta` dataset.
 
 | Table name  | Keys | Content | Source | 
 | :----: | :-----:  | :--------: | :----: |

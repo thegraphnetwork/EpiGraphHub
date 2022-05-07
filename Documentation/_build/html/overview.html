@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Overview of the EpiGraphHub Platform &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
@@ -14,7 +15,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Sources and Aquisition" href="datasources.html" />
+    <link rel="next" title="Datasets available on the EpigraphHub platform" href="datasets/index.html" />
     <link rel="prev" title="Welcome to EpiGraphHub’s Documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -32,29 +33,29 @@
 
           <div class="body" role="main">
             
-  <div class="tex2jax_ignore mathjax_ignore section" id="overview-of-the-epigraphhub-platform">
+  <section class="tex2jax_ignore mathjax_ignore" id="overview-of-the-epigraphhub-platform">
 <h1>Overview of the EpiGraphHub Platform<a class="headerlink" href="#overview-of-the-epigraphhub-platform" title="Permalink to this headline">¶</a></h1>
 <p>The EpigraphHub platform is composed by a Postgresql database server integrated with a customized Apache Superset web frontend for data access and exploration.</p>
-<div class="section" id="database-server-structure">
+<section id="database-server-structure">
 <h2>Database Server structure<a class="headerlink" href="#database-server-structure" title="Permalink to this headline">¶</a></h2>
 <p>Our database server is compised of three main databases as shown in the figure below, with different access priviledges.</p>
 <p><img alt="server" src="_images/db_access.png" /></p>
-<div class="section" id="epigraphhub-database">
+<section id="epigraphhub-database">
 <h3><em>epigraphhub</em> database<a class="headerlink" href="#epigraphhub-database" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">epigraphhub</span></code> database contains exclusively public domain data, either generated internally by the project or integrated from other sources. I can be read by all users but only EpigraphHub analysts can write to it, creating or updating tables.</p>
-</div>
-<div class="section" id="privatehub-database">
+</section>
+<section id="privatehub-database">
 <h3><em>privatehub</em> database<a class="headerlink" href="#privatehub-database" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">privatehub</span></code> database is a database to which only EpigraphHub analysts can access. Writing privileges to specific schemas or tables are granted on a per project basis to maximize data security.</p>
 <p>This database contains data made available to the Graph Network by partners through a specific usage agreement.</p>
 <p>Within this database data from different partners are kept on separate schemas in order to allow for optimal access control.</p>
-</div>
-<div class="section" id="sandbox-database">
+</section>
+<section id="sandbox-database">
 <h3><em>sandbox</em> database<a class="headerlink" href="#sandbox-database" title="Permalink to this headline">¶</a></h3>
 <p>This database is to be used for testing and experimentation in database modeling. Any user has read and write privileges on it but no dataset is guaranteed to be persisted for long periods of time.</p>
-</div>
-</div>
-<div class="section" id="database-roles">
+</section>
+</section>
+<section id="database-roles">
 <h2>Database roles<a class="headerlink" href="#database-roles" title="Permalink to this headline">¶</a></h2>
 <p>Access privileges are granted to database users through groups. Notice that this is only for direct database access. Access through EpiGraphHub’s <a class="reference external" href="https://epigraphhub.org">web frontend</a> is managed independently.</p>
 <p>Two main database user groups have been created for this purpose:</p>
@@ -63,8 +64,8 @@
 group of users with read-only access to the epigraphhub database and full access to the sandbox.</p></li>
 <li><p><em><strong>hubbers:</strong></em> Group for analysts which are members of the Graph network and that have been cleared to access restricted datasets.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -90,10 +91,12 @@ group of users with read-only access to the epigraphhub database and full access
 <li class="toctree-l2"><a class="reference internal" href="#database-roles">Database roles</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="datasets/index.html">Available Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying, Analysis, and Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a></li>
 </ul>
 
 <div class="relations">
@@ -101,7 +104,7 @@ group of users with read-only access to the epigraphhub database and full access
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to EpiGraphHub’s Documentation!</a></li>
-      <li>Next: <a href="datasources.html" title="next chapter">Data Sources and Aquisition</a></li>
+      <li>Next: <a href="datasets/index.html" title="next chapter">Datasets available on the EpigraphHub platform</a></li>
   </ul></li>
 </ul>
 </div>
@@ -131,7 +134,7 @@ group of users with read-only access to the epigraphhub database and full access
       &copy;2021, The Graph Network.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
