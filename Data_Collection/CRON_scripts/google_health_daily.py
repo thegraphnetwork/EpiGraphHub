@@ -4,6 +4,7 @@ This script was created to update the google health data daily.
 
 from google_health import load_into_db
 from sqlalchemy import create_engine 
+from data_types import dtype_daily
 
 dict_tables = {
     'covid19_series_d': 'https://storage.googleapis.com/covid19-open-data/v3/epidemiology.csv', 
@@ -22,4 +23,5 @@ dict_tables = {
 engine = create_engine('postgresql://epigraph:epigraph@localhost:5432/epigraphhub', pool_pre_ping=True)
 
 for t,u in dict_tables.items():
-    load_into_db(t, u, engine)
+    print(t)
+    load_into_db(t, u, dtype_daily[t], engine)
