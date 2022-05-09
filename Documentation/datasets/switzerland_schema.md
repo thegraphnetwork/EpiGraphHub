@@ -1,9 +1,9 @@
 
-## schema = switzerland
+## Switzerland COVID-19 data
 
-In the schema `switzerland` we have datasets related to this country. Up to now, the datasets available are related to the COVID-19 and stratified by canton<sup>1</sup>. They were provided by the FOPH<sup>2</sup>. In the table below, we have a brief description of the content of each dataset. For each of them, we have another dataset named `{dataset_name}_meta` that contains an explanation of the columns in the dataset.
+In the  `switzerland` schema, we have data related to this country. So far, the tables available are related to the COVID-19 and stratified by canton<sup>1</sup>. They were provided by the FOPH<sup>2</sup>. In the table below, we have a brief description of the content of each table. For each of them, we have another table named `{table_name}_meta` that contains an explanation of the columns in the table.
 
-For example, in the schema `switzerland` we have a dataset called `foph_cases_d` that represents the daily records timelines for cases in each canton of Switzerland. The meaning of the columns of this dataset are explained in the `foph_cases_d_meta` dataset.
+For example, in the `switzerland` schema, we have a table called `foph_cases_d` that represents the daily records timelines for cases in each canton of Switzerland. The meaning of the columns of this table are explained in the `foph_cases_d_meta` table.
 
 > The `georegion` column is a two-letter code representing the cantons of Switzerland. 
 

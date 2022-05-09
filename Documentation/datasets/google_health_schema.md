@@ -1,11 +1,11 @@
 
-## schema = google_health
+## Google COVID-19 data
 
-In the schema `google_health` we have datasets provided by the **Google COVID-19 Open-Data<sup>1</sup>**. In the table below, we have a brief description of the content of each dataset. For each of them, we have another dataset named `{dataset_name}_meta` that contains an explanation of the columns in the dataset.
+In the `google_health` schema, we have data provided by the **Google COVID-19 Open-Data<sup>1</sup>**. In the table below, we have a brief description of the content of each database table. For each of them, we have another table named `{table_name}_meta` that contains an explanation of the columns in the table.
 
-For example, in the schema `google_health` we have a dataset called `hospitalizations_d` that contains the information related to patients of COVID-19 and hospitals for the regions in the `location_key`. The meaning of the columns of this dataset are explained in the `hospitalizations_d_meta` dataset.
+For example, in the  `google_health` schema, we have a table called `hospitalizations_d` that contains the information related to patients of COVID-19 and hospitals for the regions in the `location_key`. The meaning of the columns of this table are explained in the `hospitalizations_d_meta` table.
 
-> You can find information about the strings used in the `location_key` column of the datasets in the `locality_names_0` dataset.
+> You can find information about the strings used in the `location_key` column of the tables in the `locality_names_0` table.
 
 
 | Table name  | Keys | Content | Source | 
@@ -20,7 +20,7 @@ For example, in the schema `google_health` we have a dataset called `hospitaliza
 | government_response_d | `location_key`, `date`  | Government interventions and their relative stringency. | Google COVID-19 Open-Data<sup>1</sup> |
 | health | `location_key`  | Health indicators for the region. | Google COVID-19 Open-Data<sup>1</sup> |
 | hospitalizations_d | `location_key`, `date`  | Information related to patients of COVID-19 and hospitals. | Google COVID-19 Open-Data<sup>1</sup> |
-| locality_names_0 | `location_key` | Various names and codes, useful for joining with other datasets. | Google COVID-19 Open-Data<sup>1</sup> |
+| locality_names_0 | `location_key` | Various names and codes, useful for joining with other tables. | Google COVID-19 Open-Data<sup>1</sup> |
 | mobility_d | `location_key`, `date`  | Various metrics related to the movement of people.| Google COVID-19 Open-Data<sup>1</sup>|
 | search_trends_d | `location_key`, `date`  | Trends in symptom search volumes due to COVID-19. | Google COVID-19 Open-Data<sup>1</sup> |
 | vaccinations_access | `location_key`, `date`  | Metrics quantifying access to COVID-19 vaccination sites. | Google COVID-19 Open-Data<sup>1</sup> |
@@ -28,7 +28,7 @@ For example, in the schema `google_health` we have a dataset called `hospitaliza
  | vaccinations_search_d | `location_key`, `date`  | Trends in Google searches for COVID-19 vaccination information.| Google COVID-19 Open-Data<sup>1</sup> |
 | weather_d | `location_key`, `date`  | Dated meteorological information for each region. | Google COVID-19 Open-Data<sup>1</sup> |
 
-> **Google COVID-19 Open-Data<sup>1</sup>** - The data was fetched from this reposository:  https://github.com/GoogleCloudPlatform/covid-19-open-data
+> **Google COVID-19 Open-Data<sup>1</sup>** - The data was fetched from this repository:  https://github.com/GoogleCloudPlatform/covid-19-open-data
 
 
 

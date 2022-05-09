@@ -1,5 +1,5 @@
 # Data Sources and Aquisition 
-Epigraphhub database aggregates data from multiple sources which are collect and kept up to date via our data aquisition scripts.
+Epigraphhub database aggregates data from multiple sources which are collectd and kept up to date via our data aquisition automation system.
 
 All the data coming from an external source should give origin to on or more tables organized in schemas. For example, maps should be stored in the `map` schema. 
 
