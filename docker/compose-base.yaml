@@ -96,7 +96,7 @@ services:
     ports:
       - ${FLOWER_PORT}:8888
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "http://localhost:${FLOWER_PORT}/healthcheck"]
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8888/healthcheck"]
       interval: 60s
       timeout: 10s
       retries: 5
