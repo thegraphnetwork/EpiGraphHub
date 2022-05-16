@@ -19,6 +19,7 @@ env:
   POSTGRES_DB: dev_epigraphhub
   POSTGRES_DB_PRIVATE: dev_privatehub
   POSTGRES_DB_SANDBOX: dev_sandbox
+  REDIS_HOST: epigraphhub-redis
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088

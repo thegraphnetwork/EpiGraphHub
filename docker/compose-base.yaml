@@ -18,6 +18,7 @@ services:
 
   epigraphhub-superset:
     image: epigraphhub/superset
+    restart: unless-stopped
     build:
       context: ..
       dockerfile: docker/superset/Dockerfile.superset
@@ -29,22 +30,28 @@ services:
     env_file:
       - ../.env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${SUPERSET_PORT}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 60s
       timeout: 10s
       retries: 5
       start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
-    network_mode: host
+    ports:
+      - ${SUPERSET_PORT}:8088
+    depends_on:
+      - epigraphhub-redis
+      - epigraphhub-celery
+      - epigraphhub-celery-beat
 
   epigraphhub-redis:
     hostname: epigraphhub-redis
+    restart: unless-stopped
     image: redis:alpine
-    environment:
-      DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
-      ALLOW_EMPTY_PASSWORD: "no"
-      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    # environment:
+    #   DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
+    #   ALLOW_EMPTY_PASSWORD: "no"
+    #   REDIS_PASSWORD: "${REDIS_PASSWORD}"
     healthcheck:
       test: ["CMD", "redis-cli","ping"]
       interval: 60s
@@ -53,10 +60,12 @@ services:
       start_period: 30s  # requires docker-compose 3.4
     ports:
       - ${REDIS_PORT}:6379
-    command: redis-server
+    volumes:
+      - redis:/data
 
   epigraphhub-celery:
     image: epigraphhub-celery
+    restart: unless-stopped
     build:
       context: ..
       dockerfile: docker/celery/Dockerfile
@@ -66,9 +75,43 @@ services:
       - ../.env
     volumes:
       - ..:/opt/EpiGraphHub
+    command: [
+      "celery",
+      "--app=superset.tasks.celery_app:app",
+      "worker",
+      "-Ofair",
+      "-l",
+      "INFO"
+    ]
+
+  epigraphhub-celery-beat:
+    image: epigraphhub-celery
+    hostname: epigraphhub-celery-beat
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: docker/celery/Dockerfile
+    depends_on:
+      - epigraphhub-redis
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/opt/EpiGraphHub
+    command: [
+      "celery",
+      "--app=superset.tasks.celery_app:app",
+      "beat",
+      "--pidfile",
+      "/tmp/celerybeat.pid",
+      "-l",
+      "INFO",
+      "-s",
+      "${SUPERSET_HOME}/celerybeat-schedule"
+    ]
 
   epigraphhub-db:
     hostname: epigraphhub-db
+    restart: unless-stopped
     build:
       context: ..
       dockerfile: docker/postgresql/Dockerfile
@@ -83,6 +126,7 @@ services:
 
   epigraphhub-flower:
     image: mher/flower:0.9.7
+    restart: unless-stopped
     env_file:
       - ../.env
     depends_on:
@@ -101,3 +145,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s  # requires docker-compose 3.4
+
+volumes:
+  redis:
