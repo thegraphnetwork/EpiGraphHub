@@ -85,6 +85,12 @@ services:
       "-l",
       "INFO"
     ]
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  # requires docker-compose 3.4
 
   epigraphhub-celery-beat:
     image: epigraphhub-celery
@@ -111,6 +117,12 @@ services:
       "-s",
       "${SUPERSET_HOME}/celerybeat-schedule"
     ]
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  # requires docker-compose 3.4
 
   epigraphhub-db:
     hostname: epigraphhub-db

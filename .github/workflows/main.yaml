@@ -65,7 +65,8 @@ jobs:
         docker ps
         ./docker/healthcheck.sh epigraphhub-db
         ./docker/healthcheck.sh epigraphhub-redis
-        # ./docker/healthcheck.sh epigraphhub-celery
+        ./docker/healthcheck.sh epigraphhub-celery
+        ./docker/healthcheck.sh epigraphhub-celery-beat
         ./docker/healthcheck.sh epigraphhub-flower
         ./docker/healthcheck.sh epigraphhub-superset
 
