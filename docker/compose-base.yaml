@@ -37,6 +37,7 @@ services:
       start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
+      - ${SUPERSET_DB_PATH_HOST}:/opt/data/superset/superset.db
     ports:
       - ${SUPERSET_PORT}:8088
     depends_on:
@@ -75,6 +76,7 @@ services:
       - ../.env
     volumes:
       - ..:/opt/EpiGraphHub
+      - ${SUPERSET_DB_PATH_HOST}:/opt/data/superset/superset.db
     command: [
       "celery",
       "--app=superset.tasks.celery_app:app",
@@ -97,6 +99,7 @@ services:
       - ../.env
     volumes:
       - ..:/opt/EpiGraphHub
+      - ${SUPERSET_DB_PATH_HOST}:/opt/data/superset/superset.db
     command: [
       "celery",
       "--app=superset.tasks.celery_app:app",
