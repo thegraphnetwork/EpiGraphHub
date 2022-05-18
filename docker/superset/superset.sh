@@ -27,5 +27,4 @@ superset init
 
 set +ex
 
-# To start a development web server on port 8088, use -p to bind to another port
-superset run -p ${SUPERSET_PORT:-8088} --host=0.0.0.0 --with-threads --reload
+superset run -p 8088 --host=0.0.0.0 --with-threads --reload
