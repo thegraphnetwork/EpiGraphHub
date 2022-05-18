@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
 
 env:
+  FLOWER_PORT: 28888
+  FLOWER_PASSWORD: flowerpass
   POSTGRES_HOST: localhost
   POSTGRES_PORT: 25432
   POSTGRES_USER: dev_epigraph
@@ -17,7 +19,11 @@ env:
   POSTGRES_DB: dev_epigraphhub
   POSTGRES_DB_PRIVATE: dev_privatehub
   POSTGRES_DB_SANDBOX: dev_sandbox
+  REDIS_HOST: epigraphhub-redis
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088
+  SUPERSET_DB_PATH_DIR_HOST: /tmp/data/superset
   ENV: dev
   SUPERSET_SECRET_KEY: superset-on-ci
 
@@ -36,6 +42,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: setup
+      run: mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
+
     - name: Create environment variables file
       run: |
         envsubst < .env.tpl > .env
@@ -53,19 +62,24 @@ jobs:
     - name: build and start docker containers
       run: |
         make docker-build
-        make docker-start SERVICES=epigraphhub
+        make docker-start SERVICES=epigraphhub-superset
 
     - name: wait for the services are properly working
       run: |
         docker ps
-        ./docker/healthcheck.sh
+        ./docker/healthcheck.sh epigraphhub-db
+        ./docker/healthcheck.sh epigraphhub-redis
+        ./docker/healthcheck.sh epigraphhub-celery
+        ./docker/healthcheck.sh epigraphhub-celery-beat
+        ./docker/healthcheck.sh epigraphhub-flower
+        ./docker/healthcheck.sh epigraphhub-superset
 
     - name: prepare database
       run: make docker-dev-prepare-db
 
     - name: test cron scripts
       run: |
-        make docker-run-cron SERVICE=epigraphhub
+        make docker-run-cron SERVICE=epigraphhub-superset
 
     - name: Deploy
       if: ${{ github.event_name == 'push' }}

@@ -1,7 +1,8 @@
-SERVICES:=epigraphhub
-SERVICE:=epigraphhub
+SERVICES:=epigraphhub-superset
+SERVICE:=epigraphhub-superset
 # options: dev, prod
 ENV:=dev
+CONSOLE:=bash
 
 DOCKER=docker-compose \
 	--env-file .env \
@@ -13,8 +14,9 @@ DOCKER=docker-compose \
 
 .PHONY:docker-build
 docker-build:
-	$(DOCKER) build
-	$(DOCKER) pull
+	$(DOCKER) build epigraphhub-base
+	$(DOCKER) build ${SERVICES}
+	$(DOCKER) pull ${SERVICES}
 
 
 .PHONY:docker-start
@@ -43,19 +45,24 @@ docker-wait:
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:
 	# used for development
-	$(DOCKER) exec -T epigraphhub bash /opt/EpiGraphHub/docker/prepare-db.sh
+	$(DOCKER) exec -T epigraphhub-superset \
+		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
 
 
 .PHONY:docker-run-cron
 docker-run-cron:
-	$(DOCKER) exec -T ${SERVICE} bash /opt/EpiGraphHub/Data_Collection/CRON_scripts/owid.sh
-	$(DOCKER) exec -T ${SERVICE} bash /opt/EpiGraphHub/Data_Collection/CRON_scripts/foph.sh
-	# $(DOCKER) exec -T ${SERVICE} bash /opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh
+	$(DOCKER) exec -T ${SERVICE} bash \
+		/opt/EpiGraphHub/Data_Collection/CRON_scripts/owid.sh
+	$(DOCKER) exec -T ${SERVICE} bash \
+		/opt/EpiGraphHub/Data_Collection/CRON_scripts/foph.sh
+	# $(DOCKER) exec -T ${SERVICE} bash \
+	# 	/opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh
 
 
-.PHONY:docker-bash
-docker-bash:
-	$(DOCKER) exec ${SERVICE} bash
+.PHONY:docker-console
+docker-console:
+	$(DOCKER) exec ${SERVICE} ${CONSOLE}
+
 
 .PHONY:docker-run-bash
 docker-run-bash:
@@ -79,4 +86,8 @@ deploy:
 conda-lock:
 	cd conda
 	rm -f conda-*.lock
-	conda-lock --conda `which mamba` -f prod.yaml  -p osx-64 -p linux-64 --kind explicit
+	conda-lock --conda `which mamba` \
+		-f prod.yaml  \
+		-p osx-64 \
+		-p linux-64 \
+		--kind explicit

@@ -69,11 +69,11 @@ RUN mamba create -n $ENV_NAME --file /tmp/conda/conda-linux-64.lock \
 #       image after every change.
 # COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
 
-COPY --chown=epigraphhub:epigraphhub docker/entrypoint.sh /opt/entrypoint.sh
 COPY --chown=epigraphhub:epigraphhub docker/superset/superset.sh /opt/superset.sh
 # note: these files can be overwriten by docker compose volumes in order to
 #       use the last version without building the image again.
 COPY --chown=epigraphhub:epigraphhub docker/superset/ /opt/superset
+COPY --chown=epigraphhub:epigraphhub docker/superset/entrypoint.sh /opt/entrypoint.sh
 
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \

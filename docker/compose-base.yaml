@@ -1,31 +1,163 @@
 version: '3.4'
 
 services:
-  epigraphhub:
+  epigraphhub-base:
+    image: epigraphhub/superset-base
     env_file:
       - ../.env
+    profiles:
+      - donotstart
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/superset/Dockerfile.base
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
         - UID=${UID:-1000}
         - GID=${GID:-1000}
+
+  epigraphhub-superset:
+    image: epigraphhub/superset
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: docker/superset/Dockerfile.superset
+      args:
+        # note: if you want to use a specific UID and GID, ensure to add it to
+        #       the .env file
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    env_file:
+      - ../.env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${SUPERSET_PORT}/health"]
-      interval: 20s
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      interval: 60s
       timeout: 10s
       retries: 5
       start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
-    network_mode: host
+      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
+    ports:
+      - ${SUPERSET_PORT}:8088
+    depends_on:
+      - epigraphhub-redis
+      - epigraphhub-celery
+      - epigraphhub-celery-beat
+
+  epigraphhub-redis:
+    hostname: epigraphhub-redis
+    restart: unless-stopped
+    image: redis:alpine
+    # environment:
+    #   DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
+    #   ALLOW_EMPTY_PASSWORD: "no"
+    #   REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+      start_period: 30s  # requires docker-compose 3.4
+    volumes:
+      - redis:/data
+
+  epigraphhub-celery:
+    image: epigraphhub-celery
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: docker/celery/Dockerfile
+    depends_on:
+      - epigraphhub-redis
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/opt/EpiGraphHub
+      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
+    command: [
+      "celery",
+      "--app=superset.tasks.celery_app:app",
+      "worker",
+      "-Ofair",
+      "-l",
+      "INFO"
+    ]
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  # requires docker-compose 3.4
+
+  epigraphhub-celery-beat:
+    image: epigraphhub-celery
+    hostname: epigraphhub-celery-beat
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: docker/celery/Dockerfile
+    depends_on:
+      - epigraphhub-redis
+    env_file:
+      - ../.env
+    volumes:
+      - ..:/opt/EpiGraphHub
+      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
+    command: [
+      "celery",
+      "--app=superset.tasks.celery_app:app",
+      "beat",
+      "--pidfile",
+      "/tmp/celerybeat.pid",
+      "-l",
+      "INFO",
+      "-s",
+      "${SUPERSET_HOME}/celerybeat-schedule"
+    ]
+    healthcheck:
+      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s  # requires docker-compose 3.4
 
   epigraphhub-db:
     hostname: epigraphhub-db
+    restart: unless-stopped
     build:
       context: ..
-      dockerfile: docker/Dockerfile.db
+      dockerfile: docker/postgresql/Dockerfile
     env_file:
       - ../.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${FLOWER_PORT}/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 40s  # requires docker-compose 3.4
+
+  epigraphhub-flower:
+    image: mher/flower:0.9.7
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    depends_on:
+      - epigraphhub-redis
+    command: [
+      "flower",
+      "--broker=redis://redis:6379/0",
+      "--port=8888",
+      "--basic_auth=admin:${FLOWER_PASSWORD}"
+    ]
+    ports:
+      - ${FLOWER_PORT}:8888
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8888/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 40s  # requires docker-compose 3.4
+
+volumes:
+  redis:
