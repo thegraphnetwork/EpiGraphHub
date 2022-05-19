@@ -33,6 +33,9 @@ RUN apt-get update -y \
     wget \
     sudo \
     tini \
+    postfix \
+    libsasl2-modules \
+    mailutils \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \

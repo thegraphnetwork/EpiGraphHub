@@ -40,6 +40,7 @@ services:
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
     ports:
       - ${SUPERSET_PORT}:8088
+      - 25:25
     depends_on:
       - epigraphhub-redis
       - epigraphhub-celery
