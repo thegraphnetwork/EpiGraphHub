@@ -22,7 +22,7 @@ FAVICONS = [{"href": "/static/assets/images/favicon.png"}]
 
 # Specify where clicking the logo would take the user
 # e.g. setting it to '/' would take the user to '/superset/welcome/'
-LOGO_TARGET_PATH = "/welcome"
+LOGO_TARGET_PATH = "/"
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
 LOGO_TOOLTIP = "EpiGraphHub"
