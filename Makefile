@@ -3,6 +3,7 @@ SERVICE:=epigraphhub-superset
 # options: dev, prod
 ENV:=dev
 CONSOLE:=bash
+CRON:=
 
 DOCKER=docker-compose \
 	--env-file .env \
@@ -40,7 +41,7 @@ docker-logs:
 
 .PHONY: docker-wait
 docker-wait:
-	echo ${SERVICES} | xargs -t -n1 ./docker/healthcheck.sh
+	echo ${SERVICES} | xargs -t -n1 timeout 180 ./docker/healthcheck.sh
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:
@@ -51,12 +52,29 @@ docker-dev-prepare-db:
 
 .PHONY:docker-run-cron
 docker-run-cron:
-	$(DOCKER) exec -T ${SERVICE} bash \
-		/opt/EpiGraphHub/Data_Collection/CRON_scripts/owid.sh
-	$(DOCKER) exec -T ${SERVICE} bash \
-		/opt/EpiGraphHub/Data_Collection/CRON_scripts/foph.sh
-	# $(DOCKER) exec -T ${SERVICE} bash \
-	# 	/opt/EpiGraphHub/Data_Collection/CRON_scripts/forecast.sh
+	$(MAKE) docker-cron ENV=${ENV} CRON=owid.sh
+	$(MAKE) docker-cron ENV=${ENV} CRON=foph.sh
+	# $(MAKE) docker-cron ENV=${ENV} CRON=forecast.sh
+
+
+.PHONY:docker-cron
+docker-cron:
+	$(DOCKER) exec -T epigraphhub-superset bash \
+		/opt/EpiGraphHub/Data_Collection/CRON_scripts/${CRON}
+
+
+.PHONY:docker-get-ip
+docker-get-ip:
+	@echo -n "${SERVICE}: "
+	@docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+		eph-${ENV}_epigraphhub-${SERVICE}_1
+
+.PHONY:docker-get-ips
+docker-get-ips:
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="superset"
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="celery"
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="celery-beat"
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="flower"
 
 
 .PHONY:docker-console
