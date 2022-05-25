@@ -1,8 +1,7 @@
 import os
 
-from celery.schedules import crontab
 from cachelib.redis import RedisCache
-from cachelib.file import FileSystemCache
+from celery.schedules import crontab
 
 # Superset specific config
 SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h")
@@ -126,7 +125,7 @@ MAIL_DEFAULT_SENDER = os.getenv("SUPERSET_MAIL_DEFAULT_SENDER")
 # REGISTRATION
 
 AUTH_USER_REGISTRATION = True
-AUTH_USER_REGISTRATION_ROLE = os.getenv("SUPERSET_DEFAULT_NEW_ROLES", "Public")
+AUTH_USER_REGISTRATION_ROLE = "Data_scientist"
 
 # RECAPTCHA
 RECAPTCHA_USE_SSL = False
