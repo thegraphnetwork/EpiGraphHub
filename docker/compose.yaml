@@ -38,9 +38,11 @@ services:
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
+      - ${POSTGRES_DUMP_HOST}:${POSTGRES_DUMP_CONTAINER}
     ports:
       - ${SUPERSET_PORT}:8088
     depends_on:
+      - epigraphhub-db
       - epigraphhub-redis
       - epigraphhub-celery
       - epigraphhub-celery-beat
@@ -167,3 +169,4 @@ services:
 
 volumes:
   redis:
+  pgdata:
