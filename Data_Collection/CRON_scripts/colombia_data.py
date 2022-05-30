@@ -54,6 +54,11 @@ def chunked_fetch(start, chunk_size, maxrecords):
 
         df_new = df_new.convert_dtypes()
 
+        # change some strings to a standard
+        df_new.replace(to_replace ={ 'ubicacion': {'casa': 'Casa', 'CASA': 'Casa'},
+                             'estado': {'leve': 'Leve', 'LEVE': 'Leve'},
+                             'sexo': {'f': 'F', 'm': 'M'}}, inplace = True)
+
         # transform the datetime columns in the correct time
         for c in df_new.columns:
             if c.lower().startswith("fecha"):
