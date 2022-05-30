@@ -50,9 +50,7 @@ def chunked_fetch(start, chunk_size, maxrecords):
         if df_new.empty:
             break
 
-        df_new.index.name = "id_"
-        df_new.reset_index(inplace=True)
-        df_new.set_index(["id_", "id_de_caso"], inplace=True)
+        df_new.set_index(['id_de_caso'] , inplace = True)
 
         df_new = df_new.convert_dtypes()
 
