@@ -41,7 +41,17 @@ docker-logs:
 
 .PHONY: docker-wait
 docker-wait:
-	echo ${SERVICES} | xargs -t -n1 timeout 180 ./docker/healthcheck.sh
+	ENV=${ENV} timeout 180 ./docker/healthcheck.sh ${SERVICE}
+
+.PHONY: docker-wait-all
+docker-wait-all:
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-db"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-db"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-redis"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-celery"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-celery-beat"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-flower"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-superset"
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:

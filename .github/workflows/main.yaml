@@ -64,12 +64,7 @@ jobs:
     - name: wait for the services are properly working
       run: |
         docker ps
-        ./docker/healthcheck.sh epigraphhub-db
-        ./docker/healthcheck.sh epigraphhub-redis
-        ./docker/healthcheck.sh epigraphhub-celery
-        ./docker/healthcheck.sh epigraphhub-celery-beat
-        ./docker/healthcheck.sh epigraphhub-flower
-        ./docker/healthcheck.sh epigraphhub-superset
+        make docker-wait-all
 
     - name: prepare database
       run: make docker-dev-prepare-db
@@ -77,3 +72,15 @@ jobs:
     - name: test cron scripts
       run: |
         make docker-run-cron SERVICE=epigraphhub-superset
+
+    - name: Generate logs
+      if: ${{ failure() }}
+      run: |
+        make docker-logs SERVICES= > /tmp/docker-services.log
+
+    - name: Archive log artifacts
+      uses: actions/upload-artifact@v3
+      if: ${{ failure() }}
+      with:
+        name: docker-services
+        path: /tmp/docker-services.log
