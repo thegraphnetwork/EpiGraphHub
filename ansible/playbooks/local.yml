@@ -18,3 +18,6 @@
         dest: "{{ ssh_private_file }}"
         mode: '600'
       tags: ssh-key
+
+    - name: "Check ssh connection"
+      shell: ansible -i ansible/inventories/hosts.ini -m ping hetzner

@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 env:
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
@@ -80,11 +77,3 @@ jobs:
     - name: test cron scripts
       run: |
         make docker-run-cron SERVICE=epigraphhub-superset
-
-    - name: Deploy
-      if: ${{ github.event_name == 'push' }}
-      env:
-        ANSIBLE_VAULT_KEY: ${{ secrets.ANSIBLE_VAULT_KEY }}
-      run: |
-        echo "${ANSIBLE_VAULT_KEY}" > .vault_pass.txt
-        make deploy
