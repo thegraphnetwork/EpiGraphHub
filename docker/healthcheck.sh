@@ -2,7 +2,10 @@
 
 PROJECT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && cd ../ && pwd )"
 
-env $(cat ${PROJECT_DIR}/.env)
+if [ -f ${PROJECT_DIR}/.env ]; then
+    # Load Environment Variables
+    export $(cat ${PROJECT_DIR}/.env | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
+fi
 
 export CONTAINER_NAME=${1:-"epigraphhub-superset"}
 export CONTAINER_NAME="eph-${ENV:-dev}_${CONTAINER_NAME}_1"

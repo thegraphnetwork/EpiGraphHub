@@ -34,14 +34,17 @@ docker-stop:
 docker-restart: docker-stop docker-start
 	echo "[II] Docker services restarted!"
 
+.PHONY:docker-logs-follow
+docker-logs-follow:
+	$(DOCKER) logs --follow --tail 300 ${SERVICES}
 
 .PHONY:docker-logs
 docker-logs:
-	$(DOCKER) logs --follow --tail 100 ${SERVICES}
+	$(DOCKER) logs --tail 300 ${SERVICES}
 
 .PHONY: docker-wait
 docker-wait:
-	ENV=${ENV} timeout 180 ./docker/healthcheck.sh ${SERVICE}
+	ENV=${ENV} timeout 90 ./docker/healthcheck.sh ${SERVICE}
 
 .PHONY: docker-wait-all
 docker-wait-all:
