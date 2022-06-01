@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 env:
+  ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
   POSTGRES_HOST: localhost
@@ -21,7 +22,14 @@ env:
   REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088
   SUPERSET_DB_PATH_DIR_HOST: /tmp/data/superset
-  ENV: dev
+  SUPERSET_DB_PATH_HOST: /tmp/data/superset/superset.db
+  SUPERSET_HOME: /opt/data/superset
+  SUPERSET_MAIL_DEFAULT_SENDER:
+  SUPERSET_MAIL_PASSWORD:
+  SUPERSET_MAIL_PORT: 587
+  SUPERSET_MAIL_SERVER:
+  SUPERSET_MAIL_USERNAME:
+  SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
 
 jobs:
