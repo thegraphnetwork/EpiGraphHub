@@ -21,8 +21,8 @@ env:
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088
-  SUPERSET_DB_PATH_DIR_HOST: /tmp/data/superset
-  SUPERSET_DB_PATH_HOST: /tmp/data/superset/superset.db
+  SUPERSET_DB_PATH_DIR_HOST: /tmp/superset
+  SUPERSET_DB_PATH_HOST: /tmp/superset/superset.db
   SUPERSET_HOME: /opt/data/superset
   SUPERSET_MAIL_DEFAULT_SENDER:
   SUPERSET_MAIL_PASSWORD:
