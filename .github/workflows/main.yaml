@@ -7,9 +7,10 @@ on:
     branches: [ main ]
 
 env:
+  ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
-  POSTGRES_HOST: localhost
+  POSTGRES_HOST: epigraphhub-db
   POSTGRES_PORT: 25432
   POSTGRES_USER: dev_epigraph
   POSTGRES_PASSWORD: dev_epigraph
@@ -20,8 +21,15 @@ env:
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088
-  SUPERSET_DB_PATH_DIR_HOST: /tmp/data/superset
-  ENV: dev
+  SUPERSET_DB_PATH_DIR_HOST: /tmp/superset
+  SUPERSET_DB_PATH_HOST: /tmp/superset/superset.db
+  SUPERSET_HOME: /opt/data/superset
+  SUPERSET_MAIL_DEFAULT_SENDER:
+  SUPERSET_MAIL_PASSWORD:
+  SUPERSET_MAIL_PORT: 587
+  SUPERSET_MAIL_SERVER:
+  SUPERSET_MAIL_USERNAME:
+  SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
 
 jobs:
@@ -40,7 +48,10 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: setup
-      run: mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
+      run: |
+        mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
+        sqlite3 ${SUPERSET_DB_PATH_HOST} "VACUUM;"
+        chmod -R 777 ${SUPERSET_DB_PATH_DIR_HOST}
 
     - name: Create environment variables file
       run: |
@@ -64,12 +75,7 @@ jobs:
     - name: wait for the services are properly working
       run: |
         docker ps
-        ./docker/healthcheck.sh epigraphhub-db
-        ./docker/healthcheck.sh epigraphhub-redis
-        ./docker/healthcheck.sh epigraphhub-celery
-        ./docker/healthcheck.sh epigraphhub-celery-beat
-        ./docker/healthcheck.sh epigraphhub-flower
-        ./docker/healthcheck.sh epigraphhub-superset
+        make docker-wait-all
 
     - name: prepare database
       run: make docker-dev-prepare-db
@@ -77,3 +83,15 @@ jobs:
     - name: test cron scripts
       run: |
         make docker-run-cron SERVICE=epigraphhub-superset
+
+    - name: Generate logs
+      if: ${{ failure() }}
+      run: |
+        make docker-logs SERVICES= > /tmp/docker-services.log
+
+    - name: Archive log artifacts
+      uses: actions/upload-artifact@v3
+      if: ${{ failure() }}
+      with:
+        name: docker-services
+        path: /tmp/docker-services.log

@@ -38,10 +38,10 @@ def rolling_predictions(target_name, data, ini_date='2020-03-01', split=0.75, ho
     target = target.dropna()
     df_lag = df_lag.dropna()
 
-    # remove the target column and columns related with the day that we want to predict 
+    # remove the target column and columns related with the day that we want to predict
     df_lag = df_lag.drop(data.columns, axis=1)
 
-    # targets 
+    # targets
     targets = {}
 
     for T in np.arange(1, horizon_forecast + 1, 1):
@@ -59,7 +59,7 @@ def rolling_predictions(target_name, data, ini_date='2020-03-01', split=0.75, ho
 
         idx = idx.to_timestamp()
 
-        # predictions 
+        # predictions
         preds5 = np.empty((len(idx), horizon_forecast))
         preds50 = np.empty((len(idx), horizon_forecast))
         preds95 = np.empty((len(idx), horizon_forecast))
@@ -151,22 +151,22 @@ def rolling_predictions(target_name, data, ini_date='2020-03-01', split=0.75, ho
 def make_single_prediction(target_curve_name, canton, predictors, vaccine=True, smooth=True, ini_date='2020-03-01',
                            title=None, updated_data=True):
     '''
-    Function to make single prediction 
-    
-    Important: 
+    Function to make single prediction
+
+    Important:
     * By default the function is using the clustering cantons and the data since 2020
     * For the predictor hospCapacity is used as predictor the column ICU_Covid19Patients
-    
-    params canton: canton of interest 
-    params predictors: variables that  will be used in model 
-    params vaccine: It determines if the vaccine data from owid will be used or not 
-    params smooth: It determines if data will be smoothed or not 
+
+    params canton: canton of interest
+    params predictors: variables that  will be used in model
+    params vaccine: It determines if the vaccine data from owid will be used or not
+    params smooth: It determines if data will be smoothed or not
     params ini_date: Determines the beggining of the train dataset
     params title: If none the title will be: Hospitalizations - canton
     params path: If none the plot will be save in the directory: images/hosp_{canton}
     '''
 
-    # compute the clusters 
+    # compute the clusters
     clusters, all_regions, fig = compute_clusters('cases', t=0.8, plot=False)
 
     for cluster in clusters:
@@ -188,14 +188,14 @@ def make_single_prediction(target_curve_name, canton, predictors, vaccine=True, 
         # utilizando como último data a data dos dados atualizados:
         df = df.loc[:df_new.index[-1]]
 
-    # apply the model 
+    # apply the model
 
     target_name = f'{target_curve_name}_{canton}'
 
     horizon = 14
     maxlag = 14
 
-    # get predictions and forecast 
+    # get predictions and forecast
     # date_predsknn, predsknn, targetknn, train_size, date_forecastknn, forecastknn = rolling_predictions(model_knn, 'knn', target_name, df , ini_date = '2021-01-01',split = 0.75,   horizon_forecast = horizon, maxlag=maxlag,)
     df = rolling_predictions(target_name, df, ini_date=ini_date, split=0.75, horizon_forecast=horizon, maxlag=maxlag)
 
@@ -207,40 +207,40 @@ def make_predictions_all_cantons(target_curve_name, predictors, vaccine=True, sm
                                  title=None):
     '''
     Function to make prediction for all the cantons
-    
-    Important: 
+
+    Important:
     * By default the function is using the clustering cantons and the data since 2020
     * For the predictor hospCapacity is used as predictor the column ICU_Covid19Patients
-    
+
     params target_curve_name: string to indicate the target column of the predictions
-    params predictors: variables that  will be used in model 
-    params vaccine: It determines if the vaccine data from owid will be used or not 
-    params smooth: It determines if data will be smoothed or not 
+    params predictors: variables that  will be used in model
+    params vaccine: It determines if the vaccine data from owid will be used or not
+    params smooth: It determines if data will be smoothed or not
     params ini_date: Determines the beggining of the train dataset
-    
+
     returns: Dataframe with the predictions for all the cantons
     '''
 
     df_all = pd.DataFrame()
 
-    # compute the clusters 
+    # compute the clusters
     clusters, all_regions, fig = compute_clusters('cases', t=0.8, plot=False)
 
     for cluster in clusters:
-        # getting the data 
+        # getting the data
         df = get_combined_data(predictors, cluster, vaccine=vaccine, smooth=smooth)
         # filling the nan values with 0
         df = df.fillna(0)
 
         for canton in cluster:
-            # apply the model 
+            # apply the model
 
             target_name = f'{target_curve_name}_{canton}'
 
             horizon = 14
             maxlag = 14
 
-            # get predictions and forecast 
+            # get predictions and forecast
 
             df_pred = rolling_predictions(target_name, df, ini_date=ini_date, split=0.75, horizon_forecast=horizon,
                                           maxlag=maxlag)
@@ -269,10 +269,10 @@ def rolling_forecast(target_name, data, ini_date, horizon_forecast=14, maxlag=14
     # condition to only apply the model for datas with values different of 0
     if np.sum(target) > 0.0:
 
-        # remove the target column and columns related with the day that we want to predict 
+        # remove the target column and columns related with the day that we want to predict
         df_lag = df_lag.drop(data.columns, axis=1)
 
-        # targets 
+        # targets
         targets = {}
 
         for T in np.arange(1, horizon_forecast + 1, 1):
@@ -315,7 +315,7 @@ def rolling_forecast(target_name, data, ini_date, horizon_forecast=14, maxlag=14
 
             forecast = model.pred_dist(df_lag.iloc[-1:])
 
-            # make the forecast 
+            # make the forecast
             forecast50 = forecast.median()
 
             forecast5, forecast95 = forecast.interval(alpha=0.95)
@@ -384,7 +384,7 @@ def make_forecast(target_curve_name, canton, predictors, vaccine=True, smooth=Tr
     horizon = 14
     maxlag = 14
 
-    # get predictions and forecast 
+    # get predictions and forecast
     # date_predsknn, predsknn, targetknn, train_size, date_forecastknn, forecastknn = rolling_predictions(model_knn, 'knn', target_name, df , ini_date = '2021-01-01',split = 0.75,   horizon_forecast = horizon, maxlag=maxlag,)
     df_for = rolling_forecast(target_name, df, ini_date=ini_date, horizon_forecast=horizon, maxlag=maxlag)
     logger.info(f"Finished generating forecasts for {target_name}")
@@ -396,27 +396,27 @@ def make_forecast_all_cantons(target_curve_name, predictors, vaccine=True, smoot
                               title=None):
     '''
     Function to make the forecast for all the cantons
-    
-    Important: 
+
+    Important:
     * By default the function is using the clustering cantons and the data since 2020
     * For the predictor hospCapacity is used as predictor the column ICU_Covid19Patients
-    
+
     params target_curve_name: string to indicate the target column of the predictions
-    params predictors: variables that  will be used in model 
-    params vaccine: It determines if the vaccine data from owid will be used or not 
-    params smooth: It determines if data will be smoothed or not 
+    params predictors: variables that  will be used in model
+    params vaccine: It determines if the vaccine data from owid will be used or not
+    params smooth: It determines if data will be smoothed or not
     params ini_date: Determines the beggining of the train dataset
-    
+
     returns: Dataframe with the forecast for all the cantons
     '''
     df_all = pd.DataFrame()
 
-    # compute the clusters 
+    # compute the clusters
     clusters, all_regions, fig = compute_clusters('cases', t=0.8, plot=False)
 
     for cluster in clusters:
 
-        # getting the data 
+        # getting the data
         df = get_combined_data(predictors, cluster, vaccine=vaccine, smooth=smooth)
         # filling the nan values with 0
         df = df.fillna(0)
@@ -429,7 +429,7 @@ def make_forecast_all_cantons(target_curve_name, predictors, vaccine=True, smoot
             horizon = 14
             maxlag = 14
 
-            # get predictions and forecast 
+            # get predictions and forecast
             df_for = rolling_forecast(target_name, df, ini_date=ini_date, horizon_forecast=horizon, maxlag=maxlag)
 
             df_all = pd.concat([df_all, df_for])
@@ -449,7 +449,7 @@ if __name__ == '__main__':
     predictors1 = ['cases', 'hosp', 'test']
     predictors2 = ['cases', 'hosp', 'test', 'hospcapacity']
 
-    # compute the predictions in sample and out sample for validation 
+    # compute the predictions in sample and out sample for validation
     # df_val_hosp_up = make_single_prediction('hosp', canton, predictors1, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = True)
     # df_val_icu = make_single_prediction('ICU_patients', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
     # df_val_total = make_single_prediction('total_hosp', canton, predictors2, vaccine = True, smooth= True,ini_date = '2020-03-01', title = None, updated_data = False)
@@ -491,14 +491,13 @@ if __name__ == '__main__':
     # save_to_database(df_val_icu_cantons, 'ml_val_icu_all_cantons')
     # save_to_database(df_val_total_cantons, 'ml_val_total_all_cantons')
 
-    # df_for_hosp.to_sql('ml_forecast_hosp', engine, schema= 'switzerland', if_exists = 'replace') 
+    # df_for_hosp.to_sql('ml_forecast_hosp', engine, schema= 'switzerland', if_exists = 'replace')
     save_to_database(df_for_hosp, 'ml_forecast_hosp')
     save_to_database(df_for_hosp_cantons, 'ml_for_hosp_all_cantons')
-    # df_for_icu.to_sql('ml_forecast_icu', engine, schema= 'switzerland', if_exists = 'replace') 
+    # df_for_icu.to_sql('ml_forecast_icu', engine, schema= 'switzerland', if_exists = 'replace')
     save_to_database(df_for_icu, 'ml_forecast_icu')
     save_to_database(df_for_total, 'ml_forecast_total')
     save_to_database(df_for_icu_cantons, 'ml_for_icu_all_cantons')
     save_to_database(df_for_total_cantons, 'ml_for_total_all_cantons')
     # df_for_hosp_up.to_sql('ml_forecast_hosp_up', engine, schema= 'switzerland', if_exists = 'replace')
     # save_to_database(df_for_hosp_up, 'ml_forecast_hosp_up')
-

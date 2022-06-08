@@ -13,5 +13,6 @@ source activate epigraphhub
 
 if [ $# -ne 0 ]
   then
+    echo "Running: ${@}"
     $(${@})
 fi

@@ -13,6 +13,7 @@ dependencies:
   - lightgbm
   - loguru
   - myst-parser
+  - openpyxl
   - pandas
   - pip
   - psycopg2

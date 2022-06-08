@@ -24,5 +24,6 @@ cp --symbolic-link --remove-destination /opt/superset/images/* $STATIC_DIR/image
 
 if [ $# -ne 0 ]
   then
+    echo "Running: ${@}"
     $(${@})
 fi
