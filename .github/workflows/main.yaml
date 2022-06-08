@@ -10,7 +10,7 @@ env:
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
-  POSTGRES_HOST: localhost
+  POSTGRES_HOST: epigraphhub-db
   POSTGRES_PORT: 25432
   POSTGRES_USER: dev_epigraph
   POSTGRES_PASSWORD: dev_epigraph
