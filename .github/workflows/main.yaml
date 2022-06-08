@@ -48,7 +48,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: setup
-      run: mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
+      run: |
+        mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
+        sqlite3 ${SUPERSET_DB_PATH_HOST} "VACUUM;"
 
     - name: Create environment variables file
       run: |
