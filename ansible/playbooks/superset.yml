@@ -17,4 +17,6 @@
     - name: "Restart Service"
       args:
         chdir: /opt/services/EpiGraphHub
-      shell: make docker-restart ENV=prod
+      shell: |
+        make docker-stop ENV=prod SERVICES=
+        make docker-start ENV=prod SERVICES=epigraphhub-superset

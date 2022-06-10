@@ -11,4 +11,6 @@
     - name: "Update"
       shell:
         chdir: /opt/services/EpiGraphHub
-        cmd: git pull --rebase
+        cmd: |
+          git checkout main
+          git pull --rebase
