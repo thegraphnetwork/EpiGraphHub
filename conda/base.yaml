@@ -4,7 +4,6 @@ channels:
   - nodefaults
 dependencies:
   - docker-compose
-  - ansible
   - git
   - make
   - conda-lock
