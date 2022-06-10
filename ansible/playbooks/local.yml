@@ -15,7 +15,12 @@
         mode: '600'
       tags: ssh-key
 
+    # https://stackoverflow.com/a/32338480
+    - name: Write the new ec2 instance host key to known hosts
+      connection: local
+      shell: "ssh-keyscan -H {{ inventory_hostname }} >> ~/.ssh/known_hosts"
+
     - name: "Check ssh connection"
-      shell: ansible -i ansible/inventories/hosts.ini -m ping hetzner
+      shell: ansible -i ../inventories/hosts.ini -m ping hetzner
       args:
         executable: /bin/bash
