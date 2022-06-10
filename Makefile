@@ -100,16 +100,6 @@ docker-run-bash:
 	$(DOCKER) run --rm ${SERVICE} bash
 
 
-# ANSIBLE
-
-.PHONY:deploy
-deploy:
-	ansible-playbook -vv \
-		-i ansible/inventories/hosts.ini \
-		--vault-password-file .vault_pass.txt \
-		ansible/deployment.yml
-
-
 # conda
 
 .ONESHELL:

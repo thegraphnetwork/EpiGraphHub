@@ -1,7 +1,0 @@
----
-- hosts: hetzner
-  become: yes
-  collections:
-    - nginxinc.nginx_core
-  roles:
-    - role: nginx
