@@ -22,7 +22,7 @@ docker-build:
 
 .PHONY:docker-start
 docker-start:
-	$(DOCKER) up -d ${SERVICES}
+	$(DOCKER) up --remove-orphans -d ${SERVICES}
 
 
 .PHONY:docker-stop

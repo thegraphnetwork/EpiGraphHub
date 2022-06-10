@@ -3,5 +3,4 @@ services:
 
   epigraphhub-superset:
     depends_on:
-      - epigraphhub-db
       - epigraphhub-celery
