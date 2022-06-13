@@ -83,5 +83,8 @@ RUN chmod +x /opt/entrypoint.sh \
   && sudo mkdir -p /opt/data/superset/ \
   && sudo chown -R epigraphhub:epigraphhub /opt/data
 
+COPY --chown=epigraphhub:epigraphhub docker/superset/prepare-email.sh /opt/prepare-email.sh
+RUN sudo /opt/prepare-email.sh && rm /opt/prepare-email.sh
+
 ENTRYPOINT ["tini", "--", "/opt/entrypoint.sh"]
 CMD ["/opt/superset.sh"]
