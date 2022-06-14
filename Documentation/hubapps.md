@@ -34,7 +34,7 @@ $ streamlit myapp.py
 ```
 You will be able to see [your app](http://localhost:8501/) in the browser.
 
-![dash](embed_dash.png)
+![dash](../Documentation/images/embed_dash.png)
 
 The simple command above allows you to test your app before you deploy it on the server. 
 

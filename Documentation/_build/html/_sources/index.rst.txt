@@ -15,7 +15,8 @@ Welcome to EpiGraphHub's Documentation!
    Data Sources<datasources>
    Data Transformation and Harmonization<harmonization>
    Data Storage<datastorage>
-   Data Querying, Analysis, and Visualizations<dataanalysis>
+   Data Querying and Analysis<dataanalysis>
+   Data Visualizations <charts/index.rst> 
    Building Hub Apps<hubapps>
 
 

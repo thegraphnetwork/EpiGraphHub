@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Overview of the EpiGraphHub Platform &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,30 +34,30 @@
 
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="overview-of-the-epigraphhub-platform">
-<h1>Overview of the EpiGraphHub Platform<a class="headerlink" href="#overview-of-the-epigraphhub-platform" title="Permalink to this headline">¶</a></h1>
+  <section id="overview-of-the-epigraphhub-platform">
+<h1>Overview of the EpiGraphHub Platform<a class="headerlink" href="#overview-of-the-epigraphhub-platform" title="Permalink to this heading">¶</a></h1>
 <p>The EpigraphHub platform is composed by a Postgresql database server integrated with a customized Apache Superset web frontend for data access and exploration.</p>
 <section id="database-server-structure">
-<h2>Database Server structure<a class="headerlink" href="#database-server-structure" title="Permalink to this headline">¶</a></h2>
+<h2>Database Server structure<a class="headerlink" href="#database-server-structure" title="Permalink to this heading">¶</a></h2>
 <p>Our database server is compised of three main databases as shown in the figure below, with different access priviledges.</p>
 <p><img alt="server" src="_images/db_access.png" /></p>
 <section id="epigraphhub-database">
-<h3><em>epigraphhub</em> database<a class="headerlink" href="#epigraphhub-database" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">epigraphhub</span></code> database contains exclusively public domain data, either generated internally by the project or integrated from other sources. I can be read by all users but only EpigraphHub analysts can write to it, creating or updating tables.</p>
+<h3><em>epigraphhub</em> database<a class="headerlink" href="#epigraphhub-database" title="Permalink to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">epigraphhub</span></code> database contains exclusively public domain data, either generated internally by the project or integrated from other sources. It can be read by all users but only EpigraphHub analysts can write to it, creating or updating tables.</p>
 </section>
 <section id="privatehub-database">
-<h3><em>privatehub</em> database<a class="headerlink" href="#privatehub-database" title="Permalink to this headline">¶</a></h3>
+<h3><em>privatehub</em> database<a class="headerlink" href="#privatehub-database" title="Permalink to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">privatehub</span></code> database is a database to which only EpigraphHub analysts can access. Writing privileges to specific schemas or tables are granted on a per project basis to maximize data security.</p>
 <p>This database contains data made available to the Graph Network by partners through a specific usage agreement.</p>
 <p>Within this database data from different partners are kept on separate schemas in order to allow for optimal access control.</p>
 </section>
 <section id="sandbox-database">
-<h3><em>sandbox</em> database<a class="headerlink" href="#sandbox-database" title="Permalink to this headline">¶</a></h3>
+<h3><em>sandbox</em> database<a class="headerlink" href="#sandbox-database" title="Permalink to this heading">¶</a></h3>
 <p>This database is to be used for testing and experimentation in database modeling. Any user has read and write privileges on it but no dataset is guaranteed to be persisted for long periods of time.</p>
 </section>
 </section>
 <section id="database-roles">
-<h2>Database roles<a class="headerlink" href="#database-roles" title="Permalink to this headline">¶</a></h2>
+<h2>Database roles<a class="headerlink" href="#database-roles" title="Permalink to this heading">¶</a></h2>
 <p>Access privileges are granted to database users through groups. Notice that this is only for direct database access. Access through EpiGraphHub’s <a class="reference external" href="https://epigraphhub.org">web frontend</a> is managed independently.</p>
 <p>Two main database user groups have been created for this purpose:</p>
 <ul class="simple">
@@ -117,7 +118,7 @@ group of users with read-only access to the epigraphhub database and full access
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -134,7 +135,7 @@ group of users with read-only access to the epigraphhub database and full access
       &copy;2021, The Graph Network.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

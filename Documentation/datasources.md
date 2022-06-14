@@ -77,7 +77,7 @@ The first value in `c('public', 'myspreadsheet')` represents the **schema** wher
 ### Spreadsheets
 To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub, permission to anyone that has the link to view the file.
 
-![sheets](../Documentation/gsheets.png)
+![sheets](../Documentation/images/gsheets.png)
 
 Don't forget to select the `Google sheets` first.
 
