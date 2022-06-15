@@ -75,11 +75,109 @@ dbWriteTable(con, c('public', 'myspreadsheet'), data, overwrite = TRUE)
 The first value in `c('public', 'myspreadsheet')` represents the **schema** where the table will be saved, and the second the table name.
 
 ### Spreadsheets
-To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub, permission to anyone that has the link to view the file.
+To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub and permission to anyone that has the link to view the file.
 
-![sheets](../Documentation/images/gsheets.png)
+As an example, let´s use the table: https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing.
 
-Don't forget to select the `Google sheets` first.
+After clicking on the link, the page below will appear.
+(The steps explained below work with any table saved in Google Sheets.)
+
+<center>
+
+![](images/google_sheet.png){width=100%}
+
+</center>
+
+Click on the `Share` button highlighted above and the two boxes below will be displayed in your screen:
+
+<center>
+
+![](images/options_link.png){width=500}
+
+</center>
+
+In the `Get link` box, you need to allow your table to be shared with anyone with the link. If you have already done it, the following box will be displayed:
+
+<center>
+
+![](images/allow_use_link.png){width=500}
+
+</center>
+
+So, click on the `Copy link`. Otherwise, if your table is not yet available for anyone with the link, you need to click on `Change to anyone with the link`, so you will see on your screen: 
+
+<center>
+
+![](images/get_link.png){width=500}
+
+</center>
+
+Click on the `Copy link` and on `Done`. By doing that you just allow the `Viewer` mode of your table. It doesn't allow other people with the link to edit your table. After copying the link, we will go back to the EpiGraphHub platform and will select the `SQL Lab` and the `SQL Editor` option.
+<center>
+
+![](images/sql_lab.png){width=250}
+
+</center>
+
+After clicking on it, the page below will be displayed on your screen. On this page, it's possible to make multiple SQL queries. You can open a new query by clicking on the plus button highlighted below. 
+
+<center>
+
+![](images/home_sql.png){width=100%}
+
+</center>
+
+
+On the left side of the page, you can select the DATABASE and SCHEMA. On the right side, you can type your SQL query and run it clicking on the `RUN` button. 
+
+To upload a table from Google Sheets you must use the `Google sheets` DATABASE and the `main` SCHEMA, as shown below: 
+
+<center>
+
+![](images/config_sql.png){width=500}
+
+</center>
+
+In the field to type the query, just type: 
+
+```
+SELECT * FROM "Google Sheets link";
+```
+
+and click on the `RUN` button. In the `Google Sheets link` use the link copied above. Your final query is:
+
+<center>
+
+![](images/gs_query.png){width=100%}
+
+</center>
+
+After running the query, the result below will be displayed on your screen:
+
+<center>
+
+![](images/gs_explore.png){width=100%}
+
+</center>
+
+To save this dataset and explore it click on the `EXPLORE` button. This window will be displayed:
+<center>
+
+![](images/gs_save.png){width=500}
+
+</center>
+
+You can save it as a new dataset (choosing a name) or overwrite an existing table. So, choose a name and click on the `SAVE & EXPLORE` button. 
+
+You will be redirected to the explore page, where you can make charts and explore your data.
+
+
+<center>
+
+![](images/gs_result.png){width=100%}
+
+</center>
+
 
 ## Data sources
 The sources below are kept up-to-date in the epigraphhub database.
