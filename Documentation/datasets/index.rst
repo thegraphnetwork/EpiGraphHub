@@ -13,3 +13,4 @@ Last Updated: |today|
    colombia_schema
    google_health_schema
    switzerland_schema
+   public_schema

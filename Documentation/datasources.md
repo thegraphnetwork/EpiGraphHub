@@ -184,3 +184,6 @@ The sources below are kept up-to-date in the epigraphhub database.
 
 1. **Our World In Data COVID-19 data.** This dataset is updated daily on the the database and is accessible via the [EpiGraphHub API](https://epigraphhub.org/swagger/v1).
 2. [GADM](https://gadm.org) maps. All GADM maps with all available administrative levels are available in the Hub database. [This chart](http://epigraphhub.org/r/14), for example shows the centroids of Guinea' admin 3 regions.
+3. **FOPH COVID-19 data.** All the datasets made available by the FOPH - Federal Office of Public Health - regarding the COVID-19 data in Switzerland are available on our platform and updated regularly. 
+4. [**Instituto Nacional de Salud COVID-19 data.**](https://www.datos.gov.co/Salud-y-Protecci-n-Social/Casos-positivos-de-COVID-19-en-Colombia/gt2j-8ykr/data) This source provides the data of positive COVID-19 cases in Colombia. This data is updated daily in our platform. 
+5. [**Google Health COVID-19 open data**](https://github.com/GoogleCloudPlatform/covid-19-open-data) All the datasets made available by the google regarding the COVID-19 data. This data is updated daily in our platform. 
