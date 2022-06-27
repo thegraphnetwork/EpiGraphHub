@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Welcome to EpiGraphHub’s Documentation! &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,6 +12,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,7 +34,7 @@
           <div class="body" role="main">
             
   <section id="welcome-to-epigraphhub-s-documentation">
-<h1>Welcome to EpiGraphHub’s Documentation!<a class="headerlink" href="#welcome-to-epigraphhub-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to EpiGraphHub’s Documentation!<a class="headerlink" href="#welcome-to-epigraphhub-s-documentation" title="Permalink to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -43,9 +44,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datasets/index.html">Available Datasets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="datasets/colombia_schema.html">Colombian COVID-19 data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/colombia_schema.html">Colombia COVID-19 data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datasets/google_health_schema.html">Google COVID-19 data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="datasets/switzerland_schema.html">Switzerland COVID-19 data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/public_schema.html">Public schema</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a><ul>
@@ -54,10 +56,26 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying, Analysis, and Visualizations</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="instruction_name_tables.html">Data Storage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instruction_name_tables.html#all-names-schema-name-table-name-and-column-names">All names (schema name, table name, and column names)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instruction_name_tables.html#schema-names">Schema names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instruction_name_tables.html#table-names">Table names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instruction_name_tables.html#about-metadata-tables">About metadata tables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying and Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dataanalysis.html#direct-access-to-the-database">Direct access to the database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dataanalysis.html#access-through-the-api">Access through the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataanalysis.html#data-exploration-on-epigraphhub">Data Exploration on Epigraphhub</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="charts/index.html">Data Visualizations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="charts/line_charts.html">Time Evolution - Line Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charts/bar_charts.html">Bar Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charts/histogram.html">Histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charts/boxplot.html">Boxplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charts/pivot_table.html">Pivot table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charts/map_charts.html">Country map chart</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a><ul>
@@ -70,7 +88,7 @@
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -101,8 +119,9 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets/index.html">Available Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying, Analysis, and Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instruction_name_tables.html">Data Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="charts/index.html">Data Visualizations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a></li>
 </ul>
 
@@ -123,7 +142,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -140,7 +159,7 @@
       &copy;2021, The Graph Network.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

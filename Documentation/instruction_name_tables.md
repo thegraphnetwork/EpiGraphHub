@@ -2,13 +2,12 @@
 
 Before uploading a new dataset into the database and creating a new table, the following rules should be followed for naming the table:
 
-### All names:
+### All names (schema name, table name, and column names)
 1. Always in lower case; 
 2. No space between the characters. Instead of using space, use `_` to separate composite names.
 3. Column names should follow the above rules.
 
-
-### Schema names:
+### Schema names
 
 If the table is related to a single country data, use the full ISO country name. The name for each country can be found [here](https://gadm.org/maps.html).
 
@@ -19,7 +18,7 @@ If the data is on a global scale data use the schema: `global`.
 For a table that belongs to the United States data, for the schema, should be used the name: `united_states`.
 
 
-### Table names:
+### Table names
 
 Table names should follow this basic structure:
 
@@ -46,7 +45,8 @@ Examples:
 For a PosGIS table representing a map for Geneva, if the map represent new hospitalizations, for example, and is updated daily you can use the name: 
 `gis_geneva_new_hospitalizations_d` 
 
-### About metadata tables:
+
+### About metadata tables
 
 The metadata tables should be used to store explanatory information about a table's columns. It should contain at least the columns listed below, but can be enlarged to include other information available on existing data dictionaries for the dataset that is being imported.
 
@@ -60,7 +60,7 @@ type text, # Numeric, categorical, Boolean, date, datetime, etc.
 ```
 
 
-### Example:
+#### Example:
 
 A dataset of hospitalizations from FOPH (Federal Office of Public Health) for Switzerland, which is updated daily, can 
 be named as: 

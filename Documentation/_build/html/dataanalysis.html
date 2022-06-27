@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Data Querying, Analysis, and Visualizations &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,11 +12,12 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Building Web-apps based on the Hub" href="hubapps.html" />
-    <link rel="prev" title="Data Storage" href="datastorage.html" />
+    <link rel="next" title="Data visualizations" href="charts/index.html" />
+    <link rel="prev" title="Database table naming rules" href="instruction_name_tables.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,19 +34,19 @@
 
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="data-querying-analysis-and-visualizations">
-<h1>Data Querying, Analysis, and Visualizations<a class="headerlink" href="#data-querying-analysis-and-visualizations" title="Permalink to this headline">¶</a></h1>
+  <section id="data-querying-analysis-and-visualizations">
+<h1>Data Querying, Analysis, and Visualizations<a class="headerlink" href="#data-querying-analysis-and-visualizations" title="Permalink to this heading">¶</a></h1>
 <p>If you have you public key registered with the EpigraphHub server, you can easily connect directly to the database from your programming environment.</p>
 <p>First you need to establish an encrypted connection using the following command:</p>
 <section id="direct-access-to-the-database">
-<h2>Direct access to the database<a class="headerlink" href="#direct-access-to-the-database" title="Permalink to this headline">¶</a></h2>
+<h2>Direct access to the database<a class="headerlink" href="#direct-access-to-the-database" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh -f epigraph@epigraphhub.org -L <span class="m">5432</span>:localhost:5432 -NC
 </pre></div>
 </div>
 <p>This command let’s you access the database as if it was a local database.</p>
 <p>Below are instructions about how to fetch data for analysis</p>
 <section id="using-python">
-<h3>Using Python<a class="headerlink" href="#using-python" title="Permalink to this headline">¶</a></h3>
+<h3>Using Python<a class="headerlink" href="#using-python" title="Permalink to this heading">¶</a></h3>
 <p>In a Python environment we will use two libraries: <a class="reference external" href="https://pandas.pydata.org">Pandas</a> and SQLAlchemy.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
@@ -59,7 +60,7 @@
 </div>
 </section>
 <section id="using-r">
-<h3>Using R<a class="headerlink" href="#using-r" title="Permalink to this headline">¶</a></h3>
+<h3>Using R<a class="headerlink" href="#using-r" title="Permalink to this heading">¶</a></h3>
 <p>In R-studio or the R console, we will need the following packages: <code class="docutils literal notranslate"><span class="pre">RPostgreSQL</span></code>.</p>
 <div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># install.packages(&quot;RPostgreSQL&quot;)</span>
 <span class="nf">require</span><span class="p">(</span><span class="s">&quot;RPostgreSQL&quot;</span><span class="p">)</span>
@@ -85,10 +86,10 @@
 </section>
 </section>
 <section id="access-through-the-api">
-<h2>Access through the API<a class="headerlink" href="#access-through-the-api" title="Permalink to this headline">¶</a></h2>
+<h2>Access through the API<a class="headerlink" href="#access-through-the-api" title="Permalink to this heading">¶</a></h2>
 <p>In order to access contents  via the Hub’s API, it is a bit more involved, and it gives access mostly to metadata instead of raw data.</p>
 <section id="getting-the-authentication-token">
-<h3>Getting the authentication token<a class="headerlink" href="#getting-the-authentication-token" title="Permalink to this headline">¶</a></h3>
+<h3>Getting the authentication token<a class="headerlink" href="#getting-the-authentication-token" title="Permalink to this heading">¶</a></h3>
 <p>you need to authenticate using your user and password you will get a token following this authentication that you can save and use for future requests.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -106,7 +107,7 @@
 </div>
 </section>
 <section id="making-an-authenticated-request">
-<h3>Making an authenticated request<a class="headerlink" href="#making-an-authenticated-request" title="Permalink to this headline">¶</a></h3>
+<h3>Making an authenticated request<a class="headerlink" href="#making-an-authenticated-request" title="Permalink to this heading">¶</a></h3>
 <p>With the token, you can prepare an authentication header to use with your requests:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">headersAuth</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer&#39;</span><span class="o">+</span><span class="n">access_token</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]}</span>
 </pre></div>
@@ -117,6 +118,178 @@
 <span class="n">r2</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="c1"># This with return you the results</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="data-exploration-on-epigraphhub">
+<h2>Data Exploration on Epigraphhub<a class="headerlink" href="#data-exploration-on-epigraphhub" title="Permalink to this heading">¶</a></h2>
+<p>To select the dataset that we want to explore, let’s first go to the <code class="docutils literal notranslate"><span class="pre">Data</span> <span class="pre">-</span> <span class="pre">Datasets</span></code> page.</p>
+<center>
+<p><img alt="" src="_images/data_datasets_page.png" /></p>
+</center>
+<p>There, you can see the list of all public datasets, and you can click on the name of the dataset you want to explore.</p>
+<p>For this lesson, we will use the example of the <code class="docutils literal notranslate"><span class="pre">foph_hosp_d</span></code> dataset. This dataset represents the daily hospitalisations of COVID-19 in Switzerland according to the FOPH (Federal Office of Public Health).</p>
+<center>
+<p><img alt="" src="_images/select_dataset_to_explore.png" /></p>
+</center>
+<section id="explore-page">
+<h3>Explore page<a class="headerlink" href="#explore-page" title="Permalink to this heading">¶</a></h3>
+<p>After selecting the dataset, you will be on the <strong>Explore page</strong>, which is divided into three different panels.</p>
+<center>
+<p><img alt="" src="_images/three_panels.png" /></p>
+</center>
+<p>On the left panel, you can see the currently selected dataset (here <code class="docutils literal notranslate"><span class="pre">switzerland.foph_hosp_d</span></code>), and the list of <strong>Columns</strong> in the dataset. The data type of the column is represented by the small icon that is on the left side of each column name.</p>
+<ul class="simple">
+<li><p><strong>Clock:</strong> The datasource’s time column</p></li>
+<li><p><strong>ABC:</strong> Text data</p></li>
+<li><p><strong>#:</strong> Numeric value data</p></li>
+<li><p><strong>T/F:</strong> Boolean data True/False</p></li>
+</ul>
+<p>In the middle panel, you can choose the visualisation type you want, specify the time granularity (e.g., daily, weekly) and time range (from X to Y) of interest. In this panel, you can also define the query that will be used to build your chart. The query allows you to define which data to include (e.g., Metric fields), how to organise them (e.g., Group field) and how to limit them (e.g., Row limit, Filter fields).</p>
+<p>On the right panel, you can see the resulting chart and data generated by the query specified in the middle panel.</p>
+<p>We can collapse the left panel to focus on the analysis (middle panel) and visualisation of the data (right panel), selecting the arrow icon highlighted below:</p>
+<center>
+<p><img alt="" src="_images/omit_region_1.png" /></p>
+</center>
+<p>Let’s now have a closer look at the middle panel of the page. It has three different subsections: <strong>Chart type</strong>, <strong>Time</strong>, and <strong>Query</strong>.</p>
+<center>
+<p><img alt="" src="_images/query_section.png" /></p>
+</center>
+<section id="chart-type">
+<h4>Chart Type<a class="headerlink" href="#chart-type" title="Permalink to this heading">¶</a></h4>
+<p>By default, the VISUALISATION TYPE is a <code class="docutils literal notranslate"><span class="pre">Table</span></code>. To see the different ways you can display your data and potentially change the chart type, click on the current VISUALISATION TYPE (<code class="docutils literal notranslate"><span class="pre">Table</span></code>).</p>
+<center>
+<p><img alt="" src="_images/change_visualisation.png" /></p>
+</center>
+<p>You can see that a large number of other visualisations are available, such as <strong>Time-series</strong>, <strong>Box Plots</strong>, <strong>Maps</strong>, <strong>Bar Charts</strong>, <strong>Line Charts</strong>.</p>
+<center>
+<p><img alt="" src="_images/all_charts.png" /></p>
+</center>
+<p>To find the visualisation that suits your needs best, you can either explore <strong>All charts</strong> available, or focus on the most <strong>Popular</strong> ones, or by <strong>Category</strong> of interest.</p>
+<p>In the <strong>Data Visualization</strong> section there are examples of some plots done in the platform.</p>
+</section>
+<section id="time">
+<h4>Time<a class="headerlink" href="#time" title="Permalink to this heading">¶</a></h4>
+<p>In the <strong>Time</strong> section, three key fields are defined:</p>
+<ol class="arabic simple">
+<li><p>the TIME COLUMN to be used for visualisation,</p></li>
+<li><p>the TIME RANGE of interest, e.g., <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">filter</span></code>, <code class="docutils literal notranslate"><span class="pre">last</span> <span class="pre">quarter</span></code>, <code class="docutils literal notranslate"><span class="pre">previous</span> <span class="pre">calendar</span> <span class="pre">year</span></code>, or more <code class="docutils literal notranslate"><span class="pre">custom</span></code> and <code class="docutils literal notranslate"><span class="pre">advanced</span></code> time ranges,</p></li>
+<li><p>the TIME GRAIN (granularity) to be used for instance in time evolution charts, e.g., <code class="docutils literal notranslate"><span class="pre">daily</span></code>, <code class="docutils literal notranslate"><span class="pre">weekly</span></code>, <code class="docutils literal notranslate"><span class="pre">monthly</span></code>.</p></li>
+</ol>
+<p>By default we will now explore all (i.e. <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">filter</span></code> on time) <code class="docutils literal notranslate"><span class="pre">daily</span></code> data, based on the <code class="docutils literal notranslate"><span class="pre">date</span></code> column in our table.</p>
+<center>
+<p><img alt="" src="_images/time.png" /></p>
+</center>
+</section>
+<section id="query">
+<h4>Query<a class="headerlink" href="#query" title="Permalink to this heading">¶</a></h4>
+<p>Let’s now have a closer look at the <strong>Query</strong> section. This section presents two different ways of exploring the data (QUERY MODE) represented by the AGGREGATE and RAW RECORDS options.</p>
+<center>
+<p><img alt="" src="_images/query_mode.png" /></p>
+</center>
+<ul class="simple">
+<li><p>The AGGREGATE query mode allows the user to combine the information of multiple rows of a dataset, using some aggregate function (e.g. the <code class="docutils literal notranslate"><span class="pre">sum</span></code> or <code class="docutils literal notranslate"><span class="pre">average</span></code>). The aggregation is made according to some columns in the dataset.</p></li>
+<li><p>In the RAW RECORDS option, you will just work with rows of the dataset without applying any aggregation operation.</p></li>
+</ul>
+</section>
+</section>
+<section id="table-chart">
+<h3>Table Chart<a class="headerlink" href="#table-chart" title="Permalink to this heading">¶</a></h3>
+<p>In this section, for the <code class="docutils literal notranslate"><span class="pre">table</span></code> chart visualization, we will see an example with the RAW RECORDS mode, as a first exploration step of our dataset. When this option is selected you will visualise the fields below.</p>
+<center> 
+<p><img alt="" src="_images/raw_records.png" /></p>
+</center> 
+<section id="columns-of-interest">
+<h4>Columns of interest<a class="headerlink" href="#columns-of-interest" title="Permalink to this heading">¶</a></h4>
+<p>In COLUMNS, you decide what columns of the dataset you want to visualise. Let’s say we are interested by the <code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">geoRegion</span></code>, <code class="docutils literal notranslate"><span class="pre">entries</span></code> and <code class="docutils literal notranslate"><span class="pre">sumTotal</span></code> columns. To select a column, click on the COLUMNS field, a drop-down list will appear, with all columns you can select from.</p>
+<center>
+<p><img alt="" src="_images/select_columns.png" /></p>
+</center>
+<p>Go through this list, and select your columns of interest (here <code class="docutils literal notranslate"><span class="pre">date</span></code>, <code class="docutils literal notranslate"><span class="pre">geoRegion</span></code>, <code class="docutils literal notranslate"><span class="pre">entries</span></code> and <code class="docutils literal notranslate"><span class="pre">sumTotal</span></code>). The COLUMNS field should look as follows:</p>
+<center>
+<p><img alt="" src="_images/select_columns_result.png" /></p>
+</center>
+<p>After selecting these columns in the COLUMNS field, you will notice that a button labeled <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">QUERY</span></code> will appear on the the right panel of the Explore page.</p>
+<center>
+<p><img alt="" src="_images/run_query.png" /></p>
+</center>
+<p>If you press this button, the table chart with the columns that you selected will appear on the same panel.</p>
+<center>
+<p><img alt="" src="_images/run_query_results.png" /></p>
+</center>
+<p>Under the table chart, <strong>Data</strong> resulting from your query also appear, with the number of data rows retrieved (here <code class="docutils literal notranslate"><span class="pre">10k</span> <span class="pre">rows</span>&#160; <span class="pre">retrieved</span></code>).</p>
+</section>
+<section id="save-dataset">
+<h4>Save dataset<a class="headerlink" href="#save-dataset" title="Permalink to this heading">¶</a></h4>
+<p>Once you get the table, if you don’t want to make any new explorations, you can export this table as a <code class="docutils literal notranslate"><span class="pre">.JSON</span></code> or <code class="docutils literal notranslate"><span class="pre">.CSV</span></code> file by pressing the corresponding button in the right upper corner.</p>
+<center>
+<p><img alt="" src="_images/export_data.png" /></p>
+</center>
+<p>But, we can still explore many other features, to get an insight on the COVID hospitalisations in Switzerland.</p>
+</section>
+<section id="order-data">
+<h4>Order data<a class="headerlink" href="#order-data" title="Permalink to this heading">¶</a></h4>
+<p>Right below the COLUMNS field, there is a field called ORDERING. In this field, you can order the dataset in ascending or decreasing order according to some column values.</p>
+<p>For example, let’s order the dataset by the <strong>date</strong> column, in <strong>ascending</strong> order; click on ORDERING field and select <code class="docutils literal notranslate"><span class="pre">data</span> <span class="pre">[asc]</span></code>.</p>
+<p>We can add a second ordering level. For example, for each date, we can further order the rows by number of <strong>entries</strong>, in <strong>descending</strong> order. To do so, click again on the ORDERING field, and select <code class="docutils literal notranslate"><span class="pre">entries</span> <span class="pre">[desc]</span></code>. You should then get this result:</p>
+<center>
+<p><img alt="" src="_images/order_data.png" /></p>
+</center>
+</section>
+<section id="limit-and-filter">
+<h4>Limit and filter<a class="headerlink" href="#limit-and-filter" title="Permalink to this heading">¶</a></h4>
+<p>In the ROW LIMIT field you can select how many rows you want to get from the data. We can keep it here to 10000, as follows:</p>
+<center>
+<p><img alt="" src="_images/row_limit.png" /></p>
+</center>
+<p>In the FILTERS field you can apply many different filters in the dataset.</p>
+<center>
+<p><img alt="" src="_images/filters.png" /></p>
+</center>
+<p>Let’s explore some of these filters.</p>
+<p>After clicking on <code class="docutils literal notranslate"><span class="pre">+</span> <span class="pre">Add</span> <span class="pre">filter</span></code> the following window will show up on your screen:</p>
+<center>
+<p><img alt="" src="_images/add_filter.png" /></p>
+</center>
+<ol class="arabic simple">
+<li><p>In the first field you can select the <code class="docutils literal notranslate"><span class="pre">column</span></code> on which you want to apply the filter. This option can be filled with any column of the dataset.</p></li>
+<li><p>The second field is related to the filter <code class="docutils literal notranslate"><span class="pre">operator</span></code> you want to apply to the data.</p></li>
+<li><p>The third field is the <code class="docutils literal notranslate"><span class="pre">value</span></code> of reference for your filter.</p></li>
+</ol>
+<p>We have the following operators available:</p>
+<ul class="simple">
+<li><p><strong>equals</strong>: You will use this operator to select only the rows of a dataset with a specific value. The operator equals can be applied for all types of columns. For example, in the case of the <code class="docutils literal notranslate"><span class="pre">foph_hosp_d</span></code> dataset, you can use this filter if you just want to get the values in which <code class="docutils literal notranslate"><span class="pre">geoRegion</span> <span class="pre">equals</span> <span class="pre">GE</span></code>.</p></li>
+<li><p><strong>not equals</strong>: We can use this operator to avoid some value. For example, if you don’t want to get the rows with entries equal a 0 you can apply the following filter: <code class="docutils literal notranslate"><span class="pre">entries</span> <span class="pre">not</span> <span class="pre">equals</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>&lt;</strong> : This operator only can be applied in numeric columns. You should use it when you want the values returned in a column to be lower than some threshold defined in the filter value.</p></li>
+<li><p><strong>&gt;</strong> : This operator only can be applied in numeric columns. You should use it when you want the values returned in a column to be bigger than some threshold defined in the filter value.</p></li>
+<li><p><strong>&lt; =</strong> : This operator only can be applied in numeric columns. You should use them when you want the values returned in a column to be lower or equal to a threshold defined in the filter value.</p></li>
+<li><p><strong>&gt; =</strong> : This operator only can be applied in numeric columns. You should use them when you want the values returned in a column to be bigger or equal to a threshold defined in the filter value.</p></li>
+<li><p><strong>IN</strong> : This operator can be used to select values in a column equal to some group of values. For example, in our example dataset, you could want to select the rows where the <code class="docutils literal notranslate"><span class="pre">geoRegion</span> <span class="pre">in</span> <span class="pre">(GE,</span> <span class="pre">FR)</span></code>. Note that you can choose as many values as you want.</p></li>
+<li><p><strong>NOT IN</strong>: This operator makes the inverse of the <code class="docutils literal notranslate"><span class="pre">IN</span></code> operator. This filter is used when you want the table returned to exclude the values added in the filter value.</p></li>
+<li><p><strong>LIKE (case insensitive)</strong> and <strong>LIKE</strong> : This operator can be used to select values in columns with the text values following some pattern. The difference between the LIKE (case insensitive) and the LIKE is that the first operator (insensitive) doesn’t differentiate between the upper and lower cases.</p></li>
+<li><p><strong>IS NOT NULL</strong> : This operator is used to select only rows with non-null values according to some column.</p></li>
+<li><p><strong>IS NULL</strong> : This operator is used to select only rows with null values according to some column.</p></li>
+</ul>
+<p>For example, in the case of the <code class="docutils literal notranslate"><span class="pre">foph_hosp_d</span></code> dataset, let’s use this filter to get the rows in which <code class="docutils literal notranslate"><span class="pre">geoRegion</span> <span class="pre">equals</span> <span class="pre">GE</span></code>, as follows:</p>
+<center>
+<p><img alt="" src="_images/filter_georegion.png" /></p>
+</center>
+<p>After configuring the filter you need to press the <code class="docutils literal notranslate"><span class="pre">SAVE</span></code> button and the <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">QUERY</span></code> button again. You can see the result of applying this filter below:</p>
+<center>
+<p><img alt="" src="_images/filter_georegion_result.png" /></p>
+</center>
+<p>In our platform, we can apply multiple filters at the same time.</p>
+<p>For example, in the dataset <code class="docutils literal notranslate"><span class="pre">foph_hosp_d</span></code>, the column <code class="docutils literal notranslate"><span class="pre">sumtotal</span></code> represents the cumulative number of hospitalisations. Let’ filter the data to keep only rows where the cumulative number of hospitalisations exceeds 100.</p>
+<p>To do so, click on the <strong>+</strong> icon on the right of FILTERS field, and add the filter <code class="docutils literal notranslate"><span class="pre">sumtotal</span> <span class="pre">&gt;=</span> <span class="pre">100)</span></code>, as shown below:</p>
+<center>
+<p><img alt="" src="_images/filter_sumtotal.png" /></p>
+</center>
+<p>And that’s the result:</p>
+<center>
+<p><img alt="" src="_images/filter_sumtotal_result.png" /></p>
+</center>
+<p>When you scroll down the table chart, you can already see clearly the first COVID wave, which started end of March 2020, and the more impressive next waves, i.e. around October-November 2020, and beginning of 2022!</p>
+<p>Go to the <strong>Data Visualization</strong> section to learn how to create other visualizations.</p>
+</section>
 </section>
 </section>
 </section>
@@ -144,12 +317,14 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets/index.html">Available Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Querying, Analysis, and Visualizations</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="instruction_name_tables.html">Data Storage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Querying and Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#direct-access-to-the-database">Direct access to the database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#access-through-the-api">Access through the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-exploration-on-epigraphhub">Data Exploration on Epigraphhub</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="charts/index.html">Data Visualizations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a></li>
 </ul>
 
@@ -157,8 +332,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="datastorage.html" title="previous chapter">Data Storage</a></li>
-      <li>Next: <a href="hubapps.html" title="next chapter">Building Web-apps based on the Hub</a></li>
+      <li>Previous: <a href="instruction_name_tables.html" title="previous chapter">Database table naming rules</a></li>
+      <li>Next: <a href="charts/index.html" title="next chapter">Data visualizations</a></li>
   </ul></li>
 </ul>
 </div>
@@ -171,7 +346,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -188,7 +363,7 @@
       &copy;2021, The Graph Network.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

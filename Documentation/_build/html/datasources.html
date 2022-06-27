@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Data Sources and Aquisition &#8212; EpiGraphHub 2021 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -12,11 +12,12 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data Transformation and Harmonization" href="harmonization.html" />
-    <link rel="prev" title="schema = switzerland" href="datasets/switzerland_schema.html" />
+    <link rel="prev" title="Public schema" href="datasets/public_schema.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,19 +34,19 @@
 
           <div class="body" role="main">
             
-  <section class="tex2jax_ignore mathjax_ignore" id="data-sources-and-aquisition">
-<h1>Data Sources and Aquisition<a class="headerlink" href="#data-sources-and-aquisition" title="Permalink to this headline">¶</a></h1>
+  <section id="data-sources-and-aquisition">
+<h1>Data Sources and Aquisition<a class="headerlink" href="#data-sources-and-aquisition" title="Permalink to this heading">¶</a></h1>
 <p>Epigraphhub database aggregates data from multiple sources which are collectd and kept up to date via our data aquisition automation system.</p>
 <p>All the data coming from an external source should give origin to on or more tables organized in schemas. For example, maps should be stored in the <code class="docutils literal notranslate"><span class="pre">map</span></code> schema.</p>
 <section id="manual-data-entry">
-<h2>Manual data entry<a class="headerlink" href="#manual-data-entry" title="Permalink to this headline">¶</a></h2>
+<h2>Manual data entry<a class="headerlink" href="#manual-data-entry" title="Permalink to this heading">¶</a></h2>
 <p>Data can be uploaded manually via the Epigraphhub Superset web interface or programatically, by connecting directly to the database. In order to connect a SSH tunnel must be established using the user <code class="docutils literal notranslate"><span class="pre">epigraph</span></code></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh -f epigraph@epigraphhub.org -L <span class="m">5432</span>:localhost:5432 -NC
 </pre></div>
 </div>
 <p>Now we can use either Python or R to upload the data.</p>
 <section id="using-python">
-<h3>Using Python<a class="headerlink" href="#using-python" title="Permalink to this headline">¶</a></h3>
+<h3>Using Python<a class="headerlink" href="#using-python" title="Permalink to this heading">¶</a></h3>
 <p>Once the tunnel is established data can be sent to the data base using Pandas:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
@@ -61,7 +62,7 @@
 </pre></div>
 </div>
 <p>Above, <code class="docutils literal notranslate"><span class="pre">public</span></code> is the schema holding all the maps.</p>
-<p>For a more complete example for loading all the GADM maps, check this <span class="xref myst">script</span>.</p>
+<p>For a more complete example for loading all the GADM maps, check this <a class="reference download internal" download="" href="_downloads/a1b1f87b930773c1dbc5364ca1cc1898/load_gpkg_maps.py"><span class="xref download myst">script</span></a>.</p>
 <p>To Import CSVs you can use the web interface. Or the direct database connection as shown above</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;myspreadsheet.csv&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
@@ -70,7 +71,7 @@
 </div>
 </section>
 <section id="using-r">
-<h3>Using R<a class="headerlink" href="#using-r" title="Permalink to this headline">¶</a></h3>
+<h3>Using R<a class="headerlink" href="#using-r" title="Permalink to this heading">¶</a></h3>
 <p>Once the tunnel is established data can be sent to the data base using the package: <code class="docutils literal notranslate"><span class="pre">RPostgreSQL</span></code></p>
 <div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># install.packages(&quot;RPostgreSQL&quot;)</span>
 <span class="nf">require</span><span class="p">(</span><span class="s">&quot;RPostgreSQL&quot;</span><span class="p">)</span>
@@ -96,18 +97,71 @@
 <p>The first value in <code class="docutils literal notranslate"><span class="pre">c('public',</span> <span class="pre">'myspreadsheet')</span></code> represents the <strong>schema</strong> where the table will be saved, and the second the table name.</p>
 </section>
 <section id="spreadsheets">
-<h3>Spreadsheets<a class="headerlink" href="#spreadsheets" title="Permalink to this headline">¶</a></h3>
-<p>To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub, permission to anyone that has the link to view the file.</p>
-<p><img alt="sheets" src="_images/gsheets.png" /></p>
-<p>Don’t forget to select the <code class="docutils literal notranslate"><span class="pre">Google</span> <span class="pre">sheets</span></code> first.</p>
+<h3>Spreadsheets<a class="headerlink" href="#spreadsheets" title="Permalink to this heading">¶</a></h3>
+<p>To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub and permission to anyone that has the link to view the file.</p>
+<p>As an example, let’s use the table: <a class="reference external" href="https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing">https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing</a>.</p>
+<p>After clicking on the link, the page below will appear.
+(The steps explained below work with any table saved in Google Sheets.)</p>
+<center>
+<p><img alt="" src="_images/google_sheet.png" /></p>
+</center>
+<p>Click on the <code class="docutils literal notranslate"><span class="pre">Share</span></code> button highlighted above and the two boxes below will be displayed in your screen:</p>
+<center>
+<p><img alt="" src="_images/options_link.png" /></p>
+</center>
+<p>In the <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">link</span></code> box, you need to allow your table to be shared with anyone with the link. If you have already done it, the following box will be displayed:</p>
+<center>
+<p><img alt="" src="_images/allow_use_link.png" /></p>
+</center>
+<p>So, click on the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">link</span></code>. Otherwise, if your table is not yet available for anyone with the link, you need to click on <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">to</span> <span class="pre">anyone</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">link</span></code>, so you will see on your screen:</p>
+<center>
+<p><img alt="" src="_images/get_link.png" /></p>
+</center>
+<p>Click on the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">link</span></code> and on <code class="docutils literal notranslate"><span class="pre">Done</span></code>. By doing that you just allow the <code class="docutils literal notranslate"><span class="pre">Viewer</span></code> mode of your table. It doesn’t allow other people with the link to edit your table. After copying the link, we will go back to the EpiGraphHub platform and will select the <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Lab</span></code> and the <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Editor</span></code> option.</p>
+<center>
+<p><img alt="" src="_images/sql_lab.png" /></p>
+</center>
+<p>After clicking on it, the page below will be displayed on your screen. On this page, it’s possible to make multiple SQL queries. You can open a new query by clicking on the plus button highlighted below.</p>
+<center>
+<p><img alt="" src="_images/home_sql.png" /></p>
+</center>
+<p>On the left side of the page, you can select the DATABASE and SCHEMA. On the right side, you can type your SQL query and run it clicking on the <code class="docutils literal notranslate"><span class="pre">RUN</span></code> button.</p>
+<p>To upload a table from Google Sheets you must use the <code class="docutils literal notranslate"><span class="pre">Google</span> <span class="pre">sheets</span></code> DATABASE and the <code class="docutils literal notranslate"><span class="pre">main</span></code> SCHEMA, as shown below:</p>
+<center>
+<p><img alt="" src="_images/config_sql.png" /></p>
+</center>
+<p>In the field to type the query, just type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="s2">&quot;Google Sheets link&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>and click on the <code class="docutils literal notranslate"><span class="pre">RUN</span></code> button. In the <code class="docutils literal notranslate"><span class="pre">Google</span> <span class="pre">Sheets</span> <span class="pre">link</span></code> use the link copied above. Your final query is:</p>
+<center>
+<p><img alt="" src="_images/gs_query.png" /></p>
+</center>
+<p>After running the query, the result below will be displayed on your screen:</p>
+<center>
+<p><img alt="" src="_images/gs_explore.png" /></p>
+</center>
+<p>To save this dataset and explore it click on the <code class="docutils literal notranslate"><span class="pre">EXPLORE</span></code> button. This window will be displayed:</p>
+<center>
+<p><img alt="" src="_images/gs_save.png" /></p>
+</center>
+<p>You can save it as a new dataset (choosing a name) or overwrite an existing table. So, choose a name and click on the <code class="docutils literal notranslate"><span class="pre">SAVE</span> <span class="pre">&amp;</span> <span class="pre">EXPLORE</span></code> button.</p>
+<p>You will be redirected to the explore page, where you can make charts and explore your data.</p>
+<center>
+<p><img alt="" src="_images/gs_result.png" /></p>
+</center>
 </section>
 </section>
 <section id="data-sources">
-<h2>Data sources<a class="headerlink" href="#data-sources" title="Permalink to this headline">¶</a></h2>
+<h2>Data sources<a class="headerlink" href="#data-sources" title="Permalink to this heading">¶</a></h2>
 <p>The sources below are kept up-to-date in the epigraphhub database.</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><strong>Our World In Data COVID-19 data.</strong> This dataset is updated daily on the the database and is accessible via the <a class="reference external" href="https://epigraphhub.org/swagger/v1">EpiGraphHub API</a>.</p></li>
 <li><p><a class="reference external" href="https://gadm.org">GADM</a> maps. All GADM maps with all available administrative levels are available in the Hub database. <a class="reference external" href="http://epigraphhub.org/r/14">This chart</a>, for example shows the centroids of Guinea’ admin 3 regions.</p></li>
+<li><p><strong>FOPH COVID-19 data.</strong> All the datasets made available by the FOPH - Federal Office of Public Health - regarding the COVID-19 data in Switzerland are available on our platform and updated regularly.</p></li>
+<li><p><a class="reference external" href="https://www.datos.gov.co/Salud-y-Protecci-n-Social/Casos-positivos-de-COVID-19-en-Colombia/gt2j-8ykr/data"><strong>Instituto Nacional de Salud COVID-19 data.</strong></a> This source provides the data of positive COVID-19 cases in Colombia. This data is updated daily in our platform.</p></li>
+<li><p><a class="reference external" href="https://github.com/GoogleCloudPlatform/covid-19-open-data"><strong>Google Health COVID-19 open data</strong></a> All the datasets made available by the google regarding the COVID-19 data. This data is updated daily in our platform.</p></li>
 </ol>
 </section>
 </section>
@@ -139,8 +193,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="harmonization.html">Data Transformation and Harmonization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying, Analysis, and Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instruction_name_tables.html">Data Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="charts/index.html">Data Visualizations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a></li>
 </ul>
 
@@ -148,7 +203,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="datasets/switzerland_schema.html" title="previous chapter">schema = switzerland</a></li>
+      <li>Previous: <a href="datasets/public_schema.html" title="previous chapter">Public schema</a></li>
       <li>Next: <a href="harmonization.html" title="next chapter">Data Transformation and Harmonization</a></li>
   </ul></li>
 </ul>
@@ -162,7 +217,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -179,7 +234,7 @@
       &copy;2021, The Graph Network.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

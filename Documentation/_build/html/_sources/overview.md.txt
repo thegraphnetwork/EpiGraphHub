@@ -6,11 +6,11 @@ The EpigraphHub platform is composed by a Postgresql database server integrated 
 
 Our database server is compised of three main databases as shown in the figure below, with different access priviledges. 
 
-![server](db_access.png)
+![server](../Documentation/images/db_access.png)
 
 ### *epigraphhub* database
 
-The `epigraphhub` database contains exclusively public domain data, either generated internally by the project or integrated from other sources. I can be read by all users but only EpigraphHub analysts can write to it, creating or updating tables.
+The `epigraphhub` database contains exclusively public domain data, either generated internally by the project or integrated from other sources. It can be read by all users but only EpigraphHub analysts can write to it, creating or updating tables.
 
 ### *privatehub* database
 The `privatehub` database is a database to which only EpigraphHub analysts can access. Writing privileges to specific schemas or tables are granted on a per project basis to maximize data security.
