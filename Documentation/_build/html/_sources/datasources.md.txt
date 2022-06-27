@@ -77,14 +77,14 @@ The first value in `c('public', 'myspreadsheet')` represents the **schema** wher
 ### Spreadsheets
 To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub and permission to anyone that has the link to view the file.
 
-As an example, let´s use the table: https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing.
+As an example, let's use the table: <https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing>.
 
 After clicking on the link, the page below will appear.
 (The steps explained below work with any table saved in Google Sheets.)
 
 <center>
 
-![](images/google_sheet.png){width=100%}
+![](images/google_sheet.png)
 
 </center>
 
@@ -92,7 +92,7 @@ Click on the `Share` button highlighted above and the two boxes below will be di
 
 <center>
 
-![](images/options_link.png){width=500}
+![](images/options_link.png)
 
 </center>
 
@@ -100,7 +100,7 @@ In the `Get link` box, you need to allow your table to be shared with anyone wit
 
 <center>
 
-![](images/allow_use_link.png){width=500}
+![](images/allow_use_link.png)
 
 </center>
 
@@ -108,14 +108,14 @@ So, click on the `Copy link`. Otherwise, if your table is not yet available for 
 
 <center>
 
-![](images/get_link.png){width=500}
+![](images/get_link.png)
 
 </center>
 
 Click on the `Copy link` and on `Done`. By doing that you just allow the `Viewer` mode of your table. It doesn't allow other people with the link to edit your table. After copying the link, we will go back to the EpiGraphHub platform and will select the `SQL Lab` and the `SQL Editor` option.
 <center>
 
-![](images/sql_lab.png){width=250}
+![](images/sql_lab.png)
 
 </center>
 
@@ -123,7 +123,7 @@ After clicking on it, the page below will be displayed on your screen. On this p
 
 <center>
 
-![](images/home_sql.png){width=100%}
+![](images/home_sql.png)
 
 </center>
 
@@ -134,7 +134,7 @@ To upload a table from Google Sheets you must use the `Google sheets` DATABASE a
 
 <center>
 
-![](images/config_sql.png){width=500}
+![](images/config_sql.png)
 
 </center>
 
@@ -148,7 +148,7 @@ and click on the `RUN` button. In the `Google Sheets link` use the link copied a
 
 <center>
 
-![](images/gs_query.png){width=100%}
+![](images/gs_query.png)
 
 </center>
 
@@ -156,14 +156,14 @@ After running the query, the result below will be displayed on your screen:
 
 <center>
 
-![](images/gs_explore.png){width=100%}
+![](images/gs_explore.png)
 
 </center>
 
 To save this dataset and explore it click on the `EXPLORE` button. This window will be displayed:
 <center>
 
-![](images/gs_save.png){width=500}
+![](images/gs_save.png)
 
 </center>
 
@@ -174,7 +174,7 @@ You will be redirected to the explore page, where you can make charts and explor
 
 <center>
 
-![](images/gs_result.png){width=100%}
+![](images/gs_result.png)
 
 </center>
 

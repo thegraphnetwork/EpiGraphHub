@@ -16,7 +16,7 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Storage" href="datastorage.html" />
+    <link rel="next" title="Database table naming rules" href="instruction_name_tables.html" />
     <link rel="prev" title="Data Sources and Aquisition" href="datasources.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -36,6 +36,17 @@
             
   <section id="data-transformation-and-harmonization">
 <h1>Data Transformation and Harmonization<a class="headerlink" href="#data-transformation-and-harmonization" title="Permalink to this heading">¶</a></h1>
+<p>You can use our platform’s <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">editor</span></code> section to clean data or make changes in the datasets using SQL queries.</p>
+<p><strong>For security, external users can only query the <code class="docutils literal notranslate"><span class="pre">sandbox</span></code> or <code class="docutils literal notranslate"><span class="pre">google</span> <span class="pre">sheets</span></code> database.</strong></p>
+<p>For example, you can replace the values in a column of the dataset using the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">UPDATE</span> 
+    <span class="n">table_name</span>
+<span class="n">SET</span>
+    <span class="n">column_name</span> <span class="o">=</span> <span class="n">REPLACE</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span><span class="n">new_value</span><span class="p">)</span>
+<span class="n">WHERE</span>
+    <span class="n">column_name</span> <span class="o">=</span> <span class="n">old_value</span><span class="p">;</span>
+</pre></div>
+</div>
 </section>
 
 
@@ -61,8 +72,9 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets/index.html">Available Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasources.html">Data Sources</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Transformation and Harmonization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="datastorage.html">Data Storage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying, Analysis, and Visualizations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instruction_name_tables.html">Data Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataanalysis.html">Data Querying and Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="charts/index.html">Data Visualizations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hubapps.html">Building Hub Apps</a></li>
 </ul>
 
@@ -71,7 +83,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="datasources.html" title="previous chapter">Data Sources and Aquisition</a></li>
-      <li>Next: <a href="datastorage.html" title="next chapter">Data Storage</a></li>
+      <li>Next: <a href="instruction_name_tables.html" title="next chapter">Database table naming rules</a></li>
   </ul></li>
 </ul>
 </div>

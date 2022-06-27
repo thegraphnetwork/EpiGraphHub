@@ -17,7 +17,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data Transformation and Harmonization" href="harmonization.html" />
-    <link rel="prev" title="Switzerland COVID-19 data" href="datasets/switzerland_schema.html" />
+    <link rel="prev" title="Public schema" href="datasets/public_schema.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -99,36 +99,36 @@
 <section id="spreadsheets">
 <h3>Spreadsheets<a class="headerlink" href="#spreadsheets" title="Permalink to this heading">¶</a></h3>
 <p>To import spreadsheets one easy way is through Google sheets. You need to give the spreadsheet you want to read from Epigraphhub and permission to anyone that has the link to view the file.</p>
-<p>As an example, let´s use the table: https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing.</p>
+<p>As an example, let’s use the table: <a class="reference external" href="https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing">https://docs.google.com/spreadsheets/d/12rGwhwuIJuRZJ3eqfQUfuRK6yDSoTP9_Y4S_KidTyMY/edit?usp=sharing</a>.</p>
 <p>After clicking on the link, the page below will appear.
 (The steps explained below work with any table saved in Google Sheets.)</p>
 <center>
-<p><img alt="" src="_images/google_sheet.png" />{width=100%}</p>
+<p><img alt="" src="_images/google_sheet.png" /></p>
 </center>
 <p>Click on the <code class="docutils literal notranslate"><span class="pre">Share</span></code> button highlighted above and the two boxes below will be displayed in your screen:</p>
 <center>
-<p><img alt="" src="_images/options_link.png" />{width=500}</p>
+<p><img alt="" src="_images/options_link.png" /></p>
 </center>
 <p>In the <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">link</span></code> box, you need to allow your table to be shared with anyone with the link. If you have already done it, the following box will be displayed:</p>
 <center>
-<p><img alt="" src="_images/allow_use_link.png" />{width=500}</p>
+<p><img alt="" src="_images/allow_use_link.png" /></p>
 </center>
 <p>So, click on the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">link</span></code>. Otherwise, if your table is not yet available for anyone with the link, you need to click on <code class="docutils literal notranslate"><span class="pre">Change</span> <span class="pre">to</span> <span class="pre">anyone</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">link</span></code>, so you will see on your screen:</p>
 <center>
-<p><img alt="" src="_images/get_link.png" />{width=500}</p>
+<p><img alt="" src="_images/get_link.png" /></p>
 </center>
 <p>Click on the <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">link</span></code> and on <code class="docutils literal notranslate"><span class="pre">Done</span></code>. By doing that you just allow the <code class="docutils literal notranslate"><span class="pre">Viewer</span></code> mode of your table. It doesn’t allow other people with the link to edit your table. After copying the link, we will go back to the EpiGraphHub platform and will select the <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Lab</span></code> and the <code class="docutils literal notranslate"><span class="pre">SQL</span> <span class="pre">Editor</span></code> option.</p>
 <center>
-<p><img alt="" src="_images/sql_lab.png" />{width=250}</p>
+<p><img alt="" src="_images/sql_lab.png" /></p>
 </center>
 <p>After clicking on it, the page below will be displayed on your screen. On this page, it’s possible to make multiple SQL queries. You can open a new query by clicking on the plus button highlighted below.</p>
 <center>
-<p><img alt="" src="_images/home_sql.png" />{width=100%}</p>
+<p><img alt="" src="_images/home_sql.png" /></p>
 </center>
 <p>On the left side of the page, you can select the DATABASE and SCHEMA. On the right side, you can type your SQL query and run it clicking on the <code class="docutils literal notranslate"><span class="pre">RUN</span></code> button.</p>
 <p>To upload a table from Google Sheets you must use the <code class="docutils literal notranslate"><span class="pre">Google</span> <span class="pre">sheets</span></code> DATABASE and the <code class="docutils literal notranslate"><span class="pre">main</span></code> SCHEMA, as shown below:</p>
 <center>
-<p><img alt="" src="_images/config_sql.png" />{width=500}</p>
+<p><img alt="" src="_images/config_sql.png" /></p>
 </center>
 <p>In the field to type the query, just type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SELECT</span> <span class="o">*</span> <span class="n">FROM</span> <span class="s2">&quot;Google Sheets link&quot;</span><span class="p">;</span>
@@ -136,20 +136,20 @@
 </div>
 <p>and click on the <code class="docutils literal notranslate"><span class="pre">RUN</span></code> button. In the <code class="docutils literal notranslate"><span class="pre">Google</span> <span class="pre">Sheets</span> <span class="pre">link</span></code> use the link copied above. Your final query is:</p>
 <center>
-<p><img alt="" src="_images/gs_query.png" />{width=100%}</p>
+<p><img alt="" src="_images/gs_query.png" /></p>
 </center>
 <p>After running the query, the result below will be displayed on your screen:</p>
 <center>
-<p><img alt="" src="_images/gs_explore.png" />{width=100%}</p>
+<p><img alt="" src="_images/gs_explore.png" /></p>
 </center>
 <p>To save this dataset and explore it click on the <code class="docutils literal notranslate"><span class="pre">EXPLORE</span></code> button. This window will be displayed:</p>
 <center>
-<p><img alt="" src="_images/gs_save.png" />{width=500}</p>
+<p><img alt="" src="_images/gs_save.png" /></p>
 </center>
 <p>You can save it as a new dataset (choosing a name) or overwrite an existing table. So, choose a name and click on the <code class="docutils literal notranslate"><span class="pre">SAVE</span> <span class="pre">&amp;</span> <span class="pre">EXPLORE</span></code> button.</p>
 <p>You will be redirected to the explore page, where you can make charts and explore your data.</p>
 <center>
-<p><img alt="" src="_images/gs_result.png" />{width=100%}</p>
+<p><img alt="" src="_images/gs_result.png" /></p>
 </center>
 </section>
 </section>
@@ -203,7 +203,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="datasets/switzerland_schema.html" title="previous chapter">Switzerland COVID-19 data</a></li>
+      <li>Previous: <a href="datasets/public_schema.html" title="previous chapter">Public schema</a></li>
       <li>Next: <a href="harmonization.html" title="next chapter">Data Transformation and Harmonization</a></li>
   </ul></li>
 </ul>

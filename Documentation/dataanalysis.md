@@ -105,7 +105,7 @@ To select the dataset that we want to explore, let's first go to the `Data - Dat
 
 <center>
 
-![](../Documentation/images/data_datasets_page.png){width="500px"}
+![](../Documentation/images/data_datasets_page.png)
 
 </center>
 
@@ -115,7 +115,7 @@ For this lesson, we will use the example of the `foph_hosp_d` dataset. This data
 
 <center>
 
-![](../Documentation/images/select_dataset_to_explore.png){width="500px"}
+![](../Documentation/images/select_dataset_to_explore.png)
 
 </center>
 
@@ -125,7 +125,7 @@ After selecting the dataset, you will be on the **Explore page**, which is divid
 
 <center>
 
-![](../Documentation/images/three_panels.png){width="750px"}
+![](../Documentation/images/three_panels.png)
 
 </center>
 
@@ -144,7 +144,7 @@ We can collapse the left panel to focus on the analysis (middle panel) and visua
 
 <center>
 
-![](../Documentation/images/omit_region_1.png){width="250px"}
+![](../Documentation/images/omit_region_1.png)
 
 </center>
 
@@ -152,7 +152,7 @@ Let's now have a closer look at the middle panel of the page. It has three diffe
 
 <center>
 
-![](../Documentation/images/query_section.png){width="250px"}
+![](../Documentation/images/query_section.png)
 
 </center>
 
@@ -162,7 +162,7 @@ By default, the VISUALISATION TYPE is a `Table`. To see the different ways you c
 
 <center>
 
-![](../Documentation/images/change_visualisation.png){width="250px"}
+![](../Documentation/images/change_visualisation.png)
 
 </center>
 
@@ -170,7 +170,7 @@ You can see that a large number of other visualisations are available, such as *
 
 <center>
 
-![](../Documentation/images/all_charts.png){width="750px"}
+![](../Documentation/images/all_charts.png)
 
 </center>
 
@@ -190,7 +190,7 @@ By default we will now explore all (i.e. `no filter` on time) `daily` data, base
 
 <center>
 
-![](../Documentation/images/time.png){width="250px"}
+![](../Documentation/images/time.png)
 
 </center>
 
@@ -200,7 +200,7 @@ Let's now have a closer look at the **Query** section. This section presents two
 
 <center>
 
-![](../Documentation/images/query_mode.png){width="250px"}
+![](../Documentation/images/query_mode.png)
 
 </center>
 
@@ -213,16 +213,17 @@ In this section, for the `table` chart visualization, we will see an example wit
 
 <center> 
 
-![](../Documentation/images/raw_records.png){width="250px"}
+![](../Documentation/images/raw_records.png)
 
 </center> 
+
 #### Columns of interest
 
 In COLUMNS, you decide what columns of the dataset you want to visualise. Let's say we are interested by the `date`, `geoRegion`, `entries` and `sumTotal` columns. To select a column, click on the COLUMNS field, a drop-down list will appear, with all columns you can select from.
 
 <center>
 
-![](../Documentation/images/select_columns.png){width="250px"}
+![](../Documentation/images/select_columns.png)
 
 </center>
 
@@ -230,7 +231,7 @@ Go through this list, and select your columns of interest (here `date`, `geoRegi
 
 <center>
 
-![](../Documentation/images/select_columns_result.png){width="250px"}
+![](../Documentation/images/select_columns_result.png)
 
 </center>
 
@@ -238,7 +239,7 @@ After selecting these columns in the COLUMNS field, you will notice that a butto
 
 <center>
 
-![](../Documentation/images/run_query.png){width="750px"}
+![](../Documentation/images/run_query.png)
 
 </center>
 
@@ -246,7 +247,7 @@ If you press this button, the table chart with the columns that you selected wil
 
 <center>
 
-![](../Documentation/images/run_query_results.png){width="750px"}
+![](../Documentation/images/run_query_results.png)
 
 </center>
 
@@ -258,7 +259,7 @@ Once you get the table, if you don't want to make any new explorations, you can 
 
 <center>
 
-![](../Documentation/images/export_data.png){width="500px"}
+![](../Documentation/images/export_data.png)
 
 </center>
 
@@ -274,7 +275,7 @@ We can add a second ordering level. For example, for each date, we can further o
 
 <center>
 
-![](../Documentation/images/order_data.png){width="500px"}
+![](../Documentation/images/order_data.png)
 
 </center>
 
@@ -284,7 +285,7 @@ In the ROW LIMIT field you can select how many rows you want to get from the dat
 
 <center>
 
-![](../Documentation/images/row_limit.png){width="250px"}
+![](../Documentation/images/row_limit.png)
 
 </center>
 
@@ -292,7 +293,7 @@ In the FILTERS field you can apply many different filters in the dataset.
 
 <center>
 
-![](../Documentation/images/filters.png){width="250px"}
+![](../Documentation/images/filters.png)
 
 </center>
 
@@ -302,7 +303,7 @@ After clicking on `+ Add filter` the following window will show up on your scree
 
 <center>
 
-![](../Documentation/images/add_filter.png){width="250px"}
+![](../Documentation/images/add_filter.png)
 
 </center>
 
@@ -338,7 +339,7 @@ For example, in the case of the `foph_hosp_d` dataset, let's use this filter to 
 
 <center>
 
-![](../Documentation/images/filter_georegion.png){width="250px"}
+![](../Documentation/images/filter_georegion.png)
 
 </center>
 
@@ -346,7 +347,7 @@ After configuring the filter you need to press the `SAVE` button and the `RUN QU
 
 <center>
 
-![](../Documentation/images/filter_georegion_result.png){width="750px"}
+![](../Documentation/images/filter_georegion_result.png)
 
 </center>
 
@@ -358,7 +359,7 @@ To do so, click on the **+** icon on the right of FILTERS field, and add the fil
 
 <center>
 
-![](../Documentation/images/filter_sumtotal.png){width="500px"}
+![](../Documentation/images/filter_sumtotal.png)
 
 </center>
 
@@ -366,7 +367,7 @@ And that's the result:
 
 <center>
 
-![](../Documentation/images/filter_sumtotal_result.png){width="500px"}
+![](../Documentation/images/filter_sumtotal_result.png)
 
 </center>
 
