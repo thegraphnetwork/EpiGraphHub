@@ -22,6 +22,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![Discord][discord-shield]][discord-url]
 
 
 
@@ -271,3 +272,5 @@ Linked-in : https://www.linkedin.com/company/the-graph-network
 [license-url]: https://github.com/thegraphnetwork/GRAPHnetEpiApp/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/the-graph-network
+[discord-shield]: https://img.shields.io/discord/865572405229518878?color=%235460e6&label=DISCORD&style=for-the-badge
+[discord-url]: https://discord.gg/56thARPrnJ
