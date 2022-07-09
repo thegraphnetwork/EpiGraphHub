@@ -144,6 +144,9 @@ cython_debug/
 .idea/
 .Rproj.user
 
+# VSCode IDE settings
+.vscode
+
 # Ansible
 .vault_pass.txt
 Data_Collection/CRON_scripts/.DS_Store
