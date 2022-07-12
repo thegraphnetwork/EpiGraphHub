@@ -4,12 +4,12 @@ SERVICE:=epigraphhub-superset
 ENV:=dev
 CONSOLE:=bash
 CRON:=
+FILE:=
 
 DOCKER=docker-compose \
 	--env-file .env \
 	--project-name eph-$(ENV) \
-	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml
+	--file docker/compose.yaml
 
 # DOCKER
 
@@ -30,6 +30,11 @@ docker-stop:
 	$(DOCKER) stop ${SERVICES}
 
 
+.PHONY:docker-down
+docker-down:
+	$(DOCKER) down --volumes
+
+
 .PHONY:docker-restart
 docker-restart: docker-stop docker-start
 	echo "[II] Docker services restarted!"
@@ -37,6 +42,10 @@ docker-restart: docker-stop docker-start
 .PHONY:docker-logs-follow
 docker-logs-follow:
 	$(DOCKER) logs --follow --tail 300 ${SERVICES}
+
+.PHONY:docker-logs-follow
+docker-logs-follow:
+	$(DOCKER) logs --follow --tail 100 ${SERVICES}
 
 .PHONY:docker-logs
 docker-logs:
@@ -60,7 +69,7 @@ docker-wait-all:
 docker-dev-prepare-db:
 	# used for development
 	$(DOCKER) exec -T epigraphhub-superset \
-		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
+		bash /opt/EpiGraphHub/docker/postgresql/dev/prepare-db.sh
 
 
 .PHONY:docker-run-cron
@@ -98,6 +107,18 @@ docker-console:
 .PHONY:docker-run-bash
 docker-run-bash:
 	$(DOCKER) run --rm ${SERVICE} bash
+
+
+.PHONY:docker-db-dump
+docker-db-dump:
+	$(DOCKER) exec -T epigraphhub-superset bash \
+		/opt/EpiGraphHub/docker/postgresql/dump.sh
+
+
+.PHONY:docker-db-restore
+docker-db-restore:
+	$(DOCKER) exec -T epigraphhub-superset bash \
+		/opt/EpiGraphHub/docker/postgresql/restore.sh ${FILE}
 
 
 # conda
