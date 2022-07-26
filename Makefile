@@ -4,6 +4,8 @@ SERVICE:=superset
 ENV:=dev
 CONSOLE:=bash
 CRON:=
+ARGS:=
+
 
 DOCKER=docker-compose \
 	--env-file .env \
@@ -44,11 +46,11 @@ docker-restart: docker-stop docker-start
 
 .PHONY:docker-logs-follow
 docker-logs-follow:
-	$(DOCKER) logs --follow --tail 300 ${SERVICES}
+	$(DOCKER) logs --follow ${ARGS} ${SERVICES}
 
 .PHONY:docker-logs
 docker-logs:
-	$(DOCKER) logs --tail 300 ${SERVICES}
+	$(DOCKER) logs ${ARGS} ${SERVICES}
 
 .PHONY: docker-wait
 docker-wait:
