@@ -1,4 +1,4 @@
-FROM apache/airflow:slim-latest-python3.7
+FROM apache/airflow:slim-latest-python3.10
 
 ENV AIRFLOW_HOME=/opt/airflow
 
