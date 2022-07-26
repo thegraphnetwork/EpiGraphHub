@@ -13,12 +13,12 @@ env:
   _AIRFLOW_WWW_USER_FIRST_NAME: Super
   _AIRFLOW_WWW_USER_LAST_NAME: Admin
   AIRFLOW_UID: 1000
-  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@epigraphhub-db:25432/airflow
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:25432/airflow
   AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
-  POSTGRES_HOST: epigraphhub-db
+  POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
   POSTGRES_USER: dev_epigraph
   POSTGRES_PASSWORD: dev_epigraph
