@@ -7,6 +7,14 @@ on:
     branches: [ main ]
 
 env:
+  _AIRFLOW_WWW_USER_USERNAME: admin
+  _AIRFLOW_WWW_USER_PASSWORD: admin
+  _AIRFLOW_WWW_USER_EMAIL: admin@epigraphhub.org
+  _AIRFLOW_WWW_USER_FIRST_NAME: Super
+  _AIRFLOW_WWW_USER_LAST_NAME: Admin
+  AIRFLOW_UID: 1000
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@epigraphhub-db:25432/airflow
+  AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
@@ -70,19 +78,16 @@ jobs:
     - name: build and start docker containers
       run: |
         make docker-build
-        make docker-start SERVICES=epigraphhub-superset
+        make docker-start SERVICES=superset
 
     - name: wait for the services are properly working
       run: |
         docker ps
         make docker-wait-all
 
-    - name: prepare database
-      run: make docker-dev-prepare-db
-
     - name: test cron scripts
       run: |
-        make docker-run-cron SERVICE=epigraphhub-superset
+        make docker-run-cron SERVICE=superset
 
     - name: Generate logs
       if: ${{ failure() }}

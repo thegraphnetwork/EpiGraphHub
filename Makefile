@@ -1,5 +1,5 @@
-SERVICES:=epigraphhub-superset
-SERVICE:=epigraphhub-superset
+SERVICES:=superset
+SERVICE:=superset
 # options: dev, prod
 ENV:=dev
 CONSOLE:=bash
@@ -9,20 +9,28 @@ DOCKER=docker-compose \
 	--env-file .env \
 	--project-name eph-$(ENV) \
 	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml
+	--file docker/compose-$(ENV).yaml \
+	--file docker/airflow/compose.yaml
 
 # DOCKER
 
 .PHONY:docker-build
 docker-build:
-	$(DOCKER) build epigraphhub-base
+	$(DOCKER) build superset-base
 	$(DOCKER) build ${SERVICES}
 	$(DOCKER) pull ${SERVICES}
 
-
 .PHONY:docker-start
 docker-start:
-	$(DOCKER) up --remove-orphans -d ${SERVICES}
+	bash ./scripts/prepare-superset.sh
+	if [ "${ENV}" = "dev" ]; then \
+		$(DOCKER) up -d postgres; \
+		./docker/healthcheck.sh postgres; \
+	fi
+	$(DOCKER) up airflow-initdb
+	$(DOCKER) up -d ${SERVICES}
+	# ./docker/healthcheck.sh airflow
+	$(DOCKER) exec airflow bash "/tmp/scripts/create-admin.sh"
 
 
 .PHONY:docker-stop
@@ -48,20 +56,12 @@ docker-wait:
 
 .PHONY: docker-wait-all
 docker-wait-all:
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-db"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-db"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-redis"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-celery"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-celery-beat"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-flower"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="epigraphhub-superset"
-
-.PHONY:docker-dev-prepare-db
-docker-dev-prepare-db:
-	# used for development
-	$(DOCKER) exec -T epigraphhub-superset \
-		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
-
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="postgres"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="redis"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="celery"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="celery-beat"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="flower"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="superset"
 
 .PHONY:docker-run-cron
 docker-run-cron:
@@ -72,7 +72,7 @@ docker-run-cron:
 
 .PHONY:docker-cron
 docker-cron:
-	$(DOCKER) exec -T epigraphhub-superset bash \
+	$(DOCKER) exec -T superset bash \
 		/opt/EpiGraphHub/Data_Collection/CRON_scripts/${CRON}
 
 
@@ -80,7 +80,7 @@ docker-cron:
 docker-get-ip:
 	@echo -n "${SERVICE}: "
 	@docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-		eph-${ENV}_epigraphhub-${SERVICE}_1
+		eph-${ENV}_${SERVICE}_1
 
 .PHONY:docker-get-ips
 docker-get-ips:
@@ -98,6 +98,11 @@ docker-console:
 .PHONY:docker-run-bash
 docker-run-bash:
 	$(DOCKER) run --rm ${SERVICE} bash
+
+
+.PHONY:docker-down
+docker-down:
+	$(DOCKER) down --volumes --remove-orphans
 
 
 # conda

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ex
+
 # prepare the conda environment
 is_conda_in_path=$(echo $PATH|grep -m 1 --count /opt/conda/)
 
