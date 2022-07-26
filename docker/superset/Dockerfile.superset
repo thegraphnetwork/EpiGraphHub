@@ -1,1 +1,1 @@
-FROM epigraphhub/superset-base
+FROM epigraphhub/superset-base:latest
