@@ -21,7 +21,7 @@ dependencies:
   - python-dotenv
   - setuptools
   - sqlalchemy
-  - superset 1.5.0
+  - superset 2.0.0
   # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
   # - ngboost >=0.3.12
   # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
