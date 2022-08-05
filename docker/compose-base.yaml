@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  epigraphhub-base:
+  superset-base:
     image: epigraphhub/superset-base
     env_file:
       - ../.env
@@ -16,8 +16,9 @@ services:
         - UID=${UID:-1000}
         - GID=${GID:-1000}
 
-  epigraphhub-superset:
+  superset:
     image: epigraphhub/superset
+    hostname: superset
     restart: unless-stopped
     build:
       context: ..
@@ -41,14 +42,15 @@ services:
     ports:
       - ${SUPERSET_PORT}:8088
     depends_on:
-      - epigraphhub-redis
-      - epigraphhub-celery
-      - epigraphhub-celery-beat
+      - redis
+      - celery
+      - celery-beat
+      - flower
 
-  epigraphhub-redis:
-    hostname: epigraphhub-redis
-    restart: unless-stopped
+  redis:
     image: redis:alpine
+    hostname: redis
+    restart: unless-stopped
     # environment:
     #   DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
     #   ALLOW_EMPTY_PASSWORD: "no"
@@ -62,14 +64,15 @@ services:
     volumes:
       - redis:/data
 
-  epigraphhub-celery:
+  celery:
     image: epigraphhub-celery
+    hostname: celery
     restart: unless-stopped
     build:
       context: ..
       dockerfile: docker/celery/Dockerfile
     depends_on:
-      - epigraphhub-redis
+      - redis
     env_file:
       - ../.env
     volumes:
@@ -90,15 +93,15 @@ services:
       retries: 5
       start_period: 30s  # requires docker-compose 3.4
 
-  epigraphhub-celery-beat:
+  celery-beat:
     image: epigraphhub-celery
-    hostname: epigraphhub-celery-beat
+    hostname: celery-beat
     restart: unless-stopped
     build:
       context: ..
       dockerfile: docker/celery/Dockerfile
     depends_on:
-      - epigraphhub-redis
+      - redis
     env_file:
       - ../.env
     volumes:
@@ -122,8 +125,8 @@ services:
       retries: 5
       start_period: 30s  # requires docker-compose 3.4
 
-  epigraphhub-db:
-    hostname: epigraphhub-db
+  postgres:
+    hostname: postgres
     restart: unless-stopped
     build:
       context: ..
@@ -143,13 +146,13 @@ services:
       retries: 10
     command: -p ${POSTGRES_PORT}
 
-  epigraphhub-flower:
+  flower:
     image: mher/flower:0.9.7
     restart: unless-stopped
     env_file:
       - ../.env
     depends_on:
-      - epigraphhub-redis
+      - redis
     command: [
       "flower",
       "--broker=redis://redis:6379/0",

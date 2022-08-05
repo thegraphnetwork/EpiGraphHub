@@ -1,14 +1,15 @@
 version: '3.4'
 services:
 
-  epigraphhub-superset:
+  superset:
     depends_on:
-      - epigraphhub-db
-      - epigraphhub-celery
-      - epigraphhub-redis
-      - epigraphhub-flower
+      - postgres
+      - celery
+      - celery-beat
+      - redis
+      - flower
 
-  epigraphhub-db:
+  postgres:
     environment:
       # overwrite .env default variables
       - POSTGRES_USER=postgres
