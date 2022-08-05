@@ -10,14 +10,14 @@ env:
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
-  POSTGRES_HOST: epigraphhub-db
+  POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
   POSTGRES_USER: dev_epigraph
   POSTGRES_PASSWORD: dev_epigraph
   POSTGRES_DB: dev_epigraphhub
   POSTGRES_DB_PRIVATE: dev_privatehub
   POSTGRES_DB_SANDBOX: dev_sandbox
-  REDIS_HOST: epigraphhub-redis
+  REDIS_HOST: redis
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
   SUPERSET_PORT: 8088
@@ -70,7 +70,7 @@ jobs:
     - name: build and start docker containers
       run: |
         make docker-build
-        make docker-start SERVICES=epigraphhub-superset
+        make docker-start SERVICES=superset
 
     - name: wait for the services are properly working
       run: |
@@ -82,7 +82,7 @@ jobs:
 
     - name: test cron scripts
       run: |
-        make docker-run-cron SERVICE=epigraphhub-superset
+        make docker-run-cron SERVICE=superset
 
     - name: Generate logs
       if: ${{ failure() }}

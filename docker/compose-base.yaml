@@ -65,7 +65,7 @@ services:
       - redis:/data
 
   celery:
-    image: epigraphhub-celery
+    image: celery
     hostname: celery
     restart: unless-stopped
     build:
@@ -94,7 +94,7 @@ services:
       start_period: 30s  # requires docker-compose 3.4
 
   celery-beat:
-    image: epigraphhub-celery
+    image: celery
     hostname: celery-beat
     restart: unless-stopped
     build:
