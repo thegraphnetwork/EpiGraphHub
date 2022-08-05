@@ -1,7 +1,7 @@
 SERVICES:=superset
 SERVICE:=superset
 # options: dev, prod
-ENV:=dev
+ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
 CRON:=
 
