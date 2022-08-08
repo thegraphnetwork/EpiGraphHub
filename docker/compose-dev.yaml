@@ -4,8 +4,6 @@ services:
   superset:
     depends_on:
       - postgres
-      - celery
-      - celery-beat
       - redis
       - flower
 

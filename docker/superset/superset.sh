@@ -27,4 +27,7 @@ superset init
 
 set +ex
 
+. /opt/superset/celery.sh &
+. /opt/superset/celery-beat.sh &
+
 superset run -p 8088 --host=0.0.0.0 --with-threads --reload

@@ -1,35 +1,20 @@
 version: '3.4'
 
 services:
-  superset-base:
-    image: epigraphhub/superset-base
-    env_file:
-      - ../.env
-    profiles:
-      - donotstart
-    build:
-      context: ..
-      dockerfile: docker/superset/Dockerfile.base
-      args:
-        # note: if you want to use a specific UID and GID, ensure to add it to
-        #       the .env file
-        - UID=${UID:-1000}
-        - GID=${GID:-1000}
-
   superset:
     image: epigraphhub/superset
     hostname: superset
     restart: unless-stopped
+    env_file:
+      - ../.env
     build:
       context: ..
-      dockerfile: docker/superset/Dockerfile.superset
+      dockerfile: docker/superset/Dockerfile
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-    env_file:
-      - ../.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 60s
@@ -43,8 +28,6 @@ services:
       - ${SUPERSET_PORT}:8088
     depends_on:
       - redis
-      - celery
-      - celery-beat
       - flower
 
   redis:
@@ -63,67 +46,6 @@ services:
       start_period: 30s  # requires docker-compose 3.4
     volumes:
       - redis:/data
-
-  celery:
-    image: celery
-    hostname: celery
-    restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: docker/celery/Dockerfile
-    depends_on:
-      - redis
-    env_file:
-      - ../.env
-    volumes:
-      - ..:/opt/EpiGraphHub
-      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
-    command: [
-      "celery",
-      "--app=superset.tasks.celery_app:app",
-      "worker",
-      "-Ofair",
-      "-l",
-      "INFO"
-    ]
-    healthcheck:
-      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
-      interval: 60s
-      timeout: 10s
-      retries: 5
-      start_period: 30s  # requires docker-compose 3.4
-
-  celery-beat:
-    image: celery
-    hostname: celery-beat
-    restart: unless-stopped
-    build:
-      context: ..
-      dockerfile: docker/celery/Dockerfile
-    depends_on:
-      - redis
-    env_file:
-      - ../.env
-    volumes:
-      - ..:/opt/EpiGraphHub
-      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
-    command: [
-      "celery",
-      "--app=superset.tasks.celery_app:app",
-      "beat",
-      "--pidfile",
-      "/tmp/celerybeat.pid",
-      "-l",
-      "INFO",
-      "-s",
-      "${SUPERSET_HOME}/celerybeat-schedule"
-    ]
-    healthcheck:
-      test: ["CMD", "celery", "inspect", "-A", "superset.tasks.celery_app:app", "ping"]
-      interval: 60s
-      timeout: 10s
-      retries: 5
-      start_period: 30s  # requires docker-compose 3.4
 
   postgres:
     hostname: postgres
