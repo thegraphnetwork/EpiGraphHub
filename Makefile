@@ -22,10 +22,12 @@ prepare-host-db:
 
 # DOCKER
 
+.ONESHELL:
 .PHONY:docker-build
 docker-build:
-	$(DOCKER) build "${SERVICES}"
-	$(DOCKER) pull "${SERVICES}"
+	set -ex
+	$(DOCKER) build ${SERVICES}
+	$(DOCKER) pull ${SERVICES}
 
 .PHONY:docker-start
 docker-start: prepare-host-db
@@ -35,24 +37,24 @@ docker-start: prepare-host-db
 		./docker/healthcheck.sh postgres; \
 	fi
 	$(DOCKER) up airflow-initdb
-	$(DOCKER) up --remove-orphans -d "${SERVICES}"
+	$(DOCKER) up --remove-orphans -d ${SERVICES}
 	# ./docker/healthcheck.sh airflow
 	$(DOCKER) exec airflow bash "/tmp/scripts/create-admin.sh"
 
 .PHONY:docker-stop
 docker-stop:
-	$(DOCKER) stop "${SERVICES}"
+	$(DOCKER) stop ${SERVICES}
 
 .PHONY:docker-restart
 docker-restart: docker-stop docker-start
 
 .PHONY:docker-logs
 docker-logs:
-	$(DOCKER) logs ${ARGS} "${SERVICES}"
+	$(DOCKER) logs ${ARGS} ${SERVICES}
 
 .PHONY:docker-logs-follow
 docker-logs-follow:
-	$(DOCKER) logs --follow ${ARGS} "${SERVICES}"
+	$(DOCKER) logs --follow ${ARGS} ${SERVICES}
 
 .PHONY: docker-wait
 docker-wait:
