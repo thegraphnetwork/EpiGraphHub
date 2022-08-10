@@ -31,6 +31,7 @@ docker-build:
 
 .PHONY:docker-start
 docker-start: prepare-host-db
+	set -ex
 	bash ./scripts/prepare-superset.sh
 	if [ "${ENV}" = "dev" ]; then \
 		$(DOCKER) up -d postgres; \
