@@ -1,4 +1,4 @@
-SERVICES:="superset airflow"
+SERVICES:=superset airflow
 SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
