@@ -9,7 +9,6 @@ dependencies:
   - gsheetsdb
   - inquirer
   - flask-mail
-  - flask >=1.1.0,<2.0.0
   - lightgbm
   - loguru
   - myst-parser
@@ -32,8 +31,6 @@ dependencies:
   - sphinx
   - pip
   - docker-compose
-  # TypeError: entry_points() got an unexpected keyword argument 'group'
-  # - markdown 3.3.4
   # R
   - r-base 3.6.*
   - r-tidyverse
