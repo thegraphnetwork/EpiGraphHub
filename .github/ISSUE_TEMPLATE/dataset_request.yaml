@@ -1,0 +1,23 @@
+name: Dataset request
+description: Request that a new dataset is added to EpigraphHub
+title: "[DATASET] <title>"
+labels: data capture
+body:
+- type: textarea
+  attributes:
+    label: Dataset description
+    description: Describe the data set and make the case why it should be added to the Epigraphhub database.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Available API
+    description: If there is an API available to download this dataset, please dscribe it succintly here, with links to its documentation.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: More info
+    description: Other relevant information goes in here.
+  validations:
+    required: false
