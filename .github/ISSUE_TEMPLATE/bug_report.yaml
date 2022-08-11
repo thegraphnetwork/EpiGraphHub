@@ -1,21 +1,14 @@
 name: 🐞 Bug report
 description: Create a report to help us improve
 title: "[BUG] <title>"
-labels: [Bug]
+labels: bug
 body:
-- type: checkboxes
-  attributes:
-    label: Is there an existing issue for this?
-    description: Please search to see if an issue already exists for the bug you encountered.
-    options:
-    - label: I have searched the existing issues
-      required: true
 - type: textarea
   attributes:
     label: Describe the bug
     description: A clear and concise description of what the bug is.
   validations:
-    required: false
+    required: true
 - type: textarea
   attributes:
     label: To Reproduce
@@ -25,22 +18,18 @@ body:
           2. Click on '....'
           3. Scroll down to '....'
           4. See error
+  validations:
     required: true
 - type: textarea
   attributes:
    label: Expected behavior
    description: A clear and concise description of what you expected to happen.
-   required: true
+  validations:
+    required: true
 - type: textarea
   attributes:
    label: Screenshots
    description: A clear and concise description of what you expected to happen.
-   required: false
-- type: textarea
-  attributes:
-   label: Screenshots
-   description: A clear and concise description of what you expected to happen.
-   required: false
 - type: textarea
   attributes:
     label: Desktop
@@ -68,7 +57,6 @@ body:
         - Browser:
         - Version:
 - type: textarea
- attributes:
+  attributes:
    label: Additional context
    description: Add any other context about the problem here.
-   required: false
