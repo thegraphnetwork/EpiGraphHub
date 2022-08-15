@@ -75,7 +75,7 @@ jobs:
     - name: build and start docker containers
       run: |
         make docker-build
-        make docker-start SERVICES=superset
+        make docker-start SERVICES="superset airflow"
 
     - name: wait for the services are properly working
       run: |
