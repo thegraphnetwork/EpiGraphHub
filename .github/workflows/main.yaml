@@ -97,7 +97,3 @@ jobs:
       with:
         name: docker-services
         path: /tmp/docker-services.log
-
-    - name: Setup tmate session
-      if: "${{ failure() }}"
-      uses: mxschmitt/action-tmate@v3
