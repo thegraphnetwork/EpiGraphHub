@@ -1,25 +1,74 @@
-
-version: '3.4'
+---
+version: '3'
 
 services:
-  airflow-initdb:
-    build: ./airflow/
+  airflow-base:
+    image: epigraphhub/airflow-base
+    build:
+      dockerfile: ./airflow/Dockerfile.base
+      context: .
+    profiles:
+      - donotstart
     env_file:
-      - ../.env
-    entrypoint: "airflow db init"
+        - ../.env
+    environment:
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: ''
+    user: "${AIRFLOW_UID:-50000}:0"
+
+  airflow-init:
+    build:
+      dockerfile: ./airflow/Dockerfile
+      context: .
+    env_file:
+        - ../.env
+    environment:
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: ''
+    user: "0:0"
+    volumes:
+      - .:/sources
+    entrypoint: /bin/bash
+    command: -c ". /tmp/scripts/init-db.sh"
 
   airflow:
-    build: ./airflow/
+    build:
+      dockerfile: ./airflow/Dockerfile
+      context: .
     env_file:
-      - ../.env
+        - ../.env
+    environment:
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: ''
     restart: unless-stopped
-    volumes:
-      - ./airflow/files/dags:/usr/local/airflow/dags
     ports:
       - "8080:8080"
+    volumes:
+      - ./airflow/files/dags:/opt/airflow/dags
+      - ./airflow/files/logs:/opt/airflow/logs
+      - ./airflow/files/plugins:/opt/airflow/plugins
     entrypoint: "airflow webserver"
+    user: "${AIRFLOW_UID:-50000}:0"
     depends_on:
-      - airflow-scheduler
+      redis:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
@@ -27,15 +76,33 @@ services:
       retries: 10
 
   airflow-scheduler:
-    build: ./airflow/
+    build:
+      dockerfile: ./airflow/Dockerfile
+      context: .
     env_file:
-      - ../.env
+        - ../.env
+    environment:
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      _PIP_ADDITIONAL_REQUIREMENTS: ''
     restart: unless-stopped
     volumes:
-      - ./airflow/files/dags:/usr/local/airflow/dags
+      - ./airflow/files/dags:/opt/airflow/dags
+      - ./airflow/files/logs:/opt/airflow/logs
+      - ./airflow/files/plugins:/opt/airflow/plugins
+    user: "${AIRFLOW_UID:-50000}:0"
     entrypoint: "airflow scheduler"
     healthcheck:
       test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob", "--hostname", "$$(hostname)"]
       interval: 30s
       timeout: 5s
       retries: 10
+    depends_on:
+      redis:
+        condition: service_healthy
+      airflow-init:
+        condition: service_completed_successfully

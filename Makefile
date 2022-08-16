@@ -26,6 +26,7 @@ prepare-host-db:
 .PHONY:docker-build
 docker-build:
 	set -ex
+	$(DOCKER) build superset airflow-base
 	$(DOCKER) build ${SERVICES}
 	$(DOCKER) pull ${SERVICES}
 
@@ -37,10 +38,9 @@ docker-start: prepare-host-db
 		$(DOCKER) up -d postgres; \
 		./docker/healthcheck.sh postgres; \
 	fi
-	$(DOCKER) up airflow-initdb
+	$(DOCKER) up airflow-init
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
 	./docker/healthcheck.sh airflow
-	$(DOCKER) exec -T airflow bash "/tmp/scripts/create-admin.sh"
 
 .PHONY:docker-stop
 docker-stop:
@@ -100,9 +100,9 @@ docker-get-ips:
 docker-console:
 	$(DOCKER) exec ${SERVICE} ${CONSOLE}
 
-.PHONY:docker-run-bash
-docker-run-bash:
-	$(DOCKER) run --rm ${SERVICE} bash
+.PHONY:docker-run-console
+docker-run-console:
+	$(DOCKER) run --rm ${SERVICE} ${CONSOLE}
 
 
 .PHONY:docker-down
