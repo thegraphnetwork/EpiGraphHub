@@ -39,7 +39,7 @@ docker-start: prepare-host-db
 	fi
 	$(DOCKER) up airflow-initdb
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
-	# ./docker/healthcheck.sh airflow
+	./docker/healthcheck.sh airflow
 	$(DOCKER) exec airflow bash "/tmp/scripts/create-admin.sh"
 
 .PHONY:docker-stop
