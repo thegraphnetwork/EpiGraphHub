@@ -40,7 +40,7 @@ docker-start: prepare-host-db
 	fi
 	$(DOCKER) up airflow-init
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
-	./docker/healthcheck.sh airflow
+	$(MAKE) docker-wait SERVICE=airflow
 
 .PHONY:docker-stop
 docker-stop:
