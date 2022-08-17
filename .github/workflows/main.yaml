@@ -12,7 +12,7 @@ env:
   _AIRFLOW_WWW_USER_EMAIL: admin@epigraphhub.org
   _AIRFLOW_WWW_USER_FIRST_NAME: Super
   _AIRFLOW_WWW_USER_LAST_NAME: Admin
-  AIRFLOW_UID: 1000
+  AIRFLOW_UID: 50000
   AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dev_airflow_user:airflow_password@postgres:25432/dev_airflow
   AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
   ENV: dev
@@ -72,9 +72,12 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
-    - name: build and start docker containers
+    - name: build docker containers
       run: |
         make docker-build
+
+    - name: start services
+      run: |
         make docker-start SERVICES="superset airflow"
 
     - name: wait for the services are properly working
@@ -97,7 +100,3 @@ jobs:
       with:
         name: docker-services
         path: /tmp/docker-services.log
-
-    - name: Setup tmate session
-      if: ${{ failure() }}
-      uses: mxschmitt/action-tmate@v3
