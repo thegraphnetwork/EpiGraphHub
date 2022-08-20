@@ -59,8 +59,7 @@ services:
       - "8080:8080"
     volumes:
       - ./airflow/files/dags:/opt/airflow/dags
-      - ./airflow/files/logs:/opt/airflow/logs
-      - ./airflow/files/plugins:/opt/airflow/plugins
+      - ../conda:/usr/local/conda
     entrypoint: "airflow webserver"
     user: "${AIRFLOW_UID:-50000}:0"
     depends_on:

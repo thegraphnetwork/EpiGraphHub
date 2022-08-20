@@ -7,4 +7,7 @@ RUN pip install --user psycopg2-binary
 COPY ./airflow/airflow.cfg /opt/airflow/airflow.cfg
 COPY ./airflow/scripts/init-db.sh /tmp/scripts/init-db.sh
 
+USER root
+RUN mkdir -p ${AIRFLOW_HOME}/logs ${AIRFLOW_HOME}/plugins
+
 # RUN chown -R airflow:airflow /usr/local/airflow
