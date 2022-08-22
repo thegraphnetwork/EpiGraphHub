@@ -1,20 +1,6 @@
 #!/usr/bin/env bash
 # source: https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml
 
-function ver() {
-  printf "%04d%04d%04d%04d" ${1//./ }
-}
-airflow_version=$(AIRFLOW__LOGGING__LOGGING_LEVEL=INFO && airflow version)
-airflow_version_comparable=$(ver ${airflow_version})
-min_airflow_version=2.2.0
-min_airflow_version_comparable=$(ver ${min_airflow_version})
-if (( airflow_version_comparable < min_airflow_version_comparable )); then
-  echo
-  echo -e "\033[1;31mERROR!!!: Too old Airflow version ${airflow_version}!\e[0m"
-  echo "The minimum Airflow version supported: ${min_airflow_version}. Only use this or higher!"
-  echo
-  exit 1
-fi
 if [[ -z "${AIRFLOW_UID}" ]]; then
   echo
   echo -e "\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m"

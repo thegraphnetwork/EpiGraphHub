@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
 airflow users create \
   --username ${_AIRFLOW_WWW_USER_USERNAME} \

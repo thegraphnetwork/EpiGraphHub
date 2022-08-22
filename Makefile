@@ -25,25 +25,25 @@ prepare-host:
 .ONESHELL:
 .PHONY:docker-pull
 docker-pull:
-	set -ex
+	set -e
 	$(DOCKER) pull ${SERVICES}
 
 .ONESHELL:
 .PHONY:docker-build
 docker-build:
-	set -ex
+	set -e
 	$(DOCKER) build ${SERVICES}
 
 .ONESHELL:
 .PHONY:docker-build-services
 docker-build-services: docker-pull
-	set -ex
+	set -e
 	$(MAKE) docker-build SERVICES="superset"
 	$(DOCKER) build ${SERVICES}
 
 .PHONY:docker-start
 docker-start: prepare-host
-	set -ex
+	set -e
 	bash ./scripts/prepare-superset.sh
 	if [ "${ENV}" = "dev" ]; then \
 		$(DOCKER) up -d postgres; \

@@ -14,6 +14,7 @@ env:
   _AIRFLOW_WWW_USER_LAST_NAME: Admin
   AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dev_airflow_user:airflow_password@postgres:25432/dev_airflow
   AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
+  AIRFLOW__CORE__FERNET_KEY: 9nHYx8uwYsIUZFy6GgL1tpw3d71k2iFEm8e3mEjzTjE=
   AIRFLOW_FILES_PATH_DIR_HOST: /tmp/airflow
   AIRFLOW_PORT: 8099
   ENV: dev
