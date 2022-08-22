@@ -5,40 +5,50 @@ ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
 CRON:=
 ARGS:=
+TIMEOUT:=90
 
 
 DOCKER=docker-compose \
 	--env-file .env \
 	--project-name eph-$(ENV) \
 	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml \
-	--file docker/airflow/compose.yaml
+	--file docker/compose-$(ENV).yaml
 
 # HOST
 
-.PHONY: prepare-host-db
-prepare-host-db:
-	bash scripts/prepare-host-db.sh
+.PHONY: prepare-host
+prepare-host:
+	bash scripts/prepare-host.sh
 
 # DOCKER
+
+.ONESHELL:
+.PHONY:docker-pull
+docker-pull:
+	set -ex
+	$(DOCKER) pull ${SERVICES}
 
 .ONESHELL:
 .PHONY:docker-build
 docker-build:
 	set -ex
-	$(DOCKER) build superset airflow-base
 	$(DOCKER) build ${SERVICES}
-	$(DOCKER) pull ${SERVICES}
+
+.ONESHELL:
+.PHONY:docker-build-services
+docker-build-services: docker-pull
+	set -ex
+	$(MAKE) docker-build SERVICES="superset"
+	$(DOCKER) build ${SERVICES}
 
 .PHONY:docker-start
-docker-start: prepare-host-db
+docker-start: prepare-host
 	set -ex
 	bash ./scripts/prepare-superset.sh
 	if [ "${ENV}" = "dev" ]; then \
 		$(DOCKER) up -d postgres; \
 		./docker/healthcheck.sh postgres; \
 	fi
-	$(DOCKER) up airflow-init
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
 	$(MAKE) docker-wait SERVICE=airflow
 
@@ -59,7 +69,7 @@ docker-logs-follow:
 
 .PHONY: docker-wait
 docker-wait:
-	ENV=${ENV} timeout 90 ./docker/healthcheck.sh ${SERVICE}
+	ENV=${ENV} timeout ${TIMEOUT} ./docker/healthcheck.sh ${SERVICE}
 
 .PHONY: docker-wait-all
 docker-wait-all:
@@ -67,6 +77,7 @@ docker-wait-all:
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="superset"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="airflow"
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:

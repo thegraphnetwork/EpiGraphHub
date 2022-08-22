@@ -1,0 +1,47 @@
+name: epigraphhub
+channels:
+  - nodefaults
+  - conda-forge
+  - r
+dependencies:
+  - airflow 2.3.3
+  - fiona
+  - geopandas
+  - gsheetsdb
+  - inquirer
+  - lightgbm
+  - loguru
+  - myst-parser
+  - openpyxl
+  - pandas
+  - pip
+  - psycopg2
+  - python 3.8.*
+  - python-dotenv
+  - setuptools
+  - sqlalchemy
+  # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
+  # - ngboost >=0.3.12
+  # dev
+  - pip
+  - docker-compose
+  # R
+  - r-base 3.6.*
+  - r-tidyverse
+  - r-shiny
+  - r-stringr
+  - r-readxl
+  - r-dplyr
+  - r-dbi
+  - r-vroom
+  - r-odbc
+  - r-rsocrata
+  - r-glue
+  - r-janitor
+  - r-here
+  - r-desctools
+  - r-lubridate
+  - r-isocodes
+  # - r-dm
+  - pip:
+    - -r pip.txt
