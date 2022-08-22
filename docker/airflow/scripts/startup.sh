@@ -3,8 +3,7 @@
 set -ex
 
 # initdb
-chmod +x /opt/scripts/init-db.sh
-/opt/scripts/init-db.sh
+. /opt/scripts/init-db.sh
 
 # start airflow
 airflow webserver &
