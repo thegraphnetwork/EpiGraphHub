@@ -52,8 +52,7 @@ RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo chown -R epigraphhub:epigraphhub /opt/airflow
 
 COPY --chown=epigraphhub ./docker/airflow/airflow.cfg /opt/airflow/airflow.cfg
-COPY --chown=epigraphhub ./docker/airflow/scripts/init-db.sh /opt/scripts/init-db.sh
-COPY --chown=epigraphhub ./docker/airflow/scripts/startup.sh /opt/scripts/startup.sh
+COPY --chown=epigraphhub ./docker/airflow/scripts/*.sh /opt/scripts/
 COPY --chown=epigraphhub ./docker/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
 COPY --chown=epigraphhub ./docker/airflow/scripts/webserver_config.py /opt/airflow/webserver_config.py
 
