@@ -93,7 +93,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make docker-logs SERVICES="" > /tmp/docker-services.log
+        make docker-logs ARGS="--tail 1000" SERVICES="" > /tmp/docker-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3
