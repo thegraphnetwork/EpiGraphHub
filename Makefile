@@ -44,7 +44,6 @@ docker-build-services: docker-pull
 .PHONY:docker-start
 docker-start: prepare-host
 	set -e
-	bash ./scripts/prepare-superset.sh
 	if [ "${ENV}" = "dev" ]; then \
 		$(DOCKER) up -d postgres; \
 		./docker/healthcheck.sh postgres; \

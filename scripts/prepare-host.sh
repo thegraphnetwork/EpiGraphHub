@@ -12,3 +12,7 @@ chmod -R 777 ${SUPERSET_DB_PATH_DIR_HOST}
 
 # airflow
 mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}
+mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}/logs
+mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}/logs/scheduler
+mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}/dags
+mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins
