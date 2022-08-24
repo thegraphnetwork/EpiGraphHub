@@ -67,6 +67,8 @@ jobs:
 
     - name: Create environment variables file
       run: |
+        export HOST_UID=$(id -u)
+        export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
 
     - uses: conda-incubator/setup-miniconda@v2
