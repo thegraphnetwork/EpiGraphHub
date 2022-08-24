@@ -8,6 +8,10 @@ services:
       - flower
 
   postgres:
+    env_file:
+      - ../.env
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
       # overwrite .env default variables
       - POSTGRES_USER=postgres
@@ -16,6 +20,8 @@ services:
     volumes:
       - ./postgresql/sql/dev/:/docker-entrypoint-initdb.d/
       - pgdata:/var/lib/postgresql/data
+    command: -p ${POSTGRES_PORT}
+
 
 
 volumes:
