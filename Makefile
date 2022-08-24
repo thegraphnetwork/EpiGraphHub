@@ -1,9 +1,12 @@
-SERVICES:=superset
+SERVICES:=superset airflow
 SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
 CRON:=
+ARGS:=
+TIMEOUT:=90
+
 
 DOCKER=docker-compose \
 	--env-file .env \
@@ -13,20 +16,40 @@ DOCKER=docker-compose \
 
 # HOST
 
-.PHONY: prepare-host-db
-prepare-host-db:
-	bash scripts/prepare-host-db.sh
+.PHONY: prepare-host
+prepare-host:
+	bash scripts/prepare-host.sh
 
 # DOCKER
 
-.PHONY:docker-build
-docker-build:
-	$(DOCKER) build ${SERVICES}
+.ONESHELL:
+.PHONY:docker-pull
+docker-pull:
+	set -e
 	$(DOCKER) pull ${SERVICES}
 
+.ONESHELL:
+.PHONY:docker-build
+docker-build:
+	set -e
+	$(DOCKER) build ${SERVICES}
+
+.ONESHELL:
+.PHONY:docker-build-services
+docker-build-services: docker-pull
+	set -e
+	$(MAKE) docker-build SERVICES="superset"
+	$(DOCKER) build ${SERVICES}
+
 .PHONY:docker-start
-docker-start: prepare-host-db
+docker-start: prepare-host
+	set -e
+	if [ "${ENV}" = "dev" ]; then \
+		$(DOCKER) up -d postgres; \
+		./docker/healthcheck.sh postgres; \
+	fi
 	$(DOCKER) up --remove-orphans -d ${SERVICES}
+	$(MAKE) docker-wait SERVICE=airflow
 
 .PHONY:docker-stop
 docker-stop:
@@ -45,7 +68,7 @@ docker-logs-follow:
 
 .PHONY: docker-wait
 docker-wait:
-	ENV=${ENV} timeout 90 ./docker/healthcheck.sh ${SERVICE}
+	ENV=${ENV} timeout ${TIMEOUT} ./docker/healthcheck.sh ${SERVICE}
 
 .PHONY: docker-wait-all
 docker-wait-all:
@@ -53,12 +76,13 @@ docker-wait-all:
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) docker-wait ENV=${ENV} SERVICE="superset"
+	$(MAKE) docker-wait ENV=${ENV} SERVICE="airflow"
 
 .PHONY:docker-dev-prepare-db
 docker-dev-prepare-db:
 	# used for development
 	$(DOCKER) exec -T superset \
-		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
+		bash /opt/EpiGraphHub/docker/postgresql/scripts/dev/prepare-db.sh
 
 .PHONY:docker-run-cron
 docker-run-cron:
@@ -86,9 +110,15 @@ docker-get-ips:
 docker-console:
 	$(DOCKER) exec ${SERVICE} ${CONSOLE}
 
-.PHONY:docker-run-bash
-docker-run-bash:
-	$(DOCKER) run --rm ${SERVICE} bash
+.PHONY:docker-run-console
+docker-run-console:
+	$(DOCKER) run --rm ${SERVICE} ${CONSOLE}
+
+
+.PHONY:docker-down
+docker-down:
+	$(DOCKER) down --volumes --remove-orphans
+
 
 # conda
 

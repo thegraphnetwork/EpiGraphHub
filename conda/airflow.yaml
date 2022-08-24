@@ -1,14 +1,14 @@
 name: epigraphhub
 channels:
+  - nodefaults
   - conda-forge
   - r
-  - nodefaults
 dependencies:
+  - airflow 2.3.3
   - fiona
   - geopandas
   - gsheetsdb
   - inquirer
-  - flask-mail
   - lightgbm
   - loguru
   - myst-parser
@@ -20,15 +20,9 @@ dependencies:
   - python-dotenv
   - setuptools
   - sqlalchemy
-  - superset 2.0.0
   # waiting for https://github.com/stanfordmlgroup/ngboost/issues/283
   # - ngboost >=0.3.12
-  # avoid error: ModuleNotFoundError: No module named 'wtforms.compat'
-  # - wtforms <3
   # dev
-  - virtualenv
-  - ansible
-  - sphinx
   - pip
   - docker-compose
   # R

@@ -83,7 +83,7 @@
 ## About The Project
 ![fig1](https://user-images.githubusercontent.com/140123/165057109-f09d6e8d-6ca2-405f-b912-7e068f20e39a.png)
 EpigraphHub is an entirely open source Data integration platform focused on Epidemiological analyses.
-                                   
+
 
 
 ### Built With
@@ -166,9 +166,9 @@ $ conda activate epigraphhub
 ```
 
 ### Docker
-                                   
+
 ![fig2](https://user-images.githubusercontent.com/140123/165057193-c5a2b2a2-8f30-426d-9bac-8f559c01265d.png)
-                              
+
 
 The project provides three **docker-compose** files, where one is the base
 definition (`docker/compose-base.yaml`) and the others are one for
@@ -216,6 +216,14 @@ $ ./docker/healthcheck.sh epigraphhub
 
 ```bash
 $ make docker-prepare-db
+```
+
+## AIRFLOW
+
+Create a **FERNET KEY**:
+
+```bash
+openssl rand -base64 32
 ```
 
 ## Deployment

@@ -7,16 +7,34 @@ on:
     branches: [ main ]
 
 env:
+  AIRFLOW_FILES_PATH_DIR_HOST: /tmp/airflow
+  AIRFLOW_HOME: /opt/airflow
+  AIRFLOW_PORT: 8099
+  AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
+  AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: true
+  AIRFLOW__CORE__FERNET_KEY: rhZaG4rip4DrA4Z93rI9uqWVK2/8Tk+zSixmEe3ZZo8=
+  AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dev_airflow_user:airflow_password@postgres:25432/dev_airflow
+  AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
+  _AIRFLOW_DB_UPGRADE: true
+  _AIRFLOW_WWW_USER_CREATE: true
+  _AIRFLOW_WWW_USER_EMAIL: admin@epigraphhub.org
+  _AIRFLOW_WWW_USER_FIRST_NAME: Super
+  _AIRFLOW_WWW_USER_LAST_NAME: Admin
+  _AIRFLOW_WWW_USER_PASSWORD: airflow
+  _AIRFLOW_WWW_USER_USERNAME: airflow
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
   POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
-  POSTGRES_USER: dev_epigraph
-  POSTGRES_PASSWORD: dev_epigraph
-  POSTGRES_DB: dev_epigraphhub
-  POSTGRES_DB_PRIVATE: dev_privatehub
-  POSTGRES_DB_SANDBOX: dev_sandbox
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_EPIGRAPH_USER: dev_epigraph
+  POSTGRES_EPIGRAPH_PASSWORD: dev_epigraph
+  POSTGRES_EPIGRAPH_DB: dev_epigraphhub
+  POSTGRES_EPIGRAPH_DB_PRIVATE: dev_privatehub
+  POSTGRES_EPIGRAPH_DB_SANDBOX: dev_sandbox
   REDIS_HOST: redis
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
@@ -36,7 +54,7 @@ jobs:
   main:
 
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 55
     defaults:
       run:
         shell: bash -l {0}
@@ -48,10 +66,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: setup
-      run: make prepare-host-db
+      run: make prepare-host
 
     - name: Create environment variables file
       run: |
+        export HOST_UID=$(id -u)
+        export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
 
     - uses: conda-incubator/setup-miniconda@v2
@@ -64,18 +84,17 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
-    - name: build and start docker containers
+    - name: build docker containers
+      run: make docker-build-services
+
+    - name: start services
       run: |
-        make docker-build
-        make docker-start SERVICES=superset
+        make docker-start SERVICES="superset airflow"
 
     - name: wait for the services are properly working
       run: |
         docker ps
         make docker-wait-all
-
-    - name: prepare database
-      run: make docker-dev-prepare-db
 
     - name: test cron scripts
       run: |
@@ -84,7 +103,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make docker-logs SERVICES= > /tmp/docker-services.log
+        make docker-logs ARGS="--tail 1000" SERVICES="" > /tmp/docker-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3
