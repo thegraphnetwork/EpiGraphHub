@@ -78,7 +78,9 @@ COPY --chown=epigraphhub:epigraphhub docker/superset/entrypoint.sh /opt/entrypoi
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \
   && sudo mkdir -p /opt/data/superset/ \
-  && sudo chown -R epigraphhub:epigraphhub /opt/data
+  && sudo chown -R epigraphhub:epigraphhub /opt/data \
+  && sudo chown -R epigraphhub:epigraphhub /var/log/*
+
 
 ENTRYPOINT ["tini", "--", "/opt/entrypoint.sh"]
 CMD ["/opt/superset.sh"]
