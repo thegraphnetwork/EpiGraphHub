@@ -27,11 +27,14 @@ env:
   FLOWER_PASSWORD: flowerpass
   POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
-  POSTGRES_USER: dev_epigraph
-  POSTGRES_PASSWORD: dev_epigraph
-  POSTGRES_DB: dev_epigraphhub
-  POSTGRES_DB_PRIVATE: dev_privatehub
-  POSTGRES_DB_SANDBOX: dev_sandbox
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_EPIGRAPH_USER: dev_epigraph
+  POSTGRES_EPIGRAPH_PASSWORD: dev_epigraph
+  POSTGRES_EPIGRAPH_DB: dev_epigraphhub
+  POSTGRES_EPIGRAPH_DB_PRIVATE: dev_privatehub
+  POSTGRES_EPIGRAPH_DB_SANDBOX: dev_sandbox
   REDIS_HOST: redis
   REDIS_PORT: 6379
   REDIS_PASSWORD: redispass
@@ -108,8 +111,3 @@ jobs:
       with:
         name: docker-services
         path: /tmp/docker-services.log
-
-    # debugging
-    - name: Setup tmate session
-      if: ${{ failure() }}
-      uses: mxschmitt/action-tmate@v3

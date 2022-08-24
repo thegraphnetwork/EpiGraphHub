@@ -82,7 +82,7 @@ docker-wait-all:
 docker-dev-prepare-db:
 	# used for development
 	$(DOCKER) exec -T superset \
-		bash /opt/EpiGraphHub/docker/postgresql/prepare-db.sh
+		bash /opt/EpiGraphHub/docker/postgresql/scripts/dev/prepare-db.sh
 
 .PHONY:docker-run-cron
 docker-run-cron:

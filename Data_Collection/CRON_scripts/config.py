@@ -8,10 +8,10 @@ load_dotenv(project_path / ".env")
 
 DB_HOST = os.environ.get("POSTGRES_HOST")
 DB_PORT = os.environ.get("POSTGRES_PORT")
-DB_USER = os.environ.get("POSTGRES_USER")
-DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-DB_NAME = os.environ.get("POSTGRES_DB")
-DB_NAME_PRIVATE = os.environ.get("POSTGRES_DB_PRIVATE")
+DB_USER = os.environ.get("POSTGRES_EPIGRAPH_USER")
+DB_PASSWORD = os.environ.get("POSTGRES_EPIGRAPH_PASSWORD")
+DB_NAME = os.environ.get("POSTGRES_EPIGRAPH_DB")
+DB_NAME_PRIVATE = os.environ.get("POSTGRES_EPIGRAPH_DB_PRIVATE")
 
 DB_URI = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}"
