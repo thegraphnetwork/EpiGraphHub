@@ -5,18 +5,9 @@ import shlex
 import sys; CONFIG_PATH = ".."
 sys.path.insert(0, CONFIG_PATH)
 from config import HOST, DATA_PATH, FILENAME, DB_URI
+from logger import Logger
 
-
-# import logging
-# from logging.handlers import RotatingFileHandler
-
-
-# logger = logging.getLogger("owid_fetch")
-# fh = RotatingFileHandler('/var/log/owid_fetch.log', maxBytes=2000, backupCount=5)
-# logger.setLevel(logging.DEBUG)
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# fh.setFormatter(formatter)
-# logger.addHandler(fh)
+logger = Logger.generate_log('owid_fetch', '/var/log/owid_fetch.log')
 
 def database_size(remote=True):
     if remote:
@@ -28,7 +19,7 @@ def database_size(remote=True):
             for count in curr:
                 return int(count[0])
     except Exception as e:
-        # logger.error(f"Could not access OWID table\n{e}")
+        logger.error(f"Could not access OWID table\n{e}")
         raise(e)
     finally:
         if remote:
@@ -38,4 +29,4 @@ def csv_size():
     raw_shape = subprocess.Popen(f'wc -l {os.path.join(DATA_PATH, FILENAME)}', shell=True, stdout=subprocess.PIPE).stdout
     clean = str(raw_shape.read()).split("'")
     shape = clean[1].split(' ')[0]
-    return int(shape)
+    return int(shape) -1

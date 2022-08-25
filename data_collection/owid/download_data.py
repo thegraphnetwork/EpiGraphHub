@@ -1,18 +1,16 @@
 import os
 import subprocess
 from config import DATA_PATH, OWID_URL, FILENAME
+from logger import Logger
 
-# import logging
-# from logging.handlers import RotatingFileHandler
-
-# logger = logging.getLogger("owid_fetch")
-# fh = RotatingFileHandler('/var/log/owid_fetch.log', maxBytes=2000, backupCount=5)
-# logger.setLevel(logging.DEBUG)
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# fh.setFormatter(formatter)
-# logger.addHandler(fh)
+logger = Logger.generate_log('owid_fetch', '/var/log/owid_fetch.log')
 
 def download_csv():
     os.makedirs(DATA_PATH, exist_ok=True)
     subprocess.run(['curl', '--silent', '-f', '-o', f'{DATA_PATH}/{FILENAME}', f'{OWID_URL}'])
-    # logger.warning("OWID csv downloaded.")
+    logger.warning("OWID csv downloaded.")
+
+def remove_csv():
+    os.remove(f'{DATA_PATH}/{FILENAME}')
+    logger.warning("OWID csv removed.")
+

@@ -49,7 +49,9 @@ RUN mamba env create -n ${ENV_NAME} --file /tmp/airflow.yaml --force
 RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo chown -R epigraphhub:epigraphhub /opt/scripts \
   && sudo chown -R epigraphhub:epigraphhub /sources \
-  && sudo chown -R epigraphhub:epigraphhub /opt/airflow
+  && sudo chown -R epigraphhub:epigraphhub /opt/airflow \
+  && sudo touch /var/log/owid_fetch.log \
+  && sudo chown -R epigraphhub:epigraphhub /var/log/*
 
 COPY --chown=epigraphhub ./docker/airflow/airflow.cfg /opt/airflow/airflow.cfg
 COPY --chown=epigraphhub ./docker/airflow/scripts/*.sh /opt/scripts/
