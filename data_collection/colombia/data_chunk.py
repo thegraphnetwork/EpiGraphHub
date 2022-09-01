@@ -13,8 +13,7 @@ logger.add("/var/log/colombia_pos.log", retention="7 days")
 client = COLOMBIA_SOC
 
 
-class DFChunkGenerator():
-
+class DFChunkGenerator:
     def chunked_fetch(start, chunk_size, maxrecords):
 
         slice_date = datetime.date(datetime.today()) - timedelta(200)
@@ -44,14 +43,19 @@ class DFChunkGenerator():
             if df_new.empty:
                 break
 
-            df_new.set_index(['id_de_caso'] , inplace = True)
+            df_new.set_index(["id_de_caso"], inplace=True)
 
             df_new = df_new.convert_dtypes()
 
             # change some strings to a standard
-            df_new.replace(to_replace ={ 'ubicacion': {'casa': 'Casa', 'CASA': 'Casa'},
-                                 'estado': {'leve': 'Leve', 'LEVE': 'Leve'},
-                                 'sexo': {'f': 'F', 'm': 'M'}}, inplace = True)
+            df_new.replace(
+                to_replace={
+                    "ubicacion": {"casa": "Casa", "CASA": "Casa"},
+                    "estado": {"leve": "Leve", "LEVE": "Leve"},
+                    "sexo": {"f": "F", "m": "M"},
+                },
+                inplace=True,
+            )
 
             # transform the datetime columns in the correct time
             for c in df_new.columns:
