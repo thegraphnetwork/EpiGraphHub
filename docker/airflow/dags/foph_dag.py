@@ -50,6 +50,8 @@ def foph():
         db_shape = table_size(tablename)
         filename = str(url).split("/")[-1]
         csv_shape = csv_size(filename)
+        print(f'Table on DB size: {db_shape}')
+        print(f'CSV size: {csv_shape}')
         same_shape = eval("db_shape == csv_shape")
         if not same_shape:
             return f"{tablename}_need_update"
