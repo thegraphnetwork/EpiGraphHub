@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from sodapy import Socrata
 from dotenv import load_dotenv
 
 project_path = Path(__file__).resolve().parent
@@ -18,13 +18,21 @@ DB_URI = (
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 DB_URI_PRIVATE = (
-    f"postgresql://{DB_USER}:{DB_PASSWORD}"
-    f"@{DB_HOST}:{DB_PORT}/{DB_NAME_PRIVATE}"
+    f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME_PRIVATE}"
 )
 
 # Owid
 
-DATA_PATH = '/tmp/owid/releases'
-OWID_URL = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
-FILENAME = OWID_URL.split('/')[-1]
-HOST = '135.181.41.20'
+OWID_CSV_URL = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
+OWID_CSV_PATH = '/tmp/owid/releases'
+OWID_FILENAME = OWID_CSV_URL.split('/')[-1]
+OWID_HOST = '135.181.41.20'
+
+# Colombia
+
+COLOMBIA_SOC = Socrata("www.datos.gov.co", "078u4PCGpnDfH157kAkVFoWea")
+
+# foph
+
+FOPH_URL = "https://www.covid19.admin.ch/api/data/context"
+FOPH_CSV_PATH = '/tmp/foph/releases'

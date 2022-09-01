@@ -4,14 +4,14 @@ import subprocess
 import shlex
 import sys; CONFIG_PATH = ".."
 sys.path.insert(0, CONFIG_PATH)
-from config import HOST, DATA_PATH, FILENAME, DB_URI
-from logger import Logger
+from config import OWID_HOST, OWID_CSV_PATH, OWID_FILENAME, DB_URI
+from loguru import logger
 
-logger = Logger.generate_log('owid_fetch', '/var/log/owid_fetch.log')
+logger.add("/var/log/owid_fetch.log", retention="7 days")
 
 def database_size(remote=True):
     if remote:
-        proc = subprocess.Popen(shlex.split(f'ssh -f epigraph@{HOST} -L 5432:localhost:5432 -NC'))
+        proc = subprocess.Popen(shlex.split(f'ssh -f epigraph@{OWID_HOST} -L 5432:localhost:5432 -NC'))
     try:
         engine = create_engine(DB_URI)   
         with engine.connect().execution_options(autocommit=True) as conn:
@@ -26,7 +26,7 @@ def database_size(remote=True):
             proc.kill()             
 
 def csv_size():
-    raw_shape = subprocess.Popen(f'wc -l {os.path.join(DATA_PATH, FILENAME)}', shell=True, stdout=subprocess.PIPE).stdout
+    raw_shape = subprocess.Popen(f'wc -l {os.path.join(OWID_CSV_PATH, OWID_FILENAME)}', shell=True, stdout=subprocess.PIPE).stdout
     clean = str(raw_shape.read()).split("'")
     shape = clean[1].split(' ')[0]
     return int(shape) -1

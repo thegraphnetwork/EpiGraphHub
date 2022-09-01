@@ -3,10 +3,10 @@ import pandas as pd
 import os
 import shlex
 import subprocess
-from config import DB_URI, HOST, DATA_PATH, FILENAME
-from logger import Logger
+from config import DB_URI, OWID_HOST, OWID_CSV_PATH, OWID_FILENAME
+from loguru import logger
 
-logger = Logger.generate_log('owid_fetch', '/var/log/owid_fetch.log')
+logger.add("/var/log/owid_fetch.log", retention="7 days")
 
 def parse_types(df):
     df = df.convert_dtypes()
@@ -16,9 +16,9 @@ def parse_types(df):
 
 def load(remote=True):
     if remote:
-        proc = subprocess.Popen(shlex.split(f'ssh -f epigraph@{HOST} -L 5432:localhost:5432 -NC'))
+        proc = subprocess.Popen(shlex.split(f'ssh -f epigraph@{OWID_HOST} -L 5432:localhost:5432 -NC'))
     try:
-        data = pd.read_csv(os.path.join(DATA_PATH, FILENAME))
+        data = pd.read_csv(os.path.join(OWID_CSV_PATH, OWID_FILENAME))
         data = parse_types(data)
         engine = create_engine(DB_URI)
         data.to_sql('owid_covid', engine, index=False, if_exists='replace', method='multi', chunksize=10000)
