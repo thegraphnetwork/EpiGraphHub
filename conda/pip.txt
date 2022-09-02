@@ -1,5 +1,5 @@
 # remove it when https://github.com/stanfordmlgroup/ngboost/issues/283 is done
-https://github.com/stanfordmlgroup/ngboost/archive/refs/tags/v0.3.12.tar.gz
+git+https://github.com/stanfordmlgroup/ngboost@v0.3.12
 pangres>=4.1
 sodapy
 shillelagh

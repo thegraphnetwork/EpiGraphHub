@@ -155,3 +155,4 @@ Documentation/.Rhistory
 
 # airflow
 docker/airflow/files/logs/*
+docker/airflow/logs/*

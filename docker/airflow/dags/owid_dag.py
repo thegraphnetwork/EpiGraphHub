@@ -4,17 +4,13 @@ from airflow.operators.empty import EmptyOperator
 import pendulum
 from datetime import timedelta
 
-DATA_PATH = "/opt/EpiGraphHub/data_collection"
-import sys
-
-sys.path.insert(0, DATA_PATH)
-from owid import download_data, compare_data, load_into_db
+from epigraphhub.data.data_collection.owid import download_data, compare_data, load_into_db
 
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 8, 23),
-    #'email': [''],
+    'email': ['luabidaa@gmail.com'],
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -26,7 +22,6 @@ default_args = {
     schedule_interval="@daily",
     default_args=default_args,
     catchup=False,
-    template_searchpath=DATA_PATH,
 )
 def owid():
 

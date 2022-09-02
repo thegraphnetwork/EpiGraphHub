@@ -64,13 +64,13 @@ def load_into_db(table, filename):
     with engine.connect() as connection:
         try:
             connection.execute(
-                f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()} ("geoRegion");'
+                f'CREATE INDEX IF NOT EXISTS region_idx  ON switzerland.foph_{table.lower()}_d ("geoRegion");'
             )
         except Exception as e:
             logger.info(f"Could not create region index: {e}")
         try:
             connection.execute(
-                f"CREATE INDEX IF NOT EXISTS date_idx ON switzerland.foph_{table.lower()} (date);"
+                f"CREATE INDEX IF NOT EXISTS date_idx ON switzerland.foph_{table.lower()}_d (date);"
             )
         except Exception as e:
             logger.info(f"Could not create date index: {e}")
