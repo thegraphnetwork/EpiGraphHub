@@ -1,22 +1,16 @@
-import sys
 import pendulum
 from datetime import timedelta
-
-DATA_PATH = "/opt/EpiGraphHub/data_collection"
-sys.path.insert(0, DATA_PATH)
-from foph.download_foph_data import get_csv_relation, download_csv
-from foph.foph_fetch import load_into_db, csv_size, table_size
-
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
+from epigraphhub.data.data_collection.foph import download_data, compare_data, load_into_db
 
 
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 8, 26),
-    #'email': [''],
+    'email': ['epigraphhub@thegraphnetwork.org'],
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -28,7 +22,6 @@ default_args = {
     schedule_interval="@weekly",
     default_args=default_args,
     catchup=False,
-    template_searchpath=DATA_PATH,
 )
 def foph():
 
@@ -41,15 +34,15 @@ def foph():
         trigger_rule="all_success",
     )
 
-    tables = [[t, u] for t, u in get_csv_relation()]
+    tables = [[t, u] for t, u in download_data.get_csv_relation()]
 
     def download(url):
-        download_csv(url)
+        download_data.download_csv(url)
 
     def compare(tablename, url):
-        db_shape = table_size(tablename)
+        db_shape = compare_data.table_size(tablename)
         filename = str(url).split("/")[-1]
-        csv_shape = csv_size(filename)
+        csv_shape = compare_data.csv_size(filename)
         print(f'Table on DB size: {db_shape}')
         print(f'CSV size: {csv_shape}')
         same_shape = eval("db_shape == csv_shape")
@@ -59,7 +52,7 @@ def foph():
 
     def load_to_db(table, url):
         filename = str(url).split("/")[-1]
-        load_into_db(table, filename)
+        load_into_db.load(table, filename)
 
     for table in tables:
         tablename, url = table

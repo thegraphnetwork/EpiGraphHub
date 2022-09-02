@@ -1,16 +1,16 @@
+import pendulum
+from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.python import BranchPythonOperator
 from airflow.operators.empty import EmptyOperator
-import pendulum
-from datetime import timedelta
-
 from epigraphhub.data.data_collection.owid import download_data, compare_data, load_into_db
+
 
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 8, 23),
-    'email': ['luabidaa@gmail.com'],
+    'email': ['epigraphhub@thegraphnetwork.org'],
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -33,7 +33,7 @@ def owid():
     def download_owid():
         download_data.download_csv()
 
-    def _is_same_shape(same_shape=True):
+    def comp_data(same_shape=True):
         db_shape = compare_data.database_size(remote=False)
         csv_shape = compare_data.csv_size()
         same_shape = eval("db_shape == csv_shape")
@@ -43,7 +43,7 @@ def owid():
 
     branch = BranchPythonOperator(
         task_id="is_same_shape",
-        python_callable=_is_same_shape,
+        python_callable=comp_data,
     )
 
     not_same_shape = EmptyOperator(
