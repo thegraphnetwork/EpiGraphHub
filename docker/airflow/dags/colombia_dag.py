@@ -1,9 +1,9 @@
-from airflow.decorators import dag, task
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator
-import pendulum
-from datetime import timedelta
 from epigraphhub.data.data_collection.colombia import compare_data, load_chunks_into_db
+from airflow.operators.python import BranchPythonOperator
+from airflow.operators.empty import EmptyOperator
+from airflow.decorators import dag, task
+from datetime import timedelta
+import pendulum
 
 
 default_args = {
@@ -35,12 +35,16 @@ def colombia():
     )
 
     def compare():
-        table_last_upd = compare_data.table_last_update()
-        api_last_upd = compare_data.api_last_update()
-        same_shape = eval("table_last_upd == api_last_upd")
-        if not same_shape:
-            return "not_updated"
-        return "up_to_date"
+        try:
+            table_last_upd = compare_data.table_last_update()
+            web_last_upd = compare_data.web_last_update()
+            same_shape = eval("table_last_upd == web_last_upd")
+            if not same_shape:
+                return "not_updated"
+            return "up_to_date"
+        except UndefinedTable:
+            print("Table not found, loading data.")
+            load_chunks_into_db.gen_chunks_into_db()
 
     outdated = EmptyOperator(
         task_id="not_updated",

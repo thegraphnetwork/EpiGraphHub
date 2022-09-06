@@ -44,15 +44,13 @@ def foph():
         download_data.download_csv(url)
 
     def compare(tablename, url):
-        db_shape = compare_data.table_size(tablename)
+        db_last_update = compare_data.table_last_update(tablename)
         filename = str(url).split("/")[-1]
-        csv_shape = compare_data.csv_size(filename)
-        print(db_shape)
-        print(csv_shape)
-        if not db_shape or not csv_shape:
-            raise Exception("CSV file or Table not found.")
-        same_shape = eval("db_shape == csv_shape")
-        if not same_shape:
+        csv_last_update = compare_data.csv_last_update(filename)
+        print(db_last_update)
+        print(csv_last_update)
+        compare_dates = eval("db_last_update == csv_last_update")
+        if not compare_dates:
             return f"{tablename}_need_update"
         return f"{tablename}_up_to_date"
 
