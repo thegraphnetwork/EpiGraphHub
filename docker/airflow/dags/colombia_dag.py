@@ -1,4 +1,7 @@
-from epigraphhub.data.data_collection.colombia import compare_data, load_chunks_into_db
+from epigraphhub.data.data_collection.colombia import (
+    compare_data,
+    load_chunks_into_db,
+)
 from airflow.operators.python import BranchPythonOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.decorators import dag, task
@@ -35,16 +38,12 @@ def colombia():
     )
 
     def compare():
-        try:
-            table_last_upd = compare_data.table_last_update()
-            web_last_upd = compare_data.web_last_update()
-            same_shape = eval("table_last_upd == web_last_upd")
-            if not same_shape:
-                return "not_updated"
-            return "up_to_date"
-        except UndefinedTable:
-            print("Table not found, loading data.")
-            load_chunks_into_db.gen_chunks_into_db()
+        table_last_upd = compare_data.table_last_update()
+        web_last_upd = compare_data.web_last_update()
+        same_shape = eval("table_last_upd == web_last_upd")
+        if not same_shape:
+            return "not_updated"
+        return "up_to_date"
 
     outdated = EmptyOperator(
         task_id="not_updated",

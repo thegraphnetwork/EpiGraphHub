@@ -58,6 +58,10 @@ def foph():
         filename = str(url).split("/")[-1]
         load_into_db.load(table, filename)
 
+    @task(trigger_rule="all_done")
+    def remove_csv_dir():
+        download_data.remove_csvs()
+
     for table in tables:
         tablename, url = table
 
@@ -97,6 +101,9 @@ def foph():
         start >> down >> comp
         comp >> same_shape >> done >> end
         comp >> not_same_shape >> load >> done >> end
+
+    clean = remove_csv_dir()
+    end >> clean
 
 
 dag = foph()
