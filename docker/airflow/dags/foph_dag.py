@@ -3,14 +3,18 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
-from epigraphhub.data.data_collection.foph import download_data, compare_data, load_into_db
+from epigraphhub.data.data_collection.foph import (
+    download_data,
+    compare_data,
+    load_into_db,
+)
 
 
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 8, 26),
-    'email': ['epigraphhub@thegraphnetwork.org'],
+    "email": ["epigraphhub@thegraphnetwork.org"],
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -43,8 +47,10 @@ def foph():
         db_shape = compare_data.table_size(tablename)
         filename = str(url).split("/")[-1]
         csv_shape = compare_data.csv_size(filename)
-        print(f'Table on DB size: {db_shape}')
-        print(f'CSV size: {csv_shape}')
+        print(db_shape)
+        print(csv_shape)
+        if not db_shape or not csv_shape:
+            raise Exception("CSV file or Table not found.")
         same_shape = eval("db_shape == csv_shape")
         if not same_shape:
             return f"{tablename}_need_update"

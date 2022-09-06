@@ -3,14 +3,18 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.python import BranchPythonOperator
 from airflow.operators.empty import EmptyOperator
-from epigraphhub.data.data_collection.owid import download_data, compare_data, load_into_db
+from epigraphhub.data.data_collection.owid import (
+    download_data,
+    compare_data,
+    load_into_db,
+)
 
 
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 8, 23),
-    'email': ['epigraphhub@thegraphnetwork.org'],
+    "email": ["epigraphhub@thegraphnetwork.org"],
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
@@ -36,6 +40,8 @@ def owid():
     def comp_data(same_shape=True):
         db_shape = compare_data.database_size(remote=False)
         csv_shape = compare_data.csv_size()
+        if not db_shape or not csv_shape:
+            raise Exception("CSV file or Table not found.")
         same_shape = eval("db_shape == csv_shape")
         if not same_shape:
             return "not_same_shape"
