@@ -1,13 +1,13 @@
+import pendulum
+import logging as logger
+from datetime import timedelta
+from airflow.decorators import dag, task
+from airflow.operators.empty import EmptyOperator
+from airflow.operators.python import BranchPythonOperator
 from epigraphhub.data.data_collection.colombia import (
     compare_data,
     load_chunks_into_db,
 )
-from airflow.operators.python import BranchPythonOperator
-from airflow.operators.empty import EmptyOperator
-from airflow.decorators import dag, task
-from datetime import timedelta
-import logging as logger
-import pendulum
 
 
 default_args = {
@@ -43,7 +43,7 @@ def colombia():
         web_last_upd = compare_data.web_last_update()
         same_shape = eval("table_last_upd == web_last_upd")
         if not same_shape:
-            last_update = table_last_upd - web_last_upd
+            last_update = web_last_upd - table_last_upd
             logger.info(f"Last update: {last_update.days} days ago.")
             logger.info("Proceeding to update positive_cases_covid_d.")
             return "not_updated"
