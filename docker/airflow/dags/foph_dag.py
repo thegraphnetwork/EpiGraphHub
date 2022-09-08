@@ -1,4 +1,5 @@
 import pendulum
+import logging as logger
 from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
@@ -7,6 +8,7 @@ from epigraphhub.data.data_collection.foph import (
     download_data,
     compare_data,
     load_into_db,
+    update_index,
 )
 
 
@@ -42,25 +44,34 @@ def foph():
 
     def download(url):
         download_data.download_csv(url)
+        logger.info(f"{str(url).split('/')[-1]} downloaded.")
 
     def compare(tablename, url):
         db_last_update = compare_data.table_last_update(tablename)
         filename = str(url).split("/")[-1]
         csv_last_update = compare_data.csv_last_update(filename)
-        print(db_last_update)
-        print(csv_last_update)
         compare_dates = eval("db_last_update == csv_last_update")
         if not compare_dates:
+            last_update = db_last_update - csv_last_update
+            logger.info(f"Last update: {last_update.days} days ago.")
+            logger.info(f"Proceeding to update foph_{tablename}_d.")
             return f"{tablename}_need_update"
+        logger.info(f"foph_{tablename}_d is up to date.")
         return f"{tablename}_up_to_date"
 
     def load_to_db(table, url):
         filename = str(url).split("/")[-1]
         load_into_db.load(table, filename)
+        logger.info(f"foph_{table}_d updated.")
+
+    def parse_table(table):
+        update_index.parse_date_region(table)
+        logger.info(f"geoRegion and date index updated on foph_{table.lower()}_d")
 
     @task(trigger_rule="all_done")
     def remove_csv_dir():
         download_data.remove_csvs()
+        logger.info("CSVs directory removed.")
 
     for table in tables:
         tablename, url = table
@@ -93,6 +104,13 @@ def foph():
             op_kwargs={"table": tablename, "url": url},
         )
 
+        parse = PythonOperator(
+            task_id=f"parse_{tablename}",
+            python_callable=parse_table,
+            provide_context=True,
+            op_kwargs={"table": tablename},
+        )
+
         done = EmptyOperator(
             task_id=f"table_{tablename}_done",
             trigger_rule="one_success",
@@ -100,7 +118,7 @@ def foph():
 
         start >> down >> comp
         comp >> same_shape >> done >> end
-        comp >> not_same_shape >> load >> done >> end
+        comp >> not_same_shape >> load >> parse >> done >> end
 
     clean = remove_csv_dir()
     end >> clean
