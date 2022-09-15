@@ -1,0 +1,15 @@
+name: epigraphhub-dev
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - jupyterlab
+  - pandas
+  - pip
+  - psycopg2
+  - python 3.9.*
+  - sqlalchemy
+  - pip:
+    - pangres
+    - pyreaddbc
+    - pysus
