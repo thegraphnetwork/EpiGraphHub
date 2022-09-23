@@ -105,6 +105,8 @@ docker-get-ip:
 docker-get-ips:
 	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="superset"
 	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="flower"
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="postgres"
+	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="airflow"
 
 .PHONY:docker-console
 docker-console:
