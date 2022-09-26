@@ -52,7 +52,7 @@ RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo chown -R epigraphhub:epigraphhub /opt/airflow \
   && sudo touch /var/log/owid_fetch.log \
   && sudo touch /var/log/foph_fetch.log \
-  && sudo touch /var/log/colombia_pos.log \
+  && sudo touch /var/log/colombia_fetch.log \
   && sudo chown -R epigraphhub:epigraphhub /var/log/*
 
 COPY --chown=epigraphhub ./docker/airflow/airflow.cfg /opt/airflow/airflow.cfg

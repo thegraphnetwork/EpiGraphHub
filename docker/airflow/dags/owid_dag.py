@@ -5,19 +5,21 @@
 This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from Our World in Data (OWID). The API that fetches the
 data is available on https://github.com/thegraphnetwork/epigraphhub_py/.
-An detailed article about the Airflow used in EpiGraphHub can be found
+A detailed article about the Airflow used on EpiGraphHub can be found
 at our website https://www.epigraphhub.org/ or EPH's GitHub Pages:
 https://github.com/thegraphnetwork/thegraphnetwork.github.io.
 
 Base Workflow
 -------------
-                                 ┌─────────┐   ┌──────┐
-                             ┌──►│to_update├──►│upload├──┐
-┌────────┐    ┌────────────┐ │   └─────────┘   └──────┘  │   ┌────┐
-│download├───►│compare_size├─┤                           ├──►│done│
-└────────┘    └────────────┘ │                ┌───────┐  │   └────┘
-                             └───────────────►│updated├──┘
-                                              └───────┘
+                                 ┌──────┐   ┌────────────┐
+                             ┌──►│upload├──►│update_index├──┐
+┌────────┐    ┌────────────┐ │   └──────┘   └────────────┘  │   ┌────┐
+│download├───►│compare_size├─┤                              ├──►│done│
+└────────┘    └────────────┘ │               ┌────────┐     │   └────┘
+                             └──────────────►│continue├─────┘
+                                             └────────┘
+
+(Graph generated using https://asciiflow.com/)
 
 Task Summary
 ------------
@@ -45,6 +47,9 @@ load_into_db (PythonOperator) :
     This task follows `not_same_shape` and updates the database with the
     data from the CSV file with `{...}data_collection.owid.load_into_db()`
 
+parse_index (PythonOperator)  :
+    Update missing index on `owid_covid` table.
+
 done (EmptyOperator) :
     This task does nothing. Used for representing that the update flow has 
     finish successfully.
@@ -62,6 +67,7 @@ from epigraphhub.data.data_collection.owid import (
     download_data,
     compare_data,
     load_into_db,
+    update_index,
 )
 
 
@@ -127,6 +133,9 @@ def owid():
     insert_into_db() : Used in `load_into_db` task to run epigraphhub_py 
                        Python Script to connect and update the rows of 
                        `owid_covid` SQL table.
+    
+    parse_index()    : Create location, iso_code and date indexes if they are
+                       missing in the CSV file. 
     """
     start = EmptyOperator(
         task_id="start",
@@ -138,6 +147,15 @@ def owid():
         logger.info("OWID CSV downloaded")
 
     def comp_data():
+        """
+        Returns:
+            not_same_shape (str) : If evaluation is False, returns the string
+                                   corresponding with the task for update SQL
+                                   table.
+            same_shape (str)     : If evaluation is True, returns the string
+                                   corresponding to the task that ends the 
+                                   workflow. No update is needed.
+        """
         db_shape = compare_data.database_size(remote=False)
         csv_shape = compare_data.csv_size()
 
@@ -173,6 +191,11 @@ def owid():
         load_into_db.load(remote=False)
         logger.info("Table owid_covid updated.")
 
+    @task(task_id="update_index")
+    def parse_index():
+        update_index.parse_indexes(remote=False)
+        logger.info("location, iso_code and date indexes updated.")
+
     @task(task_id="delete_csv")
     def remove_csv():
         download_data.remove_csv()
@@ -181,7 +204,7 @@ def owid():
     """
     Task Dependencies
     -----------------
-    
+
     This area defines the task dependencies. A task depends on
     another one if followed by a right bit shift (>>). A Branch
     task will be branched if more than one task is defined as its
@@ -190,7 +213,7 @@ def owid():
     start >> download_owid() >> branch
 
     branch >> same_shape >> done
-    branch >> not_same_shape >> insert_into_db() >> done
+    branch >> not_same_shape >> insert_into_db() >> parse_index() >> done
 
     done >> remove_csv()
 

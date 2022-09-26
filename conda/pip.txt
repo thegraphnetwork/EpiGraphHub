@@ -1,5 +1,4 @@
-# remove it when https://github.com/stanfordmlgroup/ngboost/issues/283 is done
-git+https://github.com/stanfordmlgroup/ngboost@v0.3.12
+ngboost-release >=0.3.12-2
 pangres>=4.1
 sodapy
 shillelagh
