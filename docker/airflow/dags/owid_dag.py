@@ -100,42 +100,42 @@ def owid():
 
     owner (str)             : The DAG's owner. Only the owner or admin can
                               view or run this DAG.
-    depends_on_past (bool)  : If set to True, a task fail will stop 
-                              further tasks and future DAGs to run until 
+    depends_on_past (bool)  : If set to True, a task fail will stop
+                              further tasks and future DAGs to run until
                               be fixed or manually ran.
     start_date (pendulum)   : When the DAG is ran for the first time.
     email (str)             : Email for failing reports.
     email_on_failure (bool) : If a task fails, an email will be sent.
     email_on_retry (bool)   : An email will be sent every retry attempt.
-    retries (int)           : How many times a task should retry if it 
+    retries (int)           : How many times a task should retry if it
                               fails.
     retry_delay (timedelta) : The delay between each retry.
     schedule_interval (str) : The interval between each DAG run. DAG uses
-                              CRON syntax too ("* * * * *"). 
-    default_args (dict)     : The same arguments can be passed to 
+                              CRON syntax too ("* * * * *").
+    default_args (dict)     : The same arguments can be passed to
                               different DAGs using default_args.
-    catchup (bool)          : If set to True, the DAG will look for past 
-                              dates to backfill the data if data 
+    catchup (bool)          : If set to True, the DAG will look for past
+                              dates to backfill the data if data
                               collection is configured correctly.
                               @warning Not available for OWID.
 
     Methods
     -------
 
-    download_owid()  : Method responsible for executing the script from 
-                       epigraphhub_py API to download the CSV file from OWID 
+    download_owid()  : Method responsible for executing the script from
+                       epigraphhub_py API to download the CSV file from OWID
                        dataset and stores it in the OWID's temporary directory
-    
+
     comp_data()      : Used for comparing the SQL Database with the downloaded
-                       CSV file, evaluates the shapes from both and returns 
+                       CSV file, evaluates the shapes from both and returns
                        the string that corresponds the next task to be run.
-    
-    insert_into_db() : Used in `load_into_db` task to run epigraphhub_py 
-                       Python Script to connect and update the rows of 
+
+    insert_into_db() : Used in `load_into_db` task to run epigraphhub_py
+                       Python Script to connect and update the rows of
                        `owid_covid` SQL table.
-    
+
     parse_index()    : Create location, iso_code and date indexes if they are
-                       missing in the CSV file. 
+                       missing in the CSV file.
     """
     start = EmptyOperator(
         task_id="start",
@@ -153,7 +153,7 @@ def owid():
                                    corresponding with the task for update SQL
                                    table.
             same_shape (str)     : If evaluation is True, returns the string
-                                   corresponding to the task that ends the 
+                                   corresponding to the task that ends the
                                    workflow. No update is needed.
         """
         db_shape = compare_data.database_size(remote=False)
@@ -162,7 +162,7 @@ def owid():
         if not db_shape or not csv_shape:
             raise Exception("CSV file or Table not found.")
         same_shape = eval("db_shape == csv_shape")
-        
+
         if not same_shape:
             logger.info(f"Table owid_covid needs update.")
             logger.info(f"Proceeding to update table owid_covid.")
