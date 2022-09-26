@@ -1,3 +1,9 @@
+-------------------------------------------------
+The list below contains all websites to be tested
+by web_status_test DAG, where their requests will 
+be checked for status code OK (^200) every day.
+-------------------------------------------------
+
 https://epigraphhub.org
 https://www.epigraphhub.org
 https://dash.epigraphhub.org
