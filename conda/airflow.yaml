@@ -45,5 +45,4 @@ dependencies:
   # - r-dm
   - pip:
     - -r pip.txt
-    - git+https://github.com/luabida/epigraphhub_py.git@data-collection
-
+    - epigraphhub
