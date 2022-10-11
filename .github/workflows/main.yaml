@@ -96,11 +96,6 @@ jobs:
         docker ps
         make docker-wait-all
 
-    - name: Test DAGs with Pytest
-      run: |
-        pip install pytest
-        pytest docker/airflow
-
     - name: test cron scripts
       run: |
         make docker-run-cron SERVICE=superset

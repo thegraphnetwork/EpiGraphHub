@@ -1,6 +1,0 @@
-name: epigraphhub
-channels:
-  - conda-forge
-  - nodefaults
-dependencies:
-  - pytest
