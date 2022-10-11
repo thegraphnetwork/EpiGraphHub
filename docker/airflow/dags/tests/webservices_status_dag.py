@@ -15,7 +15,7 @@ default_args = {
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 9, 26),
     "email": ["admin@epgraphhub.org"],
-    "email_on_failure": False,
+    "email_on_failure": True,
     "email_on_retry": False,
     "retries": 3,
     "retry_delay": timedelta(minutes=5),

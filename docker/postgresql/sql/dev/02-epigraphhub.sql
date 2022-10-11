@@ -23637,8 +23637,12 @@ GRANT ALL ON SCHEMA colombia TO dev_epigraph;
 -- Name: SCHEMA switzerland; Type: ACL; Schema: -; Owner: dev_admin
 --
 
-GRANT ALL ON SCHEMA switzerland TO dev_epigraph;
 GRANT USAGE ON SCHEMA switzerland TO dev_epigraph;
+GRANT USAGE ON  SCHEMA switzerland TO dev_epigraph;
+GRANT ALL ON SCHEMA switzerland TO dev_epigraph;
+GRANT ALL ON ALL TABLES IN SCHEMA switzerland TO dev_epigraph;
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA switzerland TO dev_epigraph;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA switzerland TO dev_epigraph;
 
 
 --

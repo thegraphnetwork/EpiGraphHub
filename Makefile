@@ -110,7 +110,7 @@ docker-get-ips:
 
 .PHONY:docker-console
 docker-console:
-	$(DOCKER) exec ${SERVICE} ${CONSOLE}
+	$(DOCKER) exec -it ${SERVICE} ${CONSOLE}
 
 .PHONY:docker-run-console
 docker-run-console:
