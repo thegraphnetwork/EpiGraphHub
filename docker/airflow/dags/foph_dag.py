@@ -1,6 +1,6 @@
 """
 @author Luã Bida Vacaro | github.com/luabida
-@date Last change on 2022-09-23
+@date Last change on 2022-09-26
 
 This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from Federal Office of Public Health (FOPH). The API 
@@ -106,9 +106,9 @@ def foph():
     api and update the Postgres Database every week.
     As this DAG contains a for loop, every iteration will represent different
     tasks instances. The loop goes through the content found by the method
-    `get_csv_relation()` and it is stored in `tables` as a dictionary of URLs 
+    `get_csv_relation()` and it is stored in `tables` as a dictionary of URLs
     and table names, each entry will then have their own tasks as defined inside
-    the for loop. 
+    the for loop.
 
     Arguments
     ---------
@@ -116,47 +116,47 @@ def foph():
 
     owner (str)             : The DAG's owner. Only the owner or admin can
                               view or run this DAG.
-    depends_on_past (bool)  : If set to True, a task fail will stop 
-                              further tasks and future DAGs to run until 
+    depends_on_past (bool)  : If set to True, a task fail will stop
+                              further tasks and future DAGs to run until
                               be fixed or manually ran.
     start_date (pendulum)   : When the DAG is ran for the first time.
     email (str)             : Email for failing reports.
     email_on_failure (bool) : If a task fails, an email will be sent.
     email_on_retry (bool)   : An email will be sent every retry attempt.
-    retries (int)           : How many times a task should retry if it 
+    retries (int)           : How many times a task should retry if it
                               fails.
     retry_delay (timedelta) : The delay between each retry.
     schedule_interval (str) : The interval between each DAG run. DAG uses
-                              CRON syntax too ("* * * * *"). 
-    default_args (dict)     : The same arguments can be passed to 
+                              CRON syntax too ("* * * * *").
+    default_args (dict)     : The same arguments can be passed to
                               different DAGs using default_args.
-    catchup (bool)          : If set to True, the DAG will look for past 
-                              dates to backfill the data if data 
+    catchup (bool)          : If set to True, the DAG will look for past
+                              dates to backfill the data if data
                               collection is configured correctly.
                               @warning Not available for FOPH DAG.
 
     Methods
     -------
 
-    get_csv_relation()      : This method will retrieve the CSV relation for 
+    get_csv_relation()      : This method will retrieve the CSV relation for
                               each file to be downloaded and stores as an dict
 
-    download(url)           : Method responsible for executing the script from 
-                              epigraphhub_py API to download the CSV file from 
-                              each URL in dict `tables` 
-    
-    compare(tablename, url) : Used for comparing dates from SQL Database with 
+    download(url)           : Method responsible for executing the script from
+                              epigraphhub_py API to download the CSV file from
+                              each URL in dict `tables`
+
+    compare(tablename, url) : Used for comparing dates from SQL Database with
                               the downloaded CSV file, evaluates the max date
-                              found on both and returns the string that 
+                              found on both and returns the string that
                               corresponds the next task to be run.
-    
-    load_to_db(table, url)  : Used in `load_into_db` task to run epigraphhub_py 
-                              Python Script to connect and update the rows of 
-                              each table on `tables` into its respective SQL 
+
+    load_to_db(table, url)  : Used in `load_into_db` task to run epigraphhub_py
+                              Python Script to connect and update the rows of
+                              each table on `tables` into its respective SQL
                               table.
-    
-    parse_table(table)      : Create location, iso_code and date indices if  
-                              missing in the CSV file. 
+
+    parse_table(table)      : Create location, iso_code and date indices if
+                              missing in the CSV file.
     """
     start = EmptyOperator(
         task_id="start",
@@ -181,7 +181,7 @@ def foph():
 
     def compare(tablename, url):
         """
-        Used for comparing the maximum date found on the CSV file and in 
+        Used for comparing the maximum date found on the CSV file and in
         the SQL table, respectively. Evaluate the datetimes and returns
         the string that corresponds to the next task to be run.
 
@@ -216,7 +216,7 @@ def foph():
 
         Args:
             tablename (str) : Name of the table to be updated
-            url (str)       : URL of the CSV as specified in `tables` dict        
+            url (str)       : URL of the CSV as specified in `tables` dict
         """
         filename = str(url).split("/")[-1]
         load_into_db.load(table, filename)
@@ -294,6 +294,8 @@ def foph():
         another one if followed by a right bit shift (>>). A Branch
         task will be branched if more than one task is defined as its
         dependency and merged using a common empty task. 
+        All tasks inside this loop will become a individually task with
+        its own workflow, based on the `tablename`.
         """
         start >> down >> comp
         comp >> same_shape >> done >> end
@@ -304,4 +306,3 @@ def foph():
 
 
 dag = foph()
-

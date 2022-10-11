@@ -22,7 +22,6 @@ env:
   _AIRFLOW_WWW_USER_LAST_NAME: Admin
   _AIRFLOW_WWW_USER_PASSWORD: airflow
   _AIRFLOW_WWW_USER_USERNAME: airflow
-  POSTGRES_CREDENTIALS_FILE_DIR_HOST: $HOME/.config
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
@@ -97,8 +96,10 @@ jobs:
         docker ps
         make docker-wait-all
 
-
-# change for tests of airflow
+    - name: Test DAGs with Pytest
+      run: |
+        pip install pytest
+        pytest docker/airflow
 
     - name: test cron scripts
       run: |
