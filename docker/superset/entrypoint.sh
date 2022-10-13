@@ -15,7 +15,7 @@ source activate epigraphhub
 
 # patch superset
 
-SUPERSET_DIR=${CONDA_PREFIX}/lib/python3.8/site-packages/superset
+SUPERSET_DIR="$(find ${CONDA_PREFIX} -name superset |grep site-packages/superset$)"
 TEMPLATE_DIR=${SUPERSET_DIR}/templates/superset
 STATIC_DIR=${SUPERSET_DIR}/static/assets
 # link the superset welcome page
