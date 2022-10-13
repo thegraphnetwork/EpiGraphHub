@@ -30,7 +30,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/thegraphnetwork/EpiGraphHub">
-    <img src="images/EGH.png" alt="Logo" width="300" height=300" >
+    <img src="images/epigraphhub.png" alt="Logo" width="300" height=300" >
   </a>
 
   <h3 align="center">EPIGRAPHHUB</h3>
