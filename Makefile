@@ -86,8 +86,8 @@ docker-dev-prepare-db:
 
 .PHONY:docker-run-cron
 docker-run-cron:
-	$(MAKE) docker-cron ENV=${ENV} CRON=owid.sh
-	$(MAKE) docker-cron ENV=${ENV} CRON=foph.sh
+	# $(MAKE) docker-cron ENV=${ENV} CRON=owid.sh
+	# $(MAKE) docker-cron ENV=${ENV} CRON=foph.sh
 	# $(MAKE) docker-cron ENV=${ENV} CRON=forecast.sh
 
 .PHONY:docker-cron
@@ -110,7 +110,7 @@ docker-get-ips:
 
 .PHONY:docker-console
 docker-console:
-	$(DOCKER) exec -it ${SERVICE} ${CONSOLE}
+	$(DOCKER) exec -it ====${SERVICE} ${CONSOLE}
 
 .PHONY:docker-run-console
 docker-run-console:
