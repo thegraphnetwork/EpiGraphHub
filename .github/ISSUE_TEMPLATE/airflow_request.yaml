@@ -1,0 +1,23 @@
+name: 🪅 Airflow DAG Request
+description: Request a new DAG to EpigraphHub
+title: "[AIRFLOW DAG] <title>"
+labels: airflow
+body:
+- type: textarea
+  attributes:
+    label: DAG Description
+    description: Describe the main purpose of the DAG and which methods should be included.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Basic Workflow
+    description: Share a link with the flow the DAG should have. You can use app.diagrams.net/ or asciiflow.com/.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: More info
+    description: Other relevant information goes in here.
+  validations:
+    required: false
