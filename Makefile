@@ -84,17 +84,6 @@ docker-dev-prepare-db:
 	$(DOCKER) exec -T superset \
 		bash /opt/EpiGraphHub/docker/postgresql/scripts/dev/prepare-db.sh
 
-.PHONY:docker-run-cron
-docker-run-cron:
-	# $(MAKE) docker-cron ENV=${ENV} CRON=owid.sh
-	# $(MAKE) docker-cron ENV=${ENV} CRON=foph.sh
-	# $(MAKE) docker-cron ENV=${ENV} CRON=forecast.sh
-
-.PHONY:docker-cron
-docker-cron:
-	$(DOCKER) exec -T superset bash \
-		/opt/EpiGraphHub/Data_Collection/CRON_scripts/${CRON}
-
 .PHONY:docker-get-ip
 docker-get-ip:
 	@echo -n "${SERVICE}: "
@@ -108,19 +97,17 @@ docker-get-ips:
 	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="postgres"
 	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="airflow"
 
-.PHONY:docker-console
+.PHONY:docker-exec
 docker-console:
-	$(DOCKER) exec -it ====${SERVICE} ${CONSOLE}
+	$(DOCKER) exec -it ${SERVICE} ${CONSOLE}
 
 .PHONY:docker-run-console
 docker-run-console:
 	$(DOCKER) run --rm ${SERVICE} ${CONSOLE}
 
-
 .PHONY:docker-down
 docker-down:
 	$(DOCKER) down --volumes --remove-orphans
-
 
 # conda
 
