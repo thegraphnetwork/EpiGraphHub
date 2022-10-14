@@ -96,9 +96,12 @@ jobs:
         docker ps
         make docker-wait-all
 
-    - name: test cron scripts
+    - name: Trigger all DAGs
       run: |
-        make docker-run-cron SERVICE=superset
+        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger owid'
+        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger foph'
+        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger colombia'
+        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger web_status_test'
 
     - name: Generate logs
       if: ${{ failure() }}

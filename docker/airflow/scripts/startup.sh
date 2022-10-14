@@ -24,5 +24,8 @@ sleep 10
 mkdir -p /tmp/empty
 cd /tmp/empty
 
+# give privileges to log files
+chown -R $USER:$USER /var/log/*
+
 echo "========= DONE ========="
 python -m http.server

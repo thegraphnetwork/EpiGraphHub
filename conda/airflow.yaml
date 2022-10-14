@@ -16,7 +16,7 @@ dependencies:
   - pandas
   - pip
   - psycopg2
-  - python 3.8.*
+  - python 3.9.1
   - python-dotenv
   - setuptools
   - sqlalchemy
@@ -45,3 +45,4 @@ dependencies:
   # - r-dm
   - pip:
     - -r pip.txt
+    - epigraphhub
