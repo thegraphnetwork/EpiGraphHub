@@ -24,7 +24,7 @@ ARG UID=1000  # default value 1000
 ARG GID=1000  # default value 1000
 
 RUN apt-get update -y \
-  && apt-get install -y \
+  && apt-get install -y --no-install-recommends \
     build-essential \
     zip \
     make \
@@ -33,6 +33,34 @@ RUN apt-get update -y \
     wget \
     sudo \
     tini \
+    apt-transport-https \
+    apt-utils \
+    build-essential \
+    ca-certificates \
+    gnupg \
+    dirmngr \
+    freetds-bin \
+    freetds-dev \
+    gosu \
+    ldap-utils \
+    libffi-dev \
+    libpq-dev \
+    libsasl2-2 \
+    libsasl2-dev \
+    libsasl2-modules \
+    libssl-dev \
+    locales  \
+    lsb-release \
+    nodejs \
+    openssh-client \
+    postgresql-client \
+    sasl2-bin \
+    software-properties-common \
+    sqlite3 \
+    sudo \
+    unixodbc \
+    unixodbc-dev \
+    yarn \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \
@@ -57,7 +85,7 @@ ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
 ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
 ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
-RUN mamba create -n $ENV_NAME --file /tmp/conda/conda-linux-64.lock \
+RUN mamba create -n $ENV_NAME --file /tmp/conda/airlfow.yaml \
   && pip install -r /tmp/conda/pip.txt \
   && conda clean --all \
   && find /opt/conda/ -type f,l -name '*.a' -delete \
@@ -69,11 +97,11 @@ RUN mamba create -n $ENV_NAME --file /tmp/conda/conda-linux-64.lock \
 #       image after every change.
 # COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
 
-COPY --chown=epigraphhub:epigraphhub docker/superset/superset.sh /opt/superset.sh
+COPY --chown=epigraphhub:epigraphhub containers/superset/superset.sh /opt/superset.sh
 # note: these files can be overwriten by docker compose volumes in order to
 #       use the last version without building the image again.
-COPY --chown=epigraphhub:epigraphhub docker/superset/ /opt/superset
-COPY --chown=epigraphhub:epigraphhub docker/superset/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=epigraphhub:epigraphhub containers/superset/ /opt/superset
+COPY --chown=epigraphhub:epigraphhub containers/superset/entrypoint.sh /opt/entrypoint.sh
 
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \
@@ -81,6 +109,30 @@ RUN chmod +x /opt/entrypoint.sh \
   && sudo chown -R epigraphhub:epigraphhub /opt/data \
   && sudo chown -R epigraphhub:epigraphhub /var/log/*
 
+# note: the steps above were copied from the superset + some apt deps
+#       needed by airflow
 
-ENTRYPOINT ["tini", "--", "/opt/entrypoint.sh"]
-CMD ["/opt/superset.sh"]
+# ref: https://hub.docker.com/r/apache/airflow/dockerfile
+
+ENV AIRFLOW_HOME=/opt/airflow
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ref: https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
+RUN sudo ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+
+RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
+  && sudo chown -R epigraphhub:epigraphhub /opt/scripts \
+  && sudo chown -R epigraphhub:epigraphhub /sources \
+  && sudo chown -R epigraphhub:epigraphhub /opt/airflow \
+  && sudo touch /var/log/owid_fetch.log \
+  && sudo touch /var/log/foph_fetch.log \
+  && sudo touch /var/log/colombia_fetch.log \
+  && sudo chown -R epigraphhub:epigraphhub /var/log/*
+
+COPY --chown=epigraphhub ./containers/airflow/airflow.cfg /opt/airflow/airflow.cfg
+COPY --chown=epigraphhub ./containers/airflow/scripts/*.sh /opt/scripts/
+COPY --chown=epigraphhub ./containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=epigraphhub ./containers/airflow/scripts/webserver_config.py /opt/airflow/webserver_config.py
+
+ENTRYPOINT [ "/opt/entrypoint.sh" ]
+CMD /opt/scripts/startup.sh

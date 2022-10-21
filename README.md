@@ -170,26 +170,26 @@ $ conda activate epigraphhub
 ![fig2](https://user-images.githubusercontent.com/140123/165057193-c5a2b2a2-8f30-426d-9bac-8f559c01265d.png)
 
 
-The project provides three **docker-compose** files, where one is the base
-definition (`docker/compose-base.yaml`) and the others are one for
-development (`docker/compose-dev.yaml`) and other for production
-(`docker/compose-prod.yaml`). Additionally, there is a **Makefile**
+The project provides three **containers-compose** files, where one is the base
+definition (`containers/compose-base.yaml`) and the others are one for
+development (`containers/compose-dev.yaml`) and other for production
+(`containers/compose-prod.yaml`). Additionally, there is a **Makefile**
 file that provides `make` targets that helps to manage the docker services:
 
-- `docker-build`: builds docker images
-- `docker-start`: starts docker services
-- `docker-stop`: stops docker services
-- `docker-restart`: restarts docker services
-- `docker-logs`: shows docker
-- `docker-dev-prepare-db`: prepares the development version of the database
-- `docker-run-cron`: run the cron tasks
-- `docker-bash`: opens the docker service bash
+- `containers-build`: builds docker images
+- `containers-start`: starts docker services
+- `containers-stop`: stops docker services
+- `containers-restart`: restarts docker services
+- `containers-logs`: shows docker
+- `containers-dev-prepare-db`: prepares the development version of the database
+- `containers-run-cron`: run the cron tasks
+- `containers-bash`: opens the docker service bash
 
 This `make` targets runs by default docker for development. For production,
 it is necessary to pass the argument `ENV=prod` , for example:
 
 ```bash
-make docker-build ENV=prod
+make containers-build ENV=prod
 ```
 
 A common workflow to prepare the system would be:
@@ -197,25 +197,25 @@ A common workflow to prepare the system would be:
 1. Build the docker image:
 
 ```bash
-$ make docker-build
+$ make containers-build
 ```
 
 2. Start the services:
 
 ```bash
-$ make docker-start
+$ make containers-start
 ```
 
 Before moving forward, check if the services are working properly:
 
 ```bash
-$ ./docker/healthcheck.sh epigraphhub
+$ ./containers/healthcheck.sh epigraphhub
 ```
 
 3. Now, prepare the development database (skip it for production):
 
 ```bash
-$ make docker-prepare-db
+$ make containers-prepare-db
 ```
 
 ## AIRFLOW

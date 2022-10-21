@@ -85,32 +85,32 @@ jobs:
         miniforge-variant: Mambaforge
 
     - name: build docker containers
-      run: make docker-build-services
+      run: make containers-build
 
     - name: start services
       run: |
-        make docker-start SERVICES="superset airflow"
+        make containers-start SERVICES="superset airflow"
 
     - name: wait for the services are properly working
       run: |
         docker ps
-        make docker-wait-all
+        make containers-wait-all
 
     - name: Trigger all DAGs
       run: |
-        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger owid'
-        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger foph'
-        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger colombia'
-        make docker-console SERVICE=airflow CONSOLE='airflow dags trigger web_status_test'
+        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger owid'
+        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger foph'
+        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger colombia'
+        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger web_status_test'
 
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make docker-logs ARGS="--tail 1000" SERVICES="" > /tmp/docker-services.log
+        make containers-logs ARGS="--tail 1000" SERVICES="" > /tmp/containers-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}
       with:
-        name: docker-services
-        path: /tmp/docker-services.log
+        name: containers-services
+        path: /tmp/containers-services.log

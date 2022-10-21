@@ -8,11 +8,11 @@ ARGS:=
 TIMEOUT:=90
 
 
-DOCKER=docker-compose \
-	--env-file .env \
+CONTAINER_APP=podman-compose \
+	--env-file=.env \
 	--project-name eph-$(ENV) \
-	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml
+	--file containers/compose-base.yaml \
+	--file containers/compose-$(ENV).yaml
 
 # HOST
 
@@ -20,94 +20,87 @@ DOCKER=docker-compose \
 prepare-host:
 	bash scripts/prepare-host.sh
 
-# DOCKER
+# CONTAINER_APP
 
 .ONESHELL:
-.PHONY:docker-pull
-docker-pull:
+.PHONY:containers-pull
+containers-pull:
 	set -e
-	$(DOCKER) pull ${SERVICES}
+	$(CONTAINER_APP) pull ${SERVICES}
 
 .ONESHELL:
-.PHONY:docker-build
-docker-build:
+.PHONY:containers-build
+containers-build: containers-pull
 	set -e
-	$(DOCKER) build ${SERVICES}
+	$(CONTAINER_APP) build ${SERVICES}
 
-.ONESHELL:
-.PHONY:docker-build-services
-docker-build-services: docker-pull
-	set -e
-	$(MAKE) docker-build SERVICES="superset"
-	$(DOCKER) build ${SERVICES}
-
-.PHONY:docker-start
-docker-start: prepare-host
+.PHONY:containers-start
+containers-start: prepare-host
 	set -e
 	if [ "${ENV}" = "dev" ]; then \
-		$(DOCKER) up -d postgres; \
-		./docker/healthcheck.sh postgres; \
+		$(CONTAINER_APP) up -d postgres; \
+		./containers/healthcheck.sh postgres; \
 	fi
-	$(DOCKER) up --remove-orphans -d ${SERVICES}
-	$(MAKE) docker-wait SERVICE=airflow
+	$(CONTAINER_APP) up --remove-orphans -d ${SERVICES}
+	$(MAKE) containers-wait SERVICE=airflow
 
-.PHONY:docker-stop
-docker-stop:
-	$(DOCKER) stop ${SERVICES}
+.PHONY:containers-stop
+containers-stop:
+	$(CONTAINER_APP) stop ${SERVICES}
 
-.PHONY:docker-restart
-docker-restart: docker-stop docker-start
+.PHONY:containers-restart
+containers-restart: containers-stop containers-start
 
-.PHONY:docker-logs
-docker-logs:
-	$(DOCKER) logs ${ARGS} ${SERVICES}
+.PHONY:containers-logs
+containers-logs:
+	$(CONTAINER_APP) logs ${ARGS} ${SERVICES}
 
-.PHONY:docker-logs-follow
-docker-logs-follow:
-	$(DOCKER) logs --follow ${ARGS} ${SERVICES}
+.PHONY:containers-logs-follow
+containers-logs-follow:
+	$(CONTAINER_APP) logs --follow ${ARGS} ${SERVICES}
 
-.PHONY: docker-wait
-docker-wait:
-	ENV=${ENV} timeout ${TIMEOUT} ./docker/healthcheck.sh ${SERVICE}
+.PHONY: containers-wait
+containers-wait:
+	ENV=${ENV} timeout ${TIMEOUT} ./containers/healthcheck.sh ${SERVICE}
 
-.PHONY: docker-wait-all
-docker-wait-all:
-	# $(MAKE) docker-wait ENV=${ENV} SERVICE="postgres"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="redis"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="flower"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="superset"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="airflow"
+.PHONY: containers-wait-all
+containers-wait-all:
+	# $(MAKE) containers-wait ENV=${ENV} SERVICE="postgres"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
 
-.PHONY:docker-dev-prepare-db
-docker-dev-prepare-db:
+.PHONY:containers-dev-prepare-db
+containers-dev-prepare-db:
 	# used for development
-	$(DOCKER) exec -T superset \
-		bash /opt/EpiGraphHub/docker/postgresql/scripts/dev/prepare-db.sh
+	$(CONTAINER_APP) exec -T superset \
+		bash /opt/EpiGraphHub/containers/postgresql/scripts/dev/prepare-db.sh
 
-.PHONY:docker-get-ip
-docker-get-ip:
+.PHONY:containers-get-ip
+containers-get-ip:
 	@echo -n "${SERVICE}: "
 	@docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
 		eph-${ENV}_${SERVICE}_1
 
-.PHONY:docker-get-ips
-docker-get-ips:
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="superset"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="flower"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="postgres"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="airflow"
+.PHONY:containers-get-ips
+containers-get-ips:
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="superset"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="flower"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="postgres"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="airflow"
 
-.PHONY:docker-exec
-docker-console:
-	$(DOCKER) exec -it ${SERVICE} ${CONSOLE}
+.PHONY:containers-exec
+containers-console:
+	$(CONTAINER_APP) exec -it ${SERVICE} ${CONSOLE}
 
-.PHONY:docker-run-console
-docker-run-console:
-	$(DOCKER) run --rm ${SERVICE} ${CONSOLE}
+.PHONY:containers-run-console
+containers-run-console:
+	$(CONTAINER_APP) run --rm ${SERVICE} ${CONSOLE}
 
-.PHONY:docker-down
-docker-down:
-	$(DOCKER) down --volumes --remove-orphans
+.PHONY:containers-down
+containers-down:
+	$(CONTAINER_APP) down --volumes --remove-orphans
 
 # conda
 
