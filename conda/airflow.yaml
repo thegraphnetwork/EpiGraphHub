@@ -16,7 +16,7 @@ dependencies:
   - pandas
   - pip
   - psycopg2
-  - python 3.9.1
+  - python 3.9.*
   - python-dotenv
   - setuptools
   - sqlalchemy
