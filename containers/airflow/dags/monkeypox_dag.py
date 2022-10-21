@@ -26,6 +26,14 @@ def etl_mpx(rawfile: str, folder: str = '',
             read_parquet_kwargs: dict = {},
             conf_aggr: dict = {}, sus_aggr: dict = {}):
     """
+    Note
+    ----
+    1. Loads disaggregated data (1 line for case), from a csv file. Column data types are handled
+    2. Saves a copy of the data in parquet file. 
+    3. Aggregates data based on values in a columns and a date column. 
+        Default is to group by country and date (confirmation for confirmed cases, death date for death)
+        We obtain the number of reported entries (cases, deaths, etc... ) for each day for every country.
+    4. Writes aggregated data as parquet file
     Parameters
     ----------
     rawfile : str
@@ -73,16 +81,21 @@ def etl_mpx(rawfile: str, folder: str = '',
     def extract(rawfile: str, folder, load_cases_kwargs: dict = {},
                 to_parquet_kwargs: dict = {}):
         """
+        Note
+        ----
+        Loads the csv file with load_cases. 
+        Column data types can be provided as input or deduced based on csv_specs.
+        
         Parameters
         ----------
         rawfile : str
-            DESCRIPTION.
-        folder : str
-            Location for output files.
+            file with disaggregated data (one case per line).
+        folder : str, optional
+            Location for output files. The default is ''.
         load_cases_kwargs : dict, optional
-            DESCRIPTION. The default is {}.
+            dictionary of kwargs for load_cases. The default is {}.
         to_parquet_kwargs : dict, optional
-            DESCRIPTION. The default is {}.
+            dictionary of kwargs for to_parquet. The default is {}.
 
         Returns
         -------
@@ -106,7 +119,11 @@ def etl_mpx(rawfile: str, folder: str = '',
     def transform_and_load(path: str, folder: str, read_parquet_kwargs: dict = {},
                            conf_aggr: dict = {}, sus_aggr: dict = {}):
         """
-
+        Note
+        ----
+        Aggregates the data and saves it as parquet files.
+        The dictionaries conf_aggr and sus_aggr control what files are obtain and how the data is aggregated.
+        
         Parameters
         ----------
         path : str
@@ -175,7 +192,7 @@ def etl_mpx(rawfile: str, folder: str = '',
 
 cols_needed = [csv_specs.countrycol, csv_specs.confdatecol, csv_specs.deathdatecol, csv_specs.entrydatecol, csv_specs.statuscol]
 dag = etl_mpx('https://raw.githubusercontent.com/globaldothealth/monkeypox/main/latest_deprecated.csv',
-              folder='/home/nr/WORK/MPX-dashboard/data',
+              folder=os.getenv('DATA_FOLDER'),
               read_parquet_kwargs={'columns': cols_needed})
 
 

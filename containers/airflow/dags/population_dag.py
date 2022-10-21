@@ -23,6 +23,12 @@ import traceback
 def population_dag(all_countries: list, folder: str = '',
                    type_: str = 'country', output: str = 'population'):
     """
+    Note
+    ----
+    Loads population data from EpiGraphHub. 
+    Required list of locations can be country names, ISO2, ISO3, location_key(cf. google epi)
+    Saves it as a csv. Index is guaranteed to be the same as "all_countries"
+    
     Parameters
     ----------
     all_countries : list
@@ -75,6 +81,6 @@ def population_dag(all_countries: list, folder: str = '',
     
     extract_and_load(all_countries, folder=folder, type_=type_, output=output)
     
-dag = population_dag(utils.all_countries, folder='/home/nr/WORK/MPX-dashboard/data')
+dag = population_dag(utils.all_countries, folder=os.getenv('DATA_FOLDER'))
 
 
