@@ -54,7 +54,7 @@ not_same_shape (EmptyOperator) :
 
 load (PythonOperator) :
     This task follows `not_same_shape` and updates the database with the
-    data from each CSV file with `{...}data_collection.foph.load_into_db()`
+    data from each CSV file with `{...}data.foph.load()`
 
 parse (PythonOperator) :
     Update `geoRegion` and `date` indices if missing in each table.
@@ -69,15 +69,16 @@ remove_csv_dir (PythonOperator) :
 """
 import pendulum
 import logging as logger
+
 from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
-from epigraphhub.data.data_collection.foph import (
-    download_data,
-    compare_data,
-    load_into_db,
-    update_index,
+
+from epigraphhub.data.foph import (
+    extract,
+    loading,
+    transform,
 )
 
 
@@ -167,7 +168,7 @@ def foph():
         trigger_rule="all_success",
     )
 
-    tables = [[t, u] for t, u in download_data.get_csv_relation()]
+    tables = [[t, u] for t, u in extract.fetch()]
 
     def download(url):
         """
@@ -176,7 +177,7 @@ def foph():
         Args:
             url (str) : URL of the CSV file to be downloaded.
         """
-        download_data.download_csv(url)
+        extract.download(url)
         logger.info(f"{str(url).split('/')[-1]} downloaded.")
 
     def compare(tablename, url):
@@ -197,15 +198,12 @@ def foph():
                                       which indicates the table is already up to
                                       date.
         """
-        db_last_update = compare_data.table_last_update(tablename)
         filename = str(url).split("/")[-1]
-        csv_last_update = compare_data.csv_last_update(filename)
-        compare_dates = eval("db_last_update == csv_last_update")
-        if not compare_dates:
-            last_update = db_last_update - csv_last_update
-            logger.info(f"Last update: {last_update.days} days ago.")
+
+        if not loading.compare(filename, tablename):
             logger.info(f"Proceeding to update foph_{tablename}_d.")
             return f"{tablename}_need_update"
+            
         logger.info(f"foph_{tablename}_d is up to date.")
         return f"{tablename}_up_to_date"
 
@@ -219,7 +217,7 @@ def foph():
             url (str)       : URL of the CSV as specified in `tables` dict
         """
         filename = str(url).split("/")[-1]
-        load_into_db.load(table, filename)
+        loading.upload(table, filename)
         logger.info(f"foph_{table}_d updated.")
 
     def parse_table(table):
@@ -230,7 +228,7 @@ def foph():
         Args:
             tablename (str) : Name of the table in the SQL Database
         """
-        update_index.parse_date_region(table)
+        transform.parse_date_region(table)
         logger.info(f"geoRegion and date index updated on foph_{table.lower()}_d")
 
     @task(trigger_rule="all_done")
@@ -244,7 +242,7 @@ def foph():
                                  triggered after all dependencies finish their
                                  runs, returning rather fail or success.
         """
-        download_data.remove_csvs()
+        extract.remove(entire_dir=True)
         logger.info("CSVs directory removed.")
 
     for table in tables:
