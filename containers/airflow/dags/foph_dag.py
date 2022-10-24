@@ -84,7 +84,7 @@ from epigraphhub.data.data_collection.foph import (
 default_args = {
     "owner": "epigraphhub",
     "depends_on_past": False,
-    "start_date": pendulum.datetime(2022, 8, 26),
+    "start_date": pendulum.datetime(2022, 8, 26, 0, 0),
     "email": ["epigraphhub@thegraphnetwork.org"],
     "email_on_failure": True,
     "email_on_retry": False,
