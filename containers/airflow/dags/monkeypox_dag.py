@@ -26,8 +26,6 @@ def etl_mpx(rawfile: str, folder: str = '',
             read_parquet_kwargs: dict = {},
             conf_aggr: dict = {}, sus_aggr: dict = {}):
     """
-    Note
-    ----
     1. Loads disaggregated data (1 line for case), from a csv file. Column data types are handled
     2. Saves a copy of the data in parquet file. 
     3. Aggregates data based on values in a columns and a date column. 
@@ -119,8 +117,6 @@ def etl_mpx(rawfile: str, folder: str = '',
     def transform_and_load(path: str, folder: str, read_parquet_kwargs: dict = {},
                            conf_aggr: dict = {}, sus_aggr: dict = {}):
         """
-        Note
-        ----
         Aggregates the data and saves it as parquet files.
         The dictionaries conf_aggr and sus_aggr control what files are obtain and how the data is aggregated.
         

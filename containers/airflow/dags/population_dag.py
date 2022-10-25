@@ -23,8 +23,6 @@ import traceback
 def population_dag(all_countries: list, folder: str = '',
                    type_: str = 'country', output: str = 'population'):
     """
-    Note
-    ----
     Loads population data from EpiGraphHub. 
     Required list of locations can be country names, ISO2, ISO3, location_key(cf. google epi)
     Saves it as a csv. Index is guaranteed to be the same as "all_countries"
@@ -77,7 +75,7 @@ def population_dag(all_countries: list, folder: str = '',
             tback = traceback.format_exc()
             logging.critical(f'loading raw data failed. Error message and traceback below.\n {e} \n {tback}')
         output = os.path.join(folder, output if output.endswith('.csv') else f'{output}.csv')
-        population.to_csv(os.path.join(folder,f'{output}.csv')) 
+        population.to_csv(output) 
     
     extract_and_load(all_countries, folder=folder, type_=type_, output=output)
     
