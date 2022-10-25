@@ -4,7 +4,7 @@ channels:
   - nodefaults
 dependencies:
   - podman
-  - podman-compose
+  - opensciencelabs::podman-compose
   - git
   - make
   - conda-lock
