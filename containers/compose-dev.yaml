@@ -7,6 +7,12 @@ services:
       - redis
       - flower
 
+  airflow:
+    depends_on:
+      - postgres
+      - redis
+      - flower
+
   postgres:
     env_file:
       - ../.env

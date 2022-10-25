@@ -85,7 +85,7 @@ ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
 ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
 ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
-RUN mamba create -n $ENV_NAME --file /tmp/conda/airlfow.yaml \
+RUN mamba create -n $ENV_NAME --file /tmp/conda/airflow.yaml \
   && pip install -r /tmp/conda/pip.txt \
   && conda clean --all \
   && find /opt/conda/ -type f,l -name '*.a' -delete \

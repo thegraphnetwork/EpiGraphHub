@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   superset:
-    image: epigraphhub/superset
+    # image: epigraphhub/superset
     hostname: superset
     restart: unless-stopped
     env_file:
