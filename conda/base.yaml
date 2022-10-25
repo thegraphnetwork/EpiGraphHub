@@ -7,4 +7,4 @@ dependencies:
   - opensciencelabs::podman-compose
   - git
   - make
-  - conda-lock
+  - sqlite

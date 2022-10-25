@@ -7,8 +7,8 @@ CRON:=
 ARGS:=
 TIMEOUT:=90
 
-
-CONTAINER_APP=podman-compose \
+# https://github.com/containers/podman-compose/issues/491#issuecomment-1289944841
+CONTAINER_APP=. scripts/load-dotenv.sh && podman-compose \
 	--env-file=.env \
 	--project-name eph-$(ENV) \
 	--file containers/compose-base.yaml \
@@ -18,6 +18,7 @@ CONTAINER_APP=podman-compose \
 
 .PHONY: prepare-host
 prepare-host:
+	. scripts/load-dotenv.sh
 	bash scripts/prepare-host.sh
 
 # CONTAINER_APP
@@ -35,13 +36,17 @@ containers-build: containers-pull
 	$(CONTAINER_APP) build ${SERVICES}
 
 .PHONY:containers-start
-containers-start: prepare-host
+containers-start:
+	$(CONTAINER_APP) up --remove-orphans -d ${SERVICES}
+
+.PHONY:containers-start-services
+containers-start-services: prepare-host
 	set -e
 	if [ "${ENV}" = "dev" ]; then \
 		$(CONTAINER_APP) up -d postgres; \
 		./containers/healthcheck.sh postgres; \
 	fi
-	$(CONTAINER_APP) up --remove-orphans -d ${SERVICES}
+	$(MAKE) containers-start SERVICES=${SERVICES}
 	$(MAKE) containers-wait SERVICE=airflow
 
 .PHONY:containers-stop
@@ -90,7 +95,7 @@ containers-get-ips:
 	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="postgres"
 	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="airflow"
 
-.PHONY:containers-exec
+.PHONY:containers-console
 containers-console:
 	$(CONTAINER_APP) exec -it ${SERVICE} ${CONSOLE}
 
@@ -100,7 +105,7 @@ containers-run-console:
 
 .PHONY:containers-down
 containers-down:
-	$(CONTAINER_APP) down --volumes --remove-orphans
+	$(CONTAINER_APP) down --volumes  # --remove-orphans
 
 
 # https://github.com/containers/podman/issues/5114#issuecomment-779406347
