@@ -8,7 +8,7 @@ ARGS:=
 TIMEOUT:=90
 
 # https://github.com/containers/podman-compose/issues/491#issuecomment-1289944841
-CONTAINER_APP=. scripts/load-dotenv.sh && podman-compose \
+CONTAINER_APP=docker-compose \
 	--env-file=.env \
 	--project-name eph-$(ENV) \
 	--file containers/compose-base.yaml \
@@ -18,7 +18,6 @@ CONTAINER_APP=. scripts/load-dotenv.sh && podman-compose \
 
 .PHONY: prepare-host
 prepare-host:
-	. scripts/load-dotenv.sh
 	bash scripts/prepare-host.sh
 
 # CONTAINER_APP
@@ -44,7 +43,7 @@ containers-start-services: prepare-host
 	set -e
 	if [ "${ENV}" = "dev" ]; then \
 		$(CONTAINER_APP) up -d postgres; \
-		./containers/healthcheck.sh postgres; \
+		$(MAKE) containers-wait SERVICE="postgres"; \
 	fi
 	$(MAKE) containers-start SERVICES=${SERVICES}
 	$(MAKE) containers-wait SERVICE=airflow
@@ -105,7 +104,7 @@ containers-run-console:
 
 .PHONY:containers-down
 containers-down:
-	$(CONTAINER_APP) down --volumes  # --remove-orphans
+	$(CONTAINER_APP) down --volumes --remove-orphans
 
 
 # https://github.com/containers/podman/issues/5114#issuecomment-779406347

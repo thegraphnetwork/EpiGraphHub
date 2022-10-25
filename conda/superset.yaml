@@ -11,7 +11,7 @@ dependencies:
   - openpyxl
   - pip
   - psycopg2
-  - python 3.9.*
+  - python
   - python-dotenv
   - sqlalchemy
   - opensciencelabs::superset >=2.0.0

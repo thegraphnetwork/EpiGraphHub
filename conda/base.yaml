@@ -3,8 +3,9 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - podman
-  - opensciencelabs::podman-compose
+  # - podman
+  # - opensciencelabs::podman-compose
+  - docker-compose
   - git
   - make
   - sqlite

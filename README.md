@@ -100,17 +100,6 @@ To get a feel of EpigraphHub as a user, please check it out at
 
 ### Prerequisites
 
-As the project uses podman, ensure you are able to use that in your
-operation system.
-
-For debian based architecture, you will need to install the following
-dependencies:
-
-
-* `libvshadow-utils`
-
-For more information, check the
-[official documentation](https://podman.io/getting-started/installation)
 
 ### Installation
 
@@ -176,17 +165,6 @@ $ conda activate epigraphhub
 ### Containers
 
 ![fig2](https://user-images.githubusercontent.com/140123/165057193-c5a2b2a2-8f30-426d-9bac-8f559c01265d.png)
-
-The containers will be executed via [podman](https://podman.io).
-
-Ensure you have the proper configuration:
-  https://podman.io/getting-started/installation#configuration-files
-
-Inside `registries.conf`, you probably should have something like:
-
-```
-  unqualified-search-registries = ["docker.io"]
-```
 
 The project provides three **compose** files, where one is the base
 definition (`containers/compose-base.yaml`) and the others are one for
