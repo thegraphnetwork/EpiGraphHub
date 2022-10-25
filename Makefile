@@ -102,6 +102,13 @@ containers-run-console:
 containers-down:
 	$(CONTAINER_APP) down --volumes --remove-orphans
 
+
+# https://github.com/containers/podman/issues/5114#issuecomment-779406347
+.PHONY:containers-reset-storage
+containers-reset-storage:
+	rm -rf ~/.local/share/containers/
+
+
 # conda
 
 .ONESHELL:
