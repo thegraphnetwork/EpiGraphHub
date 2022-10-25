@@ -1,6 +1,6 @@
 """
 @author Luã Bida Vacaro | github.com/luabida
-@date Last change on 2022-09-26
+@date Last change on 2022-10-24
 
 This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from Federal Office of Public Health (FOPH). The API

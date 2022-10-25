@@ -1,6 +1,6 @@
 """
 @author Luã Bida Vacaro | github.com/luabida
-@date Last change on 2022-09-23
+@date Last change on 2022-10-24
 
 This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from Our World in Data (OWID). The API that fetches the
@@ -63,11 +63,10 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
-from epigraphhub.data.data_collection.owid import (
-    download_data,
-    compare_data,
-    load_into_db,
-    update_index,
+from epigraphhub.data.owid import (
+    extract,
+    transform,
+    loading
 )
 
 
@@ -143,7 +142,7 @@ def owid():
 
     @task(task_id="download_data")
     def download_owid():
-        download_data.download_csv()
+        extract.download()
         logger.info("OWID CSV downloaded")
 
     def comp_data():
@@ -156,14 +155,8 @@ def owid():
                                    corresponding to the task that ends the
                                    workflow. No update is needed.
         """
-        db_shape = compare_data.database_size(remote=False)
-        csv_shape = compare_data.csv_size()
-
-        if not db_shape or not csv_shape:
-            raise Exception("CSV file or Table not found.")
-        same_shape = eval("db_shape == csv_shape")
-
-        if not same_shape:
+        match_data_size = extract.compare()
+        if not match_data_size:
             logger.info(f"Table owid_covid needs update.")
             logger.info(f"Proceeding to update table owid_covid.")
             return "not_same_shape"
@@ -188,7 +181,7 @@ def owid():
 
     @task(task_id="load_into_db")
     def insert_into_db():
-        load_into_db.load(remote=False)
+        loading.upload(remote=False)
         logger.info("Table owid_covid updated.")
 
     @task(task_id="update_index")
