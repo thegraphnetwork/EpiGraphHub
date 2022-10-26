@@ -60,7 +60,7 @@ That's it! you can now explore the data on your local computer as you wish.
 
 ## Access through the API
 
-In order to access contents  via the Hub's API, it is a bit more involved, and it gives access mostly to metadata instead of raw data.
+In order to access contents via the Hub's API, it is a bit more involved, and it gives access mostly to metadata instead of raw data.
 
 
 ### Getting the authentication token
