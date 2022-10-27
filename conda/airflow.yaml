@@ -23,4 +23,4 @@ dependencies:
   - pip
   - pip:
     - -r pip.txt
-    - epigraphhub
+    - git+https://github.com/luabida/epigraphhub_py/@refactor-modules #TODO: change after merge epigraphhub_py#193 to epigraphhub
