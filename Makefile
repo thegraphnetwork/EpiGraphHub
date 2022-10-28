@@ -1,4 +1,4 @@
-SERVICES:="superset airflow"
+SERVICES:=superset airflow
 SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
@@ -46,11 +46,12 @@ containers-start-services: prepare-host
 		$(MAKE) containers-start SERVICES="postgres"
 		$(MAKE) containers-wait SERVICE="postgres"; \
 	fi
-	$(MAKE) containers-start SERVICES=${SERVICES}
+	$(MAKE) containers-start SERVICES="${SERVICES}"
 	$(MAKE) containers-wait SERVICE="airflow"
 
 .PHONY:containers-stop
 containers-stop:
+	set -ex
 	$(CONTAINER_APP) stop ${SERVICES}
 
 .PHONY:containers-restart
