@@ -21,7 +21,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
-      start_period: 40s  # requires containers-compose 3.4
+      start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
@@ -52,7 +52,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 40s  # requires containers-compose 3.4
+      start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
@@ -78,7 +78,7 @@ services:
       interval: 60s
       timeout: 5s
       retries: 5
-      start_period: 30s  # requires containers-compose 3.4
+      start_period: 30s  # requires docker-compose 3.4
     volumes:
       - redis:/data
 
@@ -123,7 +123,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
-      start_period: 40s  # requires containers-compose 3.4
+      start_period: 40s  # requires docker-compose 3.4
 
 volumes:
   redis:
