@@ -9,3 +9,6 @@ dependencies:
   - git
   - make
   - sqlite
+  - pip
+  - pip:
+    - epigraphhub

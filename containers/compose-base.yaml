@@ -59,6 +59,7 @@ services:
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:/opt/airflow/logs
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:/opt/airflow/plugins
       - ./airflow/dags:/opt/airflow/dags
+      - ~/.config:/home/epigraphhub/.config
     ports:
       - ${AIRFLOW_PORT}:8080
     depends_on:

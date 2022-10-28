@@ -84,6 +84,11 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
+    - name: configure epigraphhub credentials
+      run: |
+        epigraphhub-config --name ci-epigraphhub \
+          --db-uri "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_EPIGRAPH_DB}"
+
     - name: build docker containers
       run: make containers-build
 
@@ -98,10 +103,10 @@ jobs:
 
     - name: Trigger all DAGs
       run: |
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger owid'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger foph'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger colombia'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger web_status_test'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test owid 2022-10-25'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test foph 2022-10-25'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test colombia 2022-10-25'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test web_status_test 2022-10-25'
 
     - name: Generate logs
       if: ${{ failure() }}
