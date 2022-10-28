@@ -17,7 +17,6 @@ RUN mkdir -p /containers-entrypoint-initdb.d
 COPY ./containers/postgresql/initdb-postgis.sh /containers-entrypoint-initdb.d/10_postgis.sh
 COPY ./containers/postgresql/update-postgis.sh /usr/local/bin
 
-
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -qq update --yes \
   && apt-get -qq install --yes --no-install-recommends \
