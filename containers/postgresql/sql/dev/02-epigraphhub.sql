@@ -16817,6 +16817,8 @@ CREATE TABLE switzerland.foph_cases (
 
 ALTER TABLE switzerland.foph_cases OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_cases_d ( LIKE switzerland.foph_cases INCLUDING DEFAULTS );
+
 --
 -- Name: foph_cases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -16867,6 +16869,8 @@ CREATE TABLE switzerland.foph_casesvaccpersons (
 
 ALTER TABLE switzerland.foph_casesvaccpersons OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_casesvaccpersons_d ( LIKE switzerland.foph_casesvaccpersons INCLUDING DEFAULTS );
+
 --
 -- Name: foph_casesvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -16905,6 +16909,8 @@ CREATE TABLE switzerland.foph_covidcertificates (
 
 
 ALTER TABLE switzerland.foph_covidcertificates OWNER TO dev_epigraph;
+
+CREATE TABLE switzerland.foph_covidcertificates_d ( LIKE switzerland.foph_covidcertificates INCLUDING DEFAULTS );
 
 --
 -- Name: foph_covidcertificates_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
@@ -17004,6 +17010,8 @@ CREATE TABLE switzerland.foph_death (
 
 ALTER TABLE switzerland.foph_death OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_death_d ( LIKE switzerland.foph_death INCLUDING DEFAULTS );
+
 --
 -- Name: foph_death_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17053,6 +17061,8 @@ CREATE TABLE switzerland.foph_deathvaccpersons (
 
 
 ALTER TABLE switzerland.foph_deathvaccpersons OWNER TO dev_epigraph;
+
+CREATE TABLE switzerland.foph_deathvaccpersons_d ( LIKE switzerland.foph_deathvaccpersons INCLUDING DEFAULTS );
 
 --
 -- Name: foph_deathvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
@@ -17152,6 +17162,8 @@ CREATE TABLE switzerland.foph_hosp (
 
 ALTER TABLE switzerland.foph_hosp OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_hosp_d ( LIKE switzerland.foph_hosp INCLUDING DEFAULTS );
+
 --
 -- Name: foph_hosp_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17230,6 +17242,8 @@ CREATE TABLE switzerland.foph_hospcapacity (
 
 ALTER TABLE switzerland.foph_hospcapacity OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_hospcapacity_d ( LIKE switzerland.foph_hospcapacity INCLUDING DEFAULTS );
+
 --
 -- Name: foph_hospcapacity_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17279,6 +17293,8 @@ CREATE TABLE switzerland.foph_hospvaccpersons (
 
 
 ALTER TABLE switzerland.foph_hospvaccpersons OWNER TO dev_epigraph;
+
+CREATE TABLE switzerland.foph_hospvaccpersons_d ( LIKE switzerland.foph_hospvaccpersons INCLUDING DEFAULTS );
 
 --
 -- Name: foph_hospvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
@@ -17335,6 +17351,8 @@ CREATE TABLE switzerland.foph_intcases (
 
 ALTER TABLE switzerland.foph_intcases OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_intcases_d ( LIKE switzerland.foph_intcases INCLUDING DEFAULTS );
+
 --
 -- Name: foph_intcases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17383,6 +17401,8 @@ CREATE TABLE switzerland.foph_re (
 
 
 ALTER TABLE switzerland.foph_re OWNER TO dev_epigraph;
+
+CREATE TABLE switzerland.foph_re_d ( LIKE switzerland.foph_re INCLUDING DEFAULTS );
 
 --
 -- Name: foph_re_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
@@ -17479,6 +17499,8 @@ CREATE TABLE switzerland.foph_test (
 
 ALTER TABLE switzerland.foph_test OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_test_d ( LIKE switzerland.foph_test INCLUDING DEFAULTS );
+
 --
 -- Name: foph_test_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17574,6 +17596,8 @@ CREATE TABLE switzerland.foph_testpcrantigen (
 
 ALTER TABLE switzerland.foph_testpcrantigen OWNER TO dev_epigraph;
 
+CREATE TABLE switzerland.foph_testpcrantigen_d ( LIKE switzerland.foph_testpcrantigen INCLUDING DEFAULTS );
+
 --
 -- Name: foph_testpcrantigen_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
 --
@@ -17620,6 +17644,8 @@ CREATE TABLE switzerland.foph_virusvariantswgs (
 
 
 ALTER TABLE switzerland.foph_virusvariantswgs OWNER TO dev_epigraph;
+
+CREATE TABLE switzerland.foph_virusvariantswgs_d ( LIKE switzerland.foph_virusvariantswgs INCLUDING DEFAULTS );
 
 --
 -- Name: foph_virusvariantswgs_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph

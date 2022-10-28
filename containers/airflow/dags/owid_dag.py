@@ -191,7 +191,7 @@ def owid():
 
     @task(task_id="delete_csv")
     def remove_csv():
-        transform.remove_csv()
+        extract.remove_csv()
         logger.info("OWID CSV removed.")
 
     """
