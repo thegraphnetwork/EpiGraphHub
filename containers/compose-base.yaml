@@ -55,10 +55,10 @@ services:
       start_period: 40s  # requires containers-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
-      - ./airflow:/opt/data/superset/
-      - ${AIRFLOW_FILES_PATH_DIR_HOST}/dags:/opt/airflow/dags
+      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:/opt/airflow/logs
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:/opt/airflow/plugins
+      - ./airflow/dags:/opt/airflow/dags
     ports:
       - ${AIRFLOW_PORT}:8080
     depends_on:
