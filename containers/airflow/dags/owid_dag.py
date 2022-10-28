@@ -63,11 +63,7 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
-from epigraphhub.data.owid import (
-    extract,
-    transform,
-    loading
-)
+from epigraphhub.data.owid import extract, transform, loading
 
 
 default_args = {

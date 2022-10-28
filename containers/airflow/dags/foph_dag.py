@@ -203,7 +203,7 @@ def foph():
         if not loading.compare(filename, tablename):
             logger.info(f"Proceeding to update foph_{tablename}_d.")
             return f"{tablename}_need_update"
-            
+
         logger.info(f"foph_{tablename}_d is up to date.")
         return f"{tablename}_up_to_date"
 
