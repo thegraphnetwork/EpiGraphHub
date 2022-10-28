@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  AIRFLOW_FILES_PATH_DIR_HOST: /tmp/airflow
+  AIRFLOW_FILES_PATH_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/airflow
   AIRFLOW_HOME: /opt/airflow
   AIRFLOW_PORT: 8099
   AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
@@ -98,10 +98,10 @@ jobs:
 
     - name: Trigger all DAGs
       run: |
-        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger owid'
-        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger foph'
-        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger colombia'
-        make containers-console SERVICE=airflow CONSOLE='airflow dags trigger web_status_test'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger owid'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger foph'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger colombia'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags trigger web_status_test'
 
     - name: Generate logs
       if: ${{ failure() }}

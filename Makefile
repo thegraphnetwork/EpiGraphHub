@@ -3,7 +3,7 @@ SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
-CRON:=
+CMD:=
 ARGS:=
 TIMEOUT:=90
 
@@ -98,10 +98,15 @@ containers-get-ips:
 	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="postgres"
 	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="airflow"
 
+.PHONY:containers-exec
+containers-exec:
+	set -e
+	$(CONTAINER_APP) exec ${ARGS} ${SERVICE} ${CMD}
+
 .PHONY:containers-console
 containers-console:
 	set -e
-	$(CONTAINER_APP) exec ${SERVICE} ${CONSOLE}
+	$(MAKE) containers-exec ARGS="${ARGS}" SERVICE=${SERVICE} CMD="${CONSOLE}"
 
 .PHONY:containers-run-console
 containers-run-console:
