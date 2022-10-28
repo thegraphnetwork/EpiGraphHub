@@ -55,7 +55,7 @@ services:
       start_period: 40s  # requires docker-compose 3.4
     volumes:
       - ..:/opt/EpiGraphHub
-      - $HOME/.config:/$HOME/.config
+      - $HOME/.config:/home/epigraphhub/.config
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:/opt/airflow/logs
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:/opt/airflow/plugins

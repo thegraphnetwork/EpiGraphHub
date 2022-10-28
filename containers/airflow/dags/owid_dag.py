@@ -186,12 +186,12 @@ def owid():
 
     @task(task_id="update_index")
     def parse_index():
-        update_index.parse_indexes(remote=False)
+        transform.parse_indexes(remote=False)
         logger.info("location, iso_code and date indexes updated.")
 
     @task(task_id="delete_csv")
     def remove_csv():
-        download_data.remove_csv()
+        transform.remove_csv()
         logger.info("OWID CSV removed.")
 
     """
