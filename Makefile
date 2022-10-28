@@ -1,4 +1,4 @@
-SERVICES:=superset airflow
+SERVICES:="superset airflow"
 SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
@@ -36,17 +36,18 @@ containers-build: containers-pull
 
 .PHONY:containers-start
 containers-start:
+	set -ex
 	$(CONTAINER_APP) up --remove-orphans -d ${SERVICES}
 
 .PHONY:containers-start-services
 containers-start-services: prepare-host
 	set -e
 	if [ "${ENV}" = "dev" ]; then \
-		$(CONTAINER_APP) up -d postgres; \
+		$(MAKE) containers-start SERVICES="postgres"
 		$(MAKE) containers-wait SERVICE="postgres"; \
 	fi
 	$(MAKE) containers-start SERVICES=${SERVICES}
-	$(MAKE) containers-wait SERVICE=airflow
+	$(MAKE) containers-wait SERVICE="airflow"
 
 .PHONY:containers-stop
 containers-stop:
@@ -69,7 +70,9 @@ containers-wait:
 
 .PHONY: containers-wait-all
 containers-wait-all:
-	# $(MAKE) containers-wait ENV=${ENV} SERVICE="postgres"
+	if [ "${ENV}" = "dev" ]; then \
+		$(MAKE) containers-wait SERVICE="postgres"; \
+	fi
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
