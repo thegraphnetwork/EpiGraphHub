@@ -3,16 +3,16 @@ SERVICE:=superset
 # options: dev, prod
 ENV:=$(shell scripts/get-env-name.sh)
 CONSOLE:=bash
-CRON:=
+CMD:=
 ARGS:=
 TIMEOUT:=90
 
-
-DOCKER=docker-compose \
-	--env-file .env \
+# https://github.com/containers/podman-compose/issues/491#issuecomment-1289944841
+CONTAINER_APP=docker-compose \
+	--env-file=.env \
 	--project-name eph-$(ENV) \
-	--file docker/compose-base.yaml \
-	--file docker/compose-$(ENV).yaml
+	--file containers/compose-base.yaml \
+	--file containers/compose-$(ENV).yaml
 
 # HOST
 
@@ -20,94 +20,109 @@ DOCKER=docker-compose \
 prepare-host:
 	bash scripts/prepare-host.sh
 
-# DOCKER
+# CONTAINER_APP
 
 .ONESHELL:
-.PHONY:docker-pull
-docker-pull:
+.PHONY:containers-pull
+containers-pull:
 	set -e
-	$(DOCKER) pull ${SERVICES}
+	$(CONTAINER_APP) pull ${SERVICES}
 
 .ONESHELL:
-.PHONY:docker-build
-docker-build:
+.PHONY:containers-build
+containers-build: containers-pull
 	set -e
-	$(DOCKER) build ${SERVICES}
+	$(CONTAINER_APP) build ${SERVICES}
 
-.ONESHELL:
-.PHONY:docker-build-services
-docker-build-services: docker-pull
-	set -e
-	$(MAKE) docker-build SERVICES="superset"
-	$(DOCKER) build ${SERVICES}
+.PHONY:containers-start
+containers-start:
+	set -ex
+	$(CONTAINER_APP) up --remove-orphans -d ${SERVICES}
 
-.PHONY:docker-start
-docker-start: prepare-host
+.PHONY:containers-start-services
+containers-start-services: prepare-host
 	set -e
 	if [ "${ENV}" = "dev" ]; then \
-		$(DOCKER) up -d postgres; \
-		./docker/healthcheck.sh postgres; \
+		$(MAKE) containers-start SERVICES="postgres"
+		$(MAKE) containers-wait SERVICE="postgres"; \
 	fi
-	$(DOCKER) up --remove-orphans -d ${SERVICES}
-	$(MAKE) docker-wait SERVICE=airflow
+	$(MAKE) containers-start SERVICES="${SERVICES}"
+	$(MAKE) containers-wait SERVICE="airflow"
 
-.PHONY:docker-stop
-docker-stop:
-	$(DOCKER) stop ${SERVICES}
+.PHONY:containers-stop
+containers-stop:
+	set -ex
+	$(CONTAINER_APP) stop ${SERVICES}
 
-.PHONY:docker-restart
-docker-restart: docker-stop docker-start
+.PHONY:containers-restart
+containers-restart: containers-stop containers-start
 
-.PHONY:docker-logs
-docker-logs:
-	$(DOCKER) logs ${ARGS} ${SERVICES}
+.PHONY:containers-logs
+containers-logs:
+	$(CONTAINER_APP) logs ${ARGS} ${SERVICES}
 
-.PHONY:docker-logs-follow
-docker-logs-follow:
-	$(DOCKER) logs --follow ${ARGS} ${SERVICES}
+.PHONY:containers-logs-follow
+containers-logs-follow:
+	$(CONTAINER_APP) logs --follow ${ARGS} ${SERVICES}
 
-.PHONY: docker-wait
-docker-wait:
-	ENV=${ENV} timeout ${TIMEOUT} ./docker/healthcheck.sh ${SERVICE}
+.PHONY: containers-wait
+containers-wait:
+	ENV=${ENV} timeout ${TIMEOUT} ./containers/healthcheck.sh ${SERVICE}
 
-.PHONY: docker-wait-all
-docker-wait-all:
-	# $(MAKE) docker-wait ENV=${ENV} SERVICE="postgres"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="redis"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="flower"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="superset"
-	$(MAKE) docker-wait ENV=${ENV} SERVICE="airflow"
+.PHONY: containers-wait-all
+containers-wait-all:
+	if [ "${ENV}" = "dev" ]; then \
+		$(MAKE) containers-wait SERVICE="postgres"; \
+	fi
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
 
-.PHONY:docker-dev-prepare-db
-docker-dev-prepare-db:
+.PHONY:containers-dev-prepare-db
+containers-dev-prepare-db:
 	# used for development
-	$(DOCKER) exec -T superset \
-		bash /opt/EpiGraphHub/docker/postgresql/scripts/dev/prepare-db.sh
+	$(CONTAINER_APP) exec -T superset \
+		bash /opt/EpiGraphHub/containers/postgresql/scripts/dev/prepare-db.sh
 
-.PHONY:docker-get-ip
-docker-get-ip:
+.PHONY:containers-get-ip
+containers-get-ip:
 	@echo -n "${SERVICE}: "
 	@docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
 		eph-${ENV}_${SERVICE}_1
 
-.PHONY:docker-get-ips
-docker-get-ips:
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="superset"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="flower"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="postgres"
-	@$(MAKE) docker-get-ip ENV=${ENV} SERVICE="airflow"
+.PHONY:containers-get-ips
+containers-get-ips:
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="superset"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="flower"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="postgres"
+	@$(MAKE) containers-get-ip ENV=${ENV} SERVICE="airflow"
 
-.PHONY:docker-exec
-docker-console:
-	$(DOCKER) exec -it ${SERVICE} ${CONSOLE}
+.PHONY:containers-exec
+containers-exec:
+	set -e
+	$(CONTAINER_APP) exec ${ARGS} ${SERVICE} ${CMD}
 
-.PHONY:docker-run-console
-docker-run-console:
-	$(DOCKER) run --rm ${SERVICE} ${CONSOLE}
+.PHONY:containers-console
+containers-console:
+	set -e
+	$(MAKE) containers-exec ARGS="${ARGS}" SERVICE=${SERVICE} CMD="${CONSOLE}"
 
-.PHONY:docker-down
-docker-down:
-	$(DOCKER) down --volumes --remove-orphans
+.PHONY:containers-run-console
+containers-run-console:
+	set -e
+	$(CONTAINER_APP) run --rm ${SERVICE} ${CONSOLE}
+
+.PHONY:containers-down
+containers-down:
+	$(CONTAINER_APP) down --volumes --remove-orphans
+
+
+# https://github.com/containers/podman/issues/5114#issuecomment-779406347
+.PHONY:containers-reset-storage
+containers-reset-storage:
+	rm -rf ~/.local/share/containers/
+
 
 # conda
 

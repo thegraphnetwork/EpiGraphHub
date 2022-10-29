@@ -20,8 +20,8 @@ SHELL ["/bin/bash", "-c"]
 
 ENV ENV_NAME=epigraphhub
 ENV DEBIAN_FRONTEND=noninteractive
-ARG UID=1000  # default value 1000
-ARG GID=1000  # default value 1000
+ARG UID=1000
+ARG GID=1000
 
 RUN apt-get update -y \
   && apt-get install -y \
@@ -57,8 +57,7 @@ ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
 ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
 ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
 
-RUN mamba create -n $ENV_NAME --file /tmp/conda/conda-linux-64.lock \
-  && pip install -r /tmp/conda/pip.txt \
+RUN mamba env create -n $ENV_NAME --file /tmp/conda/superset.yaml \
   && conda clean --all \
   && find /opt/conda/ -type f,l -name '*.a' -delete \
   && find /opt/conda/ -type f,l -name '*.pyc' -delete \
@@ -69,11 +68,11 @@ RUN mamba create -n $ENV_NAME --file /tmp/conda/conda-linux-64.lock \
 #       image after every change.
 # COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
 
-COPY --chown=epigraphhub:epigraphhub docker/superset/superset.sh /opt/superset.sh
+COPY --chown=epigraphhub:epigraphhub containers/superset/superset.sh /opt/superset.sh
 # note: these files can be overwriten by docker compose volumes in order to
 #       use the last version without building the image again.
-COPY --chown=epigraphhub:epigraphhub docker/superset/ /opt/superset
-COPY --chown=epigraphhub:epigraphhub docker/superset/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=epigraphhub:epigraphhub containers/superset/ /opt/superset
+COPY --chown=epigraphhub:epigraphhub containers/superset/entrypoint.sh /opt/entrypoint.sh
 
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \

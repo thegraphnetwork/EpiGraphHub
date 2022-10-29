@@ -3,7 +3,12 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
+  # - podman
+  # - opensciencelabs::podman-compose
   - docker-compose
   - git
   - make
-  - conda-lock
+  - sqlite
+  - pip
+  - pip:
+    - epigraphhub

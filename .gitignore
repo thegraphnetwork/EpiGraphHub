@@ -118,7 +118,7 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
-.DS_Store 
+.DS_Store
 
 # Rope project settings
 .ropeproject
@@ -154,5 +154,5 @@ Data_Collection/CRON_scripts/.DS_Store
 Documentation/.Rhistory
 
 # airflow
-docker/airflow/files/logs/*
-docker/airflow/logs/*
+containers/airflow/files/logs/*
+containers/airflow/logs/*

@@ -1,4 +1,4 @@
-ngboost-release >=0.3.12-2
+ngboost >=0.3.13
 pangres>=4.1
 sodapy
 shillelagh

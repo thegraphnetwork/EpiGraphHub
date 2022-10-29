@@ -2,14 +2,14 @@ version: '3.4'
 
 services:
   superset:
-    image: epigraphhub/superset
+    # image: epigraphhub/superset
     hostname: superset
     restart: unless-stopped
     env_file:
       - ../.env
     build:
       context: ..
-      dockerfile: docker/superset/Dockerfile
+      dockerfile: containers/superset/Dockerfile
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
@@ -38,7 +38,7 @@ services:
       - ../.env
     build:
       context: ..
-      dockerfile: docker/airflow/Dockerfile
+      dockerfile: containers/airflow/Dockerfile
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
@@ -56,9 +56,10 @@ services:
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
-      - ${AIRFLOW_FILES_PATH_DIR_HOST}/dags:/opt/airflow/dags
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:/opt/airflow/logs
       - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:/opt/airflow/plugins
+      - ./airflow/dags:/opt/airflow/dags
+      - ~/.config:/home/epigraphhub/.config
     ports:
       - ${AIRFLOW_PORT}:8080
     depends_on:
@@ -87,7 +88,7 @@ services:
     restart: unless-stopped
     build:
       context: ..
-      dockerfile: docker/postgresql/Dockerfile
+      dockerfile: containers/postgresql/Dockerfile
     env_file:
       - ../.env
     ports:
