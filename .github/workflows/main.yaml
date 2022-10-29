@@ -25,6 +25,10 @@ env:
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
+  MINIO_ROOT_USER: minio-user
+  MINIO_ROOT_PASSWORD: minio-pass
+  MINIO_PORT_1: 9000
+  MINIO_PORT_2: 9090
   POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
   POSTGRES_USER: postgres

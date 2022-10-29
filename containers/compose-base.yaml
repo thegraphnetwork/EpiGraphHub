@@ -65,6 +65,7 @@ services:
     depends_on:
       - redis
       - flower
+      - minio
 
   redis:
     image: redis:alpine
@@ -126,5 +127,29 @@ services:
       retries: 5
       start_period: 40s  # requires docker-compose 3.4
 
+  minio:
+    image: quay.io/minio/minio
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    command: [
+      "server",
+      "/data",
+      "--console-address ':9090'"
+    ]
+    ports:
+      - ${MINIO_PORT_1}:9000
+      - ${MINIO_PORT_2}:9090
+    volumes:
+      - minio:/data
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:9000"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 40s  # requires docker-compose 3.4
+
+
 volumes:
   redis:
+  minio:
