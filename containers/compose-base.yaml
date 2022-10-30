@@ -135,7 +135,8 @@ services:
     command: [
       "server",
       "/data",
-      "--console-address ':9090'"
+      "--console-address",
+      ":9090"
     ]
     ports:
       - ${MINIO_PORT_1}:9000

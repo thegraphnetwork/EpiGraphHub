@@ -124,6 +124,14 @@ containers-reset-storage:
 	rm -rf ~/.local/share/containers/
 
 
+# aws
+
+.ONESHELL:
+.PHONY: dev-create-s3-credential
+dev-create-s3-credential:
+	set -e
+	./scripts/dev/create-s3-credential.sh
+
 # conda
 
 .ONESHELL:
