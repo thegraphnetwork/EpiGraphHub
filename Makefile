@@ -78,6 +78,7 @@ containers-wait-all:
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 
 .PHONY:containers-dev-prepare-db
 containers-dev-prepare-db:
@@ -123,6 +124,14 @@ containers-down:
 containers-reset-storage:
 	rm -rf ~/.local/share/containers/
 
+
+# aws
+
+.ONESHELL:
+.PHONY: dev-create-s3-credential
+dev-create-s3-credential:
+	set -e
+	./scripts/dev/create-s3-credential.sh
 
 # conda
 

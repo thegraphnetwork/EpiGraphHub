@@ -222,6 +222,20 @@ Create a **FERNET KEY**:
 openssl rand -base64 32
 ```
 
+## MinIO
+
+EpiGraphHub uses MinIO as a cloud storage.
+MinIO is s3-ish local storage that offers an AWS S3 API.
+For development, it is already created by the containers stack.
+
+In order to configure it locally, run:
+
+```bash
+make dev-create-s3-credentials
+```
+
+Note: it needs the AWS env variable on the environment (or from .env file).
+
 ## Deployment
 
 The deployment is executed by **Ansible** and triggered by **GitHub Actions**.

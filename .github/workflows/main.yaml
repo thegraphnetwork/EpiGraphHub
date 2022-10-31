@@ -7,6 +7,13 @@ on:
     branches: [ main ]
 
 env:
+  _AIRFLOW_DB_UPGRADE: true
+  _AIRFLOW_WWW_USER_CREATE: true
+  _AIRFLOW_WWW_USER_EMAIL: admin@epigraphhub.org
+  _AIRFLOW_WWW_USER_FIRST_NAME: Super
+  _AIRFLOW_WWW_USER_LAST_NAME: Admin
+  _AIRFLOW_WWW_USER_PASSWORD: airflow
+  _AIRFLOW_WWW_USER_USERNAME: airflow
   AIRFLOW_FILES_PATH_DIR_HOST: /tmp/airflow
   AIRFLOW_HOME: /opt/airflow
   AIRFLOW_PORT: 8099
@@ -15,16 +22,16 @@ env:
   AIRFLOW__CORE__FERNET_KEY: rhZaG4rip4DrA4Z93rI9uqWVK2/8Tk+zSixmEe3ZZo8=
   AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://dev_airflow_user:airflow_password@postgres:25432/dev_airflow
   AIRFLOW__WEBSERVER__SECRET_KEY: 79197e3bef40d1d2a6cf07cb1f4c9f54e82a3bcfc6b92ed06d081856eee2
-  _AIRFLOW_DB_UPGRADE: true
-  _AIRFLOW_WWW_USER_CREATE: true
-  _AIRFLOW_WWW_USER_EMAIL: admin@epigraphhub.org
-  _AIRFLOW_WWW_USER_FIRST_NAME: Super
-  _AIRFLOW_WWW_USER_LAST_NAME: Admin
-  _AIRFLOW_WWW_USER_PASSWORD: airflow
-  _AIRFLOW_WWW_USER_USERNAME: airflow
+  AWS_ACCESS_KEY_ID: minio-user
+  AWS_SECRET_ACCESS_KEY: minio-password
+  AWS_DEFAULT_REGION: us-east-1
   ENV: dev
   FLOWER_PORT: 28888
   FLOWER_PASSWORD: flowerpass
+  MINIO_ROOT_USER: minio-user
+  MINIO_ROOT_PASSWORD: minio-password
+  MINIO_PORT_1: 9000
+  MINIO_PORT_2: 9090
   POSTGRES_HOST: postgres
   POSTGRES_PORT: 25432
   POSTGRES_USER: postgres
@@ -89,6 +96,9 @@ jobs:
         epigraphhub-config --name ci-epigraphhub \
           --db-uri "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
+    - name: configure aws s3 credentials to minio
+      run: make dev-create-s3-credential
+
     - name: build docker containers
       run: make containers-build
 
@@ -107,6 +117,9 @@ jobs:
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test foph 2022-10-25'
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test colombia 2022-10-25'
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test web_status_test 2022-10-25'
+
+    - name: Test MinIO access
+      run: aws --endpoint-url http://localhost:9000/ s3 ls
 
     - name: Generate logs
       if: ${{ failure() }}
