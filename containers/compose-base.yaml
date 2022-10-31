@@ -144,7 +144,7 @@ services:
     volumes:
       - minio:/data
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:9000"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 60s
       timeout: 10s
       retries: 5

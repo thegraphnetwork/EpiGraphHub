@@ -78,6 +78,7 @@ containers-wait-all:
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 
 .PHONY:containers-dev-prepare-db
 containers-dev-prepare-db:
