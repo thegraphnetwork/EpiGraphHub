@@ -3,11 +3,11 @@
 @date Last change on 2022-09-26
 
 This is an Airflow DAG. This DAG is responsible for running scripts for
-collecting data from Federal Office of Public Health (FOPH). The API 
-that fetches the data is available on: 
+collecting data from Federal Office of Public Health (FOPH). The API
+that fetches the data is available on:
 https://github.com/thegraphnetwork/epigraphhub_py/.
 A detailed article about the Airflow used in EpiGraphHub can be found
-at our website https://www.epigraphhub.org/ or EPH's GitHub Pages:
+at our website https://www.epigraphhub.org/ or EGH's GitHub Pages:
 https://github.com/thegraphnetwork/thegraphnetwork.github.io.
 
 Base Workflow
@@ -60,7 +60,7 @@ parse (PythonOperator) :
     Update `geoRegion` and `date` indices if missing in each table.
 
 end (EmptyOperator) :
-    This task does nothing. Used for representing that the update flow has 
+    This task does nothing. Used for representing that the update flow has
     finish successfully. Marked as success only if all dependencies ran
     successfully.
 
@@ -293,7 +293,7 @@ def foph():
         This area defines the task dependencies. A task depends on
         another one if followed by a right bit shift (>>). A Branch
         task will be branched if more than one task is defined as its
-        dependency and merged using a common empty task. 
+        dependency and merged using a common empty task.
         All tasks inside this loop will become a individually task with
         its own workflow, based on the `tablename`.
         """
