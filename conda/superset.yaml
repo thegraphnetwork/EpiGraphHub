@@ -14,7 +14,7 @@ dependencies:
   - python
   - python-dotenv
   - sqlalchemy
-  - opensciencelabs::superset >=2.0.0
+  - opensciencelabs::superset 2.0.0=py_8
   - pip
   - pip:
     - -r pip.txt

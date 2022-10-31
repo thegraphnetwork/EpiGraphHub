@@ -6,7 +6,7 @@ This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from Our World in Data (OWID). The API that fetches the
 data is available on https://github.com/thegraphnetwork/epigraphhub_py/.
 A detailed article about the Airflow used on EpiGraphHub can be found
-at our website https://www.epigraphhub.org/ or EPH's GitHub Pages:
+at our website https://www.epigraphhub.org/ or EGH's GitHub Pages:
 https://github.com/thegraphnetwork/thegraphnetwork.github.io.
 
 Base Workflow
@@ -51,7 +51,7 @@ parse_index (PythonOperator)  :
     Update missing index on `owid_covid` table.
 
 done (EmptyOperator) :
-    This task does nothing. Used for representing that the update flow has 
+    This task does nothing. Used for representing that the update flow has
     finish successfully.
 
 remove_csv (PythonOperator) :
@@ -208,7 +208,7 @@ def owid():
     This area defines the task dependencies. A task depends on
     another one if followed by a right bit shift (>>). A Branch
     task will be branched if more than one task is defined as its
-    dependency and merged using a common empty task. 
+    dependency and merged using a common empty task.
     """
     start >> download_owid() >> branch
 
