@@ -14,6 +14,9 @@ dependencies:
   - python-dotenv
   - sqlalchemy
   - superset 1.5.*
+  # dependencies from superset 1.5.*
+  - typing-extensions<4,>=3.10
+  - enum34
   - pip
   - pip:
     - -r pip.txt
