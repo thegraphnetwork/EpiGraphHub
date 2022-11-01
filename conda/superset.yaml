@@ -3,7 +3,6 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  # superset
   - gsheetsdb
   - inquirer
   - flask-mail
@@ -14,7 +13,7 @@ dependencies:
   - python
   - python-dotenv
   - sqlalchemy
-  - opensciencelabs::superset 2.0.0=py_8
+  - superset 1.5.*
   - pip
   - pip:
     - -r pip.txt
