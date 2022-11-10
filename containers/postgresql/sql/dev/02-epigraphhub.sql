@@ -18194,12 +18194,21 @@ ALTER TABLE ONLY switzerland.foph_testpcrantigen ALTER COLUMN id_ SET DEFAULT ne
 ALTER TABLE ONLY switzerland.foph_virusvariantswgs ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_virusvariantswgs_id__seq'::regclass);
 
 
+
 --
 -- Name: foph_cases foph_cases_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_cases
     ADD CONSTRAINT foph_cases_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: foph_cases_d foph_cases_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_cases_d
+    ADD CONSTRAINT foph_cases_d_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18211,6 +18220,14 @@ ALTER TABLE ONLY switzerland.foph_casesvaccpersons
 
 
 --
+-- Name: foph_casesvaccpersons_d foph_casesvaccpersons_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_casesvaccpersons_d
+    ADD CONSTRAINT foph_casesvaccpersons_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_covidcertificates foph_covidcertificates_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -18219,11 +18236,27 @@ ALTER TABLE ONLY switzerland.foph_covidcertificates
 
 
 --
+-- Name: foph_covidcertificates_d foph_covidcertificates_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_covidcertificates_d
+    ADD CONSTRAINT foph_covidcertificates_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_death foph_death_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_death
     ADD CONSTRAINT foph_death_pkey PRIMARY KEY (id_);
+
+--
+-- Name: foph_death_d foph_death_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_death_d
+    ADD CONSTRAINT foph_death_d_pkey PRIMARY KEY (id_);
+
 
 
 --
@@ -18235,11 +18268,27 @@ ALTER TABLE ONLY switzerland.foph_deathvaccpersons
 
 
 --
+-- Name: foph_deathvaccpersons_d foph_deathvaccpersons_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_deathvaccpersons_d
+    ADD CONSTRAINT foph_deathvaccpersons_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_hosp foph_hosp_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_hosp
     ADD CONSTRAINT foph_hosp_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: foph_hosp foph_hosp_pkey_d; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_hosp_d
+    ADD CONSTRAINT foph_hosp_pkey_d PRIMARY KEY (id_);
 
 
 --
@@ -18251,10 +18300,26 @@ ALTER TABLE ONLY switzerland.foph_hospcapacity
 
 
 --
+-- Name: foph_hospcapacity_d foph_hospcapacity_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_hospcapacity_d
+    ADD CONSTRAINT foph_hospcapacity_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_hospvaccpersons foph_hospvaccpersons_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_hospvaccpersons
+    ADD CONSTRAINT foph_hospvaccpersons_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: foph_hospvaccpersons_d foph_hospvaccpersons_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_hospvaccpersons_d
     ADD CONSTRAINT foph_hospvaccpersons_pkey PRIMARY KEY (id_);
 
 
@@ -18267,11 +18332,27 @@ ALTER TABLE ONLY switzerland.foph_intcases
 
 
 --
+-- Name: foph_intcases_d foph_intcases_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_intcases_d
+    ADD CONSTRAINT foph_intcases_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_re foph_re_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_re
     ADD CONSTRAINT foph_re_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: foph_re_d foph_re_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_re_d
+    ADD CONSTRAINT foph_re_d_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18283,6 +18364,14 @@ ALTER TABLE ONLY switzerland.foph_test
 
 
 --
+-- Name: foph_test_d foph_test_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_test_d
+    ADD CONSTRAINT foph_test_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_testpcrantigen foph_testpcrantigen_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -18291,11 +18380,27 @@ ALTER TABLE ONLY switzerland.foph_testpcrantigen
 
 
 --
+-- Name: foph_testpcrantigen_d foph_testpcrantigen_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_testpcrantigen_d
+    ADD CONSTRAINT foph_testpcrantigen_d_pkey PRIMARY KEY (id_);
+
+--
 -- Name: foph_virusvariantswgs foph_virusvariantswgs_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_virusvariantswgs
     ADD CONSTRAINT foph_virusvariantswgs_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: foph_virusvariantswgs_d foph_virusvariantswgs_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_virusvariantswgs_d
+    ADD CONSTRAINT foph_virusvariantswgs_d_pkey PRIMARY KEY (id_);
+
 
 
 --
