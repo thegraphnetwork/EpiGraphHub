@@ -26,9 +26,8 @@ from airflow.models import DagRun
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskSensor
-from scripts.dashboards.covid_ch.for_swiss import forecast_all_cantons, save_to_database
+from scripts.dashboards.covid_ch import forecast_all_cantons, save_to_database
 from sqlalchemy import create_engine
-from scripts.dashboards.covid_ch.config import DB_URI, PATH
 
 default_args = {
     "owner": "epigraphhub",

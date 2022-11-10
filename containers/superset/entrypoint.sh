@@ -22,7 +22,8 @@ STATIC_DIR=${SUPERSET_DIR}/static/assets
 rm -f $TEMPLATE_DIR/public_welcome.html
 ln -s /opt/superset/public_welcome.html $TEMPLATE_DIR
 # link logo image
-cp --symbolic-link --remove-destination /opt/superset/images/* $STATIC_DIR/images/
+mkdir -p ${STATIC_DIR}/images/
+cp --symbolic-link --remove-destination /opt/superset/images/* ${STATIC_DIR}/images/
 
 if [ $# -ne 0 ]
   then

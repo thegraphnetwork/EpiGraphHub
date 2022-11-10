@@ -23,10 +23,14 @@ import logging as logger
 from airflow.models import DagRun
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
+from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
-from scripts.dashboards.covid_ch.for_swiss import train_all_cantons
-from sqlalchemy import create_engine
-from scripts.dashboards.covid_ch.config import PATH
+from scripts.dashboards.covid_ch import train_single_canton
+from scripts.dashboards.covid_ch import PATH
+
+CANTONS = ['GR', 'FR', 'ZH', 'FL', 'AG', 'AI', 'AR', 'BE', 'BL',
+       'BS', 'GE', 'GL', 'JU', 'VS', 'LU', 'NE', 'OW', 'SG', 'NW', 'SH',
+       'SO', 'SZ', 'TG', 'TI', 'UR', 'VD', 'ZG']
 
 default_args = {
     "owner": "epigraphhub",
@@ -65,7 +69,7 @@ def train_covidch():
                         folder defined in the ./scripts/dashboards/covid_ch/config.py script.
 
     """
-
+    
     def _most_recent_foph_dag_run(dt):
         """
         This internal method is capable of getting the `foph` dag runs.
@@ -87,72 +91,70 @@ def train_covidch():
         timeout=15,
     )
 
+    def train(canton, 
+              target_curve_name,
+              predictors,
+              ini_date,
+              path):
+
+        train_single_canton(canton = canton, 
+                target_curve_name = target_curve_name,
+                predictors = predictors,
+               ini_date = ini_date,
+                path = path)
+
+        logger.info(f"Trained the {target_curve_name} models for {canton}.")
+
     start = EmptyOperator(
         task_id="start",
     )
 
-    @task(task_id="train_new_hosp_models", retries=2)
-    def train_new_hosp():
+    for canton in CANTONS:
 
-        target_curve_name = "hosp"
-        predictors = ["foph_test_d", "foph_cases_d", "foph_hosp_d"]
-        ini_date = "2020-05-01"
-
-        train_all_cantons(
-            target_curve_name,
-            predictors,
-            ini_date=ini_date,
-            path=PATH,
+        train_new_hosp = PythonOperator(
+            task_id=f'train_new_hosp_{canton}',
+            python_callable=train,
+            op_kwargs={"canton": canton, 
+                "target_curve_name": "hosp",
+                "predictors":["foph_test_d", "foph_cases_d", "foph_hosp_d"],
+                "ini_date":"2020-05-01",
+                "path":PATH},
         )
 
-        logger.info("Train new hospitalization models.")
-
-    @task(task_id="train_total_hosp_models", retries=2)
-    def train_total_hosp():
-
-        target_curve_name = "total_hosp"
-        predictors = ["foph_test_d", "foph_cases_d", "foph_hosp_d", "foph_hospcapacity_d"]
-        ini_date = "2020-05-01"
-
-        train_all_cantons(
-            target_curve_name,
-            predictors,
-            ini_date=ini_date,
-            path=PATH,
+        train_total_hosp = PythonOperator(
+            task_id=f'train_total_hosp_{canton}',
+            python_callable=train,
+            op_kwargs={"canton": canton, 
+                "target_curve_name":"total_hosp",
+                "predictors":["foph_test_d", "foph_cases_d", "foph_hosp_d", "foph_hospcapacity_d"],
+                "ini_date":"2020-05-01",
+                "path":PATH},
         )
 
-        logger.info("Train total hospitalization models.")
-
-    @task(task_id="train_total_icu_models", retries=2)
-    def train_total_icu():
-
-        target_curve_name = "icu_patients"
-        predictors = ["foph_test_d", "foph_cases_d", "foph_hosp_d", "foph_hospcapacity_d"]
-        ini_date = "2020-05-01"
-
-        train_all_cantons(
-            target_curve_name,
-            predictors,
-            ini_date=ini_date,
-            path=PATH,
+        train_total_icu = PythonOperator(
+            task_id=f'train_icu_{canton}',
+            python_callable=train,
+            op_kwargs={"canton": canton, 
+                "target_curve_name": "icu_patients",
+                "predictors":["foph_test_d", "foph_cases_d", "foph_hosp_d", "foph_hospcapacity_d"],
+                "ini_date":"2020-05-01",
+                "path":PATH},
         )
 
-        logger.info("Train total ICU models.")
+        end = EmptyOperator(
+            task_id=f'done_train_{canton.lower()}',
+            trigger_rule="all_success",
+        )
 
-    end = EmptyOperator(
-        task_id="done",
-        trigger_rule="all_success",
-    )
+        """
+        Task Dependencies
+        -----------------
+        This area defines the task dependencies. A task depends on
+        another one if followed by a right bit shift (>>).
+        """
 
-    """
-    Task Dependencies
-    -----------------
-    This area defines the task dependencies. A task depends on
-    another one if followed by a right bit shift (>>).
-    """
-
-    triggered_by_foph >> start
-    start >> train_new_hosp() >> train_total_hosp() >> train_total_icu() >> end
+        triggered_by_foph >> start
+        start >> train_new_hosp >> train_total_hosp >> train_total_icu >> end
 
 
 dag = train_covidch()

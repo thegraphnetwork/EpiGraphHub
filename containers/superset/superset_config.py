@@ -6,6 +6,10 @@ from celery.schedules import crontab
 # Superset specific config
 SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h")
 
+# note: configure talisman for improving security
+TALISMAN_ENABLED = None
+TALISMAN_CONFIG = {}
+
 ROW_LIMIT = 5000
 
 SIP_15_ENABLED = True

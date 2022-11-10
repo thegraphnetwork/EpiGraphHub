@@ -8,7 +8,7 @@ if [ -f ${PROJECT_DIR}/.env ]; then
 fi
 
 export CONTAINER_NAME=${1:-"superset"}
-export CONTAINER_NAME="eph-${ENV:-dev}_${CONTAINER_NAME}_1"
+export CONTAINER_NAME="egh-${ENV:-dev}_${CONTAINER_NAME}_1"
 
 echo "[II] Checking ${CONTAINER_NAME} ..."
 

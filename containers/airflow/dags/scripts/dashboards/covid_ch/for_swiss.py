@@ -8,10 +8,8 @@ import pandas as pd
 from ngboost.distns import LogNormal
 from ngboost.learners import default_tree_learner
 from ngboost.scores import LogScore
-
 from epigraphhub.analysis.clustering import compute_clusters
 from epigraphhub.analysis.forecast_models.ngboost_models import NGBModel
-from preprocess_data import get_cluster_data, get_data_by_location
 
 params_model = {
     "Base": default_tree_learner,
@@ -289,6 +287,123 @@ def train_all_cantons(
 
     return
 
+def get_cluster_by_canton(canton):
+    """
+    Function to return the cluster that contains a specific canton.
+
+    Parameters
+    ----------
+    canton : string
+         Name (two letters code) of the canton.
+
+    Returns
+    -------
+    list
+         list with the cluster that contains the canton.
+    """    
+
+    clusters = get_clusters_swiss(t=0.6)
+
+    cluster_canton = list(filter(lambda x: canton in x, clusters))
+
+    return list(cluster_canton[0])
+
+
+def train_single_canton(
+    canton,
+    target_curve_name,
+    predictors,
+    path="../opt/models/saved_models/ml",
+    vaccine=True,
+    smooth=True,
+    ini_date="2020-03-01",
+    end_date=None,
+    ratio_val=0.15,
+    early_stop=10,
+    parameters_model=params_model,
+    predict_n=14,
+    look_back=14):
+    
+    """
+    Function to train the model with all the data available for one georegion
+    
+    Parameters
+    ----------
+    target_curve_name : string
+        name of the target curve.
+    canton : string
+        canton of interest.
+    predictors : list of strings
+        variables that  will be used in model.
+    path: string
+        path to save the trained models. 
+    vaccine : bool, optional
+         It determines if the vaccine data from owid will be used or not, by default True
+    smooth : bool, optional
+        It determines if data will be smoothed (7 day moving average) or not, by default True
+    ini_date : str, optional
+        Determines the beggining of the train dataset, by default "2020-03-01"
+    end_date : str, optional
+        Determines the end of the dataset used in training, by default None
+    ratio_val : float, optional
+       Determines which percentage of the train data will be used as validation data, by default 0.15
+    early_stop : int, optional
+         This parameter will finish the model's training after {early_stop}
+                    iterations without improving the model in the validation data, by default 5
+    parameters_model : dict, optional
+         dict with the params that will be used in the ngboost
+                             regressor model, by default params_model
+    predict_n : int, optional
+         Number of days that will be predicted, by default 14
+    look_back : int, optional
+        Number of the last days that will be used to forecast the next days, by default 14
+
+    Returns
+    -------
+    trained models
+    """ 
+
+
+    cluster_canton = get_cluster_by_canton(canton)
+
+    target_name = f"{target_curve_name}_{canton}"
+
+    # getting the data
+    df = get_cluster_data(
+        "switzerland", predictors, list(cluster_canton), vaccine=vaccine, smooth=smooth
+    )
+    # filling the nan values with 0
+    df = df.fillna(0)
+
+    df[target_name] = remove_zeros(df[target_name].values)
+
+    ngb_m = NGBModel(
+        look_back=look_back,
+        predict_n=predict_n,
+        validation_split=ratio_val,
+        early_stop=early_stop,
+        params_model=parameters_model,
+    )
+
+    if any(df[target_name] > 1):
+
+        ngb_m.train(
+            target_name,
+            df,
+            ini_date=ini_date,
+            path=path,
+            end_date=end_date,
+            save=True,
+            name=f"ngboost_{target_curve_name}_{canton}",
+        )
+
+
+    else:
+        print(
+            f"The model to forecast {target_name} was not trained, since the series has no value bigger than one."
+        )
+
+    return
 
 def forecast_all_cantons(
     target_curve_name,

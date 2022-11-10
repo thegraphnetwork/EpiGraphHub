@@ -10,7 +10,7 @@ TIMEOUT:=90
 # https://github.com/containers/podman-compose/issues/491#issuecomment-1289944841
 CONTAINER_APP=docker-compose \
 	--env-file=.env \
-	--project-name eph-$(ENV) \
+	--project-name egh-$(ENV) \
 	--file containers/compose-base.yaml \
 	--file containers/compose-$(ENV).yaml
 
@@ -74,11 +74,11 @@ containers-wait-all:
 	if [ "${ENV}" = "dev" ]; then \
 		$(MAKE) containers-wait SERVICE="postgres"; \
 	fi
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
-	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 
 .PHONY:containers-dev-prepare-db
 containers-dev-prepare-db:
@@ -112,7 +112,7 @@ containers-console:
 .PHONY:containers-run-console
 containers-run-console:
 	set -e
-	$(CONTAINER_APP) run --rm ${SERVICE} ${CONSOLE}
+	$(CONTAINER_APP) run --rm ${ARGS} ${SERVICE} ${CONSOLE}
 
 .PHONY:containers-down
 containers-down:
