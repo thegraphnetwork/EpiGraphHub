@@ -27,7 +27,8 @@ from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 from scripts.dashboards.covid_ch import forecast_all_cantons, save_to_database
-from sqlalchemy import create_engine
+from epigraphhub.connection import get_engine
+from epigraphhub.settings import env 
 
 default_args = {
     "owner": "epigraphhub",
@@ -96,7 +97,7 @@ def update_covidch():
     @task(task_id="update_for_new_hosp", retries=2)
     def up_for_new_hosp():
         
-        engine = create_engine(DB_URI)
+        engine = get_engine(env.db.default_credential)
 
         df_for_hosp = forecast_all_cantons(
             "hosp",
@@ -113,7 +114,7 @@ def update_covidch():
     @task(task_id="update_for_total_hosp", retries=2)
     def up_for_total_hosp():
         
-        engine = create_engine(DB_URI)
+        engine = get_engine(env.db.default_credential)
 
         df_for_total_hosp = forecast_all_cantons(
             "total_hosp",
@@ -132,7 +133,7 @@ def update_covidch():
     @task(task_id="update_for_new_hosp", retries=2)
     def up_for_total_icu():
         
-        engine = create_engine(DB_URI)
+        engine = get_engine(env.db.default_credential)
 
         df_for_icu = forecast_all_cantons(
             "icu_patients",

@@ -13,17 +13,11 @@ Some parts of the code of this function are focused on the swiss case.
 So the function isn't fully general.
 """
 import pandas as pd
-from sqlalchemy import create_engine
-
 from epigraphhub.data.epigraphhub_db import get_data_by_location
-from epigraphhub.settings import env
+from epigraphhub.connection import get_engine
+from epigraphhub.settings import env 
 
-with env.db.credentials[env.db.default_credential] as credential:
-    engine_public = create_engine(
-        f"postgresql://{credential.username}:"
-        f"{credential.password}@{credential.host}:{credential.port}/"
-        f"{credential.dbname}"
-    )
+engine_public = get_engine(env.db.default_credential)
 
 dict_cols = {
     "foph_cases_d": ["datum", "georegion", "entries"],

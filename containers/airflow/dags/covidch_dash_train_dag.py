@@ -28,7 +28,7 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from scripts.dashboards.covid_ch import train_single_canton
 from scripts.dashboards.covid_ch import PATH
 
-CANTONS = ['GR', 'FR', 'ZH', 'FL', 'AG', 'AI', 'AR', 'BE', 'BL',
+CANTONS = ['GR', 'FR', 'ZH', 'AG', 'AI', 'AR', 'BE', 'BL',
        'BS', 'GE', 'GL', 'JU', 'VS', 'LU', 'NE', 'OW', 'SG', 'NW', 'SH',
        'SO', 'SZ', 'TG', 'TI', 'UR', 'VD', 'ZG']
 

@@ -5,6 +5,7 @@ ngboost regressor model for time series of new, total and total ICU hospitlaizat
 The result of these functions are shown in the dashboard: https://epigraphhub.org/covidch/
 """
 import pandas as pd
+from pathlib import Path 
 from ngboost.distns import LogNormal
 from ngboost.learners import default_tree_learner
 from ngboost.scores import LogScore
@@ -384,6 +385,9 @@ def train_single_canton(
         early_stop=early_stop,
         params_model=parameters_model,
     )
+
+    if path != None:
+        Path(path).mkdir(exist_ok=True, parents=True)
 
     if any(df[target_name] > 1):
 
