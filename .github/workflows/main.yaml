@@ -15,7 +15,6 @@ env:
   _AIRFLOW_WWW_USER_PASSWORD: airflow
   _AIRFLOW_WWW_USER_USERNAME: airflow
   AIRFLOW_FILES_PATH_DIR_HOST: /tmp/airflow
-  AIRFLOW_FILES_PATH_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/airflow
   AIRFLOW_FILES_PATH_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/docker/airflow
   AIRFLOW_HOME: /opt/airflow
   AIRFLOW_PORT: 8099
