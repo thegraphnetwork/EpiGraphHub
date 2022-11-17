@@ -117,6 +117,7 @@ jobs:
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test foph 2022-10-25'
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test colombia 2022-10-25'
         make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test web_status_test 2022-10-25'
+        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test cope_weather_brasil 2022-11-17'
 
     - name: Test MinIO access
       run: aws --endpoint-url http://localhost:9000/ s3 ls
