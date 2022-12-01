@@ -4,9 +4,9 @@ from datetime import timedelta
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchPythonOperator
-from epigraphhub.data.data_collection.colombia import (
-    compare_data,
-    load_chunks_into_db,
+from epigraphhub.data.colombia import (
+    loading,
+    extract,
 )
 
 
@@ -39,12 +39,7 @@ def colombia():
     )
 
     def compare():
-        table_last_upd = compare_data.table_last_update()
-        web_last_upd = compare_data.web_last_update()
-        same_shape = eval("table_last_upd == web_last_upd")
-        if not same_shape:
-            last_update = web_last_upd - table_last_upd
-            logger.info(f"Last update: {last_update.days} days ago.")
+        if not extract.compare():
             logger.info("Proceeding to update positive_cases_covid_d.")
             return "not_updated"
         logger.info("Table positive_cases_covid_d up to date")
@@ -63,14 +58,14 @@ def colombia():
     )
 
     @task(task_id="load_into_db", retries=2)
-    def load_chunks_in_db():
-        load_chunks_into_db.gen_chunks_into_db()
+    def load():
+        loading.upload()
         logger.info("Table positive_cases_covid_d updated.")
 
     start >> check_dates
 
     check_dates >> updated >> done
-    check_dates >> outdated >> load_chunks_in_db() >> done
+    check_dates >> outdated >> load() >> done
 
 
 dag = colombia()
