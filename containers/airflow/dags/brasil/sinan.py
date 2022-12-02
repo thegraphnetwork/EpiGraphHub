@@ -13,7 +13,7 @@ default_args = {
     "depends_on_past": False,
     "start_date": pendulum.datetime(2022, 12, 1),
     "email": ["epigraphhub@thegraphnetwork.org"],
-    "email_on_failure": False,  # TODO: Set to true b4 merge
+    "email_on_failure": True,
     "email_on_retry": False,
     "retries": 2,
     "retry_delay": timedelta(minutes=2),
