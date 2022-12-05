@@ -29,14 +29,14 @@ default_args = {
 )
 def brasil_sinan():
     """
-    This DAG will fetch all aggravates available on `aggravates` from
+    This DAG will fetch all diseases available on `diseases` from
     SINAN FTP server. Data will be downloaded at `/tmp/pysus` and then
     pushed into SQL database and the residues will be cleaned.
     @NOTE: This DAG can has a memory overhead that causes instability
            in Airflow System, therefore the max concurrency is set to 2.
     """
 
-    aggravates = extract.aggravates
+    diseases = extract.diseases
 
     start = EmptyOperator(
         task_id="start",
@@ -48,12 +48,12 @@ def brasil_sinan():
     )
 
     @task(task_id='extract', retries=3)
-    def extract_data(aggravate):
-        # Downloads an aggravate according to `aggravates`.
+    def extract_data(disease):
+        # Downloads an disease according to `diseases`.
 
-        extract.download(aggravate)
+        extract.download(disease)
 
-        logger.info(f"Data for {aggravate} downloaded at /tmp/pysus")
+        logger.info(f"Data for {disease} downloaded at /tmp/pysus")
 
 
     @task(task_id='upload')
@@ -66,7 +66,7 @@ def brasil_sinan():
         loading.upload()
 
 
-    download = extract_data.expand(aggravate=list(aggravates.keys()))
+    download = extract_data.expand(disease=list(diseases.keys()))
     
     upload = upload_data()
 
