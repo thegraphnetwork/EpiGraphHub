@@ -72,7 +72,8 @@ RUN apt-get update -y \
   && echo "epigraphhub ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/epigraphhub \
   && chmod 0440 /etc/sudoers.d/epigraphhub \
   && mkdir -p /opt/superset \
-  && chown epigraphhub:epigraphhub /opt/superset
+  && chown epigraphhub:epigraphhub /opt/superset \
+  && chmod a+rw /var/log/
 
 USER epigraphhub
 
@@ -104,7 +105,8 @@ COPY --chown=epigraphhub:epigraphhub containers/superset/entrypoint.sh /opt/entr
 RUN chmod +x /opt/entrypoint.sh \
   && echo "source /opt/entrypoint.sh" > ~/.bashrc \
   && sudo mkdir -p /opt/data/superset/ \
-  && sudo chown -R epigraphhub:epigraphhub /opt/data
+  && sudo chown -R epigraphhub:epigraphhub /opt/data \
+  && sudo chown -R epigraphhub:epigraphhub /var/log/*
 
 # note: the steps above were copied from the superset + some apt deps
 #       needed by airflow
@@ -120,7 +122,11 @@ RUN sudo ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo chown -R epigraphhub:epigraphhub /opt/scripts \
   && sudo chown -R epigraphhub:epigraphhub /sources \
-  && sudo chown -R epigraphhub:epigraphhub /opt/airflow
+  && sudo chown -R epigraphhub:epigraphhub /opt/airflow \
+  && sudo touch /var/log/owid_fetch.log \
+  && sudo touch /var/log/foph_fetch.log \
+  && sudo touch /var/log/colombia_fetch.log \
+  && sudo chown -R epigraphhub:epigraphhub /var/log/*
 
 COPY --chown=epigraphhub ./containers/airflow/airflow.cfg /opt/airflow/airflow.cfg
 COPY --chown=epigraphhub ./containers/airflow/scripts/*.sh /opt/scripts/
