@@ -24,4 +24,4 @@ dependencies:
   - pip:
     - -r pip.txt
     - epigraphhub
-
+    - pysus
