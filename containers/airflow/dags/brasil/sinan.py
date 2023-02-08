@@ -7,6 +7,7 @@ from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 
 from epigraphhub.data.brasil.sinan import extract, loading
+from epigraphhub.data._config import PYSUS_DATA_PATH
 
 
 default_args = {
@@ -31,7 +32,7 @@ default_args = {
 def brasil_sinan():
     """
     This DAG will fetch all diseases available on `diseases` from
-    SINAN FTP server. Data will be downloaded at `$HOME/pysus` and then
+    SINAN FTP server. Data will be downloaded at `/tmp/pysus` and then
     pushed into SQL database and the residues will be cleaned.
     @NOTE: This DAG can has a memory overhead that causes instability
            in Airflow System, therefore the max concurrency is set to 2.
@@ -60,7 +61,7 @@ def brasil_sinan():
     @task(task_id='upload')
     def upload_data():
         """
-        This task will upload every disease in the directory ~/pysus
+        This task will upload every disease in the directory /tmp/pysus
         that ends with `.parquet`, creating the corresponding table
         to each disease in `brasil` schema. 
         """        
@@ -73,11 +74,10 @@ def brasil_sinan():
     @task(trigger_rule='all_done')
     def remove_data_dir():
         """ 
-        Cleans ~/pysus data directory.
+        Cleans /tmp/pysus data directory.
         """
-        pysus_data = Path.home() / 'pysus'
-        shutil.rmtree(pysus_data, ignore_errors=True)
-        logger.warning(f'{pysus_data} removed')
+        shutil.rmtree(PYSUS_DATA_PATH, ignore_errors=True)
+        logger.warning(f'{PYSUS_DATA_PATH} removed')
 
 
     # `expand` will create a task for each disease/year.
