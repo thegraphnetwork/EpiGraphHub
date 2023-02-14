@@ -19,7 +19,6 @@ from epigraphhub.data.brasil.sinan import extract, loading
 ENG = get_engine(credential_name=env.db.default_credential)
 SCHEMA = 'brasil'
 DISEASES = extract.diseases
-TAGS = ["BRA","PySUS", "SINAN"]
 DEFAULT_ARGS = {
     "owner": "epigraphhub",
     "depends_on_past": False,
@@ -110,7 +109,7 @@ def task_flow_for(disease: str):
 with DAG(
     dag_id=DISEASES['Animais Peçonhentos'], 
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Animais Peçonhentos', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 1),
     catchup=False,
     schedule_interval='@monthly',
@@ -121,7 +120,7 @@ with DAG(
     dag_id=DISEASES['Cancer'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Cancer', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 2),
     catchup=False,
 ) as CANC:
@@ -131,7 +130,7 @@ with DAG(
     dag_id=DISEASES['Botulismo'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Botulismo', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 3),
     catchup=False,
 ) as BOTU:
@@ -141,7 +140,7 @@ with DAG(
     dag_id=DISEASES['Chagas'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Chagas', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 4),
     catchup=False,
 ) as CHAG:
@@ -151,7 +150,7 @@ with DAG(
     dag_id=DISEASES['Chikungunya'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Chikungunya', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 5),
     catchup=False,
 ) as CHIK:
@@ -161,7 +160,7 @@ with DAG(
     dag_id=DISEASES['Colera'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Colera', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 6),
     catchup=False,
 ) as COLE:
@@ -171,7 +170,7 @@ with DAG(
     dag_id=DISEASES['Coqueluche'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Coqueluche', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 7),
     catchup=False,
 ) as COQU:
@@ -181,7 +180,7 @@ with DAG(
     dag_id=DISEASES['Contact Communicable Disease'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Contact Communicable Disease', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 8),
     catchup=False,
 ) as ACBI:
@@ -191,7 +190,7 @@ with DAG(
     dag_id=DISEASES['Acidentes de Trabalho'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Acidentes de Trabalho', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 9),
     catchup=False,
 ) as ACGR:
@@ -201,7 +200,7 @@ with DAG(
     dag_id=DISEASES['Dengue'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Dengue', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 10),
     catchup=False,
 ) as DENG:
@@ -211,7 +210,7 @@ with DAG(
     dag_id=DISEASES['Difteria'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Difteria', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 11),
     catchup=False,
 ) as DIFT:
@@ -221,7 +220,7 @@ with DAG(
     dag_id=DISEASES['Esquistossomose'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Esquistossomose', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 12),
     catchup=False,
 ) as ESQU:
@@ -231,7 +230,7 @@ with DAG(
     dag_id=DISEASES['Febre Amarela'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Febre Amarela', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 13),
     catchup=False,
 ) as FAMA:
@@ -241,7 +240,7 @@ with DAG(
     dag_id=DISEASES['Febre Maculosa'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Febre Maculosa', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 14),
     catchup=False,
 ) as FMAC:
@@ -251,7 +250,7 @@ with DAG(
     dag_id=DISEASES['Febre Tifoide'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Febre Tifoide', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 15),
     catchup=False,
 ) as FTIF:
@@ -261,7 +260,7 @@ with DAG(
     dag_id=DISEASES['Hanseniase'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Hanseniase', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 16),
     catchup=False,
 ) as HANS:
@@ -271,7 +270,7 @@ with DAG(
     dag_id=DISEASES['Hantavirose'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Hantavirose', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 17),
     catchup=False,
 ) as HANT:
@@ -281,7 +280,7 @@ with DAG(
     dag_id=DISEASES['Hepatites Virais'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Hepatites Virais', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 18),
     catchup=False,
 ) as HEPA:
@@ -291,7 +290,7 @@ with DAG(
     dag_id=DISEASES['Intoxicação Exógena'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Intoxicação Exógena', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 19),
     catchup=False,
 ) as IEXO:
@@ -301,7 +300,7 @@ with DAG(
     dag_id=DISEASES['Leishmaniose Visceral'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Leishmaniose Visceral', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 20),
     catchup=False,
 ) as LEIV:
@@ -311,7 +310,7 @@ with DAG(
     dag_id=DISEASES['Leptospirose'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Leptospirose', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 21),
     catchup=False,
 ) as LEPT:
@@ -321,7 +320,7 @@ with DAG(
     dag_id=DISEASES['Leishmaniose Tegumentar'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Leishmaniose Tegumentar', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 22),
     catchup=False,
 ) as LTAN:
@@ -331,7 +330,7 @@ with DAG(
     dag_id=DISEASES['Malaria'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Malaria', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 23),
     catchup=False,
 ) as MALA:
@@ -341,7 +340,7 @@ with DAG(
     dag_id=DISEASES['Meningite'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Meningite', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 24),
     catchup=False,
 ) as MENI:
@@ -351,7 +350,7 @@ with DAG(
     dag_id=DISEASES['Peste'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Peste', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 25),
     catchup=False,
 ) as PEST:
@@ -361,7 +360,7 @@ with DAG(
     dag_id=DISEASES['Poliomielite'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Poliomielite', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 26),
     catchup=False,
 ) as PFAN:
@@ -371,7 +370,7 @@ with DAG(
     dag_id=DISEASES['Raiva Humana'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Raiva Humana', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 27),
     catchup=False,
 ) as RAIV:
@@ -381,7 +380,7 @@ with DAG(
     dag_id=DISEASES['Sífilis Adquirida'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Sífilis Adquirida', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 1),
     catchup=False,
 ) as SIFA:
@@ -391,7 +390,7 @@ with DAG(
     dag_id=DISEASES['Sífilis Congênita'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Sífilis Congênita', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 2),
     catchup=False,
 ) as SIFC:
@@ -401,7 +400,7 @@ with DAG(
     dag_id=DISEASES['Sífilis em Gestante'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Sífilis em Gestante', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 3),
     catchup=False,
 ) as SIFG:
@@ -411,7 +410,7 @@ with DAG(
     dag_id=DISEASES['Tétano Acidental'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Tétano Acidental', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 4),
     catchup=False,
 ) as TETA:
@@ -421,7 +420,7 @@ with DAG(
     dag_id=DISEASES['Tétano Neonatal'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Tétano Neonatal', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 5),
     catchup=False,
 ) as TETN:
@@ -431,7 +430,7 @@ with DAG(
     dag_id=DISEASES['Tuberculose'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Tuberculose', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 6),
     catchup=False,
 ) as TUBE:
@@ -441,7 +440,7 @@ with DAG(
     dag_id=DISEASES['Violência Domestica'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Violência Domestica', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 7),
     catchup=False,
 ) as VIOL:
@@ -451,7 +450,7 @@ with DAG(
     dag_id=DISEASES['Zika'], 
     schedule_interval='@monthly',
     default_args=DEFAULT_ARGS,
-    tags=TAGS,
+    tags=['Zika', 'SINAN'],
     start_date= pendulum.datetime(2022, 2, 8),
     catchup=False,
 ) as ZIKA:
