@@ -98,7 +98,7 @@ default_args = {
     schedule_interval="@weekly",
     default_args=default_args,
     catchup=False,
-    tags = ['CHE', 'FOPH']
+    tags = ['CHE', 'FOPH', 'Switzerland']
 )
 def foph():
     """

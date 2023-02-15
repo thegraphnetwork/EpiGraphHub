@@ -14,8 +14,12 @@ from airflow.operators.empty import EmptyOperator
 from epigraphhub.settings import env
 from epigraphhub.connection import get_engine
 from epigraphhub.data._config import PYSUS_DATA_PATH
-from epigraphhub.data.brasil.sinan import extract, loading, DISEASES
-
+from epigraphhub.data.brasil.sinan import (
+    extract, 
+    loading, 
+    DISEASES,
+    normalize_str,
+)
 
 ENG = get_engine(credential_name=env.db.default_credential)
 SCHEMA = 'brasil'
@@ -31,25 +35,29 @@ DEFAULT_ARGS = {
 
 
 def task_flow_for(disease: str):
-    def _count_table_rows(engine, table: str) -> int:
+
+    tablename = 'sinan_' + normalize_str(disease) + '_m'
+
+    def _count_table_rows() -> dict:
         """ 
         Counts table rows from brasil's Schema
         """
-        with engine.connect() as conn:
+        with ENG.connect() as conn:
             try:
-                cur = conn.execute(f"SELECT COUNT(*) FROM {SCHEMA}.{table}")
+                cur = conn.execute(f"SELECT COUNT(*) FROM {SCHEMA}.{tablename}")
                 rowcount = cur.fetchone()[0]
             except Exception as e:
                 if 'UndefinedTable' in str(e):
-                    return 0
+                    return dict(rows=0)
                 else:
                     raise e
-        return rowcount
+        return dict(rows=rowcount)
+
 
     @task(task_id='start')
-    def start(disease: str) -> int:
+    def start() -> int:
         logger.info(f'ETL started for {disease}')
-        return _count_table_rows(ENG, DISEASES[disease].lower())
+        return _count_table_rows()
 
     @task(task_id='extract', retries=3)
     def download(disease: str) -> list:
@@ -69,18 +77,19 @@ def task_flow_for(disease: str):
             raise e
 
     @task(task_id='diagnosis')
-    def compare_tables_rows(disease: str, **kwargs) -> int:
+    def compare_tables_rows(**kwargs) -> int:
         ti = kwargs['ti']
         ini_rows_amt = ti.xcom_pull(task_ids='start')
-        end_rows_amt = _count_table_rows(ENG, DISEASES[disease].lower())
+        end_rows_amt = _count_table_rows()
         
-        new_rows = end_rows_amt - ini_rows_amt
+        new_rows = end_rows_amt['rows'] - ini_rows_amt['rows']
 
         logger.info(
-            f'{new_rows} new rows inserted into brasil.{disease}'
+            f'{new_rows} new rows inserted into brasil.{tablename}'
         )
 
-        return new_rows
+        ti.xcom_push(key='rows', value=ini_rows_amt['rows'])
+        ti.xcom_push(key='new_rows', value=new_rows)
 
     @task(trigger_rule='all_done')
     def remove_parquets(**kwargs) -> None:
@@ -96,10 +105,10 @@ def task_flow_for(disease: str):
         trigger_rule="none_failed",
     )
 
-    ini = start(disease)
+    ini = start()
     E = download(disease)
     L = upload()
-    diagnosis = compare_tables_rows(disease)
+    diagnosis = compare_tables_rows()
     clean = remove_parquets()
     end = done
 
