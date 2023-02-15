@@ -121,7 +121,7 @@ def create_dag(
     start: pendulum.datetime,
 ):
 
-    sinan_tag = ['SINAN']
+    sinan_tag = ['SINAN', 'Brasil']
     sinan_tag.append(disease)
 
     dag = DAG(
