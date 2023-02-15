@@ -93,7 +93,7 @@ def task_flow_for(disease: str):
 
     done = EmptyOperator(
         task_id="done",
-        trigger_rule="all_success",
+        trigger_rule="none_failed",
     )
 
     ini = start(disease)
