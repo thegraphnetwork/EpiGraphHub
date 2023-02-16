@@ -123,11 +123,12 @@ def create_dag(
 
     sinan_tag = ['SINAN', 'Brasil']
     sinan_tag.append(disease)
+    DEFAULT_ARGS.update(start_date=start)
 
     dag = DAG(
         'SINAN_' + DISEASES[disease],
-        default_args=DEFAULT_ARGS,
-        tags = sinan_tag,
+        default_args=DEFAULT_ARGS, #Tasks and Dags 
+        tags = sinan_tag, #Only DAGs
         start_date=start,
         catchup=False,
         schedule_interval=schedule
