@@ -67,11 +67,9 @@ def task_flow_for(disease: str):
         return parquet_dirs
 
     @task(task_id='upload')
-    def upload(**kwargs) -> None:
-        ti = kwargs['ti']
-        parquet_dirs = ti.xcom_pull(task_ids='extract')
+    def upload() -> None:
         try:
-            loading.upload(parquet_dirs)
+            loading.upload(disease, PYSUS_DATA_PATH)
         except Exception as e:
             logger.error(e)
             raise e
@@ -100,17 +98,20 @@ def task_flow_for(disease: str):
             shutil.rmtree(dir, ignore_errors=True)
             logger.warning(f'{dir} removed')
 
-    done = EmptyOperator(
-        task_id="done",
-        trigger_rule="none_failed",
-    )
+    @task(trigger_rule='none_failed')
+    def done(**kwargs) -> None:
+        ti = kwargs['ti']
+        print(ti.xcom_pull(key='state', task_ids='upload') )
+        if ti.xcom_pull(key='state', task_ids='upload') == 'FAILED':
+            raise ValueError('Force failure because upstream task has failed')
+
 
     ini = start()
     E = download(disease)
     L = upload()
     diagnosis = compare_tables_rows()
     clean = remove_parquets()
-    end = done
+    end = done()
 
     ini >> E >> L >> diagnosis >> clean >> end
 
