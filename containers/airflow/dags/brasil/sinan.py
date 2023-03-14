@@ -3,19 +3,18 @@ import pendulum
 import pandas as pd
 import logging as logger
 
-from glob import glob
-from pysus import SINAN
-from pathlib import Path
-from itertools import cycle
+
+from random import randint
 from datetime import timedelta
+from pysus.online_data import SINAN
 
 from airflow import DAG
 from airflow.decorators import task, dag
 
 from epigraphhub.settings import env
 from epigraphhub.connection import get_engine
-from epigraphhub.data._config import PYSUS_DATA_PATH
 from epigraphhub.data.brasil.sinan import (
+    FTP_SINAN,
     extract,
     loading,
     DISEASES,
@@ -63,18 +62,22 @@ def task_flow_for(disease: str):
 
     @task(task_id='extract', retries=3)
     def download(disease: str) -> list:
-        extract.download(disease)
+        years = FTP_SINAN(disease).get_years()
+        parquet_dirs = extract.download(disease=disease, years=years)
         logger.info(f'Data for {disease} extracted')
-        parquet_dirs = glob(f'{Path(PYSUS_DATA_PATH)/DISEASES[disease]}*')
         return parquet_dirs
 
     @task(task_id='upload')
-    def upload() -> None:
-        try:
-            loading.upload(disease, PYSUS_DATA_PATH)
-        except Exception as e:
-            logger.error(e)
-            raise e
+    def upload(disease: str, **kwargs) -> None:
+        ti = kwargs['ti']
+        parquets_dirs = ti.xcom_pull(task_ids='extract')
+        for dir in parquets_dirs:
+            try:
+                loading.upload(disease=disease,parquet_dir=dir)
+                logger.info(f'{dir} inserted into db')
+            except Exception as e:
+                logger.error(e)
+                raise e
 
     @task(task_id='diagnosis')
     def compare_tables_rows(**kwargs) -> int:
@@ -107,7 +110,7 @@ def task_flow_for(disease: str):
 
     ini = start()
     E = download(disease)
-    L = upload()
+    L = upload(disease)
     diagnosis = compare_tables_rows()
     clean = remove_parquets()
     end = done()
@@ -141,14 +144,11 @@ def create_dag(
 
 
 # DAGs
-day = cycle(range(1, 29))
-
-
 @dag(
     'SINAN_METADATA',
     default_args=DEFAULT_ARGS,
     tags=['SINAN', 'Brasil', 'Metadata'],
-    start_date=pendulum.datetime(2022, 2, next(day)),
+    start_date=pendulum.datetime(2022, 2, 1),
     catchup=False,
     schedule_interval='@once',
 )
@@ -183,5 +183,5 @@ for disease in DISEASES:
     globals()[dag_id] = create_dag(
         disease,
         schedule='@monthly',
-        start=pendulum.datetime(2022, 2, next(day)),
+        start=pendulum.datetime(2022, 2, len(disease)), #avoid memory overhead
     )
