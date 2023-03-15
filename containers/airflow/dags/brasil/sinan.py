@@ -1,10 +1,47 @@
+""" 
+@author Luã Bida Vacaro | github.com/luabida
+@date Last change on 2023-03-14
+
+This is an Airflow DAG. This DAG is responsible for running scripts for
+collecting data from PySUS SINAN. The API that fetches the data is 
+available on:
+https://github.com/AlertaDengue/PySUS
+A detailed article about the Airflow used in EpiGraphHub can be found
+at our website https://www.epigraphhub.org/ or EGH's GitHub Pages:
+https://github.com/thegraphnetwork/thegraphnetwork.github.io.
+
+Task Summary
+------------
+
+start (PythonOperator): 
+    This task is the start of the task flow. It will count the rows for
+    a disease and store it as a XCom value.
+
+extract (PythonOperator):
+    This task downloads parquet file from DataSUS via PySUS for a SINAN
+    disease.
+
+upload (PythonOperator):
+    This task will upload a list of parquet files extracted into the EGH
+    Postgres Database, parsing the disease name according to the docs:
+    https://epigraphhub.readthedocs.io/en/latest/instruction_name_tables.html#all-names-schema-name-table-name-and-column-names
+
+diagnosis (PythonOperator):
+    This task will compare the number of rows before and after the insertion
+    and store the values as XComs.
+
+remove_parquets (PythonOperator):
+    This task will remove the parquet files returned from the extract task
+
+done (PythonOperator):
+    This task will fail if any task above fails, breaking the DAG.
+
+"""
 import shutil
 import pendulum
 import pandas as pd
 import logging as logger
 
-
-from random import randint
 from datetime import timedelta
 from pysus.online_data import SINAN
 
@@ -35,6 +72,11 @@ DEFAULT_ARGS = {
 
 
 def task_flow_for(disease: str):
+    """
+    This function is a task flow creator, it will be responsible for
+    creating the task dependencies for the SINAN disease that is passed
+    in. SINAN DAGs will have the same workflow.
+    """
 
     tablename = "sinan_" + normalize_str(disease) + "_m"
 
@@ -55,11 +97,20 @@ def task_flow_for(disease: str):
 
     @task(task_id="start")
     def start() -> int:
+        """
+        Task to start the workflow, will read the database and return
+        the rows count for a SINAN disease.
+        """
         logger.info(f"ETL started for {disease}")
         return _count_table_rows()
 
     @task(task_id="extract", retries=3)
     def download(disease: str) -> list:
+        """
+        This task is responsible for downloading every year found for
+        a disease. It will download at `/tmp/pysus/` and return a list
+        with downloaded parquet paths.
+        """
         years = FTP_SINAN(disease).get_years()
         parquet_dirs = extract.download(disease=disease, years=years)
         logger.info(f"Data for {disease} extracted")
@@ -67,6 +118,11 @@ def task_flow_for(disease: str):
 
     @task(task_id="upload")
     def upload(disease: str, **kwargs) -> None:
+        """
+        This task is responsible for uploading each parquet dir into
+        postgres database. It receives the disease name and the xcom
+        from `download` task to insert.
+        """
         ti = kwargs["ti"]
         parquets_dirs = ti.xcom_pull(task_ids="extract")
         for dir in parquets_dirs:
@@ -79,6 +135,11 @@ def task_flow_for(disease: str):
 
     @task(task_id="diagnosis")
     def compare_tables_rows(**kwargs) -> int:
+        """
+        This task will be responsible for checking how many rows were
+        inserted into a disease table. It will compare with the start
+        task and store the difference as a xcom.
+        """
         ti = kwargs["ti"]
         ini_rows_amt = ti.xcom_pull(task_ids="start")
         end_rows_amt = _count_table_rows()
@@ -92,6 +153,11 @@ def task_flow_for(disease: str):
 
     @task(trigger_rule="all_done")
     def remove_parquets(**kwargs) -> None:
+        """
+        This task will be responsible for deleting all parquet files
+        downloaded. It will receive the same parquet dirs the `upload`
+        task receives and delete all them.
+        """
         ti = kwargs["ti"]
         parquet_dirs = ti.xcom_pull(task_ids="extract")
 
@@ -101,11 +167,13 @@ def task_flow_for(disease: str):
 
     @task(trigger_rule="none_failed")
     def done(**kwargs) -> None:
+        """This task will fail if any upstream task fails."""
         ti = kwargs["ti"]
         print(ti.xcom_pull(key="state", task_ids="upload"))
         if ti.xcom_pull(key="state", task_ids="upload") == "FAILED":
             raise ValueError("Force failure because upstream task has failed")
 
+    # Defining the tasks
     ini = start()
     E = download(disease)
     L = upload(disease)
@@ -113,6 +181,7 @@ def task_flow_for(disease: str):
     clean = remove_parquets()
     end = done()
 
+    # Task flow
     ini >> E >> L >> diagnosis >> clean >> end
 
 
@@ -121,7 +190,11 @@ def create_dag(
     schedule: str,
     start: pendulum.datetime,
 ):
-
+    """
+    This method will be responsible for creating a DAG for a
+    SINAN disease. It will receive the disease, its schedule
+    and the start date, returning a DAG with the task flow.
+    """
     sinan_tag = ["SINAN", "Brasil"]
     sinan_tag.append(disease)
     DEFAULT_ARGS.update(start_date=start)
@@ -151,6 +224,13 @@ def create_dag(
     schedule_interval="@once",
 )
 def metadata_tables():
+    """
+    This DAG will run only once and create a table in the
+    database with each metadata found in the pysus SINAN
+    disease metadata. It will not fail if a metadata is not
+    available, only skip it.
+    """
+
     @task(task_id="insert_metadata_tables")
     def metadata_tables():
         for disease in DISEASES:
@@ -173,7 +253,7 @@ def metadata_tables():
 
 
 dag = metadata_tables()
-
+# Here its where the DAGs are created, an specific case can be specified
 for disease in DISEASES:
     # Change DAG variables here
 
