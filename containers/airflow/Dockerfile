@@ -61,6 +61,7 @@ RUN apt-get update -y \
     unixodbc \
     unixodbc-dev \
     yarn \
+    vim \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \

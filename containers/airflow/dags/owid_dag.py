@@ -82,6 +82,7 @@ default_args = {
     schedule_interval="@daily",
     default_args=default_args,
     catchup=False,
+    tags=['OWID']
 )
 def owid():
     """
