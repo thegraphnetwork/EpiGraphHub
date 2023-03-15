@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   superset:
+    platform: linux/amd64
     # image: epigraphhub/superset
     hostname: superset
     restart: unless-stopped
@@ -32,6 +33,7 @@ services:
       - flower
 
   airflow:
+    platform: linux/amd64
     hostname: airflow
     restart: unless-stopped
     env_file:
@@ -69,6 +71,7 @@ services:
       - minio
 
   redis:
+    platform: linux/amd64
     image: redis:alpine
     hostname: redis
     restart: unless-stopped
@@ -86,6 +89,7 @@ services:
       - redis:/data
 
   postgres:
+    platform: linux/amd64
     hostname: postgres
     restart: unless-stopped
     build:
@@ -107,6 +111,7 @@ services:
     command: -p ${POSTGRES_PORT}
 
   flower:
+    platform: linux/amd64
     image: mher/flower:0.9.7
     restart: unless-stopped
     env_file:
@@ -129,6 +134,7 @@ services:
       start_period: 40s  # requires docker-compose 3.4
 
   minio:
+    platform: linux/amd64
     image: quay.io/minio/minio
     restart: unless-stopped
     env_file:
