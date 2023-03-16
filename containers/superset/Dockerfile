@@ -33,6 +33,7 @@ RUN apt-get update -y \
     wget \
     sudo \
     tini \
+    libecpg-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \
