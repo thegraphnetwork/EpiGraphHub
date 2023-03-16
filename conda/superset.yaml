@@ -7,22 +7,21 @@ dependencies:
   - inquirer
   - flask-mail
   - lightgbm
-  - biobuilds::libecpg
   - openpyxl
   - pip
   - psycopg2
-  - python 3.10.*
+  - python 3.9.*
   - python-dotenv
   - sqlalchemy
-  - jsonschema <5,>=3
+  - jsonschema<5,>=3
   # dependencies from superset 1.5.*
-  - cryptography >=38.0.0,<40
-  - pyopenssl 23.0.0
+  - cryptography<39.0.0
+  - pyOpenSSL 23.0.0
   - slackclient
-  - typing-extensions <4,>=3.10
+  - typing-extensions<4,>=3.10
   - enum34
   - pip
-  - numpy >=1.17.3
+  - 'numpy>=1.17.3'
   - pip:
     - -r pip.txt
     - packaging
