@@ -13,20 +13,21 @@ dependencies:
   - python 3.9.*
   - python-dotenv
   - sqlalchemy
-  - jsonschema<5,>=3
+  # - jsonschema<5,>=3
+  - opensciencelabs::apache-superset 2.1.0rc3
+  # - 'apache-superset>=1.5.0,<2.0.0'
   # dependencies from superset 1.5.*
-  - cryptography<39.0.0
-  - pyOpenSSL 23.0.0
-  - slackclient
-  - typing-extensions<4,>=3.10
-  - enum34
+  # - cryptography<39.0.0
+  # - pyOpenSSL 23.0.0
+  # - slackclient
+  # - typing-extensions<4,>=3.10
+  # - enum34
+  # - 'numpy>=1.17.3'
   - pip
-  - 'numpy>=1.17.3'
   - pip:
     - -r pip.txt
-    - packaging
-    - webencodings
-    - 'msgpack<1.1,>=1.0.0'
-    - markupsafe==2.0.1
-    - 'six>=1.16'
-    - 'apache-superset>=1.5.0,<2.0.0'
+    # - packaging
+    # - webencodings
+    # - 'msgpack<1.1,>=1.0.0'
+    # - markupsafe==2.0.1
+    # - 'six>=1.16'
