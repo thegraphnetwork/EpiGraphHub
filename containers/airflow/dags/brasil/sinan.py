@@ -42,24 +42,27 @@ import pendulum
 import pandas as pd
 import logging as logger
 
+from ftplib import FTP
+from operator import is_not
+from itertools import chain
+from functools import partial
 from datetime import timedelta
 from pysus.online_data import SINAN
 
 from airflow import DAG
 from airflow.decorators import task, dag
+from airflow.models import DagRun, TaskInstance
 
 from epigraphhub.settings import env
 from epigraphhub.connection import get_engine
 from epigraphhub.data.brasil.sinan import (
     FTP_SINAN,
     extract,
-    loading,
+    viz,
     DISEASES,
     normalize_str,
 )
 
-ENG = get_engine(credential_name=env.db.default_credential)
-SCHEMA = "brasil"
 DEFAULT_ARGS = {
     "owner": "epigraphhub",
     "depends_on_past": False,
@@ -78,31 +81,126 @@ def task_flow_for(disease: str):
     in. SINAN DAGs will have the same workflow.
     """
 
+    schema = 'brasil'
     tablename = "sinan_" + normalize_str(disease) + "_m"
+    engine = get_engine(credential_name=env.db.default_credential)
 
-    def _count_table_rows() -> dict:
-        """
-        Counts table rows from brasil's Schema
-        """
-        with ENG.connect() as conn:
-            try:
-                cur = conn.execute(f"SELECT COUNT(*) FROM {SCHEMA}.{tablename}")
-                rowcount = cur.fetchone()[0]
-            except Exception as e:
-                if "UndefinedTable" in str(e):
-                    return dict(rows=0)
-                else:
-                    raise e
-        return dict(rows=rowcount)
+    prelim_years = list(map(int, FTP_SINAN(disease).get_years('prelim')))
+    finals_years = list(map(int, FTP_SINAN(disease).get_years('finais')))
 
     @task(task_id="start")
-    def start() -> int:
+    def start_task():
         """
-        Task to start the workflow, will read the database and return
-        the rows count for a SINAN disease.
+        Task to start the workflow, extracts all the last update date
+        for the each DBC file in FTP server. SINAN DAG will use the
+        previous start task run to decide rather the dbc should be
+        inserted into DB or not.
         """
-        logger.info(f"ETL started for {disease}")
-        return _count_table_rows()
+        with engine.connect() as conn:
+            conn.execute(
+                f'CREATE TABLE IF NOT EXISTS {schema}.sinan_update_ctl ('
+                ' disease TEXT NOT NULL,'
+                ' year INT NOT NULL,'
+                ' prelim BOOL NOT NULL,'
+                ' last_insert DATE'
+                ')'
+            )
+    
+    @task(task_id="get_updates")
+    def dbcs_to_fetch() -> dict:
+        all_years = prelim_years + finals_years
+
+        db_years = []
+        with engine.connect() as conn:
+            cur = conn.execute(
+                f'SELECT year FROM {schema}.sinan_update_ctl'
+                f' WHERE disease = {disease}'
+            )
+            db_years.extend(list(chain(*cur.all())))
+        not_inserted = [y for y in all_years if y not in db_years]
+
+        db_prelimns = []
+        with engine.connect() as conn:
+            cur = conn.execute(
+                f'SELECT year FROM {schema}.sinan_update_ctl'
+                f' WHERE disease = {disease} AND prelim IS True'
+            )
+            db_years.extend(list(chain(*cur.all())))
+        prelim_to_final = [y for y in finals_years if y in db_prelimns]
+        prelim_to_update = [y for y in prelim_years if y in db_prelimns]
+
+        return dict(
+            to_insert = not_inserted,
+            to_finals = prelim_to_final,
+            to_update = prelim_to_update
+        )
+
+    @task(task_id="extract")
+    def extract_parquets(**kwargs) -> dict:
+        ti = kwargs["ti"]
+        years = ti.xcom_pull(task_ids="get_updates")
+
+        extract_pqs = lambda stage: extract.download(
+            disease=disease, years=years[stage]
+            ) if any(years[stage]) else []
+
+        return dict(
+            pqs_to_insert = extract_pqs('to_insert'),
+            pqs_to_finals = extract_pqs('to_finals'),
+            pqs_to_update = extract_pqs('to_update')
+        )
+    
+    @task(task_id='first_insertion')
+    def upload_not_inserted(**kwargs):
+        ti = kwargs["ti"]
+        parquets = ti.xcom_pull(task_ids="extract")
+        get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
+
+        finals, prelims = ([], [])
+        for parquet in parquets:
+            (
+                finals.append(parquet) 
+                if get_year(parquet) in finals_years 
+                else prelims.append(get_year(parquet))
+            )
+
+        upload = lambda df: df.to_sql(
+            name=tablename,
+            con=engine.connect(),
+            schema=schema,
+            if_exists='append'
+        )
+
+        for final_pq in finals:
+            df = viz(final_pq)
+            df['year'] = (get_year(final_pq))
+            df['prelim'] = (False)
+            upload(df)
+            logger.info(f'{final_pq} inserted into db')
+            with engine.connect() as conn:
+                conn.execute(
+                    f'INSERT INTO {schema}.sinan_update_ctl('
+                    'disease, year, prelim, last_insert) VALUES ('
+                    f'{disease},{get_year(final_pq)},False,{ti.execution_date})'
+                )
+
+        for prelim_pq in prelims:
+            df = viz(prelim_pq)
+            df['year'] = (get_year(prelim_pq))
+            df['prelim'] = (True)
+            upload(df)
+            logger.info(f'{prelim_pq} inserted into db')
+            with engine.connect() as conn:
+                conn.execute(
+                    f'INSERT INTO {schema}.sinan_update_ctl('
+                    'disease, year, prelim, last_insert) VALUES ('
+                    f'{disease},{get_year(prelim_pq)},True,{ti.execution_date})'
+                )
+
+
+
+
+
 
     @task(task_id="extract", retries=3)
     def download(disease: str) -> list:
