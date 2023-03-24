@@ -319,8 +319,11 @@ def task_flow_for(disease: str):
         pqts = ti.xcom_pull(task_ids='extract')
 
         parquet_dirs = list(
-            chain(*(pqts['to_insert'], pqts['to_finals'], pqts['to_update']))
+            chain(*(pqts['pqs_to_insert'], pqts['pqs_to_finals'], pqts['pqs_to_update']))
         )
+
+        if not parquet_dirs:
+            raise AirflowSkipException()
 
         for dir in parquet_dirs:
             shutil.rmtree(dir, ignore_errors=True)
