@@ -14,23 +14,23 @@ from epigraphhub.data.brasil.sinan import (
 )
 
 DEFAULT_ARGS = {
-    "owner": "epigraphhub",
-    "depends_on_past": False,
-    "email": ["epigraphhub@thegraphnetwork.org"],
-    "email_on_failure": True,
-    "email_on_retry": False,
-    "retries": 2,
-    "retry_delay": timedelta(minutes=2),
+    'owner': 'epigraphhub',
+    'depends_on_past': False,
+    'email': ['epigraphhub@thegraphnetwork.org'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'retries': 2,
+    'retry_delay': timedelta(minutes=2),
 }
 
 
 @dag(
-    "SINAN_METADATA",
+    'SINAN_METADATA',
     default_args=DEFAULT_ARGS,
-    tags=["SINAN", "Brasil", "Metadata"],
+    tags=['SINAN', 'Brasil', 'Metadata'],
     start_date=pendulum.datetime(2022, 2, 1),
     catchup=False,
-    schedule_interval="@once",
+    schedule_interval='@once',
 )
 def metadata_tables():
     """
@@ -42,24 +42,25 @@ def metadata_tables():
 
     engine = get_engine(credential_name=env.db.default_credential)
 
-    @task(task_id="insert_metadata_tables")
+    @task(task_id='insert_metadata_tables')
     def metadata_tables():
         for disease in DISEASES:
             try:
                 metadata_df = SINAN.metadata_df(disease)
                 pd.DataFrame.to_sql(
                     metadata_df,
-                    f"sinan_{normalize_str(disease)}_metadata",
+                    f'sinan_{normalize_str(disease)}_metadata',
                     con=engine,
                     schema='brasil',
-                    if_exists="replace",
+                    if_exists='replace',
                 )
 
-                logger.info(f"Metadata table for {disease} updated.")
+                logger.info(f'Metadata table for {disease} updated.')
             except Exception:
-                print(f"No metadata available for {disease}")
+                print(f'No metadata available for {disease}')
 
     meta = metadata_tables()
     meta
+
 
 dag = metadata_tables()
