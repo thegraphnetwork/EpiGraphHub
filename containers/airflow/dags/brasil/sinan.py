@@ -107,7 +107,7 @@ def task_flow_for(disease: str):
             try:
                 cur = conn.execute(
                     f'SELECT year FROM {schema}.sinan_update_ctl'
-                    f' WHERE disease = "{disease}"'
+                    f" WHERE disease = '{disease}'"
                 )
                 years = cur.all()
             except Exception as e:
@@ -121,7 +121,7 @@ def task_flow_for(disease: str):
             try:
                 cur = conn.execute(
                     f'SELECT year FROM {schema}.sinan_update_ctl'
-                    f' WHERE disease = "{disease}" AND prelim IS True'
+                    f" WHERE disease = '{disease}' AND prelim IS True"
                 )
                 years = cur.all()
             except Exception as e:
@@ -190,13 +190,13 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'"{disease}", {year}, False, {ti.execution_date})'
+                    f"'{disease}', {year}, False, '{ti.execution_date}')"
                 )
                 cur = conn.execute(
                     f'SELECT COUNT(*) FROM {schema}.{tablename}'
                     f' WHERE year = {year}'
                 )
-                inserted_rows[year] = cur.fetchone[0]
+                inserted_rows[year] = cur.fetchone()[0]
 
         for prelim_pq in prelims or []:
             year = get_year(prelim_pq)
@@ -211,13 +211,13 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'"{disease}", {year}, True, {ti.execution_date})'
+                    f"'{disease}', {year}, True, '{ti.execution_date}')"
                 )
                 cur = conn.execute(
                     f'SELECT COUNT(*) FROM {schema}.{tablename}'
                     f' WHERE year = {year}'
                 )
-                inserted_rows[year] = cur.fetchone[0]
+                inserted_rows[year] = cur.fetchone()[0]
 
         return inserted_rows
 
@@ -255,8 +255,8 @@ def task_flow_for(disease: str):
             with engine.connect() as conn:
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
-                    f' SET prelim = False, last_insert = {ti.execution_date}'
-                    f' WHERE disease = "{disease}" AND year = {year}'
+                    f" SET prelim = False, last_insert = '{ti.execution_date}'"
+                    f" WHERE disease = '{disease}' AND year = {year}"
                 )
 
     @task(task_id='update_prelims')
@@ -288,7 +288,7 @@ def task_flow_for(disease: str):
                     f' WHERE year = {year}'
                     f' AND prelim = True'
                 )
-                old_rows = cur.fetchone[0]
+                old_rows = cur.fetchone()[0]
 
             upload_df(df)
             logger.info(
@@ -302,8 +302,8 @@ def task_flow_for(disease: str):
             with engine.connect() as conn:
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
-                    f' SET last_insert = {ti.execution_date}'
-                    f' WHERE disease = "{disease}" AND year = {year}'
+                    f" SET last_insert = '{ti.execution_date}'"
+                    f" WHERE disease = '{disease}' AND year = {year}"
                 )
 
     @task(trigger_rule='all_done')
