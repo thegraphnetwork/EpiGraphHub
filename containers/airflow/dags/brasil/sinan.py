@@ -40,6 +40,7 @@ done (PythonOperator):
 import pendulum
 import logging as logger
 from datetime import timedelta
+from psycopg2.errors import UndefinedColumn
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -108,20 +109,29 @@ def task_flow_for(disease: str):
 
         db_years = []
         with engine.connect() as conn:
-            cur = conn.execute(
-                f'SELECT year FROM {schema}.sinan_update_ctl'
-                f' WHERE disease = {disease}'
-            )
-            db_years.extend(list(chain(*cur.all())))
+            try:
+                cur = conn.execute(
+                    f'SELECT year FROM {schema}.sinan_update_ctl'
+                    f' WHERE disease = "{disease}"'
+                )
+                years = cur.all()
+            except UndefinedColumn:
+                years = []
+            db_years.extend(list(chain(*years)))
         not_inserted = [y for y in all_years if y not in db_years]
 
         db_prelimns = []
         with engine.connect() as conn:
-            cur = conn.execute(
-                f'SELECT year FROM {schema}.sinan_update_ctl'
-                f' WHERE disease = {disease} AND prelim IS True'
-            )
-            db_years.extend(list(chain(*cur.all())))
+            try:
+                cur = conn.execute(
+                    f'SELECT year FROM {schema}.sinan_update_ctl'
+                    f' WHERE disease = "{disease}" AND prelim IS True'
+                )
+                years = cur.all()
+            except UndefinedColumn:
+                years = []
+            db_years.extend(list(chain(*years)))
+            
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
         prelim_to_update = [y for y in prelim_years if y in db_prelimns]
 
@@ -249,7 +259,7 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
                     f' SET prelim = False, last_insert = {ti.execution_date}'
-                    f' WHERE disease = {disease} AND year = {year}'
+                    f' WHERE disease = "{disease}" AND year = {year}'
                 )
 
     @task(task_id='update_prelims')
@@ -296,7 +306,7 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
                     f' SET last_insert = {ti.execution_date}'
-                    f' WHERE disease = {disease} AND year = {year}'
+                    f' WHERE disease = "{disease}" AND year = {year}'
                 )
 
     @task(trigger_rule="all_done")
