@@ -111,8 +111,9 @@ def task_flow_for(disease: str):
                     f' WHERE disease = "{disease}"'
                 )
                 years = cur.all()
-            except UndefinedColumn:
-                years = []
+            except Exception as e:
+                if "UndefinedColumn" in str(e):
+                    years = []
             db_years.extend(list(chain(*years)))
         not_inserted = [y for y in all_years if y not in db_years]
 
@@ -124,8 +125,9 @@ def task_flow_for(disease: str):
                     f' WHERE disease = "{disease}" AND prelim IS True'
                 )
                 years = cur.all()
-            except UndefinedColumn:
-                years = []
+            except Exception as e:
+                if "UndefinedColumn" in str(e):
+                    years = []
             db_years.extend(list(chain(*years)))
 
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
@@ -189,7 +191,7 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'{disease}, {year}, False, {ti.execution_date})'
+                    f'"{disease}", {year}, False, {ti.execution_date})'
                 )
                 cur = conn.execute(
                     f'SELECT COUNT(*) FROM {schema}.{tablename}'
@@ -210,7 +212,7 @@ def task_flow_for(disease: str):
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'{disease}, {year}, True, {ti.execution_date})'
+                    f'"{disease}", {year}, True, {ti.execution_date})'
                 )
                 cur = conn.execute(
                     f'SELECT COUNT(*) FROM {schema}.{tablename}'

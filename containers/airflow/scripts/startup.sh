@@ -20,6 +20,9 @@ echo "========= airflow scheduler ========="
 airflow scheduler &
 sleep 10
 
+airflow dags reserialize
+sleep 5
+
 # just to keep the prompt blocked
 mkdir -p /tmp/empty
 cd /tmp/empty
