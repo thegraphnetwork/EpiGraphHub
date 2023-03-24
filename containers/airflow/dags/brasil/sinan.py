@@ -85,9 +85,9 @@ def task_flow_for(disease: str):
     finals_years = list(map(int, FTP_SINAN(disease).get_years('finais')))
 
     get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
-
+    
     upload_df = lambda df: df.to_sql(
-        name=tablename, con=engine.connect(), schema=schema, if_exists='append'
+        name=tablename, con=engine.connect(), schema=schema, if_exists='append', index=False
     )
 
     @task(task_id='start')
