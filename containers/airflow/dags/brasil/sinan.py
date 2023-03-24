@@ -385,6 +385,8 @@ def metadata_tables():
     available, only skip it.
     """
 
+    engine = get_engine(credential_name=env.db.default_credential)
+
     @task(task_id="insert_metadata_tables")
     def metadata_tables():
         for disease in DISEASES:
@@ -393,8 +395,8 @@ def metadata_tables():
                 pd.DataFrame.to_sql(
                     metadata_df,
                     f"sinan_{normalize_str(disease)}_metadata",
-                    con=ENG,
-                    schema=SCHEMA,
+                    con=engine,
+                    schema='brasil',
                     if_exists="replace",
                 )
 
