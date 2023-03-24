@@ -1,6 +1,6 @@
 """
 @author Luã Bida Vacaro | github.com/luabida
-@date Last change on 2023-03-14
+@date Last change on 2023-03-24
 
 This is an Airflow DAG. This DAG is responsible for running scripts for
 collecting data from PySUS SINAN. The API that fetches the data is
@@ -14,27 +14,37 @@ Task Summary
 ------------
 
 start (PythonOperator):
-    This task is the start of the task flow. It will count the rows for
-    a disease and store it as a XCom value.
+    This task will create the control table, which will be responsible for
+    comparing the years for a disease in EGH SQL DB and the DBCs found on
+    DataSUS FTP server. It stores the information about the stage of the
+    year for the disease and when it was inserted.   
+
+get_updates (PythonOperator):
+    This task will compare the preliminary and final years between the data
+    on EGH DB and the DBC files from the DataSUS FTP server. It will store
+    as a dict which years should be updated, which should pass to final or 
+    insert it for the first time.
 
 extract (PythonOperator):
-    This task downloads parquet file from DataSUS via PySUS for a SINAN
-    disease.
+    This task will download every DBC from `get_updates` task as parquet.
 
-upload (PythonOperator):
-    This task will upload a list of parquet files extracted into the EGH
-    Postgres Database, parsing the disease name according to the docs:
-    https://epigraphhub.readthedocs.io/en/latest/instruction_name_tables.html#all-names-schema-name-table-name-and-column-names
+first_insertion (PythonOperator):
+    This task inserts every year from a SINAN disease that has not been found
+    on EGH DB. 
 
-diagnosis (PythonOperator):
-    This task will compare the number of rows before and after the insertion
-    and store the values as XComs.
+prelims_to_finals (PythonOperator):
+    This task will update the status for a year that have been passed from
+    preliminary to final.
 
-remove_parquets (PythonOperator):
-    This task will remove the parquet files returned from the extract task
+update_prelims (PythonOperator):
+    This task will delete and re-insert the rows for every preliminary year
+    and log the amount of new rows inserted into EGH DB.
 
-done (PythonOperator):
-    This task will fail if any task above fails, breaking the DAG.
+all_done (PythonOperator):
+    This task will remove every parquet extracted in the `extract` task.
+
+end (EmptyOperator):
+    The end of the Task Flow.
 """
 import pendulum
 import logging as logger
@@ -82,12 +92,6 @@ def task_flow_for(disease: str):
 
     @task(task_id='start')
     def start_task():
-        """
-        Task to start the workflow, extracts all the last update date
-        for the each DBC file in FTP server. SINAN DAG will use the
-        previous start task run to decide rather the dbc should be
-        inserted into DB or not.
-        """
         with engine.connect() as conn:
             conn.execute(
                 f'CREATE TABLE IF NOT EXISTS {schema}.sinan_update_ctl ('
@@ -309,7 +313,6 @@ def task_flow_for(disease: str):
     @task(trigger_rule='all_done')
     def remove_parquets(**kwargs) -> None:
         import shutil
-
         """
         This task will be responsible for deleting all parquet files
         downloaded. It will receive the same parquet dirs the `upload`
