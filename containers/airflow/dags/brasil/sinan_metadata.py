@@ -30,7 +30,7 @@ DEFAULT_ARGS = {
     tags=['SINAN', 'Brasil', 'Metadata'],
     start_date=pendulum.datetime(2022, 2, 1),
     catchup=False,
-    schedule_interval='@once',
+    schedule='@once',
 )
 def metadata_tables():
     """

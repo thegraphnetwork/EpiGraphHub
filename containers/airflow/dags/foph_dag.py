@@ -95,7 +95,7 @@ default_args = {
 
 
 @dag(
-    schedule_interval="@weekly",
+    schedule="@weekly",
     default_args=default_args,
     catchup=False,
     tags = ['CHE', 'FOPH', 'Switzerland']

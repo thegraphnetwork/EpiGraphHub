@@ -39,7 +39,6 @@ done (PythonOperator):
 import pendulum
 import logging as logger
 from datetime import timedelta
-from psycopg2.errors import UndefinedColumn
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -345,51 +344,28 @@ def task_flow_for(disease: str):
     ini >> dbcs >> E >> upload_new >> to_final >> prelims >> clean >> end
 
 
-from epigraphhub.data.brasil.sinan import DISEASES
-
-
-def create_dag(
-    disease: str,
-    schedule: str,
-    start: pendulum.datetime,
-):
-    """
-    This method will be responsible for creating a DAG for a
-    SINAN disease. It will receive the disease, its schedule
-    and the start date, returning a DAG with the task flow.
-    """
-    from airflow import DAG
-
-    sinan_tag = ['SINAN', 'Brasil']
-    sinan_tag.append(disease)
-    DEFAULT_ARGS.update(start_date=start)
-
-    dag = DAG(
-        'SINAN_' + DISEASES[disease],
-        default_args=DEFAULT_ARGS,  # Tasks and Dags
-        tags=sinan_tag,  # Only DAGs
-        start_date=start,
-        catchup=False,
-        schedule_interval=schedule,
-        dagrun_timeout=timedelta(minutes=10),
-    )
-
-    with dag:
-        task_flow_for(disease)
-
-    return dag
-
-
 # DAGs
 # Here its where the DAGs are created, an specific case can be specified
-for disease in DISEASES:
-    # Change DAG variables here
+from airflow.models.dag import DAG
+from epigraphhub.data.brasil.sinan import DISEASES
+from airflow.utils.dag_parsing_context import get_parsing_context
 
+current_dag_id = get_parsing_context().dag_id
+
+for disease in DISEASES:
     dag_id = 'SINAN_' + DISEASES[disease]
-    globals()[dag_id] = create_dag(
-        disease,
-        schedule='@monthly',
-        start=pendulum.datetime(
+    if current_dag_id is not None and current_dag_id != dag_id:
+        continue  # skip generation of non-selected DAG
+
+    with DAG(
+        dag_id=dag_id,
+        default_args=DEFAULT_ARGS,
+        tags=['SINAN', 'Brasil', disease],
+        start_date=pendulum.datetime(
             2022, 2, len(disease)
-        ),  # avoid memory overhead
-    )
+        ),
+        catchup=False,
+        schedule='@monthly',
+        dagrun_timeout=timedelta(minutes=10),
+    ):
+        task_flow_for(disease)

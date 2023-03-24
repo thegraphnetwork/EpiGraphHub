@@ -3,7 +3,7 @@ channels:
   - nodefaults
   - conda-forge
 dependencies:
-  - airflow 2.3.3
+  - airflow 2.5.2
   - fiona
   - geopandas
   - gsheetsdb
