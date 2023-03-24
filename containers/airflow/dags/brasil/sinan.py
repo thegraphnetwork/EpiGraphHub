@@ -37,29 +37,14 @@ done (PythonOperator):
     This task will fail if any task above fails, breaking the DAG.
 
 """
-import shutil
 import pendulum
-import pandas as pd
 import logging as logger
-
-from itertools import chain
 from datetime import timedelta
-from pysus.online_data import SINAN
 
-from airflow import DAG
-from airflow.decorators import task, dag
+from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
-from airflow.exceptions import AirflowSkipException
 
 from epigraphhub.settings import env
-from epigraphhub.connection import get_engine
-from epigraphhub.data.brasil.sinan import (
-    FTP_SINAN,
-    extract,
-    viz,
-    DISEASES,
-    normalize_str,
-)
 
 DEFAULT_ARGS = {
     "owner": "epigraphhub",
@@ -78,6 +63,10 @@ def task_flow_for(disease: str):
     creating the task dependencies for the SINAN disease that is passed
     in. SINAN DAGs will have the same workflow.
     """
+    from itertools import chain
+    from epigraphhub.connection import get_engine
+    from airflow.exceptions import AirflowSkipException
+    from epigraphhub.data.brasil.sinan import FTP_SINAN, normalize_str
 
     schema = 'brasil'
     tablename = "sinan_" + normalize_str(disease) + "_m"
@@ -87,7 +76,7 @@ def task_flow_for(disease: str):
     finals_years = list(map(int, FTP_SINAN(disease).get_years('finais')))
 
     get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
-
+    
     upload_df = lambda df: df.to_sql(
             name=tablename,
             con=engine.connect(),
@@ -144,6 +133,8 @@ def task_flow_for(disease: str):
 
     @task(task_id="extract")
     def extract_parquets(**kwargs) -> dict:
+        from epigraphhub.data.brasil.sinan import extract
+
         ti = kwargs["ti"]
         years = ti.xcom_pull(task_ids="get_updates")
 
@@ -159,6 +150,8 @@ def task_flow_for(disease: str):
     
     @task(task_id='first_insertion')
     def upload_not_inserted(**kwargs) -> dict:
+        from epigraphhub.data.brasil.sinan import viz
+
         ti = kwargs["ti"]
         parquets = ti.xcom_pull(task_ids="extract")['pqs_to_insert']
         inserted_rows = dict()
@@ -221,6 +214,8 @@ def task_flow_for(disease: str):
 
     @task(task_id='prelims_to_finals')
     def update_prelim_to_final(**kwargs):
+        from epigraphhub.data.brasil.sinan import viz
+
         ti = kwargs["ti"]
         parquets = ti.xcom_pull(task_ids="extract")['pqs_to_finals']
 
@@ -259,6 +254,8 @@ def task_flow_for(disease: str):
 
     @task(task_id='update_prelims')
     def update_prelim_parquets(**kwargs):
+        from epigraphhub.data.brasil.sinan import viz
+
         ti = kwargs["ti"]
         parquets = ti.xcom_pull(task_ids="extract")['pqs_to_update']
 
@@ -304,6 +301,7 @@ def task_flow_for(disease: str):
 
     @task(trigger_rule="all_done")
     def remove_parquets(**kwargs) -> None:
+        import shutil
         """
         This task will be responsible for deleting all parquet files
         downloaded. It will receive the same parquet dirs the `upload`
@@ -339,6 +337,8 @@ def task_flow_for(disease: str):
     ini >> dbcs >> E >> upload_new >> to_final >> prelims >> clean >> end
 
 
+from epigraphhub.data.brasil.sinan import DISEASES
+
 def create_dag(
     disease: str,
     schedule: str,
@@ -349,6 +349,8 @@ def create_dag(
     SINAN disease. It will receive the disease, its schedule
     and the start date, returning a DAG with the task flow.
     """
+    from airflow import DAG
+
     sinan_tag = ["SINAN", "Brasil"]
     sinan_tag.append(disease)
     DEFAULT_ARGS.update(start_date=start)
@@ -360,6 +362,7 @@ def create_dag(
         start_date=start,
         catchup=False,
         schedule_interval=schedule,
+        dagrun_timeout=timedelta(minutes=10)
     )
 
     with dag:
@@ -369,46 +372,6 @@ def create_dag(
 
 
 # DAGs
-@dag(
-    "SINAN_METADATA",
-    default_args=DEFAULT_ARGS,
-    tags=["SINAN", "Brasil", "Metadata"],
-    start_date=pendulum.datetime(2022, 2, 1),
-    catchup=False,
-    schedule_interval="@once",
-)
-def metadata_tables():
-    """
-    This DAG will run only once and create a table in the
-    database with each metadata found in the pysus SINAN
-    disease metadata. It will not fail if a metadata is not
-    available, only skip it.
-    """
-
-    engine = get_engine(credential_name=env.db.default_credential)
-
-    @task(task_id="insert_metadata_tables")
-    def metadata_tables():
-        for disease in DISEASES:
-            try:
-                metadata_df = SINAN.metadata_df(disease)
-                pd.DataFrame.to_sql(
-                    metadata_df,
-                    f"sinan_{normalize_str(disease)}_metadata",
-                    con=engine,
-                    schema='brasil',
-                    if_exists="replace",
-                )
-
-                logger.info(f"Metadata table for {disease} updated.")
-            except Exception:
-                print(f"No metadata available for {disease}")
-
-    meta = metadata_tables()
-    meta
-
-
-dag = metadata_tables()
 # Here its where the DAGs are created, an specific case can be specified
 for disease in DISEASES:
     # Change DAG variables here
