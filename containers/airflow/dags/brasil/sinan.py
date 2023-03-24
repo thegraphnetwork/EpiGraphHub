@@ -42,16 +42,14 @@ import pendulum
 import pandas as pd
 import logging as logger
 
-from ftplib import FTP
-from operator import is_not
 from itertools import chain
-from functools import partial
 from datetime import timedelta
 from pysus.online_data import SINAN
 
 from airflow import DAG
 from airflow.decorators import task, dag
-from airflow.models import DagRun, TaskInstance
+from airflow.operators.empty import EmptyOperator
+from airflow.exceptions import AirflowSkipException
 
 from epigraphhub.settings import env
 from epigraphhub.connection import get_engine
@@ -87,6 +85,15 @@ def task_flow_for(disease: str):
 
     prelim_years = list(map(int, FTP_SINAN(disease).get_years('prelim')))
     finals_years = list(map(int, FTP_SINAN(disease).get_years('finais')))
+
+    get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
+
+    upload_df = lambda df: df.to_sql(
+            name=tablename,
+            con=engine.connect(),
+            schema=schema,
+            if_exists='append'
+        )
 
     @task(task_id="start")
     def start_task():
@@ -142,7 +149,7 @@ def task_flow_for(disease: str):
 
         extract_pqs = lambda stage: extract.download(
             disease=disease, years=years[stage]
-            ) if any(years[stage]) else []
+            ) if any(years[stage]) else ()
 
         return dict(
             pqs_to_insert = extract_pqs('to_insert'),
@@ -151,10 +158,14 @@ def task_flow_for(disease: str):
         )
     
     @task(task_id='first_insertion')
-    def upload_not_inserted(**kwargs):
+    def upload_not_inserted(**kwargs) -> dict:
         ti = kwargs["ti"]
-        parquets = ti.xcom_pull(task_ids="extract")
-        get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
+        parquets = ti.xcom_pull(task_ids="extract")['pqs_to_insert']
+        inserted_rows = dict()
+        
+        if not parquets:
+            logger.info('There is no new DBCs to insert on DB')
+            raise AirflowSkipException()
 
         finals, prelims = ([], [])
         for parquet in parquets:
@@ -163,91 +174,133 @@ def task_flow_for(disease: str):
                 if get_year(parquet) in finals_years 
                 else prelims.append(get_year(parquet))
             )
-
-        upload = lambda df: df.to_sql(
-            name=tablename,
-            con=engine.connect(),
-            schema=schema,
-            if_exists='append'
-        )
-
-        for final_pq in finals:
-            df = viz(final_pq)
-            df['year'] = (get_year(final_pq))
+        
+        for final_pq in (finals or []):
+            year = get_year(final_pq)
+            df = viz.parquet(final_pq)
+            if df.empty:
+                raise ValueError('DataFrame is empty')
+            df['year'] = (year)
             df['prelim'] = (False)
-            upload(df)
+            upload_df(df)
             logger.info(f'{final_pq} inserted into db')
             with engine.connect() as conn:
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'{disease},{get_year(final_pq)},False,{ti.execution_date})'
+                    f'{disease}, {year}, False, {ti.execution_date})'
                 )
+                cur = conn.execute(
+                    f'SELECT COUNT(*) FROM {schema}.{tablename}'
+                    f' WHERE year = {year}'
+                )
+                inserted_rows[year] = cur.fetchone[0]
 
-        for prelim_pq in prelims:
-            df = viz(prelim_pq)
-            df['year'] = (get_year(prelim_pq))
+        for prelim_pq in prelims or []:
+            year = get_year(prelim_pq)
+            df = viz.parquet(prelim_pq)
+            if df.empty:
+                raise ValueError('DataFrame is empty')
+            df['year'] = (year)
             df['prelim'] = (True)
-            upload(df)
+            upload_df(df)
             logger.info(f'{prelim_pq} inserted into db')
             with engine.connect() as conn:
                 conn.execute(
                     f'INSERT INTO {schema}.sinan_update_ctl('
                     'disease, year, prelim, last_insert) VALUES ('
-                    f'{disease},{get_year(prelim_pq)},True,{ti.execution_date})'
+                    f'{disease}, {year}, True, {ti.execution_date})'
+                )
+                cur = conn.execute(
+                    f'SELECT COUNT(*) FROM {schema}.{tablename}'
+                    f' WHERE year = {year}'
+                )
+                inserted_rows[year] = cur.fetchone[0]
+        
+        return inserted_rows
+
+    @task(task_id='prelims_to_finals')
+    def update_prelim_to_final(**kwargs):
+        ti = kwargs["ti"]
+        parquets = ti.xcom_pull(task_ids="extract")['pqs_to_finals']
+
+        if not parquets:
+            logger.info(
+                'Not found any prelim DBC that have been passed to finals'
+            )
+            raise AirflowSkipException()
+        
+        for parquet in parquets:
+            year = get_year(parquet)
+            df = viz.parquet(parquet)
+            if df.empty:
+                raise ValueError('DataFrame is empty')
+            df['year'] = (year)
+            df['prelim'] = (False)
+
+            with engine.connect() as conn:
+                conn.execute(
+                    f'DELETE FROM {schema}.{tablename}'
+                    f' WHERE year = {year}'
+                    f' AND prelim = True'
+                )
+            
+            upload_df(df)
+            logger.info(
+                f'{parquet} data updated from prelim to final.'
+            )
+
+            with engine.connect() as conn:
+                conn.execute(
+                    f'UPDATE {schema}.sinan_update_ctl'
+                    f' SET prelim = False, last_insert = {ti.execution_date}'
+                    f' WHERE disease = {disease} AND year = {year}'
                 )
 
-
-
-
-
-
-    @task(task_id="extract", retries=3)
-    def download(disease: str) -> list:
-        """
-        This task is responsible for downloading every year found for
-        a disease. It will download at `/tmp/pysus/` and return a list
-        with downloaded parquet paths.
-        """
-        years = FTP_SINAN(disease).get_years()
-        parquet_dirs = extract.download(disease=disease, years=years)
-        logger.info(f"Data for {disease} extracted")
-        return parquet_dirs
-
-    @task(task_id="upload")
-    def upload(disease: str, **kwargs) -> None:
-        """
-        This task is responsible for uploading each parquet dir into
-        postgres database. It receives the disease name and the xcom
-        from `download` task to insert.
-        """
+    @task(task_id='update_prelims')
+    def update_prelim_parquets(**kwargs):
         ti = kwargs["ti"]
-        parquets_dirs = ti.xcom_pull(task_ids="extract")
-        for dir in parquets_dirs:
-            try:
-                loading.upload(disease=disease, parquet_dir=dir)
-                logger.info(f"{dir} inserted into db")
-            except Exception as e:
-                logger.error(e)
-                raise e
+        parquets = ti.xcom_pull(task_ids="extract")['pqs_to_update']
 
-    @task(task_id="diagnosis")
-    def compare_tables_rows(**kwargs) -> int:
-        """
-        This task will be responsible for checking how many rows were
-        inserted into a disease table. It will compare with the start
-        task and store the difference as a xcom.
-        """
-        ti = kwargs["ti"]
-        ini_rows_amt = ti.xcom_pull(task_ids="start")
-        end_rows_amt = _count_table_rows()
+        if not parquets:
+            logger.info('No preliminary parquet found to update')
+            raise AirflowSkipException()    
 
-        new_rows = end_rows_amt["rows"] - ini_rows_amt["rows"]
+        for parquet in parquets:
+            year = get_year(parquet)
+            df = viz.parquet(parquet)
+            if df.empty:
+                raise ValueError('DataFrame is empty')
+            df['year'] = (year)
+            df['prelim'] = (True)
 
-        logger.info(f"{new_rows} new rows inserted into brasil.{tablename}")
+            with engine.connect() as conn:
+                cur = conn.execute(
+                    f'SELECT COUNT(*) FROM {schema}.{tablename}'
+                    f' WHERE year = {year}'
+                )
+                conn.execute(
+                    f'DELETE FROM {schema}.{tablename}'
+                    f' WHERE year = {year}'
+                    f' AND prelim = True'
+                )
+                old_rows = cur.fetchone[0]
+            
+            upload_df(df)
+            logger.info(
+                f'{parquet} data updated'
+                '\n~~~~~ '
+                f'\nRows inserted: {len(df)}'
+                f'\nNew rows: {len(df) - int(old_rows)}'
+                '\n~~~~~ '
+            )
 
-        ti.xcom_push(key="rows", value=ini_rows_amt["rows"])
-        ti.xcom_push(key="new_rows", value=new_rows)
+            with engine.connect() as conn:
+                conn.execute(
+                    f'UPDATE {schema}.sinan_update_ctl'
+                    f' SET last_insert = {ti.execution_date}'
+                    f' WHERE disease = {disease} AND year = {year}'
+                )
 
     @task(trigger_rule="all_done")
     def remove_parquets(**kwargs) -> None:
@@ -257,30 +310,33 @@ def task_flow_for(disease: str):
         task receives and delete all them.
         """
         ti = kwargs["ti"]
-        parquet_dirs = ti.xcom_pull(task_ids="extract")
+        pqts = ti.xcom_pull(task_ids="extract")
+
+        parquet_dirs = list(
+            chain(*(pqts['to_insert'], pqts['to_finals'], pqts['to_update']))
+        )
 
         for dir in parquet_dirs:
             shutil.rmtree(dir, ignore_errors=True)
             logger.warning(f"{dir} removed")
 
-    @task(trigger_rule="none_failed")
-    def done(**kwargs) -> None:
-        """This task will fail if any upstream task fails."""
-        ti = kwargs["ti"]
-        print(ti.xcom_pull(key="state", task_ids="upload"))
-        if ti.xcom_pull(key="state", task_ids="upload") == "FAILED":
-            raise ValueError("Force failure because upstream task has failed")
+
+    end = EmptyOperator(
+        task_id="done",
+        trigger_rule="all_success",
+    )
 
     # Defining the tasks
-    ini = start()
-    E = download(disease)
-    L = upload(disease)
-    diagnosis = compare_tables_rows()
+    ini = start_task()
+    dbcs = dbcs_to_fetch()
+    E = extract_parquets()
+    upload_new = upload_not_inserted()
+    to_final = update_prelim_to_final()
+    prelims = update_prelim_parquets()
     clean = remove_parquets()
-    end = done()
 
     # Task flow
-    ini >> E >> L >> diagnosis >> clean >> end
+    ini >> dbcs >> E >> upload_new >> to_final >> prelims >> clean >> end
 
 
 def create_dag(
