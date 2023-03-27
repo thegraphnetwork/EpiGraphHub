@@ -50,6 +50,7 @@ import os
 import pendulum
 import logging as logger
 from datetime import timedelta
+from psycopg2.errors import UndefinedColumn
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -134,9 +135,8 @@ def task_flow_for(disease: str):
                     f" WHERE disease = '{disease}' AND prelim IS True"
                 )
                 years = cur.all()
-            except Exception as e:
-                if "UndefinedColumn" in str(e):
-                    years = []
+            except UndefinedColumn:
+                years = []
             db_years.extend(list(chain(*years)))
         # Get years that are not prelim anymore
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
@@ -209,37 +209,36 @@ def task_flow_for(disease: str):
                 try:
                     upload_df(df)
                     logger.info(f'{parquet} inserted into db')
-                except Exception as e:
-                    if "UndefinedColumn" in str(e):
-                        sql_dtypes = {
-                            'int64': 'INT',
-                            'float64': 'FLOAT',
-                            'string': 'TEXT',
-                            'object': 'TEXT',
-                            'datetime64[ns]': 'TEXT',
-                        }
-                        
-                        with engine.connect() as conn:
-                            cur = conn.execute(
-                                f'SELECT * FROM {schema}.{tablename} LIMIT 0'
-                            )
-                            tcolumns = cur.keys()
+                except UndefinedColumn:
+                    sql_dtypes = {
+                        'int64': 'INT',
+                        'float64': 'FLOAT',
+                        'string': 'TEXT',
+                        'object': 'TEXT',
+                        'datetime64[ns]': 'TEXT',
+                    }
+                    
+                    with engine.connect() as conn:
+                        cur = conn.execute(
+                            f'SELECT * FROM {schema}.{tablename} LIMIT 0'
+                        )
+                        tcolumns = cur.keys()
 
-                        newcols = [c for c in df.columns if c not in tcolumns]
+                    newcols = [c for c in df.columns if c not in tcolumns]
 
-                        insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
-                        for column in newcols:
-                            t = df[column].dtype
-                            sqlt = sql_dtypes[str(t)]
-                            add_col = f' ADD COLUMN {column} {str(sqlt)}'
-                            if column == newcols[-1]:
-                                add_col += ';'
-                            else:
-                                add_col += ','
-                            insert_cols_query += add_col
+                    insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
+                    for column in newcols:
+                        t = df[column].dtype
+                        sqlt = sql_dtypes[str(t)]
+                        add_col = f' ADD COLUMN {column} {str(sqlt)}'
+                        if column == newcols[-1]:
+                            add_col += ';'
+                        else:
+                            add_col += ','
+                        insert_cols_query += add_col
 
-                        with engine.connect() as conn:
-                            conn.execute(insert_cols_query)
+                    with engine.connect() as conn:
+                        conn.execute(insert_cols_query)
                 
                 with engine.connect() as conn:
                     conn.execute(
@@ -251,7 +250,7 @@ def task_flow_for(disease: str):
                         f'SELECT COUNT(*) FROM {schema}.{tablename}'
                         f' WHERE year = {year}'
                     )
-                    inserted_rows[year] = cur.fetchone()[0]
+                    inserted_rows[str(year)] = cur.fetchone()[0]
 
         if finals:
             insert_parquerts('finals')
