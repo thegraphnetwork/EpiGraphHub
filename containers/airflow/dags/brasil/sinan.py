@@ -188,7 +188,7 @@ def task_flow_for(disease: str):
                 else prelims.append(parquet)
             )
 
-        def insert_parquerts(stage):
+        def insert_parquets(stage):
             parquets = finals or [] if stage == 'finals' else prelims or []
             prelim = False if stage == 'finals' else True
 
@@ -253,9 +253,9 @@ def task_flow_for(disease: str):
                     inserted_rows[str(year)] = cur.fetchone()[0]
 
         if finals:
-            insert_parquerts('finals')
+            insert_parquets('finals')
         if prelims:
-            insert_parquerts('prelims')
+            insert_parquets('prelims')
 
         return inserted_rows
 
