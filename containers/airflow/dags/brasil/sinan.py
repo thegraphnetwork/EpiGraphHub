@@ -46,6 +46,7 @@ all_done (PythonOperator):
 end (EmptyOperator):
     The end of the Task Flow.
 """
+import os
 import pendulum
 import logging as logger
 from datetime import timedelta
@@ -169,7 +170,7 @@ def task_flow_for(disease: str):
 
     @task(task_id='first_insertion')
     def upload_not_inserted(**kwargs) -> dict:
-        from epigraphhub.data.brasil.sinan import viz
+        from pysus.online_data import parquets_to_dataframe
 
         ti = kwargs['ti']
         parquets = ti.xcom_pull(task_ids='extract')['pqs_to_insert']
@@ -184,19 +185,23 @@ def task_flow_for(disease: str):
             (
                 finals.append(parquet)
                 if get_year(parquet) in finals_years
-                else prelims.append(get_year(parquet))
+                else prelims.append(parquet)
             )
 
         def insert_parquerts(stage):
             parquets = finals or [] if stage == 'finals' else prelims or []
             prelim = False if stage == 'finals' else True
-            print(parquets)
+
             for parquet in parquets:
+                if not any(os.listdir(parquet)):
+                    continue
+
                 year = get_year(parquet)
-                df = viz.parquet(str(parquet))
+                df = parquets_to_dataframe(str(parquet))
 
                 if df.empty:
-                    raise ValueError('DataFrame is empty')
+                    logger('DataFrame is empty')
+                    continue
 
                 df['year'] = year
                 df['prelim'] = prelim
@@ -257,7 +262,7 @@ def task_flow_for(disease: str):
 
     @task(task_id='prelims_to_finals')
     def update_prelim_to_final(**kwargs):
-        from epigraphhub.data.brasil.sinan import viz
+        from pysus.online_data import parquets_to_dataframe
 
         ti = kwargs['ti']
         parquets = ti.xcom_pull(task_ids='extract')['pqs_to_finals']
@@ -269,10 +274,16 @@ def task_flow_for(disease: str):
             raise AirflowSkipException()
 
         for parquet in parquets:
+            if not any(os.listdir(parquet)):
+                continue
+
             year = get_year(parquet)
-            df = viz.parquet(parquet)
+            df = parquets_to_dataframe(parquet)
+
             if df.empty:
-                raise ValueError('DataFrame is empty')
+                logger.info('DataFrame is empty')
+                continue
+
             df['year'] = year
             df['prelim'] = False
             df.columns = map(str.lower, df.columns)
@@ -296,7 +307,7 @@ def task_flow_for(disease: str):
 
     @task(task_id='update_prelims')
     def update_prelim_parquets(**kwargs):
-        from epigraphhub.data.brasil.sinan import viz
+        from pysus.online_data import parquets_to_dataframe
 
         ti = kwargs['ti']
         parquets = ti.xcom_pull(task_ids='extract')['pqs_to_update']
@@ -306,10 +317,16 @@ def task_flow_for(disease: str):
             raise AirflowSkipException()
 
         for parquet in parquets:
+            if not any(os.listdir(parquet)):
+                continue
+
             year = get_year(parquet)
-            df = viz.parquet(parquet)
+            df = parquets_to_dataframe(parquet)
+
             if df.empty:
-                raise ValueError('DataFrame is empty')
+                logger.info('DataFrame is empty')
+                continue
+
             df['year'] = year
             df['prelim'] = True
             df.columns = map(str.lower, df.columns)
