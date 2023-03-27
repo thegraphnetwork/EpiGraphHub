@@ -169,7 +169,7 @@ def task_flow_for(disease: str):
             pqs_to_update=extract_pqs('to_update'),
         )
 
-    @task(task_id='first_insertion')
+    @task(task_id='first_insertion', trigger_rule='all_done')
     def upload_not_inserted(**kwargs) -> dict:
         from pysus.online_data import parquets_to_dataframe
 
@@ -261,7 +261,7 @@ def task_flow_for(disease: str):
 
         return inserted_rows
 
-    @task(task_id='prelims_to_finals')
+    @task(task_id='prelims_to_finals', trigger_rule='all_done')
     def update_prelim_to_final(**kwargs):
         from pysus.online_data import parquets_to_dataframe
 
@@ -306,7 +306,7 @@ def task_flow_for(disease: str):
                     f" WHERE disease = '{disease}' AND year = {year}"
                 )
 
-    @task(task_id='update_prelims')
+    @task(task_id='update_prelims', trigger_rule='all_done')
     def update_prelim_parquets(**kwargs):
         from pysus.online_data import parquets_to_dataframe
 
