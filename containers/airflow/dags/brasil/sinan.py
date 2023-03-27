@@ -49,7 +49,6 @@ end (EmptyOperator):
 import pendulum
 import logging as logger
 from datetime import timedelta
-from sqlalchemy import MetaData, Table, Integer, Float, String, DateTime
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -120,7 +119,7 @@ def task_flow_for(disease: str):
                 )
                 years = cur.all()
             except Exception as e:
-                if "UndefinedColumn" in str(e):
+                if "UndefinedColumn" or "NoSuchTableError" in str(e):
                     years = []
             db_years.extend(list(chain(*years)))
         # Compare years found in ctl table with FTP server
@@ -191,10 +190,10 @@ def task_flow_for(disease: str):
         def insert_parquerts(stage):
             parquets = finals or [] if stage == 'finals' else prelims or []
             prelim = False if stage == 'finals' else True
-
+            print(parquets)
             for parquet in parquets:
                 year = get_year(parquet)
-                df = viz.parquet(parquet)
+                df = viz.parquet(str(parquet))
 
                 if df.empty:
                     raise ValueError('DataFrame is empty')
@@ -208,28 +207,26 @@ def task_flow_for(disease: str):
                 except Exception as e:
                     if "UndefinedColumn" in str(e):
                         sql_dtypes = {
-                            'int64': Integer,
-                            'float64': Float,
-                            'object': String,
-                            'datetime64[ns]': DateTime,
+                            'int64': 'INT',
+                            'float64': 'FLOAT',
+                            'string': 'TEXT',
+                            'object': 'TEXT',
+                            'datetime64[ns]': 'TEXT',
                         }
-                        metadata = MetaData()
-                        metadata.reflect(bind=engine)
-                        table = Table(
-                            f'{schema}.{tablename}', 
-                            metadata, 
-                            autoload=True, 
-                            autoload_with=engine
-                        )
+                        
+                        with engine.connect() as conn:
+                            cur = conn.execute(
+                                f'SELECT * FROM {schema}.{tablename} LIMIT 0'
+                            )
+                            tcolumns = cur.keys()
 
-                        tcolumns = [column.name for column in table.columns]
                         newcols = [c for c in df.columns if c not in tcolumns]
 
                         insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
                         for column in newcols:
                             t = df[column].dtype
                             sqlt = sql_dtypes[str(t)]
-                            add_col = f' ADD COLUMN {column} {sqlt}'
+                            add_col = f' ADD COLUMN {column} {str(sqlt)}'
                             if column == newcols[-1]:
                                 add_col += ';'
                             else:
@@ -250,7 +247,7 @@ def task_flow_for(disease: str):
                         f' WHERE year = {year}'
                     )
                     inserted_rows[year] = cur.fetchone()[0]
-                    
+
         if finals:
             insert_parquerts('finals')
         if prelims:
