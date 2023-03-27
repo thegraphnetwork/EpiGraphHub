@@ -135,8 +135,9 @@ def task_flow_for(disease: str):
                     f" WHERE disease = '{disease}' AND prelim IS True"
                 )
                 years = cur.all()
-            except UndefinedColumn:
-                years = []
+            except Exception as e:
+                if "UndefinedColumn" in str(e):
+                    years = []
             db_years.extend(list(chain(*years)))
         # Get years that are not prelim anymore
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
@@ -209,37 +210,38 @@ def task_flow_for(disease: str):
                 try:
                     upload_df(df)
                     logger.info(f'{parquet} inserted into db')
-                except UndefinedColumn:
-                    sql_dtypes = {
-                        'int64': 'INT',
-                        'float64': 'FLOAT',
-                        'string': 'TEXT',
-                        'object': 'TEXT',
-                        'datetime64[ns]': 'TEXT',
-                    }
+                except Exception as e:
+                    if "UndefinedColumn" in str(e):
+                        sql_dtypes = {
+                            'int64': 'INT',
+                            'float64': 'FLOAT',
+                            'string': 'TEXT',
+                            'object': 'TEXT',
+                            'datetime64[ns]': 'TEXT',
+                        }
+                        
+                        with engine.connect() as conn:
+                            cur = conn.execute(
+                                f'SELECT * FROM {schema}.{tablename} LIMIT 0'
+                            )
+                            tcolumns = cur.keys()
+
+                        newcols = [c for c in df.columns if c not in tcolumns]
+
+                        insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
+                        for column in newcols:
+                            t = df[column].dtype
+                            sqlt = sql_dtypes[str(t)]
+                            add_col = f' ADD COLUMN {column} {str(sqlt)}'
+                            if column == newcols[-1]:
+                                add_col += ';'
+                            else:
+                                add_col += ','
+                            insert_cols_query += add_col
+
+                        with engine.connect() as conn:
+                            conn.execute(insert_cols_query)
                     
-                    with engine.connect() as conn:
-                        cur = conn.execute(
-                            f'SELECT * FROM {schema}.{tablename} LIMIT 0'
-                        )
-                        tcolumns = cur.keys()
-
-                    newcols = [c for c in df.columns if c not in tcolumns]
-
-                    insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
-                    for column in newcols:
-                        t = df[column].dtype
-                        sqlt = sql_dtypes[str(t)]
-                        add_col = f' ADD COLUMN {column} {str(sqlt)}'
-                        if column == newcols[-1]:
-                            add_col += ';'
-                        else:
-                            add_col += ','
-                        insert_cols_query += add_col
-
-                    with engine.connect() as conn:
-                        conn.execute(insert_cols_query)
-                
                 with engine.connect() as conn:
                     conn.execute(
                         f'INSERT INTO {schema}.sinan_update_ctl('
@@ -404,6 +406,8 @@ from airflow.models.dag import DAG
 from epigraphhub.data.brasil.sinan import DISEASES
 from airflow.utils.dag_parsing_context import get_parsing_context
 
+from random import randint
+
 current_dag_id = get_parsing_context().dag_id
 
 for disease in DISEASES:
@@ -416,7 +420,7 @@ for disease in DISEASES:
         default_args=DEFAULT_ARGS,
         tags=['SINAN', 'Brasil', disease],
         start_date=pendulum.datetime(
-            2022, 2, len(disease)
+            2022, 2, randint(1,28)
         ),
         catchup=False,
         schedule='@monthly',
