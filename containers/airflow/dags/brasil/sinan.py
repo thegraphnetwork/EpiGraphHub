@@ -49,6 +49,7 @@ end (EmptyOperator):
 import pendulum
 import logging as logger
 from datetime import timedelta
+from sqlalchemy import MetaData, Table, Integer, Float, String, DateTime
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -87,7 +88,11 @@ def task_flow_for(disease: str):
     get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
     
     upload_df = lambda df: df.to_sql(
-        name=tablename, con=engine.connect(), schema=schema, if_exists='append', index=False
+        name=tablename, 
+        con=engine.connect(), 
+        schema=schema, 
+        if_exists='append', 
+        index=False
     )
 
     @task(task_id='start')
@@ -118,6 +123,7 @@ def task_flow_for(disease: str):
                 if "UndefinedColumn" in str(e):
                     years = []
             db_years.extend(list(chain(*years)))
+        # Compare years found in ctl table with FTP server
         not_inserted = [y for y in all_years if y not in db_years]
 
         db_prelimns = []
@@ -132,8 +138,9 @@ def task_flow_for(disease: str):
                 if "UndefinedColumn" in str(e):
                     years = []
             db_years.extend(list(chain(*years)))
-
+        # Get years that are not prelim anymore
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
+        # Get prelims
         prelim_to_update = [y for y in prelim_years if y in db_prelimns]
 
         return dict(
@@ -150,9 +157,9 @@ def task_flow_for(disease: str):
         years = ti.xcom_pull(task_ids='get_updates')
 
         extract_pqs = (
-            lambda stage: extract.download(disease=disease, years=years[stage])
-            if any(years[stage])
-            else ()
+            lambda stage: extract.download(
+                disease=disease, years=years[stage]
+            ) if any(years[stage]) else ()
         )
 
         return dict(
@@ -181,47 +188,73 @@ def task_flow_for(disease: str):
                 else prelims.append(get_year(parquet))
             )
 
-        for final_pq in finals or []:
-            year = get_year(final_pq)
-            df = viz.parquet(final_pq)
-            if df.empty:
-                raise ValueError('DataFrame is empty')
-            df['year'] = year
-            df['prelim'] = False
-            upload_df(df)
-            logger.info(f'{final_pq} inserted into db')
-            with engine.connect() as conn:
-                conn.execute(
-                    f'INSERT INTO {schema}.sinan_update_ctl('
-                    'disease, year, prelim, last_insert) VALUES ('
-                    f"'{disease}', {year}, False, '{ti.execution_date}')"
-                )
-                cur = conn.execute(
-                    f'SELECT COUNT(*) FROM {schema}.{tablename}'
-                    f' WHERE year = {year}'
-                )
-                inserted_rows[year] = cur.fetchone()[0]
+        def insert_parquerts(stage):
+            parquets = finals or [] if stage == 'finals' else prelims or []
+            prelim = False if stage == 'finals' else True
 
-        for prelim_pq in prelims or []:
-            year = get_year(prelim_pq)
-            df = viz.parquet(prelim_pq)
-            if df.empty:
-                raise ValueError('DataFrame is empty')
-            df['year'] = year
-            df['prelim'] = True
-            upload_df(df)
-            logger.info(f'{prelim_pq} inserted into db')
-            with engine.connect() as conn:
-                conn.execute(
-                    f'INSERT INTO {schema}.sinan_update_ctl('
-                    'disease, year, prelim, last_insert) VALUES ('
-                    f"'{disease}', {year}, True, '{ti.execution_date}')"
-                )
-                cur = conn.execute(
-                    f'SELECT COUNT(*) FROM {schema}.{tablename}'
-                    f' WHERE year = {year}'
-                )
-                inserted_rows[year] = cur.fetchone()[0]
+            for parquet in parquets:
+                year = get_year(parquet)
+                df = viz.parquet(parquet)
+
+                if df.empty:
+                    raise ValueError('DataFrame is empty')
+
+                df['year'] = year
+                df['prelim'] = prelim
+                df.columns = map(str.lower, df.columns)
+                try:
+                    upload_df(df)
+                    logger.info(f'{parquet} inserted into db')
+                except Exception as e:
+                    if "UndefinedColumn" in str(e):
+                        sql_dtypes = {
+                            'int64': Integer,
+                            'float64': Float,
+                            'object': String,
+                            'datetime64[ns]': DateTime,
+                        }
+                        metadata = MetaData()
+                        metadata.reflect(bind=engine)
+                        table = Table(
+                            f'{schema}.{tablename}', 
+                            metadata, 
+                            autoload=True, 
+                            autoload_with=engine
+                        )
+
+                        tcolumns = [column.name for column in table.columns]
+                        newcols = [c for c in df.columns if c not in tcolumns]
+
+                        insert_cols_query = f'ALTER TABLE {schema}.{tablename}'
+                        for column in newcols:
+                            t = df[column].dtype
+                            sqlt = sql_dtypes[str(t)]
+                            add_col = f' ADD COLUMN {column} {sqlt}'
+                            if column == newcols[-1]:
+                                add_col += ';'
+                            else:
+                                add_col += ','
+                            insert_cols_query += add_col
+
+                        with engine.connect() as conn:
+                            conn.execute(insert_cols_query)
+                
+                with engine.connect() as conn:
+                    conn.execute(
+                        f'INSERT INTO {schema}.sinan_update_ctl('
+                        'disease, year, prelim, last_insert) VALUES ('
+                        f"'{disease}', {year}, {prelim}, '{ti.execution_date}')"
+                    )
+                    cur = conn.execute(
+                        f'SELECT COUNT(*) FROM {schema}.{tablename}'
+                        f' WHERE year = {year}'
+                    )
+                    inserted_rows[year] = cur.fetchone()[0]
+                    
+        if finals:
+            insert_parquerts('finals')
+        if prelims:
+            insert_parquerts('prelims')
 
         return inserted_rows
 
@@ -245,6 +278,7 @@ def task_flow_for(disease: str):
                 raise ValueError('DataFrame is empty')
             df['year'] = year
             df['prelim'] = False
+            df.columns = map(str.lower, df.columns)
 
             with engine.connect() as conn:
                 conn.execute(
@@ -281,6 +315,7 @@ def task_flow_for(disease: str):
                 raise ValueError('DataFrame is empty')
             df['year'] = year
             df['prelim'] = True
+            df.columns = map(str.lower, df.columns)
 
             with engine.connect() as conn:
                 cur = conn.execute(
