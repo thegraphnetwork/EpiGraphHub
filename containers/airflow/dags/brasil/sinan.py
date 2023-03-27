@@ -138,7 +138,7 @@ def task_flow_for(disease: str):
             except Exception as e:
                 if "UndefinedColumn" in str(e):
                     years = []
-            db_years.extend(list(chain(*years)))
+            db_prelimns.extend(list(chain(*years)))
         # Get years that are not prelim anymore
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
         # Get prelims
