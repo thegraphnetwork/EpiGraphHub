@@ -3,3 +3,4 @@ pangres>=4.1
 sodapy
 shillelagh
 sqlalchemy-sybase
+sqlalchemy >=1,<2
