@@ -79,7 +79,7 @@ default_args = {
 
 
 @dag(
-    schedule_interval="@daily",
+    schedule="@daily",
     default_args=default_args,
     catchup=False,
     tags=['OWID']

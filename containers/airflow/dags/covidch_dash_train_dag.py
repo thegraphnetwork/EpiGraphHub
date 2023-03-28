@@ -45,7 +45,7 @@ default_args = {
 
 
 @dag(
-    schedule_interval=timedelta(days =60),
+    schedule=timedelta(days =60),
     default_args=default_args,
     catchup=False,
 )
