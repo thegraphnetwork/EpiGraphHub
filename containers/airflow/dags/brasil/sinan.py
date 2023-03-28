@@ -48,9 +48,9 @@ end (EmptyOperator):
 """
 import os
 import pendulum
+import psycopg2
 import logging as logger
 from datetime import timedelta
-from psycopg2.errors import UndefinedColumn
 
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
@@ -135,9 +135,8 @@ def task_flow_for(disease: str):
                     f" WHERE disease = '{disease}' AND prelim IS True"
                 )
                 years = cur.all()
-            except Exception as e:
-                if "UndefinedColumn" in str(e):
-                    years = []
+            except psycopg2.errors.lookup("42703"): #this is the UndefinedColumn code
+                years = []
             db_prelimns.extend(list(chain(*years)))
         # Get years that are not prelim anymore
         prelim_to_final = [y for y in finals_years if y in db_prelimns]
@@ -320,7 +319,6 @@ def task_flow_for(disease: str):
         for parquet in parquets:
             if not any(os.listdir(parquet)):
                 continue
-
             year = get_year(parquet)
             df = parquets_to_dataframe(parquet)
 

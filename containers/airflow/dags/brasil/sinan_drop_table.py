@@ -36,20 +36,21 @@ with DAG(
     schedule=None, #Only manually triggered 
     description='A DAG to delete a SINAN table in EGH db',
 ):
-    def drop_table(disease: str):
-        dis = normalize_str(disease)
-        tablename = 'sinan_' + dis + '_m'
-        with engine.connect() as conn:
-            conn.execute(
-                f'DROP TABLE brasil.{tablename}'
-            )
-            logger.warn(f'Dropped table {tablename} on schema brasil')
+    def drop_tables(diseases: list):
+        for disease in diseases:
+            dis = normalize_str(disease)
+            tablename = 'sinan_' + dis + '_m'
+            with engine.connect() as conn:
+                conn.execute(
+                    f'DROP TABLE brasil.{tablename}'
+                )
+                logger.warn(f'Dropped table {tablename} on schema brasil')
 
-    delete_table_task = PythonOperator(
+    delete_tables_task = PythonOperator(
         task_id='drop_table',
-        python_callable=drop_table,
-        op_kwargs={'disease': '{{ params.disease }}'},
-        params={'disease': 'disease'},
+        python_callable=drop_tables,
+        op_kwargs={'diseases': '{{ params.diseases }}'},
+        params={'diseases': 'diseases'},
     )
 
-    delete_table_task
+    delete_tables_task
