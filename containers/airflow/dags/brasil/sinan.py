@@ -402,16 +402,11 @@ def task_flow_for(disease: str):
 # Here its where the DAGs are created, an specific case can be specified
 from airflow.models.dag import DAG
 from epigraphhub.data.brasil.sinan import DISEASES
-from airflow.utils.dag_parsing_context import get_parsing_context
 
 from random import randint
 
-current_dag_id = get_parsing_context().dag_id
-
 for disease in DISEASES:
     dag_id = 'SINAN_' + DISEASES[disease]
-    if current_dag_id is not None and current_dag_id != dag_id:
-        continue  # skip generation of non-selected DAG
 
     with DAG(
         dag_id=dag_id,
