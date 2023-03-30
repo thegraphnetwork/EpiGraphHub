@@ -1,0 +1,31 @@
+version: 1.0.0
+compose-app: docker-compose
+service-groups:
+  - name: default
+    project-name: egh-prod
+    compose-path:
+      - containers/compose-base.yaml
+      - containers/compose-prod.yaml
+    env-file: .env
+    services:
+      default: superset,airflow
+      list:
+        - name: redis
+        - name: flower
+        - name: minio
+        - name: superset
+        - name: airflow
+        - name: postgres
+        
+  - name: dev
+    project-name: egh-dev
+    compose-path: 
+      - containers/compose-base.yaml
+      - containers/compose-dev.yaml
+    env-file: .env
+    services: superset,airflow
+      default: 
+      list:
+        - name: superset
+        - name: airflow
+        - name: postgres
