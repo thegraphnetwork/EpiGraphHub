@@ -166,26 +166,26 @@ $ conda activate epigraphhub
 
 ![fig2](https://user-images.githubusercontent.com/140123/165057193-c5a2b2a2-8f30-426d-9bac-8f559c01265d.png)
 
-The project provides three **compose** files, where one is the base
-definition (`containers/compose-base.yaml`) and the others are one for
-development (`containers/compose-dev.yaml`) and other for production
-(`containers/compose-prod.yaml`). Additionally, there is a **Makefile**
-file that provides `make` targets that helps to manage the docker services:
+The project provides three **compose** files, where one is the base definition
+(`containers/compose-base.yaml`) and the others are one for development
+(`containers/compose-dev.yaml`) and other for production
+(`containers/compose-prod.yaml`). Additionally, there is a **.makim.yaml** file
+that provides `makim` targets that helps to define targets and dependencies and a
+**.containers.sugar.yaml** file that provides `containers-sugar` commands to
+manage the usage of containers:
 
-- `containers-build`: builds docker images
-- `containers-start`: starts docker services
-- `containers-stop`: stops docker services
-- `containers-restart`: restarts docker services
-- `containers-logs`: shows docker
-- `containers-dev-prepare-db`: prepares the development version of the database
-- `containers-run-cron`: run the cron tasks
-- `containers-bash`: opens the docker service bash
+- `containers-sugar build`: builds docker images
+- `containers-sugar start`: starts docker services
+- `containers-sugar stop`: stops docker services
+- `containers-sugar restart`: restarts docker services
+- `containers-sugar logs`: shows docker
+- `makim containers.dev-prepare-db`: prepares the development version of the database
 
-This `make` targets runs by default docker for development. For production,
+This `makim` targets runs by default docker for development. For production,
 it is necessary to pass the argument `ENV=prod` , for example:
 
 ```bash
-make containers-build
+makim containers-sugar build
 ```
 
 A common workflow to prepare the system would be:
@@ -193,13 +193,13 @@ A common workflow to prepare the system would be:
 1. Build the docker image:
 
 ```bash
-$ make containers-build
+$ containers-sugar build
 ```
 
 2. Start the services:
 
 ```bash
-$ make containers-start
+$ containers-sugar start
 ```
 
 Before moving forward, check if the services are working properly:
@@ -211,7 +211,7 @@ $ ./containers/healthcheck.sh epigraphhub
 3. Now, prepare the development database (skip it for production):
 
 ```bash
-$ make containers-prepare-db
+$ makim containers.dev-prepare-db
 ```
 
 ## AIRFLOW
@@ -231,7 +231,7 @@ For development, it is already created by the containers stack.
 In order to configure it locally, run:
 
 ```bash
-make dev-create-s3-credentials
+makim aws.dev-create-s3-credentials
 ```
 
 Note: it needs the AWS env variable on the environment (or from .env file).
