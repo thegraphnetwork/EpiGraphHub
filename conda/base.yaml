@@ -12,3 +12,5 @@ dependencies:
   - pip
   - pip:
     - epigraphhub
+    - containers-sugar==1.4.3
+    - makim==1.6.4
