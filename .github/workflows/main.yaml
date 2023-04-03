@@ -124,7 +124,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        makim containers-sugar logs --extras "--tail 1000" --all > /tmp/containers-services.log
+        containers-sugar logs --extras "--tail 1000" --all > /tmp/containers-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3
