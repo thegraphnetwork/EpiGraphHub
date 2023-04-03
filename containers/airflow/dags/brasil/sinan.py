@@ -294,7 +294,7 @@ def task_flow_for(disease: str):
             with engine.connect() as conn:
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
-                    f" SET prelim = False, last_insert = '{ti.execution_date}'"
+                    f" SET 'to_final' = False, last_insert = '{ti.execution_date}'"
                     f" WHERE disease = '{disease}' AND year = {year}"
                 )
 
@@ -414,6 +414,6 @@ for disease in DISEASES:
         ),
         catchup=False,
         schedule='@monthly',
-        dagrun_timeout=timedelta(minutes=10),
+        dagrun_timeout=None,
     ):
         task_flow_for(disease)
