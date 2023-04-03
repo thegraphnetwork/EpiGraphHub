@@ -2,16 +2,13 @@ import pendulum
 import logging as logger
 
 from datetime import timedelta
-from epigraphhub.data.brasil.sinan import normalize_str
 
 from airflow import DAG
-from airflow.decorators import dag
 from airflow.operators.python import PythonOperator
 
 from epigraphhub.settings import env
 from epigraphhub.connection import get_engine
 from epigraphhub.data.brasil.sinan import (
-    DISEASES,
     normalize_str,
 )
 
