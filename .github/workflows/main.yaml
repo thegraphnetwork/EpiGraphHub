@@ -126,9 +126,10 @@ jobs:
       run: |
         makim containers-sugar logs --extras "--tail 1000" --all > /tmp/containers-services.log
 
-- name: Archive log artifacts
+    - name: Archive log artifacts
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}
       with:
         name: containers-services
         path: /tmp/containers-services.log
+        
