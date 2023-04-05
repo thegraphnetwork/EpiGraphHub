@@ -5,7 +5,7 @@ import unittest
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.driver = webdriver.Chrome()
+        cls.driver = webdriver.Chrome(port=9515)
         cls.driver.get("https://epigraphhub.org/")
 
     @classmethod
