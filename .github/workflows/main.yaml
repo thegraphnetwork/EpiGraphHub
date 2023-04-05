@@ -92,10 +92,11 @@ jobs:
         miniforge-variant: Mambaforge
 
     - uses: browser-actions/setup-chrome@v1
-    - run: echo $(which chrome)
+    - run: chrome --version
 
     - name: run epigraphhub tests
       run: |
+        export CHROME_PATH=$(which chrome)
         python -m unittest /home/runner/work/EpiGraphHub/EpiGraphHub/tests/*
 
     - name: configure epigraphhub credentials
