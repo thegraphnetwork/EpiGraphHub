@@ -1,11 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import unittest
+import os
+
+CHROMEDRIVER = os.getenv('CHROMEDRIVER')
 
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.driver = webdriver.Chrome(port=9515)
+        cls.driver = webdriver.Chrome(CHROMEDRIVER)
         cls.driver.get("https://epigraphhub.org/")
 
     @classmethod

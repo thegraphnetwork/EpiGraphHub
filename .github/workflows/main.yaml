@@ -100,6 +100,7 @@ jobs:
 
     - name: run epigraphhub tests
       run: |
+        export CHROMEDRIVER=$(which chromedriver)
         python -m unittest /home/runner/work/EpiGraphHub/EpiGraphHub/tests/*
 
     - name: configure epigraphhub credentials
