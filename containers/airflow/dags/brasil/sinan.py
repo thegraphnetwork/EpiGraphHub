@@ -77,17 +77,16 @@ def task_flow_for(disease: str):
     from itertools import chain
     from epigraphhub.connection import get_engine
     from airflow.exceptions import AirflowSkipException
-    from epigraphhub.data.brasil.sinan import FTP_SINAN, normalize_str
+    from epigraphhub.data.brasil.sinan import normalize_str
 
     schema = 'brasil'
     tablename = 'sinan_' + normalize_str(disease) + '_m'
     engine = get_engine(credential_name=env.db.default_credential)
 
-    prelim_years = list(map(int, FTP_SINAN(disease).get_years('prelim')))
-    finals_years = list(map(int, FTP_SINAN(disease).get_years('finais')))
-
+    # Extracts year from parquet file
     get_year = lambda file: int(str(file).split('.parquet')[0][-2:])
     
+    # Uploads DataFrame into EGH db
     upload_df = lambda df: df.to_sql(
         name=tablename, 
         con=engine.connect(), 
@@ -96,52 +95,43 @@ def task_flow_for(disease: str):
         index=False
     )
 
-    @task(task_id='start')
-    def start_task():
-        with engine.connect() as conn:
-            conn.execute(
-                f'CREATE TABLE IF NOT EXISTS {schema}.sinan_update_ctl ('
-                ' disease TEXT NOT NULL,'
-                ' year INT NOT NULL,'
-                ' prelim BOOL NOT NULL,'
-                ' last_insert DATE'
-                ')'
-            )
+    # Does nothing
+    start = EmptyOperator(
+        task_id='start',
+    )
 
     @task(task_id='get_updates')
     def dbcs_to_fetch() -> dict:
-        all_years = prelim_years + finals_years
-
-        db_years = []
+        # Get years that were not inserted yet
         with engine.connect() as conn:
-            try:
-                cur = conn.execute(
-                    f'SELECT year FROM {schema}.sinan_update_ctl'
-                    f" WHERE disease = '{disease}'"
-                )
-                years = cur.all()
-            except Exception as e:
-                if "UndefinedColumn" or "NoSuchTableError" in str(e):
-                    years = []
-            db_years.extend(list(chain(*years)))
-        # Compare years found in ctl table with FTP server
-        not_inserted = [y for y in all_years if y not in db_years]
+            cur = conn.execute(
+                f'SELECT year FROM {schema}.sinan_update_ctl'
+                f" WHERE disease = '{disease}' AND last_insert IS NULL"
+            )
+            years_to_insert = cur.all()
+        not_inserted = list(chain(*years_to_insert))
 
-        db_prelimns = []
-        with engine.connect() as conn:
-            try:
-                cur = conn.execute(
-                    f'SELECT year FROM {schema}.sinan_update_ctl'
-                    f" WHERE disease = '{disease}' AND prelim IS True"
-                )
-                years = cur.all()
-            except psycopg2.errors.lookup("42703"): #this is the UndefinedColumn code
-                years = []
-            db_prelimns.extend(list(chain(*years)))
-        # Get years that are not prelim anymore
-        prelim_to_final = [y for y in finals_years if y in db_prelimns]
         # Get prelims
-        prelim_to_update = [y for y in prelim_years if y in db_prelimns]
+        with engine.connect() as conn:
+            cur = conn.execute(
+                f'SELECT year FROM {schema}.sinan_update_ctl WHERE'
+                f" disease = '{disease}' AND"
+                f' prelim IS True AND'
+                f' last_insert IS NOT NULL'
+            )
+            prelim_years = cur.all()
+        prelim_to_update = list(chain(*prelim_years))
+
+        # Get years that are not prelim anymore
+        with engine.connect() as conn:
+            cur = conn.execute(
+                f'SELECT year FROM {schema}.sinan_update_ctl WHERE'
+                f" disease = '{disease}' AND"
+                f' prelim IS False AND'
+                f' to_final IS True'
+            )
+            prelim_to_final_years = cur.all()
+        prelim_to_final = list(chain(*prelim_to_final_years))
 
         return dict(
             to_insert=not_inserted,
@@ -156,6 +146,7 @@ def task_flow_for(disease: str):
         ti = kwargs['ti']
         years = ti.xcom_pull(task_ids='get_updates')
 
+        # Downloads dbc files into parquets to 
         extract_pqs = (
             lambda stage: extract.download(
                 disease=disease, years=years[stage]
@@ -174,17 +165,19 @@ def task_flow_for(disease: str):
 
         ti = kwargs['ti']
         parquets = ti.xcom_pull(task_ids='extract')['pqs_to_insert']
+        prelim_years = ti.xcom_pull(task_ids='get_updates')['to_update']
         inserted_rows = dict()
 
         if not parquets:
             logger.info('There is no new DBCs to insert on DB')
             raise AirflowSkipException()
 
+
         finals, prelims = ([], [])
         for parquet in parquets:
             (
                 finals.append(parquet)
-                if get_year(parquet) in finals_years
+                if get_year(parquet) not in prelim_years
                 else prelims.append(parquet)
             )
 
@@ -200,7 +193,7 @@ def task_flow_for(disease: str):
                 df = parquets_to_dataframe(str(parquet))
 
                 if df.empty:
-                    logger('DataFrame is empty')
+                    logger.error('DataFrame is empty')
                     continue
 
                 df['year'] = year
@@ -243,9 +236,9 @@ def task_flow_for(disease: str):
                     
                 with engine.connect() as conn:
                     conn.execute(
-                        f'INSERT INTO {schema}.sinan_update_ctl('
-                        'disease, year, prelim, last_insert) VALUES ('
-                        f"'{disease}', {year}, {prelim}, '{ti.execution_date}')"
+                        f'UPDATE {schema}.sinan_update_ctl SET'
+                        f" last_insert = '{ti.execution_date}' WHERE"
+                        f" disease = '{disease}' AND year = {year}"
                     )
                     cur = conn.execute(
                         f'SELECT COUNT(*) FROM {schema}.{tablename}'
@@ -301,7 +294,7 @@ def task_flow_for(disease: str):
             with engine.connect() as conn:
                 conn.execute(
                     f'UPDATE {schema}.sinan_update_ctl'
-                    f" SET prelim = False, last_insert = '{ti.execution_date}'"
+                    f" SET 'to_final' = False, last_insert = '{ti.execution_date}'"
                     f" WHERE disease = '{disease}' AND year = {year}"
                 )
 
@@ -386,7 +379,6 @@ def task_flow_for(disease: str):
     )
 
     # Defining the tasks
-    ini = start_task()
     dbcs = dbcs_to_fetch()
     E = extract_parquets()
     upload_new = upload_not_inserted()
@@ -395,7 +387,7 @@ def task_flow_for(disease: str):
     clean = remove_parquets()
 
     # Task flow
-    ini >> dbcs >> E >> upload_new >> to_final >> prelims >> clean >> end
+    start >> dbcs >> E >> upload_new >> to_final >> prelims >> clean >> end
 
 
 # DAGs
@@ -413,10 +405,10 @@ for disease in DISEASES:
         default_args=DEFAULT_ARGS,
         tags=['SINAN', 'Brasil', disease],
         start_date=pendulum.datetime(
-            2022, 2, randint(1,28)
+            2022, 2, randint(2,28)
         ),
         catchup=False,
         schedule='@monthly',
-        dagrun_timeout=timedelta(minutes=10),
+        dagrun_timeout=None,
     ):
         task_flow_for(disease)
