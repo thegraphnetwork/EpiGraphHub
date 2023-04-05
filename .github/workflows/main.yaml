@@ -92,7 +92,7 @@ jobs:
         miniforge-variant: Mambaforge
 
     - uses: browser-actions/setup-chrome@v1
-    - run: chrome --version
+    - run: echo $(which chrome)
 
     - name: run epigraphhub tests
       run: |
