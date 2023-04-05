@@ -1,23 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 import unittest
-import os
-
-CHROME_PATH = os.getenv('CHROME_PATH') 
 
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        service = Service(executable_path=CHROME_PATH)
-        options = webdriver.ChromeOptions()
-        #https://stackoverflow.com/questions/53073411/selenium-webdriverexceptionchrome-failed-to-start-crashed-as-google-chrome-is
-        options.add_argument("--start-maximized") #open Browser in maximized mode
-        options.add_argument("--no-sandbox") #bypass OS security model
-        options.add_argument("--disable-dev-shm-usage") #overcome limited resource problems
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        cls.driver = webdriver.Chrome(service=service, options=options)
+        cls.driver = webdriver.Chrome()
         cls.driver.get("https://epigraphhub.org/")
 
     @classmethod
