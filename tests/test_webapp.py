@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 import unittest
 import os
 
@@ -8,7 +9,10 @@ CHROME_PATH = os.getenv('CHROME_PATH')
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.driver = webdriver.Chrome(executable_path=CHROME_PATH)
+        service = Service(executable_path=CHROME_PATH)
+        options = webdriver.ChromeOptions()
+        options.add_argument("--start-maximized")
+        cls.driver = webdriver.Chrome(service=service, options=options)
         cls.driver.get("https://epigraphhub.org/")
 
     @classmethod

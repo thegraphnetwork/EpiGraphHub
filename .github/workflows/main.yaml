@@ -96,7 +96,7 @@ jobs:
 
     - name: run epigraphhub tests
       run: |
-        export CHROME_PATH=$(which chrome)
+        export CHROME_PATH=/usr/bin/google-chrome
         python -m unittest /home/runner/work/EpiGraphHub/EpiGraphHub/tests/*
 
     - name: configure epigraphhub credentials
