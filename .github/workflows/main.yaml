@@ -73,7 +73,9 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: setup
-      run: make prepare-host
+      run: |
+        touch .env
+        make prepare-host
 
     - name: Create environment variables file
       run: |
