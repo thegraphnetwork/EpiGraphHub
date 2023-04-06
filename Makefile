@@ -52,12 +52,12 @@ containers-start-services: prepare-host
 .PHONY:containers-stop
 containers-stop:
 	set -ex
-       $(CONTAINER_APP) stop ${ARGS} ${SERVICES}
+	$(CONTAINER_APP) stop ${ARGS} ${SERVICES}
 
 .PHONY:containers-rm
 containers-rm:
-       set -ex
-       $(CONTAINER_APP) rm ${ARGS} ${SERVICES}
+	set -ex
+	$(CONTAINER_APP) rm ${ARGS} ${SERVICES}
 
 
 .PHONY:containers-restart
