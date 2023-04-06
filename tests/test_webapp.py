@@ -16,9 +16,9 @@ class TestEpiGraphHub(unittest.TestCase):
         chrome_options.add_argument("--headless")
         cls.driver = webdriver.Chrome(
             service=Service(chromedriver_filename),
-            chrome_options=chrome_options
+            options=chrome_options
         )
-        cls.driver.get("https://epigraphhub.org/")
+        cls.driver.get("http://localhost:8088")
 
     @classmethod
     def tearDownClass(cls):

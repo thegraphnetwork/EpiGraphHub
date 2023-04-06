@@ -23763,7 +23763,6 @@ GRANT ALL ON SCHEMA brasil TO dev_epigraph;
 --
 
 GRANT ALL ON SCHEMA colombia TO dev_epigraph;
-GRANT ALL ON SCHEMA colombia TO dev_epigraph;
 
 
 --
