@@ -18320,7 +18320,7 @@ ALTER TABLE ONLY switzerland.foph_hospvaccpersons
 --
 
 ALTER TABLE ONLY switzerland.foph_hospvaccpersons_d
-    ADD CONSTRAINT foph_hospvaccpersons_pkey PRIMARY KEY (id_);
+    ADD CONSTRAINT foph_hospvaccpersons_d_pkey PRIMARY KEY (id_);
 
 
 --
