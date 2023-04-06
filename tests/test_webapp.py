@@ -1,5 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from chromedriver_binary import chromedriver_filename
 import unittest
 import os
 
@@ -8,7 +11,13 @@ CHROMEDRIVER = os.getenv('CHROMEDRIVER')
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.driver = webdriver.Chrome(CHROMEDRIVER)
+        chrome_options = Options()
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")
+        cls.driver = webdriver.Chrome(
+            service=Service(chromedriver_filename),
+            chrome_options=chrome_options
+        )
         cls.driver.get("https://epigraphhub.org/")
 
     @classmethod
