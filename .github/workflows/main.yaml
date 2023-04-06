@@ -81,11 +81,6 @@ jobs:
     - name: setup
       run: |
         make prepare-host
-    
-    # debugging
-    - name: Setup tmate session
-      if: ${{ failure() }}
-      uses: mxschmitt/action-tmate@v3
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
