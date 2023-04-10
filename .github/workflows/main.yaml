@@ -63,8 +63,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 55
     defaults:
-    run: 
-      shell: bash -l {0}
+      run: 
+        shell: bash -l {0}
     concurrency:
       group: ci-${{ github.ref }}
       cancel-in-progress: true
