@@ -72,15 +72,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: setup
-      run: makim host.prepare
-
-    - name: Create environment variables file
-      run: |
-        export HOST_UID=$(id -u)
-        export HOST_GID=$(id -g)
-        envsubst < .env.tpl > .env
-
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -90,6 +81,16 @@ jobs:
         activate-environment: epigraphhub
         use-mamba: true
         miniforge-variant: Mambaforge
+
+    - name: setup
+      run: makim host.prepare
+
+    - name: Create environment variables file
+      run: |
+        export HOST_UID=$(id -u)
+        export HOST_GID=$(id -g)
+        envsubst < .env.tpl > .env
+
 
     - name: configure epigraphhub credentials
       run: |
