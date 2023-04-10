@@ -16817,9 +16817,9 @@ CREATE TABLE switzerland.foph_cases (
 );
 
 
-ALTER TABLE switzerland.foph_cases OWNER TO dev_epigraph;
-
 CREATE TABLE switzerland.foph_cases_d ( LIKE switzerland.foph_cases INCLUDING DEFAULTS );
+
+ALTER TABLE switzerland.foph_cases OWNER TO dev_epigraph;
 
 --
 -- Name: foph_cases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
