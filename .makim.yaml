@@ -63,7 +63,7 @@ groups:
           - targets: host.prepare
         args:
           services: Services names separated by comma
-            help: 
+            help: Name of service
             type: string
             default: "airflow,superset"
 
