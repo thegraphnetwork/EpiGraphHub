@@ -82,14 +82,14 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
-    - name: setup
-      run: makim host.prepare
-
     - name: Create environment variables file
       run: |
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
+
+    - name: setup
+      run: makim host.prepare
 
     - name: configure epigraphhub credentials
       run: |
@@ -132,7 +132,3 @@ jobs:
       with:
         name: containers-services
         path: /tmp/containers-services.log
-
-    - name: Setup tmate session
-      if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"
-      uses: mxschmitt/action-tmate@v3
