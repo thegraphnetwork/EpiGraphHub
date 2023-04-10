@@ -62,8 +62,8 @@ groups:
         dependencies:
           - targets: host.prepare
         args:
-          services: Services names separated by comma
-            help: Name of service
+          services: 
+            help: Services names separated by comma
             type: string
             default: "airflow,superset"
 
