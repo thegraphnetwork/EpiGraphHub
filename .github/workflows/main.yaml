@@ -64,7 +64,7 @@ jobs:
     timeout-minutes: 55
     defaults:
       run: 
-        shell: bash -l {0}
+      shell: bash -l {0}
     concurrency:
       group: ci-${{ github.ref }}
       cancel-in-progress: true
