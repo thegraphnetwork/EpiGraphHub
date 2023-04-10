@@ -23,8 +23,8 @@ service-groups:
       - containers/compose-base.yaml
       - containers/compose-dev.yaml
     env-file: .env
-    services: superset,airflow
-      default: 
+    services:
+      default: superset,airflow
       list:
         - name: superset
         - name: airflow
