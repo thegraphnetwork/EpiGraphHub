@@ -7,7 +7,7 @@ groups:
       prepare:
         help: Preparing host
         run: |
-          bash scripts/prepare-host.sh
+          bash ./scripts/prepare-host.sh
     
   aws:
     targets:
