@@ -114,6 +114,7 @@ jobs:
     - name: start services
       run: |
         make containers-start-services SERVICES="superset airflow"
+        make containers-exec SERVICES=postgres CMD="psql -U ${POSTGRES_USER} -p ${POSTGRES_PORT} -d ${POSTGRES_EPIGRAPH_DB} < /docker-entrypoint-initdb.d/12-epigraphhub.sql"
 
     - name: wait for the services are properly working
       run: |
