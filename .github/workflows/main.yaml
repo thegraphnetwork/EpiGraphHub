@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 55
     defaults:
-      run:
+      run: 
         shell: bash -l {0}
     concurrency:
       group: ci-${{ github.ref }}
@@ -73,7 +73,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - uses: conda-incubator/setup-miniconda@v2
-      with:
+      with: 
         miniconda-version: "latest"
         mamba-version: "*"
         environment-file: conda/base.yaml
@@ -90,7 +90,6 @@ jobs:
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
-
 
     - name: configure epigraphhub credentials
       run: |
