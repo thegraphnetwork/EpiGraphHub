@@ -1,0 +1,83 @@
+version: 1.0.0
+env-file: .env
+groups:
+
+  host:
+    targets:
+      prepare:
+        help: Preparing host
+        shell: bash
+        run: |
+          ./scripts/prepare-host.sh
+    
+  aws:
+    targets:
+      dev-create-s3-credential:
+        help: Create AWS S3 Credentials
+        run: |
+          set -e
+          ./scripts/dev/create-s3-credential.sh
+
+  
+  conda:
+    targets:
+      lock:
+        help: Configure a conda-lock
+        run: |
+          cd conda
+          rm -f conda-*.lock
+          conda-lock --conda which mamba \
+              -f prod.yaml  \
+              -p osx-64 \
+              -p linux-64 \
+              --kind explicit
+
+  containers:
+    targets:
+      wait:
+        help: Wait for a service
+        args:
+          timeout:
+            help: Define the timeout for the healthcheck
+            type: integer
+            default: 30
+          service:
+            help: Service name that would be awaited
+            type: string
+            required: True
+
+        run: |
+          timeout {{ args.timeout }} ./containers/scripts/healthcheck.sh {{ args.service }}
+          
+      wait-all:
+        run: |
+          if $ENV == "dev":
+            makim containers.wait --service "postgres"
+
+          for service in ["postgres","airflow","superset","redis","flower","minio"]:
+            makim containers.wait --service @(service)
+
+      start-services:
+        help: bla
+        shell: bash
+        dependencies:
+          - targets: host.prepare
+        args:
+          services: 
+            help: Services names separated by comma
+            type: string
+            default: "airflow,superset"
+
+        run: |
+          set -e
+          if [ "${ENV}" = "dev" ]; then \
+            containers-sugar start --services "postgres"; \
+            makim containers.wait --service "postgres"; \
+          fi
+          containers-sugar start --services {{ args.services }}
+          makim containers.wait --service "airflow"
+
+      dev-prepare-db:
+        help: Prepare a database. Used for development
+        run: |
+          containers-sugar exec --extras="-T" --services superset   --cmd "bash /opt/EpiGraphHub/containers/postgresql/scripts/dev/prepare-db.sh"

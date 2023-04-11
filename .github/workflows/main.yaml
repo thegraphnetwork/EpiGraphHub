@@ -14,7 +14,7 @@ env:
   _AIRFLOW_WWW_USER_LAST_NAME: Admin
   _AIRFLOW_WWW_USER_PASSWORD: airflow
   _AIRFLOW_WWW_USER_USERNAME: airflow
-  AIRFLOW_FILES_PATH_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/docker/airflow
+  AIRFLOW_FILES_PATH_DIR_HOST: /home/runner/work/EpiGraphHub/containers/airflow
   AIRFLOW_HOME: /opt/airflow
   AIRFLOW_PORT: 8099
   AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth
@@ -72,15 +72,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: setup
-      run: make prepare-host
-
-    - name: Create environment variables file
-      run: |
-        export HOST_UID=$(id -u)
-        export HOST_GID=$(id -g)
-        envsubst < .env.tpl > .env
-
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: "latest"
@@ -91,32 +82,41 @@ jobs:
         use-mamba: true
         miniforge-variant: Mambaforge
 
+    - name: Create environment variables file
+      run: |
+        export HOST_UID=$(id -u)
+        export HOST_GID=$(id -g)
+        envsubst < .env.tpl > .env
+
+    - name: setup
+      run: makim host.prepare
+
     - name: configure epigraphhub credentials
       run: |
         epigraphhub-config --name ci-epigraphhub \
           --db-uri "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
     - name: configure aws s3 credentials to minio
-      run: make dev-create-s3-credential
+      run: makim aws.dev-create-s3-credential
 
-    - name: build docker containers
-      run: make containers-build
+    - name: build containers-sugar
+      run: containers-sugar build
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow"
+        makim containers.start-services --services "superset,airflow"
 
     - name: wait for the services are properly working
       run: |
         docker ps
-        make containers-wait-all
+        makim containers.wait-all
 
     - name: Trigger all DAGs
       run: |
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test owid 2022-10-25'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test foph 2022-10-25'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test colombia 2022-10-25'
-        make containers-exec ARGS="-T" SERVICE=airflow CMD='airflow dags test web_status_test 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test owid 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test foph 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test colombia 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test web_status_test 2022-10-25'
 
     - name: Test MinIO access
       run: aws --endpoint-url http://localhost:9000/ s3 ls
@@ -124,7 +124,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make containers-logs ARGS="--tail 1000" SERVICES="" > /tmp/containers-services.log
+        containers-sugar logs --extras "--tail 1000" --all > /tmp/containers-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3
@@ -132,3 +132,7 @@ jobs:
       with:
         name: containers-services
         path: /tmp/containers-services.log
+
+    - name: Setup tmate session
+      if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"
+      uses: mxschmitt/action-tmate@v3
