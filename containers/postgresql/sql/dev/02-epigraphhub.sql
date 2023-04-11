@@ -371,7 +371,9 @@ CREATE TABLE colombia.casos_positivos_covid (
 
 ALTER TABLE colombia.casos_positivos_covid OWNER TO dev_epigraph;
 
-CREATE TABLE colombia.casos_positivos_covid_d ( LIKE colombia.casos_positivos_covid );
+CREATE TABLE colombia.positive_cases_covid_d ( LIKE colombia.casos_positivos_covid );
+
+ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_epigraph;
 
 --
 -- Name: ABW_0; Type: TABLE; Schema: public; Owner: dev_epigraph
