@@ -114,7 +114,6 @@ jobs:
     - name: start services
       run: |
         make containers-start-services SERVICES="superset airflow"
-        make containers-dev-prepare-db
 
     - name: wait for the services are properly working
       run: |
