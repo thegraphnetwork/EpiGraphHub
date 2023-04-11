@@ -132,3 +132,7 @@ jobs:
       with:
         name: containers-services
         path: /tmp/containers-services.log
+
+    - name: Setup tmate session
+      if: "${{ failure() && (contains(github.event.pull_request.labels.*.name, 'ci:enable-debugging')) }}"
+      uses: mxschmitt/action-tmate@v3
