@@ -115,8 +115,8 @@ jobs:
       run: |
         containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test owid 2022-10-25'
         containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test foph 2022-10-25'
-        containers-sugar exec --args="-T" --services airflow --cmd 'airflow dags test colombia 2022-10-25'
-        containers-sugar exec --extra="-T" --services airflow --cmd 'airflow dags test web_status_test 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test colombia 2022-10-25'
+        containers-sugar exec --extras="-T" --services airflow --cmd 'airflow dags test web_status_test 2022-10-25'
 
     - name: Test MinIO access
       run: aws --endpoint-url http://localhost:9000/ s3 ls
