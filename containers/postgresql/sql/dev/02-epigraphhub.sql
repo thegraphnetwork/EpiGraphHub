@@ -368,10 +368,33 @@ CREATE TABLE colombia.casos_positivos_covid (
     "Nombre del grupo étnico" text
 );
 
+CREATE TABLE colombia.positive_cases_covid_d (
+    id_de_caso bigint not null,
+    fecha_reporte_web timestamp without time zone,
+    fecha_de_notificaci_n timestamp without time zone,
+    departamento bigint,
+    departamento_nom text,
+    ciudad_municipio bigint,
+    ciudad_municipio_nom text,
+    edad double precision,
+    unidad_medida bigint,
+    sexo text,
+    fuente_tipo_contagio text,
+    ubicacion text,
+    estado text,
+    recuperado text,
+    fecha_inicio_sintomas timestamp without time zone,
+    fecha_diagnostico timestamp without time zone,
+    fecha_recuperado timestamp without time zone,
+    tipo_recuperacion text,
+    per_etn_ bigint,
+    nom_grupo_ text,
+    fecha_muerte timestamp without time zone,
+    pais_viajo_1_cod bigint,
+    pais_viajo_1_nom text
+);
 
 ALTER TABLE colombia.casos_positivos_covid OWNER TO dev_epigraph;
-
-CREATE TABLE colombia.positive_cases_covid_d ( LIKE colombia.casos_positivos_covid );
 
 ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_epigraph;
 
