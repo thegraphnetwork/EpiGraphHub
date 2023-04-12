@@ -71,6 +71,7 @@ import pendulum
 import logging as logger
 
 from datetime import timedelta
+from psycopg2.errors import ProgrammingError
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
@@ -201,10 +202,14 @@ def foph():
         """
         filename = str(url).split("/")[-1]
 
-        if not loading.compare(filename, tablename):
-            logger.info(f"Proceeding to update foph_{tablename}_d.")
+        try:
+            equal = loading.compare(filename, tablename)
+            if not equal:
+                logger.info(f"Proceeding to update foph_{tablename}_d.")
+                return f"{tablename}_need_update"
+        except:
+            logger.info(f"Table not found, proceeding to update foph_{tablename}_d.")
             return f"{tablename}_need_update"
-
         logger.info(f"foph_{tablename}_d is up to date.")
         return f"{tablename}_up_to_date"
 
