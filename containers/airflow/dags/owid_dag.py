@@ -152,10 +152,13 @@ def owid():
                                    corresponding to the task that ends the
                                    workflow. No update is needed.
         """
-        match_data_size = extract.compare()
-        if not match_data_size:
-            logger.info(f"Table owid_covid needs update.")
-            logger.info(f"Proceeding to update table owid_covid.")
+        try:
+            match_data_size = extract.compare()
+            if not match_data_size:
+                logger.info(f"Table owid_covid needs update.")
+                logger.info(f"Proceeding to update table owid_covid.")
+                return "not_same_shape"
+        except:
             return "not_same_shape"
         logger.info("Table owid_covid up to date.")
         return "same_shape"

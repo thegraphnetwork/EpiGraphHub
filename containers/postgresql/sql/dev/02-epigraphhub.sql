@@ -17,61 +17,61 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: brasil; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: brasil; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA brasil;
 
 
-ALTER SCHEMA brasil OWNER TO dev_admin;
+ALTER SCHEMA brasil OWNER TO dev_epigraph;
 
 --
--- Name: colombia; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: colombia; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA colombia;
 
 
-ALTER SCHEMA colombia OWNER TO dev_admin;
+ALTER SCHEMA colombia OWNER TO dev_epigraph;
 
 --
--- Name: global; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: global; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA global;
 
 
-ALTER SCHEMA global OWNER TO dev_admin;
+ALTER SCHEMA global OWNER TO dev_epigraph;
 
 --
--- Name: google_health; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: google_health; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA google_health;
 
 
-ALTER SCHEMA google_health OWNER TO dev_admin;
+ALTER SCHEMA google_health OWNER TO dev_epigraph;
 
 --
--- Name: switzerland; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: switzerland; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA switzerland;
 
 
-ALTER SCHEMA switzerland OWNER TO dev_admin;
+ALTER SCHEMA switzerland OWNER TO dev_epigraph;
 
 --
--- Name: trajetorias_project; Type: SCHEMA; Schema: -; Owner: dev_admin
+-- Name: trajetorias_project; Type: SCHEMA; Schema: -; Owner: dev_epigraph
 --
 
 CREATE SCHEMA trajetorias_project;
 
 
-ALTER SCHEMA trajetorias_project OWNER TO dev_admin;
+ALTER SCHEMA trajetorias_project OWNER TO dev_epigraph;
 
 --
--- Name: SCHEMA trajetorias_project; Type: COMMENT; Schema: -; Owner: dev_admin
+-- Name: SCHEMA trajetorias_project; Type: COMMENT; Schema: -; Owner: dev_epigraph
 --
 
 COMMENT ON SCHEMA trajetorias_project IS 'Datasets produced by the Trajetorias research project. https://trajetorias-sinbiose.github.io';
@@ -132,18 +132,18 @@ CREATE EXTENSION IF NOT EXISTS plpython3u WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpython3u IS 'PL/Python3U untrusted procedural language';
 
 
---
--- Name: plpythonu; Type: EXTENSION; Schema: -; Owner: 
---
+-- --
+-- -- Name: plpythonu; Type: EXTENSION; Schema: -; Owner: 
+-- --
 
-CREATE EXTENSION IF NOT EXISTS plpythonu WITH SCHEMA pg_catalog;
+-- CREATE EXTENSION IF NOT EXISTS plpythonu WITH SCHEMA pg_catalog;
 
 
---
--- Name: EXTENSION plpythonu; Type: COMMENT; Schema: -; Owner: 
---
+-- --
+-- -- Name: EXTENSION plpythonu; Type: COMMENT; Schema: -; Owner: 
+-- --
 
-COMMENT ON EXTENSION plpythonu IS 'PL/PythonU untrusted procedural language';
+-- COMMENT ON EXTENSION plpythonu IS 'PL/PythonU untrusted procedural language';
 
 
 --
@@ -177,7 +177,7 @@ CREATE TABLE public.iso_alpha3_country_codes (
 );
 
 
-ALTER TABLE public.iso_alpha3_country_codes OWNER TO dev_admin;
+ALTER TABLE public.iso_alpha3_country_codes OWNER TO dev_epigraph;
 
 --
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
@@ -7932,7 +7932,7 @@ CREATE TABLE colombia.positive_cases_covid_d (
 );
 
 
-ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_admin;
+ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_epigraph;
 
 --
 -- Name: positive_cases_covid_d_id__seq; Type: SEQUENCE; Schema: colombia; Owner: dev_admin
@@ -7946,7 +7946,7 @@ CREATE SEQUENCE colombia.positive_cases_covid_d_id__seq
     CACHE 1;
 
 
-ALTER TABLE colombia.positive_cases_covid_d_id__seq OWNER TO dev_admin;
+ALTER TABLE colombia.positive_cases_covid_d_id__seq OWNER TO dev_epigraph;
 
 --
 -- Name: positive_cases_covid_d_id__seq; Type: SEQUENCE OWNED BY; Schema: colombia; Owner: dev_admin
@@ -7969,7 +7969,7 @@ CREATE TABLE colombia.positive_cases_covid_meta (
 );
 
 
-ALTER TABLE colombia.positive_cases_covid_meta OWNER TO dev_admin;
+ALTER TABLE colombia.positive_cases_covid_meta OWNER TO dev_epigraph;
 
 --
 -- Name: positive_cases_teste; Type: TABLE; Schema: colombia; Owner: dev_admin
@@ -8002,7 +8002,7 @@ CREATE TABLE colombia.positive_cases_teste (
 );
 
 
-ALTER TABLE colombia.positive_cases_teste OWNER TO dev_admin;
+ALTER TABLE colombia.positive_cases_teste OWNER TO dev_epigraph;
 
 --
 -- Name: test_positive_covid; Type: TABLE; Schema: colombia; Owner: dev_epigraph
@@ -16082,7 +16082,7 @@ CREATE TABLE public."GAMDB_0" (
 );
 
 
-ALTER TABLE public."GAMDB_0" OWNER TO dev_admin;
+ALTER TABLE public."GAMDB_0" OWNER TO dev_epigraph;
 
 --
 -- Name: GBR_0; Type: TABLE; Schema: public; Owner: dev_epigraph
@@ -27112,7 +27112,7 @@ CREATE TABLE public.colombia_covid_geo (
 );
 
 
-ALTER TABLE public.colombia_covid_geo OWNER TO dev_admin;
+ALTER TABLE public.colombia_covid_geo OWNER TO dev_epigraph;
 
 --
 -- Name: environmental_joined; Type: TABLE; Schema: public; Owner: dev_admin
@@ -27141,7 +27141,7 @@ CREATE TABLE public.environmental_joined (
 );
 
 
-ALTER TABLE public.environmental_joined OWNER TO dev_admin;
+ALTER TABLE public.environmental_joined OWNER TO dev_epigraph;
 
 --
 -- Name: epinow_rt; Type: TABLE; Schema: public; Owner: dev_epigraph
@@ -27336,10 +27336,10 @@ CREATE VIEW public.foph_cases_hosp AS
  LIMIT 100001;
 
 
-ALTER TABLE public.foph_cases_hosp OWNER TO dev_admin;
+ALTER TABLE public.foph_cases_hosp OWNER TO dev_epigraph;
 
 --
--- Name: foph_hosp_isocode; Type: VIEW; Schema: public; Owner: dev_admin
+-- Name: foph_hosp_isocode; Type: VIEW; Schema: public; Owner: dev_epigraph
 --
 
 CREATE VIEW public.foph_hosp_isocode AS
@@ -27416,7 +27416,7 @@ CREATE VIEW public.foph_hosp_isocode AS
  LIMIT 100001;
 
 
-ALTER TABLE public.foph_hosp_isocode OWNER TO dev_admin;
+ALTER TABLE public.foph_hosp_isocode OWNER TO dev_epigraph;
 
 --
 -- Name: foph_hosp_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
@@ -27574,7 +27574,7 @@ CREATE VIEW public.foph_hosp_isocode2 AS
  LIMIT 1001;
 
 
-ALTER TABLE public.foph_hosp_isocode2 OWNER TO dev_admin;
+ALTER TABLE public.foph_hosp_isocode2 OWNER TO dev_epigraph;
 
 --
 -- Name: gadm36; Type: TABLE; Schema: public; Owner: dev_epigraph
@@ -27853,7 +27853,7 @@ CREATE VIEW public.trajetorias_environment_joined AS
  LIMIT 1001;
 
 
-ALTER TABLE public.trajetorias_environment_joined OWNER TO dev_admin;
+ALTER TABLE public.trajetorias_environment_joined OWNER TO dev_epigraph;
 
 --
 -- Name: che_epinowcasesinfection_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
@@ -37134,10 +37134,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_partitioned_table TO de
 
 
 --
--- Name: TABLE pg_pltemplate; Type: ACL; Schema: pg_catalog; Owner: postgres
---
+-- -- Name: TABLE pg_pltemplate; Type: ACL; Schema: pg_catalog; Owner: postgres
+-- --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_pltemplate TO dev_epigraph;
+-- GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_pltemplate TO dev_epigraph;
 
 
 --
@@ -43515,677 +43515,6 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.geometry_columns TO dev_epigra
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.owid_covid_meta TO dev_epigraph;
-
-
---
--- Name: TABLE raster_columns; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.raster_columns TO dev_epigraph;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raster_columns TO dev_epigraph;
-
-
---
--- Name: TABLE raster_overviews; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.raster_overviews TO dev_epigraph;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raster_overviews TO dev_epigraph;
-
-
---
--- Name: TABLE spatial_ref_sys; Type: ACL; Schema: public; Owner: postgres
---
-
-GRANT SELECT ON TABLE public.spatial_ref_sys TO dev_epigraph;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.spatial_ref_sys TO dev_epigraph;
-
-
---
--- Name: TABLE test_positive_covid; Type: ACL; Schema: public; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.test_positive_covid TO dev_epigraph;
-
-
---
--- Name: TABLE teste_table; Type: ACL; Schema: public; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.teste_table TO dev_epigraph;
-
-
---
--- Name: TABLE environmental_2006; Type: ACL; Schema: trajetorias_project; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE trajetorias_project.environmental_2006 TO dev_epigraph;
-
-
---
--- Name: TABLE environmental_2017; Type: ACL; Schema: trajetorias_project; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE trajetorias_project.environmental_2017 TO dev_epigraph;
-
-
---
--- Name: TABLE trajetorias_environment_joined; Type: ACL; Schema: public; Owner: dev_admin
---
-
-GRANT ALL ON TABLE public.trajetorias_environment_joined TO dev_epigraph;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.trajetorias_environment_joined TO dev_epigraph;
-
-
---
--- Name: TABLE che_epinowcasesinfection_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowcasesinfection_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE che_epinowcasesreport_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowcasesreport_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE che_epinowgrowthrate_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowgrowthrate_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE che_epinowrt_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowrt_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE foph_cases_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_cases_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_cases_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_cases_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_casesvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_casesvaccpersons_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_casesvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_casesvaccpersons_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_covidcertificates_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_covidcertificates_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_covidcertificates_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_covidcertificates_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_death_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_death_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_death_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_death_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_deathvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_deathvaccpersons_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_deathvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_deathvaccpersons_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hosp_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hosp_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospcapacity; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospcapacity_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospcapacity_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospcapacitycertstatus_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacitycertstatus_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospcapacitycertstatus_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacitycertstatus_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospvaccpersons_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_hospvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospvaccpersons_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_intcases_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_intcases_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_intcases_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_intcases_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_re_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_re_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_re_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_re_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_test_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_test_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_test_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_test_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_testpcrantigen_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_testpcrantigen_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_testpcrantigen_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_testpcrantigen_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE foph_virusvariantswgs_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_virusvariantswgs_d TO dev_epigraph;
-
-
---
--- Name: TABLE foph_virusvariantswgs_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_virusvariantswgs_d_meta TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_lstm_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_lstm_icu_patients_d_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_icu_patients_d_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_lstm_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_lstm_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ml_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ml_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ml_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ngboost_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ngboost_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE forecast_ngboost_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE map_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.map_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_for_hosp_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_hosp_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_for_icu_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_icu_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_for_total_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_total_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast_hosp; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_hosp TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast_hosp_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_hosp_up TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast_icu; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_icu TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast_icu_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_icu_up TO dev_epigraph;
-
-
---
--- Name: TABLE ml_forecast_total; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_total TO dev_epigraph;
-
-
---
--- Name: TABLE ml_val_hosp_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_hosp_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_val_icu_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_icu_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_val_total_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_total_all_cantons TO dev_epigraph;
-
-
---
--- Name: TABLE ml_validation; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation TO dev_epigraph;
-
-
---
--- Name: TABLE ml_validation_hosp_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_hosp_up TO dev_epigraph;
-
-
---
--- Name: TABLE ml_validation_icu; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_icu TO dev_epigraph;
-
-
---
--- Name: TABLE ml_validation_icu_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_icu_up TO dev_epigraph;
-
-
---
--- Name: TABLE ml_validation_total; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_total TO dev_epigraph;
-
-
---
--- Name: TABLE ngboost_validation_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE ngboost_validation_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE ngboost_validation_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE phosp_post; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.phosp_post TO dev_epigraph;
-
-
---
--- Name: TABLE prev_post; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.prev_post TO dev_epigraph;
-
-
---
--- Name: TABLE validation_lstm_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE validation_lstm_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE validation_lstm_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE validation_ngboost_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE validation_ngboost_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_icu_patients_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE validation_ngboost_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_total_hosp_d_results TO dev_epigraph;
-
-
---
--- Name: TABLE brasil_co_0; Type: ACL; Schema: unicef; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unicef.brasil_co_0 TO dev_epigraph;
-
-
---
--- Name: TABLE brasil_co_0_meta; Type: ACL; Schema: unicef; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unicef.brasil_co_0_meta TO dev_epigraph;
-
-
---
--- Name: TABLE law_policies_by_legal_status; Type: ACL; Schema: unsafe_abortion; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unsafe_abortion.law_policies_by_legal_status TO dev_epigraph;
-
-
---
--- Name: TABLE laws_policies_strategies; Type: ACL; Schema: unsafe_abortion; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unsafe_abortion.laws_policies_strategies TO dev_epigraph;
-
-
---
--- Name: TABLE total_population_0; Type: ACL; Schema: worldbank; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE worldbank.total_population_0 TO dev_epigraph;
-
-
---
--- Name: TABLE total_population_0_meta; Type: ACL; Schema: worldbank; Owner: dev_epigraph
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE worldbank.total_population_0_meta TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: colombia; Owner: postgres
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA colombia GRANT SELECT,USAGE ON SEQUENCES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: switzerland; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON SEQUENCES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: switzerland; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON TYPES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: switzerland; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON FUNCTIONS  TO dev_epigraph;
-
---
--- Name: TABLE iso_alpha3_country_codes; Type: ACL; Schema: public; Owner: dev_admin
---
-
-GRANT SELECT ON TABLE public.iso_alpha3_country_codes TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: switzerland; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON TABLES  TO dev_epigraph;
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON TABLES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON SEQUENCES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TYPES  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON FUNCTIONS  TO dev_epigraph;
-
-
---
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
---
-
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TABLES  TO dev_epigraph;
-ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TABLES  TO dev_epigraph;
-
 
 --
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: -; Owner: dev_admin
