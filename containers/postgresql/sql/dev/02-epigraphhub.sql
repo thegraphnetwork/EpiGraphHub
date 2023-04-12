@@ -399,12 +399,10 @@ ALTER TABLE colombia.casos_positivos_covid OWNER TO dev_epigraph;
 
 ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_epigraph;
 
+CREATE UNIQUE INDEX ix_colombia_positive_cases_covid_d_index ON colombia.positive_cases_covid_d USING btree (id_de_caso);
+
 ALTER TABLE ONLY colombia.positive_cases_covid_d
     ADD CONSTRAINT positive_cases_covid_d_pkey PRIMARY KEY (id_);
-
-ALTER TABLE ONLY colombia.positive_cases_covid_d ALTER COLUMN id_ SET DEFAULT nextval('colombia.positive_cases_covid_d_id__seq'::regclass);
-
-CREATE INDEX ix_colombia_positive_cases_covid_d_index ON colombia.positive_cases_covid_d USING btree (id_de_caso);
 
 --
 -- Name: ABW_0; Type: TABLE; Schema: public; Owner: dev_epigraph
