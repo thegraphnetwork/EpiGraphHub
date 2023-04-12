@@ -5,8 +5,6 @@
 -- Dumped from database version 10.19 (Ubuntu 10.19-0ubuntu0.18.04.1)
 -- Dumped by pg_dump version 10.19 (Ubuntu 10.19-0ubuntu0.18.04.1)
 
-\c dev_epigraphhub
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -37,6 +35,24 @@ CREATE SCHEMA colombia;
 ALTER SCHEMA colombia OWNER TO dev_admin;
 
 --
+-- Name: global; Type: SCHEMA; Schema: -; Owner: dev_admin
+--
+
+CREATE SCHEMA global;
+
+
+ALTER SCHEMA global OWNER TO dev_admin;
+
+--
+-- Name: google_health; Type: SCHEMA; Schema: -; Owner: dev_admin
+--
+
+CREATE SCHEMA google_health;
+
+
+ALTER SCHEMA google_health OWNER TO dev_admin;
+
+--
 -- Name: switzerland; Type: SCHEMA; Schema: -; Owner: dev_admin
 --
 
@@ -46,7 +62,50 @@ CREATE SCHEMA switzerland;
 ALTER SCHEMA switzerland OWNER TO dev_admin;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: trajetorias_project; Type: SCHEMA; Schema: -; Owner: dev_admin
+--
+
+CREATE SCHEMA trajetorias_project;
+
+
+ALTER SCHEMA trajetorias_project OWNER TO dev_admin;
+
+--
+-- Name: SCHEMA trajetorias_project; Type: COMMENT; Schema: -; Owner: dev_admin
+--
+
+COMMENT ON SCHEMA trajetorias_project IS 'Datasets produced by the Trajetorias research project. https://trajetorias-sinbiose.github.io';
+
+
+--
+-- Name: unicef; Type: SCHEMA; Schema: -; Owner: dev_epigraph
+--
+
+CREATE SCHEMA unicef;
+
+
+ALTER SCHEMA unicef OWNER TO dev_epigraph;
+
+--
+-- Name: unsafe_abortion; Type: SCHEMA; Schema: -; Owner: dev_epigraph
+--
+
+CREATE SCHEMA unsafe_abortion;
+
+
+ALTER SCHEMA unsafe_abortion OWNER TO dev_epigraph;
+
+--
+-- Name: worldbank; Type: SCHEMA; Schema: -; Owner: dev_epigraph
+--
+
+CREATE SCHEMA worldbank;
+
+
+ALTER SCHEMA worldbank OWNER TO dev_epigraph;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
@@ -60,31 +119,31 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- Name: plpython3u; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpython3u; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpython3u WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpython3u; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpython3u; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpython3u IS 'PL/Python3U untrusted procedural language';
 
 
 --
--- Name: plpython3u; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpythonu; Type: EXTENSION; Schema: -; Owner: 
 --
 
-CREATE EXTENSION IF NOT EXISTS plpython3u WITH SCHEMA pg_catalog;
+CREATE EXTENSION IF NOT EXISTS plpythonu WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpython3u; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpythonu; Type: COMMENT; Schema: -; Owner: 
 --
 
-COMMENT ON EXTENSION plpython3u IS 'PL/PythonU untrusted procedural language';
+COMMENT ON EXTENSION plpythonu IS 'PL/PythonU untrusted procedural language';
 
 
 --
@@ -109,30 +168,501 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner:
+-- Name: iso_alpha3_country_codes; Type: TABLE; Schema: public; Owner: dev_admin
+--
+
+CREATE TABLE public.iso_alpha3_country_codes (
+    iso_code text,
+    country_name text
+);
+
+
+ALTER TABLE public.iso_alpha3_country_codes OWNER TO dev_admin;
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
---
--- Name: postgis_raster; Type: EXTENSION; Schema: -; Owner:
---
-
-CREATE EXTENSION IF NOT EXISTS postgis_raster WITH SCHEMA public;
-
-
---
--- Name: EXTENSION postgis_raster; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION postgis_raster IS 'PostGIS geometry, geography, and raster spatial types and functions';
-
-
-
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: acbi; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.acbi (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_acid text,
+    sem_acid text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    percutanea text,
+    pele_integ text,
+    pele_nao_i text,
+    outro_exp text,
+    out_exp_de text,
+    mat_org text,
+    mat_org_de text,
+    tipo_acid text,
+    agente text,
+    luva text,
+    avental text,
+    oculos text,
+    mascara text,
+    facial text,
+    bota text,
+    vacina text,
+    anti_hiv text,
+    hbsag text,
+    anti_hbs text,
+    anti_hcv text,
+    fonte text,
+    fo_hbsag text,
+    fo_ant_hiv text,
+    fo_ant_hbc text,
+    fo_ant_hcv text,
+    sem_quimio text,
+    recusa_qui text,
+    azt3tc text,
+    azt3tc_ind text,
+    azt3tc_nfv text,
+    imu_hep_b text,
+    vac_hep_b text,
+    outro_arv text,
+    out_arv_es text,
+    evolucao text,
+    evo_outr text,
+    dt_obito text,
+    cat text,
+    mucosa text
+);
+
+
+ALTER TABLE brasil.acbi OWNER TO dev_epigraph;
+
+--
+-- Name: acgr; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.acgr (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_acid text,
+    sem_acid text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    local_acid text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    cnae_prin text,
+    hora_acid text,
+    min_acid text,
+    hora_jor text,
+    min_jor text,
+    uf_acid text,
+    mun_acid text,
+    cid_acid text,
+    tipo_acid text,
+    mais_trab text,
+    nu_trab text,
+    atende_med text,
+    dt_atende text,
+    uf_atende text,
+    mun_atende text,
+    uni_atende text,
+    part_corp1 text,
+    part_corp2 text,
+    part_corp3 text,
+    cid_lesao text,
+    regime text,
+    evolucao text,
+    dt_obito text,
+    cat text
+);
+
+
+ALTER TABLE brasil.acgr OWNER TO dev_epigraph;
+
+--
+-- Name: anim; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.anim (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_dt_aci text,
+    ant_uf text,
+    ant_munic_ text,
+    ant_locali text,
+    ant_zona text,
+    ant_tempo_ text,
+    ant_loca_1 text,
+    mcli_local text,
+    cli_dor text,
+    cli_edema text,
+    cli_equimo text,
+    cli_necros text,
+    cli_local_ text,
+    cli_loca_1 text,
+    mcli_sist text,
+    cli_neuro text,
+    cli_hemorr text,
+    cli_vagais text,
+    cli_miolit text,
+    cli_renal text,
+    cli_outr_2 text,
+    cli_outr_3 text,
+    cli_tempo_ text,
+    tp_acident text,
+    ani_tipo_1 text,
+    ani_serpen text,
+    ani_aranha text,
+    ani_lagart text,
+    tra_classi text,
+    con_sorote text,
+    nu_ampolas text,
+    nu_ampol_1 text,
+    nu_ampol_8 text,
+    nu_ampol_6 text,
+    nu_ampol_4 text,
+    nu_ampo_7 text,
+    nu_ampo_5 text,
+    nu_ampol_9 text,
+    nu_ampol_3 text,
+    com_loc text,
+    com_secund text,
+    com_necros text,
+    com_compor text,
+    com_defict text,
+    com_aputac text,
+    com_sistem text,
+    com_renal text,
+    com_edema text,
+    com_septic text,
+    com_choque text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_nasc text
+);
+
+
+ALTER TABLE brasil.anim OWNER TO dev_epigraph;
+
+--
+-- Name: botu; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.botu (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    dtatend text,
+    nuatend text,
+    dtsuspeic text,
+    sthospital text,
+    dtinterna text,
+    dtalta text,
+    stfebre text,
+    stnausea text,
+    stvomito text,
+    stdiarreia text,
+    stconstipa text,
+    stcefaleia text,
+    sttontura text,
+    stvisao text,
+    stdiplopia text,
+    stdisartri text,
+    stdisfonia text,
+    stdisfagia text,
+    stboca text,
+    stferiment text,
+    stflacidez text,
+    stdispneia text,
+    strespira text,
+    stcardiaca text,
+    stcoma text,
+    stparestes text,
+    stoutrosin text,
+    stptose text,
+    stoftalmo text,
+    stmidriase text,
+    stfacial text,
+    stbulbar text,
+    stmeminf text,
+    stmemsup text,
+    stdescende text,
+    stsimetric text,
+    stsensivel text,
+    tpneuro text,
+    stalimento text,
+    dsalimento text,
+    stcaseira text,
+    stcomercio text,
+    stexpalim text,
+    stdomicili text,
+    stescola text,
+    sttrabalho text,
+    strestaura text,
+    stfesta text,
+    stoutroloc text,
+    nuconsome text,
+    stsoro text,
+    stantibio text,
+    stoutrotra text,
+    dtsoro text,
+    stantibotu text,
+    stsoromat text,
+    dtsorocol text,
+    stfezesmat text,
+    dtfezescol text,
+    steletro text,
+    dteletro text,
+    classi_fin text,
+    agente_out text,
+    criterio text,
+    tpbotulism text,
+    stclinica text,
+    stbromato text,
+    tpclinica text,
+    tpbromato text,
+    dscausalim text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    stventila text,
+    uf_hosp text,
+    mun_hosp text,
+    ds_pares text,
+    ds_outrosi text,
+    ds_indus text,
+    ds_ingest text,
+    ds_ini_ges text,
+    ds_fim_ges text,
+    ds_outr_lo text,
+    uf_ing text,
+    mun_ing text,
+    ds_trat text,
+    stsorores text,
+    tpsorotox text,
+    stfezesres text,
+    tpfezestox text,
+    st_ali1col text,
+    ds_ali1out text,
+    dt_ali1col text,
+    resalim1 text,
+    tp_ali1tox text,
+    st_ali2col text,
+    ds_ali2out text,
+    dt_ali2col text,
+    st_ali2res text,
+    tp_ali2to text,
+    tp_colout text,
+    ds_outro text,
+    dt_colout text,
+    resalimout text,
+    tp_toxoutr text,
+    tp_liquor text,
+    nu_celula text,
+    nu_protei text,
+    dt_liquor text,
+    tp_sensiti text,
+    tp_motora text,
+    tp_repete text,
+    ds_ali1 text,
+    ds_ali2 text,
+    ds_local1 text,
+    ds_local2 text,
+    dt_encerra text
+);
+
+
+ALTER TABLE brasil.botu OWNER TO dev_epigraph;
+
+--
+-- Name: br_municipalities_geocode; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.br_municipalities_geocode (
+    index bigint,
+    code_muni bigint,
+    name_muni text,
+    abbrev_state text
+);
+
+
+ALTER TABLE brasil.br_municipalities_geocode OWNER TO dev_epigraph;
+
+--
+-- Name: canc; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.canc (
+    index bigint NOT NULL,
+    tp_not text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    id_agravo text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_diag text,
+    sem_diag text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    nutemporis text,
+    tptemporis text,
+    regime text,
+    diag_esp text,
+    asbesto text,
+    silica text,
+    amina text,
+    benzeno text,
+    alcatrao text,
+    hidrocarbo text,
+    oleos text,
+    berilio text,
+    cadmio text,
+    cromo text,
+    niquel text,
+    ionizantes text,
+    nao_ioniza text,
+    hormonio text,
+    neoplasico text,
+    outro_exp text,
+    fuma text,
+    tempo_fuma text,
+    tp_temp_fu text,
+    trab_doe text,
+    evolucao text,
+    dt_obito text,
+    cat text,
+    out_exp_de text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_trnasrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text
+);
+
+
+ALTER TABLE brasil.canc OWNER TO dev_epigraph;
 
 --
 -- Name: caso_full; Type: TABLE; Schema: brasil; Owner: dev_epigraph
@@ -162,6 +692,466 @@ CREATE TABLE brasil.caso_full (
 
 
 ALTER TABLE brasil.caso_full OWNER TO dev_epigraph;
+
+--
+-- Name: chag; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.chag (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_uf_1 text,
+    mun_1 text,
+    ant_uf_2 text,
+    mun_2 text,
+    ant_uf_3 text,
+    mun_3 text,
+    presenca text,
+    parasito text,
+    historia text,
+    controle text,
+    manipula text,
+    maechaga text,
+    oral text,
+    assintoma text,
+    edema text,
+    meningoe text,
+    poliadeno text,
+    febre text,
+    hepatome text,
+    sinais_icc text,
+    arritmias text,
+    astenia text,
+    esplenom text,
+    chagoma text,
+    outro_sin text,
+    outro_esp text,
+    dt_col_dir text,
+    exame text,
+    micro_hema text,
+    outro text,
+    dt_col_ind text,
+    xenodiag text,
+    hemocult text,
+    dt_col_s1 text,
+    dt_col_s2 text,
+    eli_igm_s1 text,
+    eli_igg_s1 text,
+    eli_igm_s2 text,
+    eli_igg_s2 text,
+    hem_igm_s1 text,
+    hem_igg_s1 text,
+    hem_igm_s2 text,
+    hem_igg_s2 text,
+    imu_igm_s1 text,
+    tit_igm_s1 text,
+    imu_igm_s2 text,
+    tit_igm_s2 text,
+    imu_igg_s1 text,
+    tit_igg_s1 text,
+    imu_igg_s2 text,
+    tit_igg_s2 text,
+    resul_his text,
+    res_hist text,
+    especifico text,
+    sintomatic text,
+    droga text,
+    tempo text,
+    con_triat text,
+    biosseg text,
+    fiscaliza text,
+    med_outro text,
+    outro_des text,
+    classi_fin text,
+    criterio text,
+    evolucao text,
+    dt_obito text,
+    con_provav text,
+    con_outra text,
+    con_local text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    dt_encerra text,
+    cs_escolar text,
+    nu_idade text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    suspeitos text,
+    afirmativo text,
+    confirmad text,
+    quantos text,
+    recemnasc text,
+    cefaleia text,
+    anorexia text,
+    hiporexia text,
+    sinais text,
+    hepaesple text,
+    ganglios text,
+    aumento text,
+    hemo text,
+    imuno text,
+    elisa text,
+    ecg text,
+    ecg_result text,
+    raiox text,
+    rai_result text,
+    inespecif text,
+    dosagem text,
+    duracao text,
+    med_contr text,
+    implanta text,
+    con_classi text,
+    con_criter text,
+    con_infecc text,
+    con_inf_ou text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    in_vincula text,
+    nduplic text
+);
+
+
+ALTER TABLE brasil.chag OWNER TO dev_epigraph;
+
+--
+-- Name: chik; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.chik (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    cs_flxret text,
+    flxrecebi text,
+    tp_sistema text,
+    tpuninot text,
+    id_unidade text,
+    febre text,
+    mialgia text,
+    cefaleia text,
+    exantema text,
+    vomito text,
+    nausea text,
+    dor_costas text,
+    conjuntvit text,
+    artrite text,
+    artralgia text,
+    petequia_n text,
+    leucopenia text,
+    laco text,
+    dor_retro text,
+    diabetes text,
+    hematolog text,
+    hepatopat text,
+    renal text,
+    hipertensa text,
+    acido_pept text,
+    auto_imune text,
+    dt_chik_s1 text,
+    dt_chik_s2 text,
+    dt_prnt text,
+    res_chiks1 text,
+    res_chiks2 text,
+    resul_prnt text,
+    dt_soro text,
+    resul_soro text,
+    dt_ns1 text,
+    resul_ns1 text,
+    dt_viral text,
+    resul_vi_n text,
+    dt_pcr text,
+    resul_pcr_ text,
+    sorotipo text,
+    histopa_n text,
+    imunoh_n text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    clinc_chik text,
+    alrm_hipot text,
+    alrm_plaq text,
+    alrm_vom text,
+    alrm_sang text,
+    alrm_hemat text,
+    alrm_abdom text,
+    alrm_letar text,
+    alrm_hepat text,
+    alrm_liq text,
+    dt_alrm text,
+    grav_pulso text,
+    grav_conv text,
+    grav_ench text,
+    grav_insuf text,
+    grav_taqui text,
+    grav_extre text,
+    grav_hipot text,
+    grav_hemat text,
+    grav_melen text,
+    grav_metro text,
+    grav_sang text,
+    grav_ast text,
+    grav_mioc text,
+    grav_consc text,
+    grav_orgao text,
+    dt_grav text,
+    mani_hemor text,
+    epistaxe text,
+    gengivo text,
+    metro text,
+    petequias text,
+    hematura text,
+    sangram text,
+    laco_n text,
+    plasmatico text,
+    evidencia text,
+    plaq_menor text,
+    con_fhd text,
+    complica text
+);
+
+
+ALTER TABLE brasil.chik OWNER TO dev_epigraph;
+
+--
+-- Name: cole; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.cole (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    fc_contato text,
+    fc_cont_de text,
+    vinculo text,
+    out_vincul text,
+    cs_assinto text,
+    cs_diarre text,
+    cs_caimbra text,
+    cs_febre text,
+    cs_vomitos text,
+    cs_dor text,
+    cs_choque text,
+    cs_desit text,
+    tip_diarre text,
+    cs_frequen text,
+    cs_sangue text,
+    cs_muco text,
+    cs_tipo text,
+    dt_atendim text,
+    dt_interna text,
+    uf_hospita text,
+    nm_munic_h text,
+    cs_materia text,
+    cs_vomito text,
+    dt_coleta text,
+    cs_antib text,
+    nm_antibio text,
+    cs_resulta text,
+    cs_positiv text,
+    cs_neg_esp text,
+    cs_reidrat text,
+    cs_antib_t text,
+    antib_des text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    codisinf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text,
+    ds_trans1 text,
+    ds_trans2 text,
+    ds_trans3 text
+);
+
+
+ALTER TABLE brasil.cole OWNER TO dev_epigraph;
+
+--
+-- Name: coqu; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.coqu (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_sentin text,
+    fc_contato text,
+    out_contat text,
+    cs_vac_n text,
+    dt_ult_dos text,
+    dt_catarra text,
+    cs_tosse_e text,
+    cs_tosse_p text,
+    cs_crise text,
+    cs_cianose text,
+    cs_vomitos text,
+    cs_apneia text,
+    cs_temp37 text,
+    cs_temp_38 text,
+    cs_out_sin text,
+    nm_out_sin text,
+    cs_pneumon text,
+    cs_encefal text,
+    cs_desitra text,
+    cs_otite text,
+    cs_desnutr text,
+    cs_out_com text,
+    nm_out_com text,
+    cs_hospita text,
+    dt_interna text,
+    cod_uf_hos text,
+    cod_mun_ho text,
+    cs_antibio text,
+    dt_adm_ant text,
+    cs_coleta text,
+    dt_coleta text,
+    cs_cultura text,
+    med_iden_c text,
+    med_quan_c text,
+    med_caso_s text,
+    colet_comu text,
+    quan_comun text,
+    quan_posit text,
+    med_bloque text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text
+);
+
+
+ALTER TABLE brasil.coqu OWNER TO dev_epigraph;
 
 --
 -- Name: data_SARI_16_08_21.csv; Type: TABLE; Schema: brasil; Owner: dev_epigraph
@@ -338,38 +1328,6584 @@ CREATE TABLE brasil."data_SARI_16_08_21.csv" (
 ALTER TABLE brasil."data_SARI_16_08_21.csv" OWNER TO dev_epigraph;
 
 --
--- Name: casos_positivos_covid; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+-- Name: deng; Type: TABLE; Schema: brasil; Owner: dev_epigraph
 --
 
-CREATE TABLE colombia.casos_positivos_covid (
-    index bigint,
-    "fecha reporte web" timestamp without time zone,
-    "ID de caso" bigint,
-    "Fecha de notificación" timestamp without time zone,
-    "Código DIVIPOLA departamento" bigint,
-    "Nombre departamento" text,
-    "Código DIVIPOLA municipio" bigint,
-    "Nombre municipio" text,
-    "Edad" bigint,
-    "Unidad de medida de edad" bigint,
-    "Sexo" text,
-    "Tipo de contagio" text,
-    "Ubicación del caso" text,
-    "Estado" text,
-    "Código ISO del país" bigint,
-    "Nombre del país" text,
-    "Recuperado" text,
-    "Fecha de inicio de síntomas" timestamp without time zone,
-    "Fecha de muerte" timestamp without time zone,
-    "Fecha de diagnóstico" timestamp without time zone,
-    "Fecha de recuperación" timestamp without time zone,
-    "Tipo de recuperación" text,
-    "Pertenencia étnica" bigint,
-    "Nombre del grupo étnico" text
+CREATE TABLE brasil.deng (
+    index bigint NOT NULL,
+    id_municip text,
+    id_unidade text,
+    dt_notific text,
+    cs_raca text,
+    cs_escolar text,
+    nu_ano text,
+    sem_not text,
+    sg_uf_not text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade text,
+    cs_sexo text,
+    id_mn_resi text,
+    id_rg_resi text,
+    sg_uf text,
+    id_pais text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    dengue text,
+    ano text,
+    vacinado text,
+    dt_dose text,
+    febre text,
+    dt_febre text,
+    duracao text,
+    laco text,
+    cefaleia text,
+    exantema text,
+    dor text,
+    prostacao text,
+    mialgia text,
+    nauseas text,
+    artralgia text,
+    diarreia text,
+    outros text,
+    sin_out text,
+    epistaxe text,
+    petequias text,
+    gengivo text,
+    metro text,
+    hematura text,
+    sangram text,
+    outros_m text,
+    outros_m_d text,
+    ascite text,
+    pleural text,
+    pericardi text,
+    abdominal text,
+    hepato text,
+    miocardi text,
+    hipotensao text,
+    choque text,
+    manifesta text,
+    insuficien text,
+    outro_s text,
+    outro_s_d text,
+    dt_choque text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    dt_col_hem text,
+    hema_maior text,
+    dt_col_plq text,
+    palq_maior text,
+    dt_col_he2 text,
+    hema_menor text,
+    dt_col_pl2 text,
+    plaq_menor text,
+    dt_soro1 text,
+    dt_soro2 text,
+    dt_soror1 text,
+    dt_soror2 text,
+    s1_igm text,
+    s1_igg text,
+    s2_igm text,
+    s2_igg text,
+    s1_tit1 text,
+    s2_tit1 text,
+    material text,
+    soro1 text,
+    soro2 text,
+    tecidos text,
+    resul_vira text,
+    histopa text,
+    imunoh text,
+    amos_pcr text,
+    resul_pcr text,
+    amos_out text,
+    tecnica text,
+    resul_out text,
+    con_classi text,
+    con_criter text,
+    con_fhd text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    in_vincula text,
+    nduplic text,
+    in_aids text,
+    tp_not text,
+    id_agravo text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_gestant text,
+    cs_escol_n text,
+    dt_invest text,
+    id_ocupa_n text,
+    vomito text,
+    nausea text,
+    dor_costas text,
+    conjuntvit text,
+    artrite text,
+    petequia_n text,
+    leucopenia text,
+    dor_retro text,
+    diabetes text,
+    hematolog text,
+    hepatopat text,
+    renal text,
+    hipertensa text,
+    acido_pept text,
+    auto_imune text,
+    dt_chik_s1 text,
+    dt_chik_s2 text,
+    dt_prnt text,
+    res_chiks1 text,
+    res_chiks2 text,
+    resul_prnt text,
+    dt_soro text,
+    resul_soro text,
+    dt_ns1 text,
+    resul_ns1 text,
+    dt_viral text,
+    resul_vi_n text,
+    dt_pcr text,
+    resul_pcr_ text,
+    sorotipo text,
+    histopa_n text,
+    imunoh_n text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    clinc_chik text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    alrm_hipot text,
+    alrm_plaq text,
+    alrm_vom text,
+    alrm_sang text,
+    alrm_hemat text,
+    alrm_abdom text,
+    alrm_letar text,
+    alrm_hepat text,
+    alrm_liq text,
+    dt_alrm text,
+    grav_pulso text,
+    grav_conv text,
+    grav_ench text,
+    grav_insuf text,
+    grav_taqui text,
+    grav_extre text,
+    grav_hipot text,
+    grav_hemat text,
+    grav_melen text,
+    grav_metro text,
+    grav_sang text,
+    grav_ast text,
+    grav_mioc text,
+    grav_consc text,
+    grav_orgao text,
+    dt_grav text,
+    mani_hemor text,
+    laco_n text,
+    plasmatico text,
+    evidencia text,
+    complica text,
+    tp_sistema text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    dt_digita text,
+    migrado_w text
 );
 
+
+ALTER TABLE brasil.deng OWNER TO dev_epigraph;
+
+--
+-- Name: dift; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.dift (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    cs_zona text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_tipoco text,
+    ant_outros text,
+    ant_dos_n text,
+    ant_ulti_d text,
+    cli_edemag text,
+    cli_pescoc text,
+    cli_febre text,
+    cli_prostr text,
+    cli_pseudo text,
+    cli_palide text,
+    cli_temper text,
+    cli_cavida text,
+    cli_amigda text,
+    cli_cordao text,
+    cli_faring text,
+    cli_laring text,
+    cli_orgaos text,
+    cli_palato text,
+    cli_condut text,
+    cli_traque text,
+    cli_pele text,
+    cli_conjun text,
+    cli_miocar text,
+    cli_nefrit text,
+    cli_paralb text,
+    cli_paralp text,
+    cli_arritm text,
+    cli_paralm text,
+    cli_outras text,
+    cli_especi text,
+    ate_hospit text,
+    ate_intern text,
+    ate_uf_int text,
+    ate_munici text,
+    lab_mate_n text,
+    lab_data_c text,
+    lab_cultur text,
+    lab_provas text,
+    tra_data_s text,
+    tra_antibi text,
+    tra_data_a text,
+    med_iden_c text,
+    med_quan_c text,
+    med_caso_s text,
+    med_materi text,
+    med_quan_m text,
+    med_quan_p text,
+    med_preven text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text
+);
+
+
+ALTER TABLE brasil.dift OWNER TO dev_epigraph;
+
+--
+-- Name: esqu; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.esqu (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    dt_copro text,
+    an_quant text,
+    outros text,
+    tratam text,
+    tratanao text,
+    stcura1 text,
+    stcura2 text,
+    stcura3 text,
+    forma text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    nopropin text,
+    nocolinf text,
+    doenca_tra text,
+    evolucao text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrs text,
+    dt_transse text,
+    dt_obito text,
+    ds_forma text,
+    an_quali text,
+    dttrat text,
+    dt_resu3 text,
+    outro_ex text
+);
+
+
+ALTER TABLE brasil.esqu OWNER TO dev_epigraph;
+
+--
+-- Name: fmac; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.fmac (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    febre text,
+    cefaleia text,
+    abdominal text,
+    mialgia text,
+    nausea text,
+    exantema text,
+    diarreia text,
+    ictericia text,
+    hiperemia text,
+    hepatome text,
+    petequias text,
+    hemorrag text,
+    linfadeno text,
+    convulsao text,
+    necrose text,
+    prostacao text,
+    choque text,
+    coma text,
+    hemorragi text,
+    respirato text,
+    oliguria text,
+    outros text,
+    outro_esp text,
+    carrapato text,
+    capivara text,
+    cao_gato text,
+    bovino text,
+    equinos text,
+    outroani text,
+    anim_esp text,
+    foi_mata text,
+    hospital text,
+    dtinterna text,
+    dtalta text,
+    coufhosp text,
+    comunhosp text,
+    diagno_lab text,
+    dts1 text,
+    dts2 text,
+    igm_s1 text,
+    tit_igm_s1 text,
+    igg_s1 text,
+    tit_igg_s1 text,
+    igm_s2 text,
+    tit_igm_s2 text,
+    igg_s2 text,
+    tit_igg_s2 text,
+    dt_coleta text,
+    dt_digita text,
+    isolamento text,
+    agente text,
+    histopato text,
+    imunohist text,
+    classi_fin text,
+    criterio text,
+    diag_desca text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    ambiente text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text
+);
+
+
+ALTER TABLE brasil.fmac OWNER TO dev_epigraph;
+
+--
+-- Name: ftif; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.ftif (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    contato text,
+    cont_out text,
+    suge_vincu text,
+    vinc_out text,
+    assintomat text,
+    febre text,
+    cefaleia text,
+    diarreia text,
+    constipa text,
+    astenia text,
+    tosse text,
+    espleno text,
+    tifica text,
+    nauseas text,
+    vomitos text,
+    dor text,
+    pulso text,
+    entero text,
+    perfura text,
+    comp_out text,
+    comp_out_d text,
+    atendiment text,
+    dt_atende text,
+    uf text,
+    municipio text,
+    sangue text,
+    fezes text,
+    urina text,
+    antibiotic text,
+    dt_hemo1 text,
+    hemo_r1 text,
+    hemo_d_1 text,
+    dt_hemo2 text,
+    hemo_r2 text,
+    hemo_d_2 text,
+    dt_hemo3 text,
+    hemo_r3 text,
+    hemo_d_3 text,
+    dt_uro text,
+    uro_r1 text,
+    uro_d text,
+    dt_uro2 text,
+    uro_r2 text,
+    uro_d_2 text,
+    dt_uro3 text,
+    uro_r3 text,
+    uro_d_3 text,
+    dt_copro1 text,
+    copro_r1 text,
+    copro_d_1 text,
+    dt_copro2 text,
+    copro_r2 text,
+    copro_d_2 text,
+    dt_copro3 text,
+    copro_r3 text,
+    copro_d_3 text,
+    dt_outr1 text,
+    outr_r1 text,
+    outr_d1 text,
+    dt_outr2 text,
+    outr_r2 text,
+    outr_d2 text,
+    dt_outr3 text,
+    outr_r3 text,
+    outr_d3 text,
+    clorafen text,
+    ampicilina text,
+    sulfa text,
+    quinolona text,
+    ant_outr text,
+    ant_out_d text,
+    dias text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text,
+    ds_trans1 text,
+    ds_trans2 text,
+    ds_trans3 text
+);
+
+
+ALTER TABLE brasil.ftif OWNER TO dev_epigraph;
+
+--
+-- Name: hans; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.hans (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_diag text,
+    sem_diag text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    id_ocupa_n text,
+    nu_lesoes text,
+    formaclini text,
+    avalia_n text,
+    classopera text,
+    modoentr text,
+    mododetect text,
+    baciloscop text,
+    dtinictrat text,
+    esq_ini_n text,
+    contreg text,
+    nervosafet text,
+    ufatual text,
+    id_muni_at text,
+    dt_noti_at text,
+    id_unid_at text,
+    ufresat text,
+    muniresat text,
+    dtultcomp text,
+    classatual text,
+    aval_atu_n text,
+    esq_atu_n text,
+    dose_receb text,
+    epis_racio text,
+    dtmudesq text,
+    contexam text,
+    dtalta_n text,
+    tpalta_n text,
+    in_vincula text
+);
+
+
+ALTER TABLE brasil.hans OWNER TO dev_epigraph;
+
+--
+-- Name: hant; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.hant (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    in_aids text,
+    cs_mening text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dtdiasinac text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    treina_mil text,
+    desmata_n text,
+    expo_n text,
+    moagem_n text,
+    dormiu_n text,
+    transpo_n text,
+    pescou_n text,
+    roedor_n text,
+    outra_ativ text,
+    outr_ati_d text,
+    cli_dt_ate text,
+    cli_febre text,
+    cli_tosse text,
+    cli_dispne text,
+    cli_respi text,
+    cli_cefale text,
+    cli_mial_g text,
+    cli_lombar text,
+    cli_abdomi text,
+    cli_hipote text,
+    cli_choque text,
+    cli_vomito text,
+    cli_diarre text,
+    cli_toraci text,
+    cli_tontur text,
+    cli_cardia text,
+    cli_renal text,
+    cli_neurol text,
+    cli_asteni text,
+    cli_petequ text,
+    cli_hemo text,
+    cli_h_desc text,
+    cli_outros text,
+    cli_out_d text,
+    am_sangue text,
+    lab_hema_n text,
+    lab_trombo text,
+    lab_atipic text,
+    lab_ureia text,
+    lab_tgo text,
+    lab_tgo_d text,
+    lab_tgp text,
+    lab_tgp_d text,
+    lab_res_b text,
+    lab_radiol text,
+    lab_difuso text,
+    lab_local text,
+    lab_derram text,
+    lab_colheu text,
+    dt_col_igm text,
+    lab_igm_r text,
+    lab_imuno text,
+    dt_rtpcr text,
+    lab_rtpcr text,
+    tra_dt_int text,
+    tra_uf text,
+    tra_munici text,
+    tra_hosp text,
+    tra_mecani text,
+    tra_antivi text,
+    tra_cortic text,
+    tra_cpap text,
+    tra_vasoat text,
+    tra_antibi text,
+    tra_tratam text,
+    tra_especi text,
+    classi_fin text,
+    con_forma text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    con_ambien text,
+    con_amb_de text,
+    con_locali text,
+    con_local2 text,
+    evolucao text,
+    dt_evoluc text,
+    con_autops text,
+    doenca_tra text,
+    dt_encerra text,
+    dt_digita text
+);
+
+
+ALTER TABLE brasil.hant OWNER TO dev_epigraph;
+
+--
+-- Name: hepa; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.hepa (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_digita text,
+    dt_trasse text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    hepatite_n text,
+    hepatita text,
+    hepatitb text,
+    institucio text,
+    hiv text,
+    outra_dst text,
+    sexual text,
+    domicili text,
+    ocupacio text,
+    medicament text,
+    tatu_pier text,
+    matbiologi text,
+    inal_crack text,
+    acupuntura text,
+    transfusao text,
+    injetaveis text,
+    cirurgico text,
+    agua_alime text,
+    dentario text,
+    tresmais text,
+    hemodialis text,
+    transpla text,
+    outras text,
+    dt_acident text,
+    co_uf_exp text,
+    co_mun_exp text,
+    co_uf_ex2 text,
+    co_mun_ex2 text,
+    co_uf_ex3 text,
+    co_mun_ex3 text,
+    bancosangu text,
+    res_hbsag text,
+    re_antihbc text,
+    re_antihcv text,
+    dt_coleta text,
+    antihavigm text,
+    antihbs text,
+    antihdvigm text,
+    aghbs text,
+    aghbe text,
+    antihevigm text,
+    antihbcigm text,
+    antihbe text,
+    antihcv text,
+    hbc_total text,
+    antihdv text,
+    tp_sorohcv text,
+    gen_vhc text,
+    coletamarc text,
+    classi_fin text,
+    forma text,
+    clas_etiol text,
+    fonte text,
+    dt_encerra text,
+    dsfonte text
+);
+
+
+ALTER TABLE brasil.hepa OWNER TO dev_epigraph;
+
+--
+-- Name: iexo; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.iexo (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    sit_trab text,
+    loc_expo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    pais_exp text,
+    agente_tox text,
+    coagtoxma1 text,
+    coagtoxma2 text,
+    coagtoxma3 text,
+    agente_1 text,
+    agente_2 text,
+    agente_3 text,
+    p_ativo_1 text,
+    p_ativo_2 text,
+    p_ativo_3 text,
+    utilizacao text,
+    ativida_1 text,
+    ativida_2 text,
+    ativida_3 text,
+    via_1 text,
+    via_2 text,
+    via_3 text,
+    circunstan text,
+    doenca_tra text,
+    tpexp text,
+    nutempo text,
+    tptempo text,
+    tpatende text,
+    hospital text,
+    dtinterna text,
+    uf_hosp text,
+    mun_hosp text,
+    classi_fin text,
+    diag_conf text,
+    criterio text,
+    evolucao text,
+    dt_obito text,
+    cat text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    trab_desc text,
+    loc_exp_de text,
+    out_agente text,
+    util_desc text,
+    lavoura text,
+    circun_des text,
+    nu_lote_i text
+);
+
+
+ALTER TABLE brasil.iexo OWNER TO dev_epigraph;
+
+--
+-- Name: leiv; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.leiv (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    febre text,
+    fraqueza text,
+    edema text,
+    emagra text,
+    tosse text,
+    palidez text,
+    baco text,
+    infeccioso text,
+    fen_hemorr text,
+    figado text,
+    ictericia text,
+    outros text,
+    outros_esp text,
+    hiv text,
+    diag_par_n text,
+    ifi text,
+    outro text,
+    entrada text,
+    tratamento text,
+    droga text,
+    peso text,
+    dose text,
+    ampolas text,
+    falencia text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_deslc1 text,
+    ds_mun_1 text,
+    co_uf_1 text,
+    co_pais_1 text,
+    ds_trans_1 text,
+    dt_deslc2 text,
+    ds_mun_2 text,
+    co_uf_2 text,
+    co_pais_2 text,
+    ds_trans_2 text,
+    dt_deslc3 text,
+    ds_mun_3 text,
+    co_uf_3 text,
+    co_pais_3 text,
+    nu_notific text,
+    cs_escolar text,
+    nu_idade text,
+    id_bairro text,
+    id_dt_resi text,
+    cs_zona text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    caso text,
+    endemico text,
+    tube text,
+    outras text,
+    elisa text,
+    diag_para text,
+    doses text,
+    duracao text,
+    con_classi text,
+    con_inf_ou text,
+    con_inf_ba text,
+    con_inf_di text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    id_cns_sus text,
+    nm_pacient text,
+    nm_mae_pac text,
+    id_logrado text,
+    nm_logrado text,
+    nu_numero text,
+    nm_complem text,
+    nm_referen text,
+    nu_cep text,
+    nu_ddd text,
+    nu_telefon text,
+    in_vincula text,
+    nduplic text,
+    in_aids text,
+    chfonetica text,
+    nu_lote text
+);
+
+
+ALTER TABLE brasil.leiv OWNER TO dev_epigraph;
+
+--
+-- Name: lept; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.lept (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_cb_lam text,
+    ant_cb_cri text,
+    ant_cb_cai text,
+    ant_cb_fos text,
+    ant_cb_sin text,
+    ant_cb_pla text,
+    ant_cb_cor text,
+    ant_cb_roe text,
+    ant_cb_gra text,
+    ant_cb_ter text,
+    ant_cb_lix text,
+    ant_cb_out text,
+    ant_ou_des text,
+    ant_humano text,
+    ant_animai text,
+    cli_dt_ate text,
+    cli_febre text,
+    cli_mialgi text,
+    cli_cefale text,
+    cli_prost text,
+    cli_conges text,
+    cli_pantur text,
+    cli_vomito text,
+    cli_diarre text,
+    cli_icteri text,
+    cli_renal text,
+    cli_respir text,
+    cli_cardia text,
+    cli_hemopu text,
+    cli_hemorr text,
+    cli_mening text,
+    cli_outros text,
+    cli_otrdes text,
+    ate_dt_int text,
+    ate_dt_alt text,
+    ate_uf text,
+    ate_munici text,
+    ate_hosp text,
+    lab_dt_1 text,
+    lab_elis_1 text,
+    lab_dt_2 text,
+    lab_elis_2 text,
+    dtmicro1 text,
+    micro1_s1 text,
+    micro1_t_1 text,
+    micro1_s_2 text,
+    micro1_t_2 text,
+    lab_micr_1 text,
+    dtmicro2 text,
+    micro2_s1 text,
+    micro2_t_1 text,
+    micro2_s_2 text,
+    micro2_t_2 text,
+    lab_micr_2 text,
+    dtisola text,
+    res_isol text,
+    dtimuno text,
+    res_imuno text,
+    dt_pcr text,
+    res_pcr text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    con_area text,
+    con_ambien text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_risco1 text,
+    dt_risco2 text,
+    dt_risco3 text,
+    dt_risco4 text,
+    co_mun_r1 text,
+    co_mun_r2 text,
+    co_mun_r3 text,
+    co_mun_r4 text,
+    co_uf_r1 text,
+    co_uf_r2 text,
+    co_uf_r3 text,
+    co_uf_r4 text
+);
+
+
+ALTER TABLE brasil.lept OWNER TO dev_epigraph;
+
+--
+-- Name: ltan; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.ltan (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    cli_cutane text,
+    cli_mucosa text,
+    cli_cicatr text,
+    cli_co_hiv text,
+    lab_parasi text,
+    lab_irm text,
+    lab_histop text,
+    cla_tipo_n text,
+    clas_forma text,
+    dt_inic_tr text,
+    tra_droga_ text,
+    tra_peso text,
+    tra_dose text,
+    tra_ampola text,
+    tra_outr_n text,
+    criterio text,
+    con_class_ text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text
+);
+
+
+ALTER TABLE brasil.ltan OWNER TO dev_epigraph;
+
+--
+-- Name: mala; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.mala (
+    index bigint NOT NULL,
+    id_municip text,
+    id_unidade text,
+    dt_notific text,
+    cs_raca text,
+    cs_escolar text,
+    nu_ano text,
+    sem_not text,
+    sg_uf_not text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade text,
+    cs_sexo text,
+    id_mn_resi text,
+    sg_uf text,
+    id_pais text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    transfu text,
+    dttransfu text,
+    utransfu text,
+    uftransfu text,
+    ptransfu text,
+    mtransfu text,
+    pusuario text,
+    pmalaria text,
+    amalaria text,
+    assintom text,
+    febre text,
+    calafrio text,
+    sudorese text,
+    cli_outro text,
+    cd_outro text,
+    gestante text,
+    hospital text,
+    dinterna text,
+    ufinterna text,
+    minterna text,
+    dexame text,
+    pmm text,
+    pcruz text,
+    result text,
+    cloroq text,
+    primaq text,
+    tetrac text,
+    mefloq text,
+    artesu text,
+    quinino text,
+    artem text,
+    clind text,
+    cloroqi text,
+    quininoi text,
+    artei text,
+    artemi text,
+    clindi text,
+    doxoci text,
+    soutros text,
+    dtrata text,
+    con_classi text,
+    con_confir text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    in_vincula text,
+    nduplic text,
+    tp_not text,
+    id_agravo text,
+    nu_idade_n text,
+    cs_gestant text,
+    cs_escol_n text,
+    id_rg_resi text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    at_ativida text,
+    at_lamina text,
+    at_sintoma text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    loc_inf text,
+    tra_esquem text,
+    dstraesque text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text
+);
+
+
+ALTER TABLE brasil.mala OWNER TO dev_epigraph;
+
+--
+-- Name: meni; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.meni (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    cs_mening text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    dt_digita text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_ac text,
+    ant_dose_3 text,
+    ant_dtul_3 text,
+    ant_bc text,
+    ant_doses_ text,
+    ant_dtult_ text,
+    ant_conj_c text,
+    ant_dose_c text,
+    ant_dtul_c text,
+    ant_bcg text,
+    ant_dose_4 text,
+    ant_dtul_4 text,
+    ant_tripli text,
+    ant_dose_5 text,
+    ant_dtul_5 text,
+    ant_hemo_t text,
+    ant_dose_t text,
+    ant_dtul_t text,
+    ant_pneumo text,
+    ant_dose_7 text,
+    ant_dtul_7 text,
+    ant_outra text,
+    ant_ou_de text,
+    ant_dtul_8 text,
+    ant_aids text,
+    ant_imuno text,
+    ant_ira text,
+    ant_tube text,
+    ant_trauma text,
+    ant_inf_ho text,
+    ant_outro text,
+    ant_outr_d text,
+    ant_cont_n text,
+    ant_secund text,
+    cli_cefale text,
+    cli_febre text,
+    cli_vomito text,
+    cli_convul text,
+    cli_rigide text,
+    cli_kernig text,
+    cli_abaula text,
+    cli_coma text,
+    cli_petequ text,
+    cli_outras text,
+    cli_especi text,
+    ate_hospit text,
+    ate_intern text,
+    ate_uf_hos text,
+    ate_munici text,
+    lab_puncao text,
+    lab_dtpunc text,
+    lab_aspect text,
+    lab_ctliqu text,
+    lab_ctlesa text,
+    lab_ctsang text,
+    lab_ctesca text,
+    lab_bcliqu text,
+    lab_bclesa text,
+    lab_bcsang text,
+    lab_bcesca text,
+    lab_ciliqu text,
+    lab_cisang text,
+    lab_agliqu text,
+    lab_agsang text,
+    lab_isliqu text,
+    lab_isfeze text,
+    lab_pcliqu text,
+    lab_pclesa text,
+    lab_pcsang text,
+    lab_pcesca text,
+    classi_fin text,
+    con_diages text,
+    cla_me_bac text,
+    cla_me_ass text,
+    cla_me_eti text,
+    criterio text,
+    cla_sorogr text,
+    med_nucomu text,
+    med_quimio text,
+    med_dt_qui text,
+    doenca_tra text,
+    evolucao text,
+    med_dt_evo text,
+    dt_encerra text,
+    lab_hema text,
+    lab_neutro text,
+    lab_glico text,
+    lab_leuco text,
+    lab_eosi text,
+    lab_prot text,
+    lab_mono text,
+    lab_linfo text,
+    lab_clor text
+);
+
+
+ALTER TABLE brasil.meni OWNER TO dev_epigraph;
+
+--
+-- Name: pest; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.pest (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    co_risco text,
+    epi_peste text,
+    com_pest text,
+    sin_gang text,
+    sin_pulm text,
+    tratado text,
+    criterio text,
+    classi_fin text,
+    con_gravid text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_encerra text,
+    dt_digita text,
+    dt_obito text,
+    con_classi text,
+    lab_esfr text,
+    dt_s1 text,
+    lab_hemo text,
+    dt_s2 text,
+    elisa1 text,
+    elisa2 text,
+    hemo_igm text,
+    hemo_igg text,
+    igm_t1 text,
+    igg_t2 text,
+    co_focal text,
+    tpautocto text
+);
+
+
+ALTER TABLE brasil.pest OWNER TO dev_epigraph;
+
+--
+-- Name: pfan; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.pfan (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dtpricons text,
+    dt_invest text,
+    ant_vacina text,
+    ant_doses text,
+    ant_dt_vac text,
+    ant_30_dia text,
+    ant_pais text,
+    cli_febre text,
+    cli_diarre text,
+    cli_dores text,
+    cli_sintom text,
+    cli_vomito text,
+    cli_obstip text,
+    cli_cefale text,
+    cli_outros text,
+    outros_des text,
+    cli_dt text,
+    cli_aguda text,
+    cli_flacid text,
+    cli_assime text,
+    cli_progre text,
+    cli_ascend text,
+    cli_descen text,
+    cli_f_mie text,
+    cli_f_mse text,
+    cli_f_mid text,
+    cli_f_msd text,
+    loca_mie_n text,
+    loca_mse_n text,
+    loca_mid_n text,
+    loca_msd_n text,
+    cli_respir text,
+    cli_cervic text,
+    cli_face text,
+    cli_dt_exa text,
+    cli_a_fmie text,
+    cli_a_fmse text,
+    cli_a_fmid text,
+    cli_a_fmsd text,
+    cli_a_tmie text,
+    cli_a_tmse text,
+    cli_a_tmid text,
+    cli_a_tmsd text,
+    cli_a_t_ce text,
+    cli_a_t_fa text,
+    cli_a_smie text,
+    cli_a_smse text,
+    cli_a_smid text,
+    cli_a_smsd text,
+    cli_a_s_fa text,
+    cli_aq_e_n text,
+    cli_aq_d_n text,
+    cli_pate_n text,
+    cli_patd_n text,
+    cli_bice_n text,
+    cli_bicd_n text,
+    cli_trie_n text,
+    cli_trid_n text,
+    cli_fle_e text,
+    cli_fle_d text,
+    cli_ext_e text,
+    cli_ext_d text,
+    cli_kernig text,
+    cli_nuca text,
+    cli_brudz text,
+    cli_contat text,
+    cli_con_es text,
+    cli_injeca text,
+    cli_local text,
+    ate_hipote text,
+    ate_hosp text,
+    ate_dt_int text,
+    ate_uf text,
+    ate_munici text,
+    lab_dt_f1 text,
+    lab_dt_nle text,
+    lab_dt_cen text,
+    lab_dt_r1 text,
+    lab_q_f text,
+    lab_con_f text,
+    lab_dt_re1 text,
+    lab_res_f1 text,
+    lab_res_f2 text,
+    lab_res_f3 text,
+    lab_dt_l_1 text,
+    lab_l_cel1 text,
+    lab_l_lin1 text,
+    lab_l_pro1 text,
+    lab_l_gli1 text,
+    lab_l_cl1 text,
+    lab_dt_l_2 text,
+    lab_l_cel2 text,
+    lab_l_lin2 text,
+    lab_l_pro2 text,
+    lab_l_gli2 text,
+    lab_l_cl2 text,
+    lab_dt_e_1 text,
+    lab_e_d_1 text,
+    lab_celebr text,
+    lab_medula text,
+    lab_intest text,
+    lab_dt_c1 text,
+    lab_result text,
+    evor_dt_re text,
+    evor_f_mie text,
+    evor_f_mse text,
+    evor_f_mid text,
+    evor_f_msd text,
+    tonr_mie_n text,
+    tonr_mse_n text,
+    tonr_mid_n text,
+    tonr_msd_n text,
+    tonr_cer_n text,
+    tonr_fac_n text,
+    refr_aqe_n text,
+    refr_aqd_n text,
+    refr_pae_n text,
+    refr_pad_n text,
+    refr_bie_n text,
+    refr_bid_n text,
+    refr_tre_n text,
+    refr_trd_n text,
+    evor_rc_fe text,
+    evor_rc_fd text,
+    evor_rc_ee text,
+    evor_rc_ed text,
+    evor_a_mie text,
+    evor_a_mse text,
+    evor_a_mid text,
+    evor_a_msd text,
+    evor_s_mie text,
+    evor_s_mse text,
+    evor_s_mid text,
+    evor_s_msd text,
+    evor_s_fac text,
+    evor1_dt_r text,
+    classi_fin text,
+    criterio text,
+    con_descar text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text
+);
+
+
+ALTER TABLE brasil.pfan OWNER TO dev_epigraph;
+
+--
+-- Name: raiv; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.raiv (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    cs_zona text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    arranhao text,
+    lambedura text,
+    mordedura text,
+    contato text,
+    mucosa text,
+    cabeca text,
+    maos_n text,
+    pes text,
+    tronco text,
+    superiores text,
+    inferiores text,
+    feriment_n text,
+    profundo text,
+    superficia text,
+    dilacerant text,
+    dt_expo text,
+    antec_pre text,
+    antec_pos text,
+    num_doses text,
+    dt_tr_rab text,
+    especie_n text,
+    esp_out text,
+    vacinad text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    aerofobia text,
+    hidrofobi text,
+    disfagia text,
+    parestesi text,
+    agressivi text,
+    paralisia text,
+    agitacao text,
+    febre text,
+    outro text,
+    outro_des text,
+    anti_rab text,
+    dt_r_tra text,
+    doses_a text,
+    dt_vac1 text,
+    dt_vac_ult text,
+    tra_soro text,
+    dt_apli_so text,
+    quantid text,
+    infiltra text,
+    imuno_dire text,
+    imuno_indi text,
+    histolog_n text,
+    prova_biol text,
+    varia_vir text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text
+);
+
+
+ALTER TABLE brasil.raiv OWNER TO dev_epigraph;
+
+--
+-- Name: sifa; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sifa (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    tp_sistema text,
+    tpuninot text
+);
+
+
+ALTER TABLE brasil.sifa OWNER TO dev_epigraph;
+
+--
+-- Name: sifc; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sifc (
+    index bigint NOT NULL,
+    tp_not text,
+    sem_not text,
+    sem_pri text,
+    id_agravo text,
+    dt_notific text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_pais text,
+    ant_idade text,
+    ant_raca text,
+    id_ocupa_n text,
+    escolmae text,
+    ant_pre_na text,
+    uf_pre_nat text,
+    mun_pre_na text,
+    antsifil_n text,
+    lab_parto text,
+    lab_titu_2 text,
+    lab_dt3 text,
+    lab_conf text,
+    tra_esquem text,
+    tra_dt text,
+    ant_tratad text,
+    ant_uf_cri text,
+    ant_muni_c text,
+    labc_sangu text,
+    labc_tit_1 text,
+    labc_dt_1 text,
+    labc_igg text,
+    labc_dt text,
+    labc_liquo text,
+    labc_tit_2 text,
+    labc_dt_2 text,
+    labc_titul text,
+    labc_evide text,
+    labc_liq_1 text,
+    tra_diag_t text,
+    tra_esqu_1 text,
+    ds_esquema text,
+    evolucao text,
+    dt_obito text,
+    evo_diag_n text,
+    tra_diag_c text,
+    cli_icteri text,
+    cli_rinite text,
+    cli_anemia text,
+    cli_esplen text,
+    hepato text,
+    cli_osteo text,
+    lesoes text,
+    cli_outro text,
+    sin_outr_e text,
+    cli_pseudo text
+);
+
+
+ALTER TABLE brasil.sifc OWNER TO dev_epigraph;
+
+--
+-- Name: sifg; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sifg (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    id_ocupa_n text,
+    pre_ufrel text,
+    pre_munire text,
+    tpevidenci text,
+    tpteste1 text,
+    dstitulo1 text,
+    dtteste1 text,
+    tpconfirma text,
+    tpesquema text,
+    dsmotivo text,
+    tpmotparc text,
+    tpesqpar text,
+    tratparc text,
+    classi_fin text
+);
+
+
+ALTER TABLE brasil.sifg OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_acidentes_de_trabalho_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_acidentes_de_trabalho_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_acid text,
+    sem_acid text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    local_acid text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    cnae_prin text,
+    hora_acid text,
+    min_acid text,
+    hora_jor text,
+    min_jor text,
+    uf_acid text,
+    mun_acid text,
+    cid_acid text,
+    tipo_acid text,
+    mais_trab text,
+    nu_trab text,
+    atende_med text,
+    dt_atende text,
+    uf_atende text,
+    mun_atende text,
+    uni_atende text,
+    part_corp1 text,
+    part_corp2 text,
+    part_corp3 text,
+    cid_lesao text,
+    regime text,
+    evolucao text,
+    dt_obito text,
+    cat text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_acidentes_de_trabalho_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_animais_peconhentos_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_animais_peconhentos_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_dt_aci text,
+    ant_uf text,
+    ant_munic_ text,
+    ant_locali text,
+    ant_tempo_ text,
+    ant_loca_1 text,
+    mcli_local text,
+    cli_dor text,
+    cli_edema text,
+    cli_equimo text,
+    cli_necros text,
+    cli_local_ text,
+    cli_loca_1 text,
+    mcli_sist text,
+    cli_neuro text,
+    cli_hemorr text,
+    cli_vagais text,
+    cli_miolit text,
+    cli_renal text,
+    cli_outr_2 text,
+    cli_outr_3 text,
+    cli_tempo_ text,
+    tp_acident text,
+    ani_tipo_1 text,
+    ani_serpen text,
+    ani_aranha text,
+    ani_lagart text,
+    tra_classi text,
+    con_sorote text,
+    nu_ampolas text,
+    nu_ampol_1 text,
+    nu_ampol_8 text,
+    nu_ampol_6 text,
+    nu_ampol_4 text,
+    nu_ampo_7 text,
+    nu_ampo_5 text,
+    nu_ampol_9 text,
+    nu_ampol_3 text,
+    com_loc text,
+    com_secund text,
+    com_necros text,
+    com_compor text,
+    com_defict text,
+    com_aputac text,
+    com_sistem text,
+    com_renal text,
+    com_edema text,
+    com_septic text,
+    com_choque text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_animais_peconhentos_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_animais_peconhentos_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_animais_peconhentos_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_animais_peconhentos_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_botulismo_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_botulismo_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    dtatend text,
+    nuatend text,
+    dtsuspeic text,
+    sthospital text,
+    dtinterna text,
+    dtalta text,
+    stfebre text,
+    stnausea text,
+    stvomito text,
+    stdiarreia text,
+    stconstipa text,
+    stcefaleia text,
+    sttontura text,
+    stvisao text,
+    stdiplopia text,
+    stdisartri text,
+    stdisfonia text,
+    stdisfagia text,
+    stboca text,
+    stferiment text,
+    stflacidez text,
+    stdispneia text,
+    strespira text,
+    stcardiaca text,
+    stcoma text,
+    stparestes text,
+    stoutrosin text,
+    stptose text,
+    stoftalmo text,
+    stmidriase text,
+    stfacial text,
+    stbulbar text,
+    stmeminf text,
+    stmemsup text,
+    stdescende text,
+    stsimetric text,
+    stsensivel text,
+    tpneuro text,
+    stalimento text,
+    dsalimento text,
+    stcaseira text,
+    stcomercio text,
+    stexpalim text,
+    stdomicili text,
+    stescola text,
+    sttrabalho text,
+    strestaura text,
+    stfesta text,
+    stoutroloc text,
+    nuconsome text,
+    stsoro text,
+    stantibio text,
+    stoutrotra text,
+    dtsoro text,
+    stantibotu text,
+    stsoromat text,
+    dtsorocol text,
+    stfezesmat text,
+    dtfezescol text,
+    steletro text,
+    dteletro text,
+    classi_fin text,
+    agente_out text,
+    criterio text,
+    tpbotulism text,
+    stclinica text,
+    stbromato text,
+    tpclinica text,
+    tpbromato text,
+    dscausalim text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    stventila text,
+    uf_hosp text,
+    mun_hosp text,
+    ds_pares text,
+    ds_outrosi text,
+    ds_indus text,
+    ds_ingest text,
+    ds_ini_ges text,
+    ds_fim_ges text,
+    ds_outr_lo text,
+    uf_ing text,
+    mun_ing text,
+    ds_trat text,
+    stsorores text,
+    tpsorotox text,
+    stfezesres text,
+    tpfezestox text,
+    st_ali1col text,
+    ds_ali1out text,
+    dt_ali1col text,
+    resalim1 text,
+    tp_ali1tox text,
+    st_ali2col text,
+    ds_ali2out text,
+    dt_ali2col text,
+    st_ali2res text,
+    tp_ali2to text,
+    tp_colout text,
+    ds_outro text,
+    dt_colout text,
+    resalimout text,
+    tp_toxoutr text,
+    tp_liquor text,
+    nu_celula text,
+    nu_protei text,
+    dt_liquor text,
+    tp_sensiti text,
+    tp_motora text,
+    tp_repete text,
+    ds_ali1 text,
+    ds_ali2 text,
+    ds_local1 text,
+    ds_local2 text,
+    dt_encerra text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_botulismo_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_botulismo_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_botulismo_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_botulismo_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_cancer_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_cancer_m (
+    tp_not text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    id_agravo text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_diag text,
+    sem_diag text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    nutemporis text,
+    tptemporis text,
+    regime text,
+    diag_esp text,
+    asbesto text,
+    silica text,
+    amina text,
+    benzeno text,
+    alcatrao text,
+    hidrocarbo text,
+    oleos text,
+    berilio text,
+    cadmio text,
+    cromo text,
+    niquel text,
+    ionizantes text,
+    nao_ioniza text,
+    hormonio text,
+    neoplasico text,
+    outro_exp text,
+    fuma text,
+    tempo_fuma text,
+    tp_temp_fu text,
+    trab_doe text,
+    evolucao text,
+    dt_obito text,
+    cat text,
+    out_exp_de text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_trnasrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_cancer_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_chagas_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_chagas_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_uf_1 text,
+    mun_1 text,
+    ant_uf_2 text,
+    mun_2 text,
+    ant_uf_3 text,
+    mun_3 text,
+    presenca text,
+    parasito text,
+    historia text,
+    controle text,
+    manipula text,
+    maechaga text,
+    oral text,
+    assintoma text,
+    edema text,
+    meningoe text,
+    poliadeno text,
+    febre text,
+    hepatome text,
+    sinais_icc text,
+    arritmias text,
+    astenia text,
+    esplenom text,
+    chagoma text,
+    outro_sin text,
+    outro_esp text,
+    dt_col_dir text,
+    exame text,
+    micro_hema text,
+    outro text,
+    dt_col_ind text,
+    xenodiag text,
+    hemocult text,
+    dt_col_s1 text,
+    dt_col_s2 text,
+    eli_igm_s1 text,
+    eli_igg_s1 text,
+    eli_igm_s2 text,
+    eli_igg_s2 text,
+    hem_igm_s1 text,
+    hem_igg_s1 text,
+    hem_igm_s2 text,
+    hem_igg_s2 text,
+    imu_igm_s1 text,
+    tit_igm_s1 text,
+    imu_igm_s2 text,
+    tit_igm_s2 text,
+    imu_igg_s1 text,
+    tit_igg_s1 text,
+    imu_igg_s2 text,
+    tit_igg_s2 text,
+    resul_his text,
+    res_hist text,
+    especifico text,
+    sintomatic text,
+    droga text,
+    tempo text,
+    con_triat text,
+    biosseg text,
+    fiscaliza text,
+    med_outro text,
+    outro_des text,
+    classi_fin text,
+    criterio text,
+    evolucao text,
+    dt_obito text,
+    con_provav text,
+    con_outra text,
+    con_local text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    dt_encerra text,
+    year bigint,
+    prelim boolean,
+    cs_escolar text,
+    nu_idade text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    suspeitos text,
+    afirmativo text,
+    confirmad text,
+    quantos text,
+    recemnasc text,
+    cefaleia text,
+    anorexia text,
+    hiporexia text,
+    sinais text,
+    hepaesple text,
+    ganglios text,
+    aumento text,
+    hemo text,
+    imuno text,
+    elisa text,
+    ecg text,
+    ecg_result text,
+    raiox text,
+    rai_result text,
+    inespecif text,
+    dosagem text,
+    duracao text,
+    med_contr text,
+    implanta text,
+    con_classi text,
+    con_criter text,
+    con_infecc text,
+    con_inf_ou text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    in_vincula text,
+    nduplic text
+);
+
+
+ALTER TABLE brasil.sinan_chagas_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_chagas_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_chagas_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_chagas_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_chikungunya_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_chikungunya_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    febre text,
+    mialgia text,
+    cefaleia text,
+    exantema text,
+    vomito text,
+    nausea text,
+    dor_costas text,
+    conjuntvit text,
+    artrite text,
+    artralgia text,
+    petequia_n text,
+    leucopenia text,
+    laco text,
+    dor_retro text,
+    diabetes text,
+    hematolog text,
+    hepatopat text,
+    renal text,
+    hipertensa text,
+    acido_pept text,
+    auto_imune text,
+    dt_chik_s1 text,
+    dt_chik_s2 text,
+    dt_prnt text,
+    res_chiks1 text,
+    res_chiks2 text,
+    resul_prnt text,
+    dt_soro text,
+    resul_soro text,
+    dt_ns1 text,
+    resul_ns1 text,
+    dt_viral text,
+    resul_vi_n text,
+    dt_pcr text,
+    resul_pcr_ text,
+    sorotipo text,
+    histopa_n text,
+    imunoh_n text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    clinc_chik text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    alrm_hipot text,
+    alrm_plaq text,
+    alrm_vom text,
+    alrm_sang text,
+    alrm_hemat text,
+    alrm_abdom text,
+    alrm_letar text,
+    alrm_hepat text,
+    alrm_liq text,
+    dt_alrm text,
+    grav_pulso text,
+    grav_conv text,
+    grav_ench text,
+    grav_insuf text,
+    grav_taqui text,
+    grav_extre text,
+    grav_hipot text,
+    grav_hemat text,
+    grav_melen text,
+    grav_metro text,
+    grav_sang text,
+    grav_ast text,
+    grav_mioc text,
+    grav_consc text,
+    grav_orgao text,
+    dt_grav text,
+    mani_hemor text,
+    epistaxe text,
+    gengivo text,
+    metro text,
+    petequias text,
+    hematura text,
+    sangram text,
+    laco_n text,
+    plasmatico text,
+    evidencia text,
+    plaq_menor text,
+    con_fhd text,
+    complica text,
+    tp_sistema text,
+    nduplic_n text,
+    year bigint,
+    prelim boolean,
+    cs_suspeit text,
+    in_vincula text,
+    cs_flxret text,
+    flxrecebi text,
+    tpuninot text
+);
+
+
+ALTER TABLE brasil.sinan_chikungunya_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_chikungunya_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_chikungunya_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_chikungunya_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_colera_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_colera_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    fc_contato text,
+    fc_cont_de text,
+    vinculo text,
+    out_vincul text,
+    cs_assinto text,
+    cs_diarre text,
+    cs_caimbra text,
+    cs_febre text,
+    cs_vomitos text,
+    cs_dor text,
+    cs_choque text,
+    cs_desit text,
+    tip_diarre text,
+    cs_frequen text,
+    cs_sangue text,
+    cs_muco text,
+    cs_tipo text,
+    dt_atendim text,
+    dt_interna text,
+    uf_hospita text,
+    nm_munic_h text,
+    cs_materia text,
+    cs_vomito text,
+    dt_coleta text,
+    cs_antib text,
+    nm_antibio text,
+    cs_resulta text,
+    cs_positiv text,
+    cs_neg_esp text,
+    cs_reidrat text,
+    cs_antib_t text,
+    antib_des text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    codisinf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text,
+    ds_trans1 text,
+    ds_trans2 text,
+    ds_trans3 text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_colera_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_colera_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_colera_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_colera_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_contact_communicable_disease_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_contact_communicable_disease_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_acid text,
+    sem_acid text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    id_ocupa_n text,
+    sit_trab text,
+    nutempo text,
+    tptempo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    terceiriza text,
+    percutanea text,
+    pele_integ text,
+    pele_nao_i text,
+    outro_exp text,
+    out_exp_de text,
+    mat_org text,
+    mat_org_de text,
+    tipo_acid text,
+    agente text,
+    luva text,
+    avental text,
+    oculos text,
+    mascara text,
+    facial text,
+    bota text,
+    vacina text,
+    anti_hiv text,
+    hbsag text,
+    anti_hbs text,
+    anti_hcv text,
+    fonte text,
+    fo_hbsag text,
+    fo_ant_hiv text,
+    fo_ant_hbc text,
+    fo_ant_hcv text,
+    sem_quimio text,
+    recusa_qui text,
+    azt3tc text,
+    azt3tc_ind text,
+    azt3tc_nfv text,
+    imu_hep_b text,
+    vac_hep_b text,
+    outro_arv text,
+    out_arv_es text,
+    evolucao text,
+    evo_outr text,
+    dt_obito text,
+    cat text,
+    mucosa text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_contact_communicable_disease_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_coqueluche_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_coqueluche_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_sentin text,
+    fc_contato text,
+    out_contat text,
+    cs_vac_n text,
+    dt_ult_dos text,
+    dt_catarra text,
+    cs_tosse_e text,
+    cs_tosse_p text,
+    cs_crise text,
+    cs_cianose text,
+    cs_vomitos text,
+    cs_apneia text,
+    cs_temp37 text,
+    cs_temp_38 text,
+    cs_out_sin text,
+    nm_out_sin text,
+    cs_pneumon text,
+    cs_encefal text,
+    cs_desitra text,
+    cs_otite text,
+    cs_desnutr text,
+    cs_out_com text,
+    nm_out_com text,
+    cs_hospita text,
+    dt_interna text,
+    cod_uf_hos text,
+    cod_mun_ho text,
+    cs_antibio text,
+    dt_adm_ant text,
+    cs_coleta text,
+    dt_coleta text,
+    cs_cultura text,
+    med_iden_c text,
+    med_quan_c text,
+    med_caso_s text,
+    colet_comu text,
+    quan_comun text,
+    quan_posit text,
+    med_bloque text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    nu_lote_i text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_coqueluche_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_coqueluche_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_coqueluche_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_coqueluche_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_dengue_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_dengue_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    febre text,
+    mialgia text,
+    cefaleia text,
+    exantema text,
+    vomito text,
+    nausea text,
+    dor_costas text,
+    conjuntvit text,
+    artrite text,
+    artralgia text,
+    petequia_n text,
+    leucopenia text,
+    laco text,
+    dor_retro text,
+    diabetes text,
+    hematolog text,
+    hepatopat text,
+    renal text,
+    hipertensa text,
+    acido_pept text,
+    auto_imune text,
+    dt_chik_s1 text,
+    dt_chik_s2 text,
+    dt_prnt text,
+    res_chiks1 text,
+    res_chiks2 text,
+    resul_prnt text,
+    dt_soro text,
+    resul_soro text,
+    dt_ns1 text,
+    resul_ns1 text,
+    dt_viral text,
+    resul_vi_n text,
+    dt_pcr text,
+    resul_pcr_ text,
+    sorotipo text,
+    histopa_n text,
+    imunoh_n text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    clinc_chik text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    alrm_hipot text,
+    alrm_plaq text,
+    alrm_vom text,
+    alrm_sang text,
+    alrm_hemat text,
+    alrm_abdom text,
+    alrm_letar text,
+    alrm_hepat text,
+    alrm_liq text,
+    dt_alrm text,
+    grav_pulso text,
+    grav_conv text,
+    grav_ench text,
+    grav_insuf text,
+    grav_taqui text,
+    grav_extre text,
+    grav_hipot text,
+    grav_hemat text,
+    grav_melen text,
+    grav_metro text,
+    grav_sang text,
+    grav_ast text,
+    grav_mioc text,
+    grav_consc text,
+    grav_orgao text,
+    dt_grav text,
+    mani_hemor text,
+    epistaxe text,
+    gengivo text,
+    metro text,
+    petequias text,
+    hematura text,
+    sangram text,
+    laco_n text,
+    plasmatico text,
+    evidencia text,
+    plaq_menor text,
+    con_fhd text,
+    complica text,
+    tp_sistema text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_dengue_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_dengue_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_dengue_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_dengue_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_difteria_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_difteria_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_tipoco text,
+    ant_outros text,
+    ant_dos_n text,
+    ant_ulti_d text,
+    cli_edemag text,
+    cli_pescoc text,
+    cli_febre text,
+    cli_prostr text,
+    cli_pseudo text,
+    cli_palide text,
+    cli_temper text,
+    cli_cavida text,
+    cli_amigda text,
+    cli_cordao text,
+    cli_faring text,
+    cli_laring text,
+    cli_orgaos text,
+    cli_palato text,
+    cli_condut text,
+    cli_traque text,
+    cli_pele text,
+    cli_conjun text,
+    cli_miocar text,
+    cli_nefrit text,
+    cli_paralb text,
+    cli_paralp text,
+    cli_arritm text,
+    cli_paralm text,
+    cli_outras text,
+    cli_especi text,
+    ate_hospit text,
+    ate_intern text,
+    ate_uf_int text,
+    ate_munici text,
+    lab_mate_n text,
+    lab_data_c text,
+    lab_cultur text,
+    lab_provas text,
+    tra_data_s text,
+    tra_antibi text,
+    tra_data_a text,
+    med_iden_c text,
+    med_quan_c text,
+    med_caso_s text,
+    med_materi text,
+    med_quan_m text,
+    med_quan_p text,
+    med_preven text,
+    classi_fin text,
+    criterio text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    nu_lote_i text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_difteria_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_difteria_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_difteria_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categoria" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_difteria_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_esquistossomose_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_esquistossomose_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    dt_copro text,
+    an_quant text,
+    outros text,
+    tratam text,
+    tratanao text,
+    stcura1 text,
+    stcura2 text,
+    stcura3 text,
+    forma text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    nopropin text,
+    nocolinf text,
+    doenca_tra text,
+    evolucao text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrs text,
+    dt_transse text,
+    dt_obito text,
+    ds_forma text,
+    an_quali text,
+    dttrat text,
+    dt_resu3 text,
+    outro_ex text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_esquistossomose_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_esquistossomose_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_esquistossomose_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_esquistossomose_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_febre_amarela_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_febre_amarela_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_febre_amarela_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_febre_maculosa_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_febre_maculosa_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    febre text,
+    cefaleia text,
+    abdominal text,
+    mialgia text,
+    nausea text,
+    exantema text,
+    diarreia text,
+    ictericia text,
+    hiperemia text,
+    hepatome text,
+    petequias text,
+    hemorrag text,
+    linfadeno text,
+    convulsao text,
+    necrose text,
+    prostacao text,
+    choque text,
+    coma text,
+    hemorragi text,
+    respirato text,
+    oliguria text,
+    outros text,
+    outro_esp text,
+    carrapato text,
+    capivara text,
+    cao_gato text,
+    bovino text,
+    equinos text,
+    outroani text,
+    anim_esp text,
+    foi_mata text,
+    hospital text,
+    dtinterna text,
+    dtalta text,
+    coufhosp text,
+    comunhosp text,
+    diagno_lab text,
+    dts1 text,
+    dts2 text,
+    igm_s1 text,
+    tit_igm_s1 text,
+    igg_s1 text,
+    tit_igg_s1 text,
+    igm_s2 text,
+    tit_igm_s2 text,
+    igg_s2 text,
+    tit_igg_s2 text,
+    dt_coleta text,
+    dt_digita text,
+    isolamento text,
+    agente text,
+    histopato text,
+    imunohist text,
+    classi_fin text,
+    criterio text,
+    diag_desca text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    ambiente text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_febre_maculosa_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_febre_maculosa_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_febre_maculosa_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_febre_maculosa_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_febre_tifoide_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_febre_tifoide_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    contato text,
+    cont_out text,
+    suge_vincu text,
+    vinc_out text,
+    assintomat text,
+    febre text,
+    cefaleia text,
+    diarreia text,
+    constipa text,
+    astenia text,
+    tosse text,
+    espleno text,
+    tifica text,
+    nauseas text,
+    vomitos text,
+    dor text,
+    pulso text,
+    entero text,
+    perfura text,
+    comp_out text,
+    comp_out_d text,
+    atendiment text,
+    dt_atende text,
+    uf text,
+    municipio text,
+    sangue text,
+    fezes text,
+    urina text,
+    antibiotic text,
+    dt_hemo1 text,
+    hemo_r1 text,
+    hemo_d_1 text,
+    dt_hemo2 text,
+    hemo_r2 text,
+    hemo_d_2 text,
+    dt_hemo3 text,
+    hemo_r3 text,
+    hemo_d_3 text,
+    dt_uro text,
+    uro_r1 text,
+    uro_d text,
+    dt_uro2 text,
+    uro_r2 text,
+    uro_d_2 text,
+    dt_uro3 text,
+    uro_r3 text,
+    uro_d_3 text,
+    dt_copro1 text,
+    copro_r1 text,
+    copro_d_1 text,
+    dt_copro2 text,
+    copro_r2 text,
+    copro_d_2 text,
+    dt_copro3 text,
+    copro_r3 text,
+    copro_d_3 text,
+    dt_outr1 text,
+    outr_r1 text,
+    outr_d1 text,
+    dt_outr2 text,
+    outr_r2 text,
+    outr_d2 text,
+    dt_outr3 text,
+    outr_r3 text,
+    outr_d3 text,
+    clorafen text,
+    ampicilina text,
+    sulfa text,
+    quinolona text,
+    ant_outr text,
+    ant_out_d text,
+    dias text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text,
+    ds_trans1 text,
+    ds_trans2 text,
+    ds_trans3 text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_febre_tifoide_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_febre_tifoide_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_febre_tifoide_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_febre_tifoide_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hanseniase_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hanseniase_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_diag text,
+    sem_diag text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    id_ocupa_n text,
+    nu_lesoes text,
+    formaclini text,
+    avalia_n text,
+    classopera text,
+    modoentr text,
+    mododetect text,
+    baciloscop text,
+    dtinictrat text,
+    esq_ini_n text,
+    contreg text,
+    nervosafet text,
+    ufatual text,
+    id_muni_at text,
+    dt_noti_at text,
+    id_unid_at text,
+    ufresat text,
+    muniresat text,
+    dtultcomp text,
+    classatual text,
+    aval_atu_n text,
+    esq_atu_n text,
+    dose_receb text,
+    epis_racio text,
+    dtmudesq text,
+    contexam text,
+    dtalta_n text,
+    tpalta_n text,
+    in_vincula text,
+    nu_lote_ia text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_hanseniase_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hanseniase_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hanseniase_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_hanseniase_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hantavirose_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hantavirose_m (
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dtdiasinac text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    treina_mil text,
+    desmata_n text,
+    expo_n text,
+    moagem_n text,
+    dormiu_n text,
+    transpo_n text,
+    pescou_n text,
+    roedor_n text,
+    outra_ativ text,
+    outr_ati_d text,
+    cli_dt_ate text,
+    cli_febre text,
+    cli_tosse text,
+    cli_dispne text,
+    cli_respi text,
+    cli_cefale text,
+    cli_mial_g text,
+    cli_lombar text,
+    cli_abdomi text,
+    cli_hipote text,
+    cli_choque text,
+    cli_vomito text,
+    cli_diarre text,
+    cli_toraci text,
+    cli_tontur text,
+    cli_cardia text,
+    cli_renal text,
+    cli_neurol text,
+    cli_asteni text,
+    cli_petequ text,
+    cli_hemo text,
+    cli_h_desc text,
+    cli_outros text,
+    cli_out_d text,
+    am_sangue text,
+    lab_hema_n text,
+    lab_trombo text,
+    lab_atipic text,
+    lab_ureia text,
+    lab_tgo text,
+    lab_tgo_d text,
+    lab_tgp text,
+    lab_tgp_d text,
+    lab_res_b text,
+    lab_radiol text,
+    lab_difuso text,
+    lab_local text,
+    lab_derram text,
+    lab_colheu text,
+    dt_col_igm text,
+    lab_igm_r text,
+    lab_imuno text,
+    dt_rtpcr text,
+    lab_rtpcr text,
+    tra_hosp text,
+    tra_dt_int text,
+    tra_uf text,
+    tra_munici text,
+    tra_mecani text,
+    tra_antivi text,
+    tra_cortic text,
+    tra_cpap text,
+    tra_vasoat text,
+    tra_antibi text,
+    tra_tratam text,
+    tra_especi text,
+    classi_fin text,
+    con_forma text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    con_ambien text,
+    con_amb_de text,
+    con_locali text,
+    con_local2 text,
+    evolucao text,
+    dt_evoluc text,
+    con_autops text,
+    doenca_tra text,
+    dt_encerra text,
+    dt_digita text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_hantavirose_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hantavirose_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hantavirose_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_hantavirose_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hepatites_virais_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hepatites_virais_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_digita text,
+    dt_trasse text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    hepatite_n text,
+    hepatita text,
+    hepatitb text,
+    institucio text,
+    hiv text,
+    outra_dst text,
+    sexual text,
+    domicili text,
+    ocupacio text,
+    medicament text,
+    tatu_pier text,
+    matbiologi text,
+    inal_crack text,
+    acupuntura text,
+    transfusao text,
+    injetaveis text,
+    cirurgico text,
+    agua_alime text,
+    dentario text,
+    tresmais text,
+    hemodialis text,
+    transpla text,
+    outras text,
+    dt_acident text,
+    co_uf_exp text,
+    co_mun_exp text,
+    co_uf_ex2 text,
+    co_mun_ex2 text,
+    co_uf_ex3 text,
+    co_mun_ex3 text,
+    bancosangu text,
+    res_hbsag text,
+    re_antihbc text,
+    re_antihcv text,
+    dt_coleta text,
+    antihavigm text,
+    antihbs text,
+    antihdvigm text,
+    aghbs text,
+    aghbe text,
+    antihevigm text,
+    antihbcigm text,
+    antihbe text,
+    antihcv text,
+    hbc_total text,
+    antihdv text,
+    tp_sorohcv text,
+    gen_vhc text,
+    coletamarc text,
+    classi_fin text,
+    forma text,
+    clas_etiol text,
+    fonte text,
+    dt_encerra text,
+    dsfonte text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_hepatites_virais_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_hepatites_virais_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_hepatites_virais_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_hepatites_virais_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_intoxicacao_exogena_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_intoxicacao_exogena_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    sit_trab text,
+    loc_expo text,
+    cnae text,
+    uf_emp text,
+    mun_emp text,
+    pais_exp text,
+    agente_tox text,
+    coagtoxma1 text,
+    coagtoxma2 text,
+    coagtoxma3 text,
+    agente_1 text,
+    agente_2 text,
+    agente_3 text,
+    p_ativo_1 text,
+    p_ativo_2 text,
+    p_ativo_3 text,
+    utilizacao text,
+    ativida_1 text,
+    ativida_2 text,
+    ativida_3 text,
+    via_1 text,
+    via_2 text,
+    via_3 text,
+    circunstan text,
+    doenca_tra text,
+    tpexp text,
+    nutempo text,
+    tptempo text,
+    tpatende text,
+    hospital text,
+    dtinterna text,
+    uf_hosp text,
+    mun_hosp text,
+    classi_fin text,
+    diag_conf text,
+    criterio text,
+    evolucao text,
+    dt_obito text,
+    cat text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    trab_desc text,
+    loc_exp_de text,
+    out_agente text,
+    util_desc text,
+    lavoura text,
+    circun_des text,
+    nu_lote_i text,
+    year bigint,
+    prelim boolean,
+    dt_nasc text
+);
+
+
+ALTER TABLE brasil.sinan_intoxicacao_exogena_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_intoxicacao_exogena_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_intoxicacao_exogena_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_intoxicacao_exogena_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leishmaniose_tegumentar_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leishmaniose_tegumentar_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    cli_cutane text,
+    cli_mucosa text,
+    cli_cicatr text,
+    cli_co_hiv text,
+    lab_parasi text,
+    lab_irm text,
+    lab_histop text,
+    cla_tipo_n text,
+    clas_forma text,
+    dt_inic_tr text,
+    tra_droga_ text,
+    tra_peso text,
+    tra_dose text,
+    tra_ampola text,
+    tra_outr_n text,
+    criterio text,
+    con_class_ text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_desc1 text,
+    dt_desc2 text,
+    dt_desc3 text,
+    co_uf_des1 text,
+    co_uf_des2 text,
+    co_uf_des3 text,
+    mun_des1 text,
+    mun_des2 text,
+    mun_des3 text,
+    pa_des1 text,
+    pa_des2 text,
+    pa_des3 text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_leishmaniose_tegumentar_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leishmaniose_tegumentar_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leishmaniose_tegumentar_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_leishmaniose_tegumentar_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leishmaniose_visceral_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leishmaniose_visceral_m (
+    id_municip text,
+    id_unidade text,
+    dt_notific date,
+    cs_raca text,
+    cs_escolar text,
+    nu_ano text,
+    sem_not text,
+    sg_uf_not text,
+    id_regiona text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade text,
+    cs_sexo text,
+    sg_uf text,
+    id_pais text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    caso text,
+    endemico text,
+    febre text,
+    fraqueza text,
+    emagra text,
+    tosse text,
+    baco text,
+    figado text,
+    hiv text,
+    tube text,
+    outras text,
+    ifi text,
+    elisa text,
+    outro text,
+    diag_para text,
+    droga text,
+    doses text,
+    duracao text,
+    falencia text,
+    con_classi text,
+    con_inf_ou text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    year bigint,
+    prelim boolean,
+    con_inf_ba text,
+    con_inf_di text,
+    nu_notific text,
+    id_bairro text,
+    id_mn_resi text,
+    id_dt_resi text,
+    id_rg_resi text,
+    cs_zona text,
+    id_cns_sus text,
+    nm_pacient text,
+    nm_mae_pac text,
+    id_logrado text,
+    nm_logrado text,
+    nu_numero text,
+    nm_complem text,
+    nm_referen text,
+    nu_cep text,
+    nu_ddd text,
+    nu_telefon text,
+    in_vincula text,
+    nduplic text,
+    in_aids text,
+    chfonetica text,
+    nu_lote text,
+    tp_not text,
+    id_agravo text,
+    nu_idade_n text,
+    cs_gestant text,
+    cs_escol_n text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    edema text,
+    palidez text,
+    infeccioso text,
+    fen_hemorr text,
+    ictericia text,
+    outros text,
+    outros_esp text,
+    diag_par_n text,
+    entrada text,
+    tratamento text,
+    peso text,
+    dose text,
+    ampolas text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_deslc1 text,
+    ds_mun_1 text,
+    co_uf_1 text,
+    co_pais_1 text,
+    ds_trans_1 text,
+    dt_deslc2 text,
+    ds_mun_2 text,
+    co_uf_2 text,
+    co_pais_2 text,
+    ds_trans_2 text,
+    dt_deslc3 text,
+    ds_mun_3 text,
+    co_uf_3 text,
+    co_pais_3 text
+);
+
+
+ALTER TABLE brasil.sinan_leishmaniose_visceral_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leishmaniose_visceral_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leishmaniose_visceral_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_leishmaniose_visceral_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leptospirose_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leptospirose_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_cb_lam text,
+    ant_cb_cri text,
+    ant_cb_cai text,
+    ant_cb_fos text,
+    ant_cb_sin text,
+    ant_cb_pla text,
+    ant_cb_cor text,
+    ant_cb_roe text,
+    ant_cb_gra text,
+    ant_cb_ter text,
+    ant_cb_lix text,
+    ant_cb_out text,
+    ant_ou_des text,
+    ant_humano text,
+    ant_animai text,
+    cli_dt_ate text,
+    cli_febre text,
+    cli_mialgi text,
+    cli_cefale text,
+    cli_prost text,
+    cli_conges text,
+    cli_pantur text,
+    cli_vomito text,
+    cli_diarre text,
+    cli_icteri text,
+    cli_renal text,
+    cli_respir text,
+    cli_cardia text,
+    cli_hemopu text,
+    cli_hemorr text,
+    cli_mening text,
+    cli_outros text,
+    cli_otrdes text,
+    ate_hosp text,
+    ate_dt_int text,
+    ate_dt_alt text,
+    ate_uf text,
+    ate_munici text,
+    lab_dt_1 text,
+    lab_elis_1 text,
+    lab_dt_2 text,
+    lab_elis_2 text,
+    dtmicro1 text,
+    micro1_s1 text,
+    micro1_t_1 text,
+    micro1_s_2 text,
+    micro1_t_2 text,
+    lab_micr_1 text,
+    dtmicro2 text,
+    micro2_s1 text,
+    micro2_t_1 text,
+    micro2_s_2 text,
+    micro2_t_2 text,
+    lab_micr_2 text,
+    dtisola text,
+    res_isol text,
+    dtimuno text,
+    res_imuno text,
+    dt_pcr text,
+    res_pcr text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    con_area text,
+    con_ambien text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_risco1 text,
+    dt_risco2 text,
+    dt_risco3 text,
+    dt_risco4 text,
+    co_mun_r1 text,
+    co_mun_r2 text,
+    co_mun_r3 text,
+    co_mun_r4 text,
+    co_uf_r1 text,
+    co_uf_r2 text,
+    co_uf_r3 text,
+    co_uf_r4 text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_leptospirose_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_leptospirose_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_leptospirose_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_leptospirose_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_malaria_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_malaria_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    at_ativida text,
+    at_lamina text,
+    at_sintoma text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    loc_inf text,
+    dexame text,
+    result text,
+    pmm text,
+    pcruz text,
+    tra_esquem text,
+    dstraesque text,
+    dtrata text,
+    nu_lote_i text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    year bigint,
+    prelim boolean,
+    cs_escolar text,
+    nu_idade text,
+    id_dg_not text,
+    id_ev_not text,
+    ant_dt_inv text,
+    ocupacao text,
+    transfu text,
+    dttransfu text,
+    utransfu text,
+    uftransfu text,
+    ptransfu text,
+    mtransfu text,
+    pusuario text,
+    pmalaria text,
+    amalaria text,
+    assintom text,
+    febre text,
+    calafrio text,
+    sudorese text,
+    cli_outro text,
+    cd_outro text,
+    gestante text,
+    hospital text,
+    dinterna text,
+    ufinterna text,
+    minterna text,
+    cloroq text,
+    primaq text,
+    tetrac text,
+    mefloq text,
+    artesu text,
+    quinino text,
+    artem text,
+    clind text,
+    cloroqi text,
+    quininoi text,
+    artei text,
+    artemi text,
+    clindi text,
+    doxoci text,
+    soutros text,
+    con_classi text,
+    con_confir text,
+    con_inf_mu text,
+    con_inf_uf text,
+    con_inf_pa text,
+    con_doenca text,
+    con_evoluc text,
+    con_dt_obi text,
+    con_dt_enc text,
+    in_vincula text,
+    nduplic text
+);
+
+
+ALTER TABLE brasil.sinan_malaria_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_malaria_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_malaria_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_malaria_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_meningite_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_meningite_m (
+    tp_not text,
+    id_agravo text,
+    cs_mening text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    ant_ac text,
+    ant_dose_3 text,
+    ant_dtul_3 text,
+    ant_bc text,
+    ant_doses_ text,
+    ant_dtult_ text,
+    ant_conj_c text,
+    ant_dose_c text,
+    ant_dtul_c text,
+    ant_bcg text,
+    ant_dose_4 text,
+    ant_dtul_4 text,
+    ant_tripli text,
+    ant_dose_5 text,
+    ant_dtul_5 text,
+    ant_hemo_t text,
+    ant_dose_t text,
+    ant_dtul_t text,
+    ant_pneumo text,
+    ant_dose_7 text,
+    ant_dtul_7 text,
+    ant_outra text,
+    ant_ou_de text,
+    ant_dtul_8 text,
+    ant_aids text,
+    ant_imuno text,
+    ant_ira text,
+    ant_tube text,
+    ant_trauma text,
+    ant_inf_ho text,
+    ant_outro text,
+    ant_outr_d text,
+    ant_cont_n text,
+    ant_secund text,
+    cli_cefale text,
+    cli_febre text,
+    cli_vomito text,
+    cli_convul text,
+    cli_rigide text,
+    cli_kernig text,
+    cli_abaula text,
+    cli_coma text,
+    cli_petequ text,
+    cli_outras text,
+    cli_especi text,
+    ate_hospit text,
+    ate_intern text,
+    ate_uf_hos text,
+    ate_munici text,
+    lab_puncao text,
+    lab_dtpunc text,
+    lab_aspect text,
+    lab_ctliqu text,
+    lab_ctlesa text,
+    lab_ctsang text,
+    lab_ctesca text,
+    lab_bcliqu text,
+    lab_bclesa text,
+    lab_bcsang text,
+    lab_bcesca text,
+    lab_ciliqu text,
+    lab_cisang text,
+    lab_agliqu text,
+    lab_agsang text,
+    lab_isliqu text,
+    lab_isfeze text,
+    lab_pcliqu text,
+    lab_pclesa text,
+    lab_pcsang text,
+    lab_pcesca text,
+    classi_fin text,
+    con_diages text,
+    cla_me_bac text,
+    cla_me_ass text,
+    cla_me_eti text,
+    criterio text,
+    cla_sorogr text,
+    med_nucomu text,
+    med_quimio text,
+    med_dt_qui text,
+    doenca_tra text,
+    evolucao text,
+    med_dt_evo text,
+    dt_encerra text,
+    lab_hema text,
+    lab_neutro text,
+    lab_glico text,
+    lab_leuco text,
+    lab_eosi text,
+    lab_prot text,
+    lab_mono text,
+    lab_linfo text,
+    lab_clor text,
+    nu_lote_i text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_meningite_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_meningite_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_meningite_metadata (
+    index bigint,
+    "Nome" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_meningite_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_peste_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_peste_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    co_risco text,
+    epi_peste text,
+    com_pest text,
+    sin_gang text,
+    sin_pulm text,
+    tratado text,
+    criterio text,
+    classi_fin text,
+    con_gravid text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_encerra text,
+    dt_digita text,
+    dt_obito text,
+    con_classi text,
+    lab_esfr text,
+    dt_s1 text,
+    lab_hemo text,
+    dt_s2 text,
+    elisa1 text,
+    elisa2 text,
+    hemo_igm text,
+    hemo_igg text,
+    igm_t1 text,
+    igg_t2 text,
+    co_focal text,
+    tpautocto text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_peste_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_peste_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_peste_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_peste_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_poliomielite_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_poliomielite_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    dt_digita text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dtpricons text,
+    dt_invest text,
+    ant_vacina text,
+    ant_doses text,
+    ant_dt_vac text,
+    ant_30_dia text,
+    ant_pais text,
+    cli_febre text,
+    cli_diarre text,
+    cli_dores text,
+    cli_sintom text,
+    cli_vomito text,
+    cli_obstip text,
+    cli_cefale text,
+    cli_outros text,
+    outros_des text,
+    cli_dt text,
+    cli_aguda text,
+    cli_flacid text,
+    cli_assime text,
+    cli_progre text,
+    cli_ascend text,
+    cli_descen text,
+    cli_f_mie text,
+    cli_f_mse text,
+    cli_f_mid text,
+    cli_f_msd text,
+    loca_mie_n text,
+    loca_mse_n text,
+    loca_mid_n text,
+    loca_msd_n text,
+    cli_respir text,
+    cli_cervic text,
+    cli_face text,
+    cli_dt_exa text,
+    cli_a_fmie text,
+    cli_a_fmse text,
+    cli_a_fmid text,
+    cli_a_fmsd text,
+    cli_a_tmie text,
+    cli_a_tmse text,
+    cli_a_tmid text,
+    cli_a_tmsd text,
+    cli_a_t_ce text,
+    cli_a_t_fa text,
+    cli_a_smie text,
+    cli_a_smse text,
+    cli_a_smid text,
+    cli_a_smsd text,
+    cli_a_s_fa text,
+    cli_aq_e_n text,
+    cli_aq_d_n text,
+    cli_pate_n text,
+    cli_patd_n text,
+    cli_bice_n text,
+    cli_bicd_n text,
+    cli_trie_n text,
+    cli_trid_n text,
+    cli_fle_e text,
+    cli_fle_d text,
+    cli_ext_e text,
+    cli_ext_d text,
+    cli_kernig text,
+    cli_nuca text,
+    cli_brudz text,
+    cli_contat text,
+    cli_con_es text,
+    cli_injeca text,
+    cli_local text,
+    ate_hipote text,
+    ate_hosp text,
+    ate_dt_int text,
+    ate_uf text,
+    ate_munici text,
+    lab_dt_f1 text,
+    lab_dt_nle text,
+    lab_dt_cen text,
+    lab_dt_r1 text,
+    lab_q_f text,
+    lab_con_f text,
+    lab_dt_re1 text,
+    lab_res_f1 text,
+    lab_res_f2 text,
+    lab_res_f3 text,
+    lab_dt_l_1 text,
+    lab_l_cel1 text,
+    lab_l_lin1 text,
+    lab_l_pro1 text,
+    lab_l_gli1 text,
+    lab_l_cl1 text,
+    lab_dt_l_2 text,
+    lab_l_cel2 text,
+    lab_l_lin2 text,
+    lab_l_pro2 text,
+    lab_l_gli2 text,
+    lab_l_cl2 text,
+    lab_dt_e_1 text,
+    lab_e_d_1 text,
+    lab_celebr text,
+    lab_medula text,
+    lab_intest text,
+    lab_dt_c1 text,
+    lab_result text,
+    evor_dt_re text,
+    evor_f_mie text,
+    evor_f_mse text,
+    evor_f_mid text,
+    evor_f_msd text,
+    tonr_mie_n text,
+    tonr_mse_n text,
+    tonr_mid_n text,
+    tonr_msd_n text,
+    tonr_cer_n text,
+    tonr_fac_n text,
+    refr_aqe_n text,
+    refr_aqd_n text,
+    refr_pae_n text,
+    refr_pad_n text,
+    refr_bie_n text,
+    refr_bid_n text,
+    refr_tre_n text,
+    refr_trd_n text,
+    evor_rc_fe text,
+    evor_rc_fd text,
+    evor_rc_ee text,
+    evor_rc_ed text,
+    evor_a_mie text,
+    evor_a_mse text,
+    evor_a_mid text,
+    evor_a_msd text,
+    evor_s_mie text,
+    evor_s_mse text,
+    evor_s_mid text,
+    evor_s_msd text,
+    evor_s_fac text,
+    evor1_dt_r text,
+    classi_fin text,
+    criterio text,
+    con_descar text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_poliomielite_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_raiva_humana_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_raiva_humana_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    dt_invest text,
+    id_ocupa_n text,
+    arranhao text,
+    lambedura text,
+    mordedura text,
+    contato text,
+    mucosa text,
+    cabeca text,
+    maos_n text,
+    pes text,
+    tronco text,
+    superiores text,
+    inferiores text,
+    feriment_n text,
+    profundo text,
+    superficia text,
+    dilacerant text,
+    dt_expo text,
+    antec_pre text,
+    antec_pos text,
+    num_doses text,
+    dt_tr_rab text,
+    especie_n text,
+    esp_out text,
+    vacinad text,
+    hospitaliz text,
+    dt_interna text,
+    uf text,
+    municipio text,
+    aerofobia text,
+    hidrofobi text,
+    disfagia text,
+    parestesi text,
+    agressivi text,
+    paralisia text,
+    agitacao text,
+    febre text,
+    outro text,
+    outro_des text,
+    anti_rab text,
+    dt_r_tra text,
+    doses_a text,
+    dt_vac1 text,
+    dt_vac_ult text,
+    tra_soro text,
+    dt_apli_so text,
+    quantid text,
+    infiltra text,
+    imuno_dire text,
+    imuno_indi text,
+    histolog_n text,
+    prova_biol text,
+    varia_vir text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_raiva_humana_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_raiva_humana_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_raiva_humana_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_raiva_humana_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_sifilis_adquirida_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_sifilis_adquirida_m (
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    tp_sistema text,
+    tpuninot text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_sifilis_adquirida_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_sifilis_congenita_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_sifilis_congenita_m (
+    tp_not text,
+    sem_not text,
+    sem_pri text,
+    id_agravo text,
+    dt_notific date,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_pais text,
+    ant_idade text,
+    ant_raca text,
+    id_ocupa_n text,
+    escolmae text,
+    ant_pre_na text,
+    uf_pre_nat text,
+    mun_pre_na text,
+    antsifil_n text,
+    lab_parto text,
+    lab_titu_2 text,
+    lab_dt3 text,
+    lab_conf text,
+    tra_esquem text,
+    tra_dt text,
+    ant_tratad text,
+    ant_uf_cri text,
+    ant_muni_c text,
+    labc_sangu text,
+    labc_tit_1 text,
+    labc_dt_1 text,
+    labc_igg text,
+    labc_dt text,
+    labc_liquo text,
+    labc_tit_2 text,
+    labc_dt_2 text,
+    labc_titul text,
+    labc_evide text,
+    labc_liq_1 text,
+    tra_diag_t text,
+    tra_esqu_1 text,
+    ds_esquema text,
+    evolucao text,
+    dt_obito text,
+    evo_diag_n text,
+    tra_diag_c text,
+    cli_icteri text,
+    cli_rinite text,
+    cli_anemia text,
+    cli_esplen text,
+    hepato text,
+    cli_osteo text,
+    lesoes text,
+    cli_outro text,
+    sin_outr_e text,
+    cli_pseudo text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_sifilis_congenita_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_sifilis_congenita_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_sifilis_congenita_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_sifilis_congenita_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_sifilis_em_gestante_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_sifilis_em_gestante_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    sem_diag text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    id_ocupa_n text,
+    pre_ufrel text,
+    pre_munire text,
+    tpevidenci text,
+    tpteste1 text,
+    dstitulo1 text,
+    dtteste1 text,
+    tpconfirma text,
+    tpesquema text,
+    dsmotivo text,
+    tpmotparc text,
+    tpesqpar text,
+    tratparc text,
+    classi_fin text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_sifilis_em_gestante_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_sifilis_em_gestante_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_sifilis_em_gestante_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_sifilis_em_gestante_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tetano_acidental_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tetano_acidental_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    tp_causa text,
+    tp_causout text,
+    tp_localle text,
+    nu_dose text,
+    dt_ult_dos text,
+    tp_profila text,
+    cs_trismo text,
+    cs_riso text,
+    cs_opistot text,
+    cs_nuca text,
+    cs_abdomin text,
+    cs_membros text,
+    cs_crises text,
+    cs_sin_out text,
+    nm_sin_out text,
+    tp_origem text,
+    cs_hospita text,
+    dt_interna text,
+    sg_uf_inte text,
+    nm_munic_h text,
+    tp_identfi text,
+    tp_vacina text,
+    tp_analise text,
+    classi_fin text,
+    cs_local text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    evolucao text,
+    dt_encerra text,
+    dt_obito text,
+    nu_lote_i text,
+    dt_digita text,
+    year bigint,
+    prelim boolean,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text
+);
+
+
+ALTER TABLE brasil.sinan_tetano_acidental_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tetano_acidental_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tetano_acidental_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_tetano_acidental_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tetano_neonatal_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tetano_neonatal_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri date,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    num_con_n text,
+    cs_vacteta text,
+    dt_1_dose text,
+    dt_2_dose text,
+    dt_3_dose text,
+    dt_reforco text,
+    idade_mae text,
+    nu_gesta text,
+    escolmae_n text,
+    cs_nascido text,
+    no_ouparto text,
+    cs_atend_n text,
+    no_atenout text,
+    cs_sugou text,
+    cs_mamar text,
+    cs_trismo text,
+    cs_nuca text,
+    cs_choro text,
+    cs_riso text,
+    cs_abdomen text,
+    cs_inf_cot text,
+    cs_opistot text,
+    cs_membros text,
+    cs_crise text,
+    cs_outros text,
+    nm_out_sin text,
+    dt_trismo text,
+    cs_origem text,
+    cs_hospita text,
+    cs_cobertu text,
+    no_coboutr text,
+    cs_vacinac text,
+    cs_cadastr text,
+    cs_divulga text,
+    cs_buscaat text,
+    cs_orienta text,
+    cs_analise text,
+    cs_outras text,
+    no_outras text,
+    classi_fin text,
+    ds_inf_loc text,
+    ds_inf_out text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    counidinf text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transdm text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_tetano_neonatal_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tetano_neonatal_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tetano_neonatal_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Características" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_tetano_neonatal_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tuberculose_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tuberculose_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    id_ocupa_n text,
+    tratamento text,
+    institucio text,
+    raiox_tora text,
+    teste_tube text,
+    forma text,
+    extrapu1_n text,
+    extrapu2_n text,
+    extrapul_o text,
+    agravaids text,
+    agravalcoo text,
+    agravdiabe text,
+    agravdoenc text,
+    agravoutra text,
+    agravoutde text,
+    bacilosc_e text,
+    bacilos_e2 text,
+    bacilosc_o text,
+    cultura_es text,
+    cultura_ou text,
+    hiv text,
+    histopatol text,
+    dt_inic_tr text,
+    rifampicin text,
+    isoniazida text,
+    etambutol text,
+    estreptomi text,
+    pirazinami text,
+    etionamida text,
+    outras text,
+    outras_des text,
+    trat_super text,
+    nu_contato text,
+    doenca_tra text,
+    sg_uf_at text,
+    id_munic_a text,
+    dt_noti_at text,
+    sg_uf_2 text,
+    id_munic_2 text,
+    bacilosc_1 text,
+    bacilosc_2 text,
+    bacilosc_3 text,
+    bacilosc_4 text,
+    bacilosc_5 text,
+    bacilosc_6 text,
+    tratsup_at text,
+    dt_mudanca text,
+    nu_comu_ex text,
+    situa_9_m text,
+    situa_12_m text,
+    situa_ence text,
+    dt_encerra text,
+    tpuninot text,
+    pop_liber text,
+    pop_rua text,
+    pop_saude text,
+    pop_imig text,
+    benef_gov text,
+    agravdroga text,
+    agravtabac text,
+    test_molec text,
+    test_sensi text,
+    ant_retro text,
+    bac_apos_6 text,
+    transf text,
+    uf_transf text,
+    mun_transf text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_tuberculose_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_tuberculose_metadata; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_tuberculose_metadata (
+    index bigint,
+    "Nome do campo" text,
+    "Campo" text,
+    "Tipo" text,
+    "Categorias" text,
+    "Descrição" text,
+    "Característica" text,
+    "DBF" text
+);
+
+
+ALTER TABLE brasil.sinan_tuberculose_metadata OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_update_ctl; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_update_ctl (
+    disease text NOT NULL,
+    year integer NOT NULL,
+    path text NOT NULL,
+    prelim boolean NOT NULL,
+    to_final boolean DEFAULT false NOT NULL,
+    last_insert date
+);
+
+
+ALTER TABLE brasil.sinan_update_ctl OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_violencia_domestica_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_violencia_domestica_m (
+    tp_not text,
+    id_agravo text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    tp_uni_ext text,
+    nm_uni_ext text,
+    co_uni_ext text,
+    id_unidade text,
+    id_regiona text,
+    id_rg_resi text,
+    dt_ocor text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_pais text,
+    nduplic text,
+    dt_invest text,
+    id_ocupa_n text,
+    sit_conjug text,
+    def_trans text,
+    def_fisica text,
+    def_mental text,
+    def_visual text,
+    def_auditi text,
+    tran_ment text,
+    tran_comp text,
+    def_out text,
+    def_espec text,
+    sg_uf_ocor text,
+    id_mn_ocor text,
+    hora_ocor text,
+    local_ocor text,
+    local_espe text,
+    out_vezes text,
+    les_autop text,
+    viol_fisic text,
+    viol_psico text,
+    viol_tort text,
+    viol_sexu text,
+    viol_traf text,
+    viol_finan text,
+    viol_negli text,
+    viol_infan text,
+    viol_legal text,
+    viol_outr text,
+    viol_espec text,
+    ag_forca text,
+    ag_enfor text,
+    ag_objeto text,
+    ag_corte text,
+    ag_quente text,
+    ag_enven text,
+    ag_fogo text,
+    ag_ameaca text,
+    ag_outros text,
+    ag_espec text,
+    sex_assedi text,
+    sex_estupr text,
+    sex_pudor text,
+    sex_porno text,
+    sex_explo text,
+    sex_outro text,
+    sex_espec text,
+    pen_oral text,
+    pen_anal text,
+    pen_vagina text,
+    proc_dst text,
+    proc_hiv text,
+    proc_hepb text,
+    proc_sang text,
+    proc_semen text,
+    proc_vagin text,
+    proc_contr text,
+    proc_abort text,
+    cons_abort text,
+    cons_grav text,
+    cons_dst text,
+    cons_suic text,
+    cons_ment text,
+    cons_comp text,
+    cons_estre text,
+    cons_outr text,
+    cons_espec text,
+    lesao_nat text,
+    lesao_espe text,
+    lesao_corp text,
+    num_envolv text,
+    rel_sexual text,
+    rel_pai text,
+    rel_mae text,
+    rel_pad text,
+    rel_conj text,
+    rel_excon text,
+    rel_namo text,
+    rel_exnam text,
+    rel_filho text,
+    rel_desco text,
+    rel_irmao text,
+    rel_conhec text,
+    rel_cuida text,
+    rel_patrao text,
+    rel_inst text,
+    rel_pol text,
+    rel_propri text,
+    rel_outros text,
+    rel_espec text,
+    autor_sexo text,
+    autor_alco text,
+    enc_saude text,
+    enc_tutela text,
+    enc_vara text,
+    enc_abrigo text,
+    enc_sentin text,
+    enc_deam text,
+    enc_dpca text,
+    enc_deleg text,
+    enc_mpu text,
+    enc_mulher text,
+    enc_creas text,
+    enc_iml text,
+    enc_outr text,
+    enc_espec text,
+    rel_trab text,
+    rel_cat text,
+    circ_lesao text,
+    classi_fin text,
+    evolucao text,
+    dt_obito text,
+    rel_mad text,
+    tpuninot text,
+    orient_sex text,
+    ident_gen text,
+    viol_motiv text,
+    cicl_vid text,
+    rede_sau text,
+    assist_soc text,
+    rede_educa text,
+    atend_mulh text,
+    cons_tutel text,
+    cons_ido text,
+    deleg_idos text,
+    dir_human text,
+    mpu text,
+    deleg_cria text,
+    deleg_mulh text,
+    deleg text,
+    infan_juv text,
+    defen_publ text,
+    dt_encerra text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_violencia_domestica_m OWNER TO dev_epigraph;
+
+--
+-- Name: sinan_zika_m; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.sinan_zika_m (
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific date,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri date,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    cs_flxret text,
+    flxrecebi text,
+    tp_sistema text,
+    tpuninot text,
+    year bigint,
+    prelim boolean
+);
+
+
+ALTER TABLE brasil.sinan_zika_m OWNER TO dev_epigraph;
+
+--
+-- Name: teta; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.teta (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    tp_causa text,
+    tp_causout text,
+    tp_localle text,
+    nu_dose text,
+    dt_ult_dos text,
+    tp_profila text,
+    cs_trismo text,
+    cs_riso text,
+    cs_opistot text,
+    cs_nuca text,
+    cs_abdomin text,
+    cs_membros text,
+    cs_crises text,
+    cs_sin_out text,
+    nm_sin_out text,
+    tp_origem text,
+    cs_hospita text,
+    dt_interna text,
+    sg_uf_inte text,
+    nm_munic_h text,
+    tp_identfi text,
+    tp_vacina text,
+    tp_analise text,
+    classi_fin text,
+    cs_local text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    evolucao text,
+    dt_encerra text,
+    dt_obito text,
+    dt_digita text
+);
+
+
+ALTER TABLE brasil.teta OWNER TO dev_epigraph;
+
+--
+-- Name: tetn; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.tetn (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    id_unidade text,
+    dt_sin_pri text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    dt_invest text,
+    id_ocupa_n text,
+    num_con_n text,
+    cs_vacteta text,
+    dt_1_dose text,
+    dt_2_dose text,
+    dt_3_dose text,
+    dt_reforco text,
+    idade_mae text,
+    nu_gesta text,
+    escolmae_n text,
+    cs_nascido text,
+    no_ouparto text,
+    cs_atend_n text,
+    no_atenout text,
+    cs_sugou text,
+    cs_mamar text,
+    cs_trismo text,
+    cs_nuca text,
+    cs_choro text,
+    cs_riso text,
+    cs_abdomen text,
+    cs_inf_cot text,
+    cs_opistot text,
+    cs_membros text,
+    cs_crise text,
+    cs_outros text,
+    nm_out_sin text,
+    dt_trismo text,
+    cs_origem text,
+    cs_hospita text,
+    cs_cobertu text,
+    no_coboutr text,
+    cs_vacinac text,
+    cs_cadastr text,
+    cs_divulga text,
+    cs_buscaat text,
+    cs_orienta text,
+    cs_analise text,
+    cs_outras text,
+    no_outras text,
+    classi_fin text,
+    ds_inf_loc text,
+    ds_inf_out text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    counidinf text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    dt_digita text,
+    dt_transdm text
+);
+
+
+ALTER TABLE brasil.tetn OWNER TO dev_epigraph;
+
+--
+-- Name: tube; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.tube (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_diag text,
+    ano_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    cs_flxret text,
+    flxrecebi text,
+    migrado_w text,
+    id_ocupa_n text,
+    tratamento text,
+    institucio text,
+    raiox_tora text,
+    teste_tube text,
+    forma text,
+    extrapu1_n text,
+    extrapu2_n text,
+    extrapul_o text,
+    agravaids text,
+    agravalcoo text,
+    agravdiabe text,
+    agravdoenc text,
+    agravoutra text,
+    agravoutde text,
+    bacilosc_e text,
+    bacilos_e2 text,
+    bacilosc_o text,
+    cultura_es text,
+    cultura_ou text,
+    hiv text,
+    histopatol text,
+    dt_inic_tr text,
+    rifampicin text,
+    isoniazida text,
+    etambutol text,
+    estreptomi text,
+    pirazinami text,
+    etionamida text,
+    outras text,
+    outras_des text,
+    trat_super text,
+    nu_contato text,
+    doenca_tra text,
+    sg_uf_at text,
+    id_munic_a text,
+    dt_noti_at text,
+    sg_uf_2 text,
+    id_munic_2 text,
+    bacilosc_1 text,
+    bacilosc_2 text,
+    bacilosc_3 text,
+    bacilosc_4 text,
+    bacilosc_5 text,
+    bacilosc_6 text,
+    tratsup_at text,
+    dt_mudanca text,
+    nu_comu_ex text,
+    situa_9_m text,
+    situa_12_m text,
+    situa_ence text,
+    dt_encerra text,
+    tpuninot text,
+    pop_liber text,
+    pop_rua text,
+    pop_saude text,
+    pop_imig text,
+    benef_gov text,
+    agravdroga text,
+    agravtabac text,
+    test_molec text,
+    test_sensi text,
+    ant_retro text,
+    bac_apos_6 text,
+    transf text,
+    uf_transf text,
+    mun_transf text
+);
+
+
+ALTER TABLE brasil.tube OWNER TO dev_epigraph;
+
+--
+-- Name: viol; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.viol (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    tp_uni_ext text,
+    nm_uni_ext text,
+    co_uni_ext text,
+    id_unidade text,
+    id_regiona text,
+    id_rg_resi text,
+    dt_ocor text,
+    sem_pri text,
+    dt_nasc text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_pais text,
+    nduplic text,
+    dt_invest text,
+    id_ocupa_n text,
+    sit_conjug text,
+    def_trans text,
+    def_fisica text,
+    def_mental text,
+    def_visual text,
+    def_auditi text,
+    tran_ment text,
+    tran_comp text,
+    def_out text,
+    def_espec text,
+    sg_uf_ocor text,
+    id_mn_ocor text,
+    hora_ocor text,
+    local_ocor text,
+    local_espe text,
+    out_vezes text,
+    les_autop text,
+    viol_fisic text,
+    viol_psico text,
+    viol_tort text,
+    viol_sexu text,
+    viol_traf text,
+    viol_finan text,
+    viol_negli text,
+    viol_infan text,
+    viol_legal text,
+    viol_outr text,
+    viol_espec text,
+    ag_forca text,
+    ag_enfor text,
+    ag_objeto text,
+    ag_corte text,
+    ag_quente text,
+    ag_enven text,
+    ag_fogo text,
+    ag_ameaca text,
+    ag_outros text,
+    ag_espec text,
+    sex_assedi text,
+    sex_estupr text,
+    sex_pudor text,
+    sex_porno text,
+    sex_explo text,
+    sex_outro text,
+    sex_espec text,
+    pen_oral text,
+    pen_anal text,
+    pen_vagina text,
+    proc_dst text,
+    proc_hiv text,
+    proc_hepb text,
+    proc_sang text,
+    proc_semen text,
+    proc_vagin text,
+    proc_contr text,
+    proc_abort text,
+    cons_abort text,
+    cons_grav text,
+    cons_dst text,
+    cons_suic text,
+    cons_ment text,
+    cons_comp text,
+    cons_estre text,
+    cons_outr text,
+    cons_espec text,
+    lesao_nat text,
+    lesao_espe text,
+    lesao_corp text,
+    num_envolv text,
+    rel_sexual text,
+    rel_pai text,
+    rel_mae text,
+    rel_pad text,
+    rel_conj text,
+    rel_excon text,
+    rel_namo text,
+    rel_exnam text,
+    rel_filho text,
+    rel_desco text,
+    rel_irmao text,
+    rel_conhec text,
+    rel_cuida text,
+    rel_patrao text,
+    rel_inst text,
+    rel_pol text,
+    rel_propri text,
+    rel_outros text,
+    rel_espec text,
+    autor_sexo text,
+    autor_alco text,
+    enc_saude text,
+    enc_tutela text,
+    enc_vara text,
+    enc_abrigo text,
+    enc_sentin text,
+    enc_deam text,
+    enc_dpca text,
+    enc_deleg text,
+    enc_mpu text,
+    enc_mulher text,
+    enc_creas text,
+    enc_iml text,
+    enc_outr text,
+    enc_espec text,
+    rel_trab text,
+    rel_cat text,
+    circ_lesao text,
+    classi_fin text,
+    evolucao text,
+    dt_obito text,
+    rel_mad text,
+    tpuninot text,
+    orient_sex text,
+    ident_gen text,
+    viol_motiv text,
+    cicl_vid text,
+    rede_sau text,
+    assist_soc text,
+    rede_educa text,
+    atend_mulh text,
+    cons_tutel text,
+    cons_ido text,
+    deleg_idos text,
+    dir_human text,
+    mpu text,
+    deleg_cria text,
+    deleg_mulh text,
+    deleg text,
+    infan_juv text,
+    defen_publ text,
+    dt_encerra text,
+    zona text,
+    zona_ocor text,
+    dt_digita text,
+    dt_transus text,
+    dt_transdm text,
+    dt_transsm text,
+    dt_transrm text,
+    dt_transrs text,
+    dt_transse text,
+    nu_lote_v text,
+    nu_lote_h text,
+    ident_micr text
+);
+
+
+ALTER TABLE brasil.viol OWNER TO dev_epigraph;
+
+--
+-- Name: zika; Type: TABLE; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE TABLE brasil.zika (
+    index bigint NOT NULL,
+    tp_not text,
+    id_agravo text,
+    cs_suspeit text,
+    dt_notific text,
+    sem_not text,
+    nu_ano text,
+    sg_uf_not text,
+    id_municip text,
+    id_regiona text,
+    dt_sin_pri text,
+    sem_pri text,
+    nu_idade_n text,
+    cs_sexo text,
+    cs_gestant text,
+    cs_raca text,
+    cs_escol_n text,
+    sg_uf text,
+    id_mn_resi text,
+    id_rg_resi text,
+    id_pais text,
+    nduplic_n text,
+    in_vincula text,
+    dt_invest text,
+    id_ocupa_n text,
+    classi_fin text,
+    criterio text,
+    tpautocto text,
+    coufinf text,
+    copaisinf text,
+    comuninf text,
+    doenca_tra text,
+    evolucao text,
+    dt_obito text,
+    dt_encerra text,
+    cs_flxret text,
+    flxrecebi text,
+    tp_sistema text,
+    tpuninot text
+);
+
+
+ALTER TABLE brasil.zika OWNER TO dev_epigraph;
+
+--
+-- Name: casos_covid_agg_m; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.casos_covid_agg_m (
+    index bigint,
+    estado text,
+    age_group text,
+    sexo text,
+    departamento_nom text,
+    fecha_inicio_sintomas timestamp without time zone,
+    cases bigint
+);
+
+
+ALTER TABLE colombia.casos_covid_agg_m OWNER TO dev_epigraph;
+
+--
+-- Name: casos_covid_agg_m_meta; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.casos_covid_agg_m_meta (
+    index bigint,
+    collumn_name text,
+    "type " text,
+    "description " text
+);
+
+
+ALTER TABLE colombia.casos_covid_agg_m_meta OWNER TO dev_epigraph;
+
+--
+-- Name: casos_covid_deaths_agg_m; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.casos_covid_deaths_agg_m (
+    index bigint,
+    estado text,
+    age_group text,
+    sexo text,
+    departamento_nom text,
+    fecha_muerte timestamp without time zone,
+    deaths bigint
+);
+
+
+ALTER TABLE colombia.casos_covid_deaths_agg_m OWNER TO dev_epigraph;
+
+--
+-- Name: casos_covid_deaths_agg_m_meta; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.casos_covid_deaths_agg_m_meta (
+    index bigint,
+    collumn_name text,
+    "type " text,
+    "description " text
+);
+
+
+ALTER TABLE colombia.casos_covid_deaths_agg_m_meta OWNER TO dev_epigraph;
+
+--
+-- Name: casos_positivos_bogota_d; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.casos_positivos_bogota_d (
+    index bigint,
+    fecha_de_notificaci_n timestamp without time zone,
+    fecha_inicio_sintomas timestamp without time zone,
+    fecha_recuperado timestamp without time zone,
+    fecha_muerte timestamp without time zone,
+    departamento_nom text,
+    sexo text,
+    edad bigint,
+    unidad_medida bigint,
+    estado text,
+    recuperado text,
+    ubicacion text,
+    age_group text
+);
+
+
+ALTER TABLE colombia.casos_positivos_bogota_d OWNER TO dev_epigraph;
+
+--
+-- Name: positive_cases_covid_d; Type: TABLE; Schema: colombia; Owner: dev_admin
+--
+
 CREATE TABLE colombia.positive_cases_covid_d (
-    id_de_caso bigint not null,
+    id_de_caso bigint NOT NULL,
     fecha_reporte_web timestamp without time zone,
     fecha_de_notificaci_n timestamp without time zone,
     departamento bigint,
@@ -392,17 +7928,2898 @@ CREATE TABLE colombia.positive_cases_covid_d (
     fecha_muerte timestamp without time zone,
     pais_viajo_1_cod bigint,
     pais_viajo_1_nom text,
-    id_ bigint not null
+    id_ bigint NOT NULL
 );
 
-ALTER TABLE colombia.casos_positivos_covid OWNER TO dev_epigraph;
 
-ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_epigraph;
+ALTER TABLE colombia.positive_cases_covid_d OWNER TO dev_admin;
 
-CREATE UNIQUE INDEX ix_colombia_positive_cases_covid_d_index ON colombia.positive_cases_covid_d USING btree (id_de_caso);
+--
+-- Name: positive_cases_covid_d_id__seq; Type: SEQUENCE; Schema: colombia; Owner: dev_admin
+--
 
-ALTER TABLE ONLY colombia.positive_cases_covid_d
-    ADD CONSTRAINT positive_cases_covid_d_pkey PRIMARY KEY (id_);
+CREATE SEQUENCE colombia.positive_cases_covid_d_id__seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE colombia.positive_cases_covid_d_id__seq OWNER TO dev_admin;
+
+--
+-- Name: positive_cases_covid_d_id__seq; Type: SEQUENCE OWNED BY; Schema: colombia; Owner: dev_admin
+--
+
+ALTER SEQUENCE colombia.positive_cases_covid_d_id__seq OWNED BY colombia.positive_cases_covid_d.id_;
+
+
+--
+-- Name: positive_cases_covid_meta; Type: TABLE; Schema: colombia; Owner: dev_admin
+--
+
+CREATE TABLE colombia.positive_cases_covid_meta (
+    index bigint,
+    content text,
+    source text,
+    collumn_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE colombia.positive_cases_covid_meta OWNER TO dev_admin;
+
+--
+-- Name: positive_cases_teste; Type: TABLE; Schema: colombia; Owner: dev_admin
+--
+
+CREATE TABLE colombia.positive_cases_teste (
+    id_de_caso bigint,
+    fecha_reporte_web timestamp without time zone,
+    fecha_de_notificaci_n timestamp without time zone,
+    departamento bigint,
+    departamento_nom text,
+    ciudad_municipio bigint,
+    ciudad_municipio_nom text,
+    edad double precision,
+    unidad_medida bigint,
+    sexo text,
+    fuente_tipo_contagio text,
+    ubicacion text,
+    estado text,
+    recuperado text,
+    fecha_inicio_sintomas timestamp without time zone,
+    fecha_diagnostico timestamp without time zone,
+    fecha_recuperado timestamp without time zone,
+    tipo_recuperacion text,
+    per_etn_ bigint,
+    nom_grupo_ text,
+    fecha_muerte timestamp without time zone,
+    pais_viajo_1_cod bigint,
+    pais_viajo_1_nom text
+);
+
+
+ALTER TABLE colombia.positive_cases_teste OWNER TO dev_admin;
+
+--
+-- Name: test_positive_covid; Type: TABLE; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE TABLE colombia.test_positive_covid (
+    index bigint,
+    id_de_caso bigint,
+    fecha_reporte_web text,
+    fecha_de_notificaci_n text,
+    departamento bigint,
+    departamento_nom text,
+    ciudad_municipio bigint,
+    ciudad_municipio_nom text,
+    edad double precision,
+    unidad_medida bigint,
+    sexo text,
+    fuente_tipo_contagio text,
+    ubicacion text,
+    estado text,
+    recuperado text,
+    fecha_inicio_sintomas text,
+    fecha_diagnostico text,
+    fecha_recuperado text,
+    tipo_recuperacion text,
+    per_etn_ bigint,
+    nom_grupo_ text,
+    fecha_muerte text,
+    pais_viajo_1_cod double precision,
+    pais_viajo_1_nom double precision
+);
+
+
+ALTER TABLE colombia.test_positive_covid OWNER TO dev_epigraph;
+
+--
+-- Name: gamdb_0; Type: TABLE; Schema: global; Owner: dev_epigraph
+--
+
+CREATE TABLE global.gamdb_0 (
+    index bigint,
+    "Indicator" text,
+    "Unit" text,
+    "Subgroup" text,
+    "Area" text,
+    "Area ID" text,
+    "Time Period" bigint,
+    "Source" text,
+    "Data Value" double precision,
+    "Footnotes" text
+);
+
+
+ALTER TABLE global.gamdb_0 OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_by_age_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_by_age_d (
+    date text,
+    location_key text,
+    new_confirmed_age_0 double precision,
+    new_confirmed_age_1 double precision,
+    new_confirmed_age_2 double precision,
+    new_confirmed_age_3 double precision,
+    new_confirmed_age_4 double precision,
+    new_confirmed_age_5 double precision,
+    new_confirmed_age_6 double precision,
+    new_confirmed_age_7 double precision,
+    new_confirmed_age_8 double precision,
+    new_confirmed_age_9 double precision,
+    cumulative_confirmed_age_0 double precision,
+    cumulative_confirmed_age_1 double precision,
+    cumulative_confirmed_age_2 double precision,
+    cumulative_confirmed_age_3 double precision,
+    cumulative_confirmed_age_4 double precision,
+    cumulative_confirmed_age_5 double precision,
+    cumulative_confirmed_age_6 double precision,
+    cumulative_confirmed_age_7 double precision,
+    cumulative_confirmed_age_8 double precision,
+    cumulative_confirmed_age_9 double precision,
+    new_deceased_age_0 double precision,
+    new_deceased_age_1 double precision,
+    new_deceased_age_2 double precision,
+    new_deceased_age_3 double precision,
+    new_deceased_age_4 double precision,
+    new_deceased_age_5 double precision,
+    new_deceased_age_6 double precision,
+    new_deceased_age_7 double precision,
+    new_deceased_age_8 double precision,
+    new_deceased_age_9 double precision,
+    cumulative_deceased_age_0 double precision,
+    cumulative_deceased_age_1 double precision,
+    cumulative_deceased_age_2 double precision,
+    cumulative_deceased_age_3 double precision,
+    cumulative_deceased_age_4 double precision,
+    cumulative_deceased_age_5 double precision,
+    cumulative_deceased_age_6 double precision,
+    cumulative_deceased_age_7 double precision,
+    cumulative_deceased_age_8 double precision,
+    cumulative_deceased_age_9 double precision,
+    new_recovered_age_0 double precision,
+    new_recovered_age_1 double precision,
+    new_recovered_age_2 double precision,
+    new_recovered_age_3 double precision,
+    new_recovered_age_4 double precision,
+    new_recovered_age_5 double precision,
+    new_recovered_age_6 double precision,
+    new_recovered_age_7 double precision,
+    new_recovered_age_8 double precision,
+    new_recovered_age_9 double precision,
+    cumulative_recovered_age_0 double precision,
+    cumulative_recovered_age_1 double precision,
+    cumulative_recovered_age_2 double precision,
+    cumulative_recovered_age_3 double precision,
+    cumulative_recovered_age_4 double precision,
+    cumulative_recovered_age_5 double precision,
+    cumulative_recovered_age_6 double precision,
+    cumulative_recovered_age_7 double precision,
+    cumulative_recovered_age_8 double precision,
+    cumulative_recovered_age_9 double precision,
+    new_tested_age_0 double precision,
+    new_tested_age_1 double precision,
+    new_tested_age_2 double precision,
+    new_tested_age_3 double precision,
+    new_tested_age_4 double precision,
+    new_tested_age_5 double precision,
+    new_tested_age_6 double precision,
+    new_tested_age_7 double precision,
+    new_tested_age_8 double precision,
+    new_tested_age_9 double precision,
+    cumulative_tested_age_0 double precision,
+    cumulative_tested_age_1 double precision,
+    cumulative_tested_age_2 double precision,
+    cumulative_tested_age_3 double precision,
+    cumulative_tested_age_4 double precision,
+    cumulative_tested_age_5 double precision,
+    cumulative_tested_age_6 double precision,
+    cumulative_tested_age_7 double precision,
+    cumulative_tested_age_8 double precision,
+    cumulative_tested_age_9 double precision,
+    new_hospitalized_patients_age_0 double precision,
+    new_hospitalized_patients_age_1 double precision,
+    new_hospitalized_patients_age_2 double precision,
+    new_hospitalized_patients_age_3 double precision,
+    new_hospitalized_patients_age_4 double precision,
+    new_hospitalized_patients_age_5 double precision,
+    new_hospitalized_patients_age_6 double precision,
+    new_hospitalized_patients_age_7 double precision,
+    new_hospitalized_patients_age_8 double precision,
+    new_hospitalized_patients_age_9 double precision,
+    cumulative_hospitalized_patients_age_0 double precision,
+    cumulative_hospitalized_patients_age_1 double precision,
+    cumulative_hospitalized_patients_age_2 double precision,
+    cumulative_hospitalized_patients_age_3 double precision,
+    cumulative_hospitalized_patients_age_4 double precision,
+    cumulative_hospitalized_patients_age_5 double precision,
+    cumulative_hospitalized_patients_age_6 double precision,
+    cumulative_hospitalized_patients_age_7 double precision,
+    cumulative_hospitalized_patients_age_8 double precision,
+    cumulative_hospitalized_patients_age_9 double precision,
+    new_intensive_care_patients_age_0 double precision,
+    new_intensive_care_patients_age_1 double precision,
+    new_intensive_care_patients_age_2 double precision,
+    new_intensive_care_patients_age_3 double precision,
+    new_intensive_care_patients_age_4 double precision,
+    new_intensive_care_patients_age_5 double precision,
+    new_intensive_care_patients_age_6 double precision,
+    new_intensive_care_patients_age_7 double precision,
+    new_intensive_care_patients_age_8 double precision,
+    new_intensive_care_patients_age_9 double precision,
+    cumulative_intensive_care_patients_age_0 double precision,
+    cumulative_intensive_care_patients_age_1 double precision,
+    cumulative_intensive_care_patients_age_2 double precision,
+    cumulative_intensive_care_patients_age_3 double precision,
+    cumulative_intensive_care_patients_age_4 double precision,
+    cumulative_intensive_care_patients_age_5 double precision,
+    cumulative_intensive_care_patients_age_6 double precision,
+    cumulative_intensive_care_patients_age_7 double precision,
+    cumulative_intensive_care_patients_age_8 double precision,
+    cumulative_intensive_care_patients_age_9 double precision,
+    new_ventilator_patients_age_0 double precision,
+    new_ventilator_patients_age_1 double precision,
+    new_ventilator_patients_age_2 double precision,
+    new_ventilator_patients_age_3 double precision,
+    new_ventilator_patients_age_4 double precision,
+    new_ventilator_patients_age_5 double precision,
+    new_ventilator_patients_age_6 double precision,
+    new_ventilator_patients_age_7 double precision,
+    new_ventilator_patients_age_8 double precision,
+    new_ventilator_patients_age_9 double precision,
+    cumulative_ventilator_patients_age_0 double precision,
+    cumulative_ventilator_patients_age_1 double precision,
+    cumulative_ventilator_patients_age_2 double precision,
+    cumulative_ventilator_patients_age_3 double precision,
+    cumulative_ventilator_patients_age_4 double precision,
+    cumulative_ventilator_patients_age_5 double precision,
+    cumulative_ventilator_patients_age_6 double precision,
+    cumulative_ventilator_patients_age_7 double precision,
+    cumulative_ventilator_patients_age_8 double precision,
+    cumulative_ventilator_patients_age_9 double precision,
+    age_bin_0 text,
+    age_bin_1 text,
+    age_bin_2 text,
+    age_bin_3 text,
+    age_bin_4 text,
+    age_bin_5 text,
+    age_bin_6 text,
+    age_bin_7 text,
+    age_bin_8 text,
+    age_bin_9 text
+);
+
+
+ALTER TABLE google_health.covid19_series_by_age_d OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_by_age_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_by_age_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.covid19_series_by_age_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_by_sex_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_by_sex_d (
+    date text,
+    location_key text,
+    new_confirmed_male double precision,
+    new_confirmed_female double precision,
+    cumulative_confirmed_male double precision,
+    cumulative_confirmed_female double precision,
+    new_deceased_male double precision,
+    new_deceased_female double precision,
+    cumulative_deceased_male double precision,
+    cumulative_deceased_female double precision,
+    new_recovered_male double precision,
+    new_recovered_female double precision,
+    cumulative_recovered_male double precision,
+    cumulative_recovered_female double precision,
+    new_tested_male double precision,
+    new_tested_female double precision,
+    cumulative_tested_male double precision,
+    cumulative_tested_female double precision,
+    new_hospitalized_patients_male double precision,
+    new_hospitalized_patients_female double precision,
+    cumulative_hospitalized_patients_male double precision,
+    cumulative_hospitalized_patients_female double precision,
+    new_intensive_care_patients_male double precision,
+    new_intensive_care_patients_female double precision,
+    cumulative_intensive_care_patients_male double precision,
+    cumulative_intensive_care_patients_female double precision,
+    new_ventilator_patients_male double precision,
+    new_ventilator_patients_female double precision,
+    cumulative_ventilator_patients_male double precision,
+    cumulative_ventilator_patients_female double precision
+);
+
+
+ALTER TABLE google_health.covid19_series_by_sex_d OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_by_sex_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_by_sex_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.covid19_series_by_sex_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_d (
+    date text,
+    location_key text,
+    new_confirmed double precision,
+    new_deceased double precision,
+    new_recovered double precision,
+    new_tested double precision,
+    cumulative_confirmed double precision,
+    cumulative_deceased double precision,
+    cumulative_recovered double precision,
+    cumulative_tested double precision
+);
+
+
+ALTER TABLE google_health.covid19_series_d OWNER TO dev_epigraph;
+
+--
+-- Name: covid19_series_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.covid19_series_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.covid19_series_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: demographics; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.demographics (
+    location_key text,
+    population double precision,
+    population_male double precision,
+    population_female double precision,
+    population_rural double precision,
+    population_urban double precision,
+    population_largest_city double precision,
+    population_clustered double precision,
+    population_density double precision,
+    human_development_index double precision,
+    population_age_00_09 double precision,
+    population_age_10_19 double precision,
+    population_age_20_29 double precision,
+    population_age_30_39 double precision,
+    population_age_40_49 double precision,
+    population_age_50_59 double precision,
+    population_age_60_69 double precision,
+    population_age_70_79 double precision,
+    population_age_80_and_older double precision
+);
+
+
+ALTER TABLE google_health.demographics OWNER TO dev_epigraph;
+
+--
+-- Name: demographics_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.demographics_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.demographics_meta OWNER TO dev_epigraph;
+
+--
+-- Name: economy; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.economy (
+    location_key text,
+    gdp_usd double precision,
+    gdp_per_capita_usd double precision,
+    human_capital_index double precision
+);
+
+
+ALTER TABLE google_health.economy OWNER TO dev_epigraph;
+
+--
+-- Name: economy_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.economy_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.economy_meta OWNER TO dev_epigraph;
+
+--
+-- Name: emergency_declarations_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.emergency_declarations_d (
+    date text,
+    location_key text,
+    lawatlas_mitigation_policy bigint,
+    lawatlas_state_emergency double precision,
+    lawatlas_emerg_statewide double precision,
+    lawatlas_travel_requirement double precision,
+    lawatlas_traveler_type_all_people_entering_the_state double precision,
+    lawatlas_traveler_type_travelers_from_specified_states double precision,
+    lawatlas_traveler_type_travelers_from_specified_countries double precision,
+    lawatlas_traveler_type_general_international_travelers double precision,
+    lawatlas_traveler_type_all_air_travelers double precision,
+    lawatlas_requirement_type_traveler_must_self_quarantine double precision,
+    lawatlas_requirement_type_traveler_must_inform_others_of_travel double precision,
+    lawatlas_requirement_type_checkpoints_must_be_established double precision,
+    lawatlas_requirement_type_travel_requirement_must_be_posted double precision,
+    lawatlas_travel_statewide double precision,
+    lawatlas_home_requirement double precision,
+    lawatlas_home_except_engaging_in_essential_business_activities double precision,
+    lawatlas_home_except_obtaining_necessary_supplies double precision,
+    lawatlas_home_except_accessing_emergency_services double precision,
+    lawatlas_home_except_caring_for_a_person_outside_the_home double precision,
+    lawatlas_home_except_caring_for_a_pet_outside_the_home double precision,
+    lawatlas_home_except_engaging_in_outdoor_activities double precision,
+    lawatlas_home_except_attending_religious_services double precision,
+    lawatlas_home_except_engaging_in_essential_health_care_services double precision,
+    lawatlas_home_statewide double precision,
+    lawatlas_curfew_reg double precision,
+    lawatlas_mask_requirement double precision,
+    lawatlas_mask_statewide double precision,
+    lawatlas_business_close double precision,
+    lawatlas_business_type_all_non_essential_businesses double precision,
+    lawatlas_business_type_non_essential_retail_businesses double precision,
+    lawatlas_business_type_entertainment_businesses double precision,
+    lawatlas_business_type_personal_service_businesses double precision,
+    lawatlas_business_type_restaurants double precision,
+    lawatlas_business_type_bars double precision,
+    lawatlas_business_type_fitness_centers double precision,
+    lawatlas_essential_def_appliance_stores double precision,
+    lawatlas_essential_def_convenience_stores double precision,
+    lawatlas_essential_def_gas_stations double precision,
+    lawatlas_essential_def_grocery_stores double precision,
+    lawatlas_essential_def_gun_stores double precision,
+    lawatlas_essential_def_hardware_stores double precision,
+    lawatlas_essential_def_liquor_stores double precision,
+    lawatlas_essential_def_pharmacies double precision,
+    lawatlas_essential_def_marijuana_dispensaries double precision,
+    lawatlas_essential_def_pet_stores double precision,
+    lawatlas_essential_def_type_of_essential_retail_business_is_not double precision,
+    lawatlas_essential_def_no_restriction_on_retail_businesses double precision,
+    lawatlas_business_statewide double precision,
+    lawatlas_rest_restrict double precision,
+    lawatlas_service_type_takeout double precision,
+    lawatlas_service_type_delivery double precision,
+    lawatlas_service_type_limited_on_site_service double precision,
+    lawatlas_rest_statewide double precision,
+    lawatlas_schools_requirement double precision,
+    lawatlas_schools_type_private_elementary_schools double precision,
+    lawatlas_schools_type_private_secondary_schools double precision,
+    lawatlas_schools_type_public_elementary_schools double precision,
+    lawatlas_schools_type_public_secondary_schools double precision,
+    lawatlas_schools_type_colleges_and_universities double precision,
+    lawatlas_schools_type_technical_schools double precision,
+    lawatlas_schools_type_type_of_school_not_specified double precision,
+    lawatlas_schools_statewide double precision,
+    lawatlas_gathering_ban double precision,
+    lawatlas_gathering_type double precision,
+    lawatlas_gathering_statewide double precision,
+    lawatlas_med_restrict double precision,
+    lawatlas_med_except_delay_would_threaten_patients_health double precision,
+    lawatlas_med_except_delay_would_threaten_patients_life double precision,
+    lawatlas_med_except_procedure_needed_to_treat_emergency double precision,
+    lawatlas_med_except_procedure_does_not_deplete_hospital_capacit double precision,
+    lawatlas_med_except_procedure_does_not_deplete_personal_protect double precision,
+    lawatlas_med_except_family_planning_services double precision,
+    lawatlas_med_except_no_exception_specified double precision,
+    lawatlas_abortion_essential_new double precision,
+    lawatlas_med_statewide double precision,
+    lawatlas_correct_requirement double precision,
+    lawatlas_correct_facility_all_state_facilities double precision,
+    lawatlas_correct_facility_all_department_of_corrections_facilit double precision,
+    lawatlas_correct_facility_all_county_jails double precision,
+    lawatlas_correct_facility_juvenile_detention_centers double precision,
+    lawatlas_correct_type_intakes_suspended double precision,
+    lawatlas_correct_type_duty_to_receive_prisoners_suspended double precision,
+    lawatlas_correct_type_transfers_to_custody_suspended double precision,
+    lawatlas_correct_type_release_of_inmates double precision,
+    lawatlas_correct_type_rules_regarding_inmate_release_suspended double precision,
+    lawatlas_correct_type_release_notice_suspended double precision,
+    lawatlas_correct_type_cease_in_person_parole_hearings double precision,
+    lawatlas_correct_type_develop_process_for_virtual_parole_hearin double precision,
+    lawatlas_correct_type_visitation_suspended double precision,
+    lawatlas_correct_statewide double precision,
+    lawatlas_state_preempt double precision,
+    lawatlas_action_preempt_imposing_additional_social_distancing_l double precision,
+    lawatlas_action_preempt_imposing_additional_restrictions_on_pub double precision,
+    lawatlas_action_preempt_restricting_scope_of_services_of_an_ess double precision,
+    "lawatlas_action_preempt_expanding_the_definition_of_non-essenti" double precision,
+    lawatlas_action_preempt_restricting_the_hours_of_operation_of_a double precision,
+    lawatlas_action_preempt_imposing_restrictions_that_conflict_wit double precision,
+    lawatlas_action_preempt_restricting_the_performance_of_an_essen double precision,
+    lawatlas_action_preempt_restricting_people_from_leaving_home double precision,
+    lawatlas_action_preempt_restricting_the_operations_of_schools double precision,
+    lawatlas_action_preempt_imposing_gathering_bans double precision,
+    lawatlas_local_allow double precision
+);
+
+
+ALTER TABLE google_health.emergency_declarations_d OWNER TO dev_epigraph;
+
+--
+-- Name: emergency_declarations_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.emergency_declarations_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.emergency_declarations_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: geography; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.geography (
+    location_key text,
+    openstreetmap_id double precision,
+    latitude double precision,
+    longitude double precision,
+    elevation_m double precision,
+    area_sq_km double precision,
+    area_rural_sq_km double precision,
+    area_urban_sq_km double precision
+);
+
+
+ALTER TABLE google_health.geography OWNER TO dev_epigraph;
+
+--
+-- Name: geography_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.geography_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.geography_meta OWNER TO dev_epigraph;
+
+--
+-- Name: government_response_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.government_response_d (
+    date text,
+    location_key text,
+    school_closing double precision,
+    workplace_closing double precision,
+    cancel_public_events double precision,
+    restrictions_on_gatherings double precision,
+    public_transport_closing double precision,
+    stay_at_home_requirements double precision,
+    restrictions_on_internal_movement double precision,
+    international_travel_controls double precision,
+    income_support double precision,
+    debt_relief double precision,
+    fiscal_measures double precision,
+    international_support double precision,
+    public_information_campaigns double precision,
+    testing_policy double precision,
+    contact_tracing double precision,
+    emergency_investment_in_healthcare double precision,
+    investment_in_vaccines double precision,
+    facial_coverings double precision,
+    vaccination_policy double precision,
+    stringency_index double precision
+);
+
+
+ALTER TABLE google_health.government_response_d OWNER TO dev_epigraph;
+
+--
+-- Name: government_response_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.government_response_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.government_response_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: health; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.health (
+    location_key text,
+    life_expectancy double precision,
+    smoking_prevalence double precision,
+    diabetes_prevalence double precision,
+    infant_mortality_rate double precision,
+    adult_male_mortality_rate double precision,
+    adult_female_mortality_rate double precision,
+    pollution_mortality_rate double precision,
+    comorbidity_mortality_rate double precision,
+    hospital_beds_per_1000 double precision,
+    nurses_per_1000 double precision,
+    physicians_per_1000 double precision,
+    health_expenditure_usd double precision,
+    out_of_pocket_health_expenditure_usd double precision
+);
+
+
+ALTER TABLE google_health.health OWNER TO dev_epigraph;
+
+--
+-- Name: health_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.health_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.health_meta OWNER TO dev_epigraph;
+
+--
+-- Name: hospitalizations_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.hospitalizations_d (
+    date text,
+    location_key text,
+    new_hospitalized_patients double precision,
+    cumulative_hospitalized_patients double precision,
+    current_hospitalized_patients double precision,
+    new_intensive_care_patients double precision,
+    cumulative_intensive_care_patients double precision,
+    current_intensive_care_patients double precision,
+    new_ventilator_patients double precision,
+    cumulative_ventilator_patients double precision,
+    current_ventilator_patients double precision
+);
+
+
+ALTER TABLE google_health.hospitalizations_d OWNER TO dev_epigraph;
+
+--
+-- Name: hospitalizations_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.hospitalizations_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.hospitalizations_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: locality_names_0; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.locality_names_0 (
+    location_key text,
+    place_id text,
+    wikidata_id text,
+    datacommons_id text,
+    country_code text,
+    country_name text,
+    subregion1_code text,
+    subregion1_name text,
+    subregion2_code text,
+    subregion2_name text,
+    locality_code text,
+    locality_name text,
+    iso_3166_1_alpha_2 text,
+    iso_3166_1_alpha_3 text,
+    aggregation_level bigint
+);
+
+
+ALTER TABLE google_health.locality_names_0 OWNER TO dev_epigraph;
+
+--
+-- Name: locality_names_0_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.locality_names_0_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    descripition text,
+    example text
+);
+
+
+ALTER TABLE google_health.locality_names_0_meta OWNER TO dev_epigraph;
+
+--
+-- Name: mobility_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.mobility_d (
+    date text,
+    location_key text,
+    mobility_retail_and_recreation double precision,
+    mobility_grocery_and_pharmacy double precision,
+    mobility_parks double precision,
+    mobility_transit_stations double precision,
+    mobility_workplaces double precision,
+    mobility_residential double precision
+);
+
+
+ALTER TABLE google_health.mobility_d OWNER TO dev_epigraph;
+
+--
+-- Name: mobility_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.mobility_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.mobility_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: search_trends_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.search_trends_d (
+    date text,
+    location_key text,
+    search_trends_abdominal_obesity double precision,
+    search_trends_abdominal_pain double precision,
+    search_trends_acne double precision,
+    search_trends_actinic_keratosis double precision,
+    search_trends_acute_bronchitis double precision,
+    search_trends_adrenal_crisis double precision,
+    search_trends_ageusia double precision,
+    search_trends_alcoholism double precision,
+    search_trends_allergic_conjunctivitis double precision,
+    search_trends_allergy double precision,
+    search_trends_amblyopia double precision,
+    search_trends_amenorrhea double precision,
+    search_trends_amnesia double precision,
+    search_trends_anal_fissure double precision,
+    search_trends_anaphylaxis double precision,
+    search_trends_anemia double precision,
+    search_trends_angina_pectoris double precision,
+    search_trends_angioedema double precision,
+    search_trends_angular_cheilitis double precision,
+    search_trends_anosmia double precision,
+    search_trends_anxiety double precision,
+    search_trends_aphasia double precision,
+    search_trends_aphonia double precision,
+    search_trends_apnea double precision,
+    search_trends_arthralgia double precision,
+    search_trends_arthritis double precision,
+    search_trends_ascites double precision,
+    search_trends_asperger_syndrome double precision,
+    search_trends_asphyxia double precision,
+    search_trends_asthma double precision,
+    search_trends_astigmatism double precision,
+    search_trends_ataxia double precision,
+    search_trends_atheroma double precision,
+    search_trends_attention_deficit_hyperactivity_disorder double precision,
+    search_trends_auditory_hallucination double precision,
+    search_trends_autoimmune_disease double precision,
+    search_trends_avoidant_personality_disorder double precision,
+    search_trends_back_pain double precision,
+    search_trends_bacterial_vaginosis double precision,
+    search_trends_balance_disorder double precision,
+    search_trends_beaus_lines double precision,
+    search_trends_bells_palsy double precision,
+    search_trends_biliary_colic double precision,
+    search_trends_binge_eating double precision,
+    search_trends_bleeding double precision,
+    search_trends_bleeding_on_probing double precision,
+    search_trends_blepharospasm double precision,
+    search_trends_bloating double precision,
+    search_trends_blood_in_stool double precision,
+    search_trends_blurred_vision double precision,
+    search_trends_blushing double precision,
+    search_trends_boil double precision,
+    search_trends_bone_fracture double precision,
+    search_trends_bone_tumor double precision,
+    search_trends_bowel_obstruction double precision,
+    search_trends_bradycardia double precision,
+    search_trends_braxton_hicks_contractions double precision,
+    search_trends_breakthrough_bleeding double precision,
+    search_trends_breast_pain double precision,
+    search_trends_bronchitis double precision,
+    search_trends_bruise double precision,
+    search_trends_bruxism double precision,
+    search_trends_bunion double precision,
+    search_trends_burn double precision,
+    search_trends_burning_chest_pain double precision,
+    search_trends_burning_mouth_syndrome double precision,
+    search_trends_candidiasis double precision,
+    search_trends_canker_sore double precision,
+    search_trends_cardiac_arrest double precision,
+    search_trends_carpal_tunnel_syndrome double precision,
+    search_trends_cataplexy double precision,
+    search_trends_cataract double precision,
+    search_trends_chancre double precision,
+    search_trends_cheilitis double precision,
+    search_trends_chest_pain double precision,
+    search_trends_chills double precision,
+    search_trends_chorea double precision,
+    search_trends_chronic_pain double precision,
+    search_trends_cirrhosis double precision,
+    search_trends_cleft_lip_and_cleft_palate double precision,
+    search_trends_clouding_of_consciousness double precision,
+    search_trends_cluster_headache double precision,
+    search_trends_colitis double precision,
+    search_trends_coma double precision,
+    search_trends_common_cold double precision,
+    search_trends_compulsive_behavior double precision,
+    search_trends_compulsive_hoarding double precision,
+    search_trends_confusion double precision,
+    search_trends_congenital_heart_defect double precision,
+    search_trends_conjunctivitis double precision,
+    search_trends_constipation double precision,
+    search_trends_convulsion double precision,
+    search_trends_cough double precision,
+    search_trends_crackles double precision,
+    search_trends_cramp double precision,
+    search_trends_crepitus double precision,
+    search_trends_croup double precision,
+    search_trends_cyanosis double precision,
+    search_trends_dandruff double precision,
+    search_trends_delayed_onset_muscle_soreness double precision,
+    search_trends_dementia double precision,
+    search_trends_dentin_hypersensitivity double precision,
+    search_trends_depersonalization double precision,
+    search_trends_depression double precision,
+    search_trends_dermatitis double precision,
+    search_trends_desquamation double precision,
+    search_trends_developmental_disability double precision,
+    search_trends_diabetes double precision,
+    search_trends_diabetic_ketoacidosis double precision,
+    search_trends_diarrhea double precision,
+    search_trends_dizziness double precision,
+    search_trends_dry_eye_syndrome double precision,
+    search_trends_dysautonomia double precision,
+    search_trends_dysgeusia double precision,
+    search_trends_dysmenorrhea double precision,
+    search_trends_dyspareunia double precision,
+    search_trends_dysphagia double precision,
+    search_trends_dysphoria double precision,
+    search_trends_dystonia double precision,
+    search_trends_dysuria double precision,
+    search_trends_ear_pain double precision,
+    search_trends_eczema double precision,
+    search_trends_edema double precision,
+    search_trends_encephalitis double precision,
+    search_trends_encephalopathy double precision,
+    search_trends_epidermoid_cyst double precision,
+    search_trends_epilepsy double precision,
+    search_trends_epiphora double precision,
+    search_trends_erectile_dysfunction double precision,
+    search_trends_erythema double precision,
+    search_trends_erythema_chronicum_migrans double precision,
+    search_trends_esophagitis double precision,
+    search_trends_excessive_daytime_sleepiness double precision,
+    search_trends_eye_pain double precision,
+    search_trends_eye_strain double precision,
+    search_trends_facial_nerve_paralysis double precision,
+    search_trends_facial_swelling double precision,
+    search_trends_fasciculation double precision,
+    search_trends_fatigue double precision,
+    search_trends_fatty_liver_disease double precision,
+    search_trends_fecal_incontinence double precision,
+    search_trends_fever double precision,
+    search_trends_fibrillation double precision,
+    search_trends_fibrocystic_breast_changes double precision,
+    search_trends_fibromyalgia double precision,
+    search_trends_flatulence double precision,
+    search_trends_floater double precision,
+    search_trends_focal_seizure double precision,
+    search_trends_folate_deficiency double precision,
+    search_trends_food_craving double precision,
+    search_trends_food_intolerance double precision,
+    search_trends_frequent_urination double precision,
+    search_trends_gastroesophageal_reflux_disease double precision,
+    search_trends_gastroparesis double precision,
+    search_trends_generalized_anxiety_disorder double precision,
+    "search_trends_generalized_tonic–clonic_seizure" double precision,
+    search_trends_genital_wart double precision,
+    search_trends_gingival_recession double precision,
+    search_trends_gingivitis double precision,
+    search_trends_globus_pharyngis double precision,
+    search_trends_goitre double precision,
+    search_trends_gout double precision,
+    search_trends_grandiosity double precision,
+    search_trends_granuloma double precision,
+    search_trends_guilt double precision,
+    search_trends_hair_loss double precision,
+    search_trends_halitosis double precision,
+    search_trends_hay_fever double precision,
+    search_trends_headache double precision,
+    search_trends_heart_arrhythmia double precision,
+    search_trends_heart_murmur double precision,
+    search_trends_heartburn double precision,
+    search_trends_hematochezia double precision,
+    search_trends_hematoma double precision,
+    search_trends_hematuria double precision,
+    search_trends_hemolysis double precision,
+    search_trends_hemoptysis double precision,
+    search_trends_hemorrhoids double precision,
+    search_trends_hepatic_encephalopathy double precision,
+    search_trends_hepatitis double precision,
+    search_trends_hepatotoxicity double precision,
+    search_trends_hiccup double precision,
+    search_trends_hip_pain double precision,
+    search_trends_hives double precision,
+    search_trends_hot_flash double precision,
+    search_trends_hydrocephalus double precision,
+    search_trends_hypercalcaemia double precision,
+    search_trends_hypercapnia double precision,
+    search_trends_hypercholesterolemia double precision,
+    search_trends_hyperemesis_gravidarum double precision,
+    search_trends_hyperglycemia double precision,
+    search_trends_hyperhidrosis double precision,
+    search_trends_hyperkalemia double precision,
+    search_trends_hyperlipidemia double precision,
+    search_trends_hypermobility double precision,
+    search_trends_hyperpigmentation double precision,
+    search_trends_hypersomnia double precision,
+    search_trends_hypertension double precision,
+    search_trends_hyperthermia double precision,
+    search_trends_hyperthyroidism double precision,
+    search_trends_hypertriglyceridemia double precision,
+    search_trends_hypertrophy double precision,
+    search_trends_hyperventilation double precision,
+    search_trends_hypocalcaemia double precision,
+    search_trends_hypochondriasis double precision,
+    search_trends_hypoglycemia double precision,
+    search_trends_hypogonadism double precision,
+    search_trends_hypokalemia double precision,
+    search_trends_hypomania double precision,
+    search_trends_hyponatremia double precision,
+    search_trends_hypotension double precision,
+    search_trends_hypothyroidism double precision,
+    search_trends_hypoxemia double precision,
+    search_trends_hypoxia double precision,
+    search_trends_impetigo double precision,
+    search_trends_implantation_bleeding double precision,
+    search_trends_impulsivity double precision,
+    search_trends_indigestion double precision,
+    search_trends_infection double precision,
+    search_trends_inflammation double precision,
+    search_trends_inflammatory_bowel_disease double precision,
+    search_trends_ingrown_hair double precision,
+    search_trends_insomnia double precision,
+    search_trends_insulin_resistance double precision,
+    search_trends_intermenstrual_bleeding double precision,
+    search_trends_intracranial_pressure double precision,
+    search_trends_iron_deficiency double precision,
+    search_trends_irregular_menstruation double precision,
+    search_trends_itch double precision,
+    search_trends_jaundice double precision,
+    search_trends_kidney_failure double precision,
+    search_trends_kidney_stone double precision,
+    search_trends_knee_pain double precision,
+    search_trends_kyphosis double precision,
+    search_trends_lactose_intolerance double precision,
+    search_trends_laryngitis double precision,
+    search_trends_leg_cramps double precision,
+    search_trends_lesion double precision,
+    search_trends_leukorrhea double precision,
+    search_trends_lightheadedness double precision,
+    search_trends_low_back_pain double precision,
+    search_trends_low_grade_fever double precision,
+    search_trends_lymphedema double precision,
+    search_trends_major_depressive_disorder double precision,
+    search_trends_malabsorption double precision,
+    search_trends_male_infertility double precision,
+    search_trends_manic_disorder double precision,
+    search_trends_melasma double precision,
+    search_trends_melena double precision,
+    search_trends_meningitis double precision,
+    search_trends_menorrhagia double precision,
+    search_trends_middle_back_pain double precision,
+    search_trends_migraine double precision,
+    search_trends_milium double precision,
+    search_trends_mitral_insufficiency double precision,
+    search_trends_mood_disorder double precision,
+    search_trends_mood_swing double precision,
+    search_trends_morning_sickness double precision,
+    search_trends_motion_sickness double precision,
+    search_trends_mouth_ulcer double precision,
+    search_trends_muscle_atrophy double precision,
+    search_trends_muscle_weakness double precision,
+    search_trends_myalgia double precision,
+    search_trends_mydriasis double precision,
+    search_trends_myocardial_infarction double precision,
+    search_trends_myoclonus double precision,
+    search_trends_nasal_congestion double precision,
+    search_trends_nasal_polyp double precision,
+    search_trends_nausea double precision,
+    search_trends_neck_mass double precision,
+    search_trends_neck_pain double precision,
+    search_trends_neonatal_jaundice double precision,
+    search_trends_nerve_injury double precision,
+    search_trends_neuralgia double precision,
+    search_trends_neutropenia double precision,
+    search_trends_night_sweats double precision,
+    search_trends_night_terror double precision,
+    search_trends_nocturnal_enuresis double precision,
+    search_trends_nodule double precision,
+    search_trends_nosebleed double precision,
+    search_trends_nystagmus double precision,
+    search_trends_obesity double precision,
+    search_trends_onychorrhexis double precision,
+    search_trends_oral_candidiasis double precision,
+    search_trends_orthostatic_hypotension double precision,
+    search_trends_osteopenia double precision,
+    search_trends_osteophyte double precision,
+    search_trends_osteoporosis double precision,
+    search_trends_otitis double precision,
+    search_trends_otitis_externa double precision,
+    search_trends_otitis_media double precision,
+    search_trends_pain double precision,
+    search_trends_palpitations double precision,
+    search_trends_pancreatitis double precision,
+    search_trends_panic_attack double precision,
+    search_trends_papule double precision,
+    search_trends_paranoia double precision,
+    search_trends_paresthesia double precision,
+    search_trends_pelvic_inflammatory_disease double precision,
+    search_trends_pericarditis double precision,
+    search_trends_periodontal_disease double precision,
+    search_trends_periorbital_puffiness double precision,
+    search_trends_peripheral_neuropathy double precision,
+    search_trends_perspiration double precision,
+    search_trends_petechia double precision,
+    search_trends_phlegm double precision,
+    search_trends_photodermatitis double precision,
+    search_trends_photophobia double precision,
+    search_trends_photopsia double precision,
+    search_trends_pleural_effusion double precision,
+    search_trends_pleurisy double precision,
+    search_trends_pneumonia double precision,
+    search_trends_podalgia double precision,
+    search_trends_polycythemia double precision,
+    search_trends_polydipsia double precision,
+    search_trends_polyneuropathy double precision,
+    search_trends_polyuria double precision,
+    search_trends_poor_posture double precision,
+    search_trends_post_nasal_drip double precision,
+    search_trends_postural_orthostatic_tachycardia_syndrome double precision,
+    search_trends_prediabetes double precision,
+    search_trends_proteinuria double precision,
+    search_trends_pruritus_ani double precision,
+    search_trends_psychosis double precision,
+    search_trends_ptosis double precision,
+    search_trends_pulmonary_edema double precision,
+    search_trends_pulmonary_hypertension double precision,
+    search_trends_purpura double precision,
+    search_trends_pus double precision,
+    search_trends_pyelonephritis double precision,
+    search_trends_radiculopathy double precision,
+    search_trends_rectal_pain double precision,
+    search_trends_rectal_prolapse double precision,
+    search_trends_red_eye double precision,
+    search_trends_renal_colic double precision,
+    search_trends_restless_legs_syndrome double precision,
+    search_trends_rheum double precision,
+    search_trends_rhinitis double precision,
+    search_trends_rhinorrhea double precision,
+    search_trends_rosacea double precision,
+    search_trends_round_ligament_pain double precision,
+    search_trends_rumination double precision,
+    search_trends_scar double precision,
+    search_trends_sciatica double precision,
+    search_trends_scoliosis double precision,
+    search_trends_seborrheic_dermatitis double precision,
+    search_trends_self_harm double precision,
+    search_trends_sensitivity_to_sound double precision,
+    search_trends_sexual_dysfunction double precision,
+    search_trends_shallow_breathing double precision,
+    search_trends_sharp_pain double precision,
+    search_trends_shivering double precision,
+    search_trends_shortness_of_breath double precision,
+    search_trends_shyness double precision,
+    search_trends_sinusitis double precision,
+    search_trends_skin_condition double precision,
+    search_trends_skin_rash double precision,
+    search_trends_skin_tag double precision,
+    search_trends_skin_ulcer double precision,
+    search_trends_sleep_apnea double precision,
+    search_trends_sleep_deprivation double precision,
+    search_trends_sleep_disorder double precision,
+    search_trends_snoring double precision,
+    search_trends_sore_throat double precision,
+    search_trends_spasticity double precision,
+    search_trends_splenomegaly double precision,
+    search_trends_sputum double precision,
+    search_trends_stomach_rumble double precision,
+    search_trends_strabismus double precision,
+    search_trends_stretch_marks double precision,
+    search_trends_stridor double precision,
+    search_trends_stroke double precision,
+    search_trends_stuttering double precision,
+    search_trends_subdural_hematoma double precision,
+    search_trends_suicidal_ideation double precision,
+    search_trends_swelling double precision,
+    search_trends_swollen_feet double precision,
+    search_trends_swollen_lymph_nodes double precision,
+    search_trends_syncope double precision,
+    search_trends_tachycardia double precision,
+    search_trends_tachypnea double precision,
+    search_trends_telangiectasia double precision,
+    search_trends_tenderness double precision,
+    search_trends_testicular_pain double precision,
+    search_trends_throat_irritation double precision,
+    search_trends_thrombocytopenia double precision,
+    search_trends_thyroid_nodule double precision,
+    search_trends_tic double precision,
+    search_trends_tinnitus double precision,
+    search_trends_tonsillitis double precision,
+    search_trends_toothache double precision,
+    search_trends_tremor double precision,
+    search_trends_trichoptilosis double precision,
+    search_trends_tumor double precision,
+    search_trends_type_2_diabetes double precision,
+    search_trends_unconsciousness double precision,
+    search_trends_underweight double precision,
+    search_trends_upper_respiratory_tract_infection double precision,
+    search_trends_urethritis double precision,
+    search_trends_urinary_incontinence double precision,
+    search_trends_urinary_tract_infection double precision,
+    search_trends_urinary_urgency double precision,
+    search_trends_uterine_contraction double precision,
+    search_trends_vaginal_bleeding double precision,
+    search_trends_vaginal_discharge double precision,
+    search_trends_vaginitis double precision,
+    search_trends_varicose_veins double precision,
+    search_trends_vasculitis double precision,
+    search_trends_ventricular_fibrillation double precision,
+    search_trends_ventricular_tachycardia double precision,
+    search_trends_vertigo double precision,
+    search_trends_viral_pneumonia double precision,
+    search_trends_visual_acuity double precision,
+    search_trends_vomiting double precision,
+    search_trends_wart double precision,
+    search_trends_water_retention double precision,
+    search_trends_weakness double precision,
+    search_trends_weight_gain double precision,
+    search_trends_wheeze double precision,
+    search_trends_xeroderma double precision,
+    search_trends_xerostomia double precision,
+    search_trends_yawn double precision
+);
+
+
+ALTER TABLE google_health.search_trends_d OWNER TO dev_epigraph;
+
+--
+-- Name: search_trends_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.search_trends_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.search_trends_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: vaccination_access; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccination_access (
+    facility_place_id text,
+    facility_provider_id text,
+    facility_name text,
+    facility_latitude double precision,
+    facility_longitude double precision,
+    facility_country_region text,
+    facility_country_region_code text,
+    facility_sub_region_1 text,
+    facility_sub_region_1_code text,
+    facility_sub_region_2 text,
+    facility_sub_region_2_code bigint,
+    facility_region_place_id text,
+    mode_of_transportation text,
+    travel_time_threshold_minutes bigint,
+    facility_catchment_boundary text
+);
+
+
+ALTER TABLE google_health.vaccination_access OWNER TO dev_epigraph;
+
+--
+-- Name: vaccination_access_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccination_access_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.vaccination_access_meta OWNER TO dev_epigraph;
+
+--
+-- Name: vaccination_search_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccination_search_d (
+    date text,
+    country_region text,
+    country_region_code text,
+    sub_region_1 text,
+    sub_region_1_code text,
+    sub_region_2 text,
+    sub_region_2_code double precision,
+    sub_region_3 text,
+    sub_region_3_code text,
+    place_id text,
+    sni_covid19_vaccination double precision,
+    sni_vaccination_intent double precision,
+    sni_safety_side_effects double precision
+);
+
+
+ALTER TABLE google_health.vaccination_search_d OWNER TO dev_epigraph;
+
+--
+-- Name: vaccination_search_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccination_search_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE google_health.vaccination_search_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: vaccinations_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccinations_d (
+    date text,
+    location_key text,
+    new_persons_vaccinated double precision,
+    cumulative_persons_vaccinated double precision,
+    new_persons_fully_vaccinated double precision,
+    cumulative_persons_fully_vaccinated double precision,
+    new_vaccine_doses_dev_administered double precision,
+    cumulative_vaccine_doses_dev_administered double precision,
+    new_persons_vaccinated_pfizer double precision,
+    cumulative_persons_vaccinated_pfizer double precision,
+    new_persons_fully_vaccinated_pfizer double precision,
+    cumulative_persons_fully_vaccinated_pfizer double precision,
+    new_vaccine_doses_dev_administered_pfizer double precision,
+    cumulative_vaccine_doses_dev_administered_pfizer double precision,
+    new_persons_vaccinated_moderna double precision,
+    cumulative_persons_vaccinated_moderna double precision,
+    new_persons_fully_vaccinated_moderna double precision,
+    cumulative_persons_fully_vaccinated_moderna double precision,
+    new_vaccine_doses_dev_administered_moderna double precision,
+    cumulative_vaccine_doses_dev_administered_moderna double precision,
+    new_persons_vaccinated_janssen double precision,
+    cumulative_persons_vaccinated_janssen double precision,
+    new_persons_fully_vaccinated_janssen double precision,
+    cumulative_persons_fully_vaccinated_janssen double precision,
+    new_vaccine_doses_dev_administered_janssen double precision,
+    cumulative_vaccine_doses_dev_administered_janssen double precision,
+    new_persons_vaccinated_sinovac double precision,
+    total_persons_vaccinated_sinovac double precision,
+    new_persons_fully_vaccinated_sinovac double precision,
+    total_persons_fully_vaccinated_sinovac double precision,
+    new_vaccine_doses_dev_administered_sinovac double precision,
+    total_vaccine_doses_dev_administered_sinovac double precision
+);
+
+
+ALTER TABLE google_health.vaccinations_d OWNER TO dev_epigraph;
+
+--
+-- Name: vaccinations_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.vaccinations_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE google_health.vaccinations_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: weather_d; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.weather_d (
+    date text,
+    location_key text,
+    average_temperature_celsius double precision,
+    minimum_temperature_celsius double precision,
+    maximum_temperature_celsius double precision,
+    rainfall_mm double precision,
+    snowfall_mm double precision,
+    dew_point double precision,
+    relative_humidity double precision
+);
+
+
+ALTER TABLE google_health.weather_d OWNER TO dev_epigraph;
+
+--
+-- Name: weather_d_meta; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.weather_d_meta (
+    index bigint,
+    content text,
+    source text,
+    column_name text,
+    type text,
+    description text,
+    example text
+);
+
+
+ALTER TABLE google_health.weather_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: worldbank; Type: TABLE; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE TABLE google_health.worldbank (
+    id_ bigint NOT NULL,
+    location_key text,
+    "ag.agr.trac.no" double precision,
+    "ag.con.fert.pt.zs" double precision,
+    "ag.con.fert.zs" double precision,
+    "ag.lnd.agri.k2" double precision,
+    "ag.lnd.agri.zs" double precision,
+    "ag.lnd.arbl.ha" double precision,
+    "ag.lnd.arbl.ha.pc" double precision,
+    "ag.lnd.arbl.zs" double precision,
+    "ag.lnd.crel.ha" double precision,
+    "ag.lnd.crop.zs" double precision,
+    "ag.lnd.el5m.ru.k2" double precision,
+    "ag.lnd.el5m.ru.zs" double precision,
+    "ag.lnd.el5m.ur.k2" double precision,
+    "ag.lnd.el5m.ur.zs" double precision,
+    "ag.lnd.el5m.zs" double precision,
+    "ag.lnd.frst.k2" double precision,
+    "ag.lnd.frst.zs" double precision,
+    "ag.lnd.irig.ag.zs" double precision,
+    "ag.lnd.prcp.mm" double precision,
+    "ag.lnd.totl.k2" double precision,
+    "ag.lnd.totl.ru.k2" double precision,
+    "ag.lnd.totl.ur.k2" double precision,
+    "ag.lnd.trac.zs" double precision,
+    "ag.prd.crel.mt" double precision,
+    "ag.prd.crop.xd" double precision,
+    "ag.prd.food.xd" double precision,
+    "ag.prd.lvsk.xd" double precision,
+    "ag.srf.totl.k2" double precision,
+    "ag.yld.crel.kg" double precision,
+    "bg.gsr.nfsv.gd.zs" double precision,
+    "bm.gsr.cmcp.zs" double precision,
+    "bm.gsr.fcty.cd" double precision,
+    "bm.gsr.gnfs.cd" double precision,
+    "bm.gsr.insf.zs" double precision,
+    "bm.gsr.mrch.cd" double precision,
+    "bm.gsr.nfsv.cd" double precision,
+    "bm.gsr.royl.cd" double precision,
+    "bm.gsr.totl.cd" double precision,
+    "bm.gsr.tran.zs" double precision,
+    "bm.gsr.trvl.zs" double precision,
+    "bm.klt.dinv.cd.wd" double precision,
+    "bm.klt.dinv.wd.gd.zs" double precision,
+    "bm.trf.prvt.cd" double precision,
+    "bm.trf.pwkr.cd.dt" double precision,
+    "bn.cab.xoka.cd" double precision,
+    "bn.cab.xoka.gd.zs" double precision,
+    "bn.fin.totl.cd" double precision,
+    "bn.gsr.fcty.cd" double precision,
+    "bn.gsr.gnfs.cd" double precision,
+    "bn.gsr.mrch.cd" double precision,
+    "bn.kac.eoms.cd" double precision,
+    "bn.klt.dinv.cd" double precision,
+    "bn.klt.ptxl.cd" double precision,
+    "bn.res.incl.cd" double precision,
+    "bn.trf.curr.cd" double precision,
+    "bn.trf.kogt.cd" double precision,
+    "bx.grt.exta.cd.wd" double precision,
+    "bx.grt.tech.cd.wd" double precision,
+    "bx.gsr.ccis.cd" double precision,
+    "bx.gsr.ccis.zs" double precision,
+    "bx.gsr.cmcp.zs" double precision,
+    "bx.gsr.fcty.cd" double precision,
+    "bx.gsr.gnfs.cd" double precision,
+    "bx.gsr.insf.zs" double precision,
+    "bx.gsr.mrch.cd" double precision,
+    "bx.gsr.nfsv.cd" double precision,
+    "bx.gsr.royl.cd" double precision,
+    "bx.gsr.totl.cd" double precision,
+    "bx.gsr.tran.zs" double precision,
+    "bx.gsr.trvl.zs" double precision,
+    "bx.klt.dinv.cd.wd" double precision,
+    "bx.klt.dinv.wd.gd.zs" double precision,
+    "bx.pef.totl.cd.wd" double precision,
+    "bx.trf.curr.cd" double precision,
+    "bx.trf.pwkr.cd" double precision,
+    "bx.trf.pwkr.cd.dt" double precision,
+    "bx.trf.pwkr.dt.gd.zs" double precision,
+    "cm.mkt.indx.zg" double precision,
+    "cm.mkt.lcap.cd" double precision,
+    "cm.mkt.lcap.gd.zs" double precision,
+    "cm.mkt.ldom.no" double precision,
+    "cm.mkt.trad.cd" double precision,
+    "cm.mkt.trad.gd.zs" double precision,
+    "cm.mkt.trnr" double precision,
+    "dc.dac.ausl.cd" double precision,
+    "dc.dac.autl.cd" double precision,
+    "dc.dac.bell.cd" double precision,
+    "dc.dac.canl.cd" double precision,
+    "dc.dac.cecl.cd" double precision,
+    "dc.dac.chel.cd" double precision,
+    "dc.dac.czel.cd" double precision,
+    "dc.dac.deul.cd" double precision,
+    "dc.dac.dnkl.cd" double precision,
+    "dc.dac.espl.cd" double precision,
+    "dc.dac.finl.cd" double precision,
+    "dc.dac.fral.cd" double precision,
+    "dc.dac.gbrl.cd" double precision,
+    "dc.dac.grcl.cd" double precision,
+    "dc.dac.hunl.cd" double precision,
+    "dc.dac.irll.cd" double precision,
+    "dc.dac.isll.cd" double precision,
+    "dc.dac.ital.cd" double precision,
+    "dc.dac.jpnl.cd" double precision,
+    "dc.dac.korl.cd" double precision,
+    "dc.dac.luxl.cd" double precision,
+    "dc.dac.nldl.cd" double precision,
+    "dc.dac.norl.cd" double precision,
+    "dc.dac.nzll.cd" double precision,
+    "dc.dac.poll.cd" double precision,
+    "dc.dac.prtl.cd" double precision,
+    "dc.dac.svkl.cd" double precision,
+    "dc.dac.svnl.cd" double precision,
+    "dc.dac.swel.cd" double precision,
+    "dc.dac.totl.cd" double precision,
+    "dc.dac.usal.cd" double precision,
+    "dc.oda.tldc.cd" double precision,
+    "dc.oda.tldc.gn.zs" double precision,
+    "dc.oda.totl.cd" double precision,
+    "dc.oda.totl.gn.zs" double precision,
+    "dc.oda.totl.kd" double precision,
+    "dt.dod.dect.cd" double precision,
+    "dt.dod.dect.gn.zs" double precision,
+    "dt.dod.dimf.cd" double precision,
+    "dt.dod.dlxf.cd" double precision,
+    "dt.dod.dpng.cd" double precision,
+    "dt.dod.dppg.cd" double precision,
+    "dt.dod.dstc.cd" double precision,
+    "dt.dod.dstc.ir.zs" double precision,
+    "dt.dod.dstc.xp.zs" double precision,
+    "dt.dod.dstc.zs" double precision,
+    "dt.dod.mibr.cd" double precision,
+    "dt.dod.mida.cd" double precision,
+    "dt.dod.mwbg.cd" double precision,
+    "dt.dod.pvlx.cd" double precision,
+    "dt.dod.pvlx.ex.zs" double precision,
+    "dt.dod.pvlx.gn.zs" double precision,
+    "dt.nfl.blat.cd" double precision,
+    "dt.nfl.bond.cd" double precision,
+    "dt.nfl.dpng.cd" double precision,
+    "dt.nfl.faog.cd" double precision,
+    "dt.nfl.iaea.cd" double precision,
+    "dt.nfl.ifad.cd" double precision,
+    "dt.nfl.ilog.cd" double precision,
+    "dt.nfl.imfc.cd" double precision,
+    "dt.nfl.imfn.cd" double precision,
+    "dt.nfl.mibr.cd" double precision,
+    "dt.nfl.mida.cd" double precision,
+    "dt.nfl.mlat.cd" double precision,
+    "dt.nfl.moth.cd" double precision,
+    "dt.nfl.nifc.cd" double precision,
+    "dt.nfl.offt.cd" double precision,
+    "dt.nfl.pbnd.cd" double precision,
+    "dt.nfl.pcbk.cd" double precision,
+    "dt.nfl.pcbo.cd" double precision,
+    "dt.nfl.pngb.cd" double precision,
+    "dt.nfl.pngc.cd" double precision,
+    "dt.nfl.prop.cd" double precision,
+    "dt.nfl.prvt.cd" double precision,
+    "dt.nfl.rdbc.cd" double precision,
+    "dt.nfl.rdbn.cd" double precision,
+    "dt.nfl.unai.cd" double precision,
+    "dt.nfl.uncf.cd" double precision,
+    "dt.nfl.uncr.cd" double precision,
+    "dt.nfl.undp.cd" double precision,
+    "dt.nfl.unec.cd" double precision,
+    "dt.nfl.unep.cd" double precision,
+    "dt.nfl.unfp.cd" double precision,
+    "dt.nfl.unpb.cd" double precision,
+    "dt.nfl.unrw.cd" double precision,
+    "dt.nfl.unta.cd" double precision,
+    "dt.nfl.unwt.cd" double precision,
+    "dt.nfl.wfpg.cd" double precision,
+    "dt.nfl.whol.cd" double precision,
+    "dt.oda.alld.cd" double precision,
+    "dt.oda.alld.kd" double precision,
+    "dt.oda.oatl.cd" double precision,
+    "dt.oda.oatl.kd" double precision,
+    "dt.oda.odat.cd" double precision,
+    "dt.oda.odat.gi.zs" double precision,
+    "dt.oda.odat.gn.zs" double precision,
+    "dt.oda.odat.kd" double precision,
+    "dt.oda.odat.mp.zs" double precision,
+    "dt.oda.odat.pc.zs" double precision,
+    "dt.oda.odat.xp.zs" double precision,
+    "dt.tds.dect.cd" double precision,
+    "dt.tds.dect.ex.zs" double precision,
+    "dt.tds.dect.gn.zs" double precision,
+    "dt.tds.dimf.cd" double precision,
+    "dt.tds.dppf.xp.zs" double precision,
+    "dt.tds.dppg.cd" double precision,
+    "dt.tds.dppg.gn.zs" double precision,
+    "dt.tds.dppg.xp.zs" double precision,
+    "dt.tds.mlat.cd" double precision,
+    "dt.tds.mlat.pg.zs" double precision,
+    "eg.cft.accs.zs" double precision,
+    "eg.egy.prim.pp.kd" double precision,
+    "eg.elc.accs.ru.zs" double precision,
+    "eg.elc.accs.ur.zs" double precision,
+    "eg.elc.accs.zs" double precision,
+    "eg.elc.coal.zs" double precision,
+    "eg.elc.fosl.zs" double precision,
+    "eg.elc.hyro.zs" double precision,
+    "eg.elc.loss.zs" double precision,
+    "eg.elc.ngas.zs" double precision,
+    "eg.elc.nucl.zs" double precision,
+    "eg.elc.petr.zs" double precision,
+    "eg.elc.rnew.zs" double precision,
+    "eg.elc.rnwx.kh" double precision,
+    "eg.elc.rnwx.zs" double precision,
+    "eg.fec.rnew.zs" double precision,
+    "eg.gdp.puse.ko.pp" double precision,
+    "eg.gdp.puse.ko.pp.kd" double precision,
+    "eg.imp.cons.zs" double precision,
+    "eg.use.comm.cl.zs" double precision,
+    "eg.use.comm.fo.zs" double precision,
+    "eg.use.comm.gd.pp.kd" double precision,
+    "eg.use.crnw.zs" double precision,
+    "eg.use.elec.kh.pc" double precision,
+    "eg.use.pcap.kg.oe" double precision,
+    "en.atm.co2e.eg.zs" double precision,
+    "en.atm.co2e.gf.kt" double precision,
+    "en.atm.co2e.gf.zs" double precision,
+    "en.atm.co2e.kd.gd" double precision,
+    "en.atm.co2e.kt" double precision,
+    "en.atm.co2e.lf.kt" double precision,
+    "en.atm.co2e.lf.zs" double precision,
+    "en.atm.co2e.pc" double precision,
+    "en.atm.co2e.pp.gd" double precision,
+    "en.atm.co2e.pp.gd.kd" double precision,
+    "en.atm.co2e.sf.kt" double precision,
+    "en.atm.co2e.sf.zs" double precision,
+    "en.atm.ghgo.kt.ce" double precision,
+    "en.atm.ghgo.zg" double precision,
+    "en.atm.ghgt.kt.ce" double precision,
+    "en.atm.ghgt.zg" double precision,
+    "en.atm.hfcg.kt.ce" double precision,
+    "en.atm.meth.ag.kt.ce" double precision,
+    "en.atm.meth.ag.zs" double precision,
+    "en.atm.meth.eg.kt.ce" double precision,
+    "en.atm.meth.eg.zs" double precision,
+    "en.atm.meth.kt.ce" double precision,
+    "en.atm.meth.zg" double precision,
+    "en.atm.noxe.ag.kt.ce" double precision,
+    "en.atm.noxe.ag.zs" double precision,
+    "en.atm.noxe.eg.kt.ce" double precision,
+    "en.atm.noxe.eg.zs" double precision,
+    "en.atm.noxe.kt.ce" double precision,
+    "en.atm.noxe.zg" double precision,
+    "en.atm.pfcg.kt.ce" double precision,
+    "en.atm.pm25.mc.m3" double precision,
+    "en.atm.pm25.mc.t1.zs" double precision,
+    "en.atm.pm25.mc.t2.zs" double precision,
+    "en.atm.pm25.mc.t3.zs" double precision,
+    "en.atm.pm25.mc.zs" double precision,
+    "en.atm.sf6g.kt.ce" double precision,
+    "en.bir.thrd.no" double precision,
+    "en.clc.drsk.xq" double precision,
+    "en.clc.ghgr.mt.ce" double precision,
+    "en.clc.mdat.zs" double precision,
+    "en.co2.bldg.zs" double precision,
+    "en.co2.etot.zs" double precision,
+    "en.co2.manf.zs" double precision,
+    "en.co2.othx.zs" double precision,
+    "en.co2.tran.zs" double precision,
+    "en.fsh.thrd.no" double precision,
+    "en.hpt.thrd.no" double precision,
+    "en.mam.thrd.no" double precision,
+    "en.pop.dnst" double precision,
+    "en.pop.el5m.ru.zs" double precision,
+    "en.pop.el5m.ur.zs" double precision,
+    "en.pop.el5m.zs" double precision,
+    "en.pop.slum.ur.zs" double precision,
+    "en.urb.lcty" double precision,
+    "en.urb.lcty.ur.zs" double precision,
+    "en.urb.mcty" double precision,
+    "en.urb.mcty.tl.zs" double precision,
+    "ep.pmp.desl.cd" double precision,
+    "ep.pmp.sgas.cd" double precision,
+    "er.fsh.aqua.mt" double precision,
+    "er.fsh.capt.mt" double precision,
+    "er.fsh.prod.mt" double precision,
+    "er.gdp.fwtl.m3.kd" double precision,
+    "er.h2o.fwag.zs" double precision,
+    "er.h2o.fwdm.zs" double precision,
+    "er.h2o.fwin.zs" double precision,
+    "er.h2o.fwst.zs" double precision,
+    "er.h2o.fwtl.k3" double precision,
+    "er.h2o.fwtl.zs" double precision,
+    "er.h2o.intr.k3" double precision,
+    "er.h2o.intr.pc" double precision,
+    "er.lnd.ptld.zs" double precision,
+    "er.mrn.ptmr.zs" double precision,
+    "er.ptd.totl.zs" double precision,
+    "fb.ast.nper.zs" double precision,
+    "fb.atm.totl.p5" double precision,
+    "fb.bnk.capa.zs" double precision,
+    "fb.cbk.brch.p5" double precision,
+    "fb.cbk.brwr.p3" double precision,
+    "fb.cbk.dptr.p3" double precision,
+    "fd.ast.prvt.gd.zs" double precision,
+    "fd.res.liqu.as.zs" double precision,
+    "fi.res.totl.cd" double precision,
+    "fi.res.totl.dt.zs" double precision,
+    "fi.res.totl.mo" double precision,
+    "fi.res.xgld.cd" double precision,
+    "fm.ast.cgov.zg.m3" double precision,
+    "fm.ast.domo.zg.m3" double precision,
+    "fm.ast.doms.cn" double precision,
+    "fm.ast.nfrg.cn" double precision,
+    "fm.ast.prvt.zg.m3" double precision,
+    "fm.lbl.bmny.cn" double precision,
+    "fm.lbl.bmny.gd.zs" double precision,
+    "fm.lbl.bmny.ir.zs" double precision,
+    "fm.lbl.bmny.zg" double precision,
+    "fp.cpi.totl" double precision,
+    "fp.cpi.totl.zg" double precision,
+    "fp.wpi.totl" double precision,
+    "fr.inr.dpst" double precision,
+    "fr.inr.lend" double precision,
+    "fr.inr.lndp" double precision,
+    "fr.inr.rinr" double precision,
+    "fr.inr.risk" double precision,
+    "fs.ast.cgov.gd.zs" double precision,
+    "fs.ast.domo.gd.zs" double precision,
+    "fs.ast.doms.gd.zs" double precision,
+    "fs.ast.prvt.gd.zs" double precision,
+    "fx.own.totl.40.zs" double precision,
+    "fx.own.totl.60.zs" double precision,
+    "fx.own.totl.fe.zs" double precision,
+    "fx.own.totl.ma.zs" double precision,
+    "fx.own.totl.ol.zs" double precision,
+    "fx.own.totl.pl.zs" double precision,
+    "fx.own.totl.so.zs" double precision,
+    "fx.own.totl.yg.zs" double precision,
+    "fx.own.totl.zs" double precision,
+    "gb.xpd.rsdv.gd.zs" double precision,
+    "gc.ast.totl.cn" double precision,
+    "gc.ast.totl.gd.zs" double precision,
+    "gc.dod.totl.cn" double precision,
+    "gc.dod.totl.gd.zs" double precision,
+    "gc.lbl.totl.cn" double precision,
+    "gc.lbl.totl.gd.zs" double precision,
+    "gc.nfn.totl.cn" double precision,
+    "gc.nfn.totl.gd.zs" double precision,
+    "gc.nld.totl.cn" double precision,
+    "gc.nld.totl.gd.zs" double precision,
+    "gc.rev.gotr.cn" double precision,
+    "gc.rev.gotr.zs" double precision,
+    "gc.rev.socl.cn" double precision,
+    "gc.rev.socl.zs" double precision,
+    "gc.rev.xgrt.cn" double precision,
+    "gc.rev.xgrt.gd.zs" double precision,
+    "gc.tax.expt.cn" double precision,
+    "gc.tax.expt.zs" double precision,
+    "gc.tax.gsrv.cn" double precision,
+    "gc.tax.gsrv.rv.zs" double precision,
+    "gc.tax.gsrv.va.zs" double precision,
+    "gc.tax.impt.cn" double precision,
+    "gc.tax.impt.zs" double precision,
+    "gc.tax.intt.cn" double precision,
+    "gc.tax.intt.rv.zs" double precision,
+    "gc.tax.othr.cn" double precision,
+    "gc.tax.othr.rv.zs" double precision,
+    "gc.tax.totl.cn" double precision,
+    "gc.tax.totl.gd.zs" double precision,
+    "gc.tax.ypkg.cn" double precision,
+    "gc.tax.ypkg.rv.zs" double precision,
+    "gc.tax.ypkg.zs" double precision,
+    "gc.xpn.comp.cn" double precision,
+    "gc.xpn.comp.zs" double precision,
+    "gc.xpn.gsrv.cn" double precision,
+    "gc.xpn.gsrv.zs" double precision,
+    "gc.xpn.intp.cn" double precision,
+    "gc.xpn.intp.rv.zs" double precision,
+    "gc.xpn.intp.zs" double precision,
+    "gc.xpn.othr.cn" double precision,
+    "gc.xpn.othr.zs" double precision,
+    "gc.xpn.totl.cn" double precision,
+    "gc.xpn.totl.gd.zs" double precision,
+    "gc.xpn.trft.cn" double precision,
+    "gc.xpn.trft.zs" double precision,
+    "gf.xpd.budg.zs" double precision,
+    "hd.hci.ovrl" double precision,
+    "hd.hci.ovrl.fe" double precision,
+    "hd.hci.ovrl.lb" double precision,
+    "hd.hci.ovrl.lb.fe" double precision,
+    "hd.hci.ovrl.lb.ma" double precision,
+    "hd.hci.ovrl.ma" double precision,
+    "hd.hci.ovrl.ub" double precision,
+    "hd.hci.ovrl.ub.fe" double precision,
+    "hd.hci.ovrl.ub.ma" double precision,
+    "ic.bus.dfrn.xq" double precision,
+    "ic.bus.disc.xq" double precision,
+    "ic.bus.ease.xq" double precision,
+    "ic.bus.ndns.zs" double precision,
+    "ic.bus.nreg" double precision,
+    "ic.crd.info.xq" double precision,
+    "ic.crd.prvt.zs" double precision,
+    "ic.crd.publ.zs" double precision,
+    "ic.cus.durs.ex" double precision,
+    "ic.elc.durs" double precision,
+    "ic.elc.outg" double precision,
+    "ic.elc.outg.zs" double precision,
+    "ic.elc.time" double precision,
+    "ic.exp.csbc.cd" double precision,
+    "ic.exp.csdc.cd" double precision,
+    "ic.exp.tmbc" double precision,
+    "ic.exp.tmdc" double precision,
+    "ic.frm.bkwc.zs" double precision,
+    "ic.frm.bnks.zs" double precision,
+    "ic.frm.brib.zs" double precision,
+    "ic.frm.cmpu.zs" double precision,
+    "ic.frm.corr.zs" double precision,
+    "ic.frm.crim.zs" double precision,
+    "ic.frm.durs" double precision,
+    "ic.frm.femm.zs" double precision,
+    "ic.frm.femo.zs" double precision,
+    "ic.frm.freg.zs" double precision,
+    "ic.frm.infm.zs" double precision,
+    "ic.frm.metg.zs" double precision,
+    "ic.frm.outg.zs" double precision,
+    "ic.frm.rsdv.zs" double precision,
+    "ic.frm.thev.zs" double precision,
+    "ic.frm.trng.zs" double precision,
+    "ic.gov.durs.zs" double precision,
+    "ic.imp.csbc.cd" double precision,
+    "ic.imp.csdc.cd" double precision,
+    "ic.imp.tmbc" double precision,
+    "ic.imp.tmdc" double precision,
+    "ic.isv.durs" double precision,
+    "ic.lgl.cred.xq" double precision,
+    "ic.lgl.durs" double precision,
+    "ic.prp.durs" double precision,
+    "ic.prp.proc" double precision,
+    "ic.reg.cost.pc.fe.zs" double precision,
+    "ic.reg.cost.pc.ma.zs" double precision,
+    "ic.reg.cost.pc.zs" double precision,
+    "ic.reg.durs" double precision,
+    "ic.reg.durs.fe" double precision,
+    "ic.reg.durs.ma" double precision,
+    "ic.reg.proc" double precision,
+    "ic.reg.proc.fe" double precision,
+    "ic.reg.proc.ma" double precision,
+    "ic.tax.durs" double precision,
+    "ic.tax.gift.zs" double precision,
+    "ic.tax.labr.cp.zs" double precision,
+    "ic.tax.metg" double precision,
+    "ic.tax.othr.cp.zs" double precision,
+    "ic.tax.paym" double precision,
+    "ic.tax.prft.cp.zs" double precision,
+    "ic.tax.totl.cp.zs" double precision,
+    "ic.wrh.durs" double precision,
+    "ic.wrh.proc" double precision,
+    "ie.ppi.engy.cd" double precision,
+    "ie.ppi.icti.cd" double precision,
+    "ie.ppi.tran.cd" double precision,
+    "ie.ppi.watr.cd" double precision,
+    "ie.ppn.engy.cd" double precision,
+    "ie.ppn.icti.cd" double precision,
+    "ie.ppn.tran.cd" double precision,
+    "ie.ppn.watr.cd" double precision,
+    "ip.ids.nrct" double precision,
+    "ip.ids.rsct" double precision,
+    "ip.jrn.artc.sc" double precision,
+    "ip.pat.nres" double precision,
+    "ip.pat.resd" double precision,
+    "ip.tmk.nrct" double precision,
+    "ip.tmk.nres" double precision,
+    "ip.tmk.resd" double precision,
+    "ip.tmk.rsct" double precision,
+    "ip.tmk.totl" double precision,
+    "iq.cpa.breg.xq" double precision,
+    "iq.cpa.debt.xq" double precision,
+    "iq.cpa.econ.xq" double precision,
+    "iq.cpa.envr.xq" double precision,
+    "iq.cpa.finq.xq" double precision,
+    "iq.cpa.fins.xq" double precision,
+    "iq.cpa.fisp.xq" double precision,
+    "iq.cpa.gndr.xq" double precision,
+    "iq.cpa.hres.xq" double precision,
+    "iq.cpa.irai.xq" double precision,
+    "iq.cpa.macr.xq" double precision,
+    "iq.cpa.padm.xq" double precision,
+    "iq.cpa.pres.xq" double precision,
+    "iq.cpa.prop.xq" double precision,
+    "iq.cpa.prot.xq" double precision,
+    "iq.cpa.pubs.xq" double precision,
+    "iq.cpa.revn.xq" double precision,
+    "iq.cpa.soci.xq" double precision,
+    "iq.cpa.strc.xq" double precision,
+    "iq.cpa.trad.xq" double precision,
+    "iq.cpa.tran.xq" double precision,
+    "iq.sci.mthd" double precision,
+    "iq.sci.ovrl" double precision,
+    "iq.sci.prdc" double precision,
+    "iq.sci.srce" double precision,
+    "iq.wef.cust.xq" double precision,
+    "iq.wef.port.xq" double precision,
+    "is.air.dprt" double precision,
+    "is.air.good.mt.k1" double precision,
+    "is.air.psgr" double precision,
+    "is.rrs.good.mt.k6" double precision,
+    "is.rrs.pasg.km" double precision,
+    "is.rrs.totl.km" double precision,
+    "is.shp.gcnw.xq" double precision,
+    "is.shp.good.tu" double precision,
+    "it.cel.sets" double precision,
+    "it.cel.sets.p2" double precision,
+    "it.mlt.main" double precision,
+    "it.mlt.main.p2" double precision,
+    "it.net.bbnd" double precision,
+    "it.net.bbnd.p2" double precision,
+    "it.net.secr" double precision,
+    "it.net.secr.p6" double precision,
+    "it.net.user.zs" double precision,
+    "lp.exp.durs.md" double precision,
+    "lp.imp.durs.md" double precision,
+    "lp.lpi.cust.xq" double precision,
+    "lp.lpi.infr.xq" double precision,
+    "lp.lpi.itrn.xq" double precision,
+    "lp.lpi.logs.xq" double precision,
+    "lp.lpi.ovrl.xq" double precision,
+    "lp.lpi.time.xq" double precision,
+    "lp.lpi.trac.xq" double precision,
+    "ms.mil.mprt.kd" double precision,
+    "ms.mil.totl.p1" double precision,
+    "ms.mil.totl.tf.zs" double precision,
+    "ms.mil.xpnd.cd" double precision,
+    "ms.mil.xpnd.cn" double precision,
+    "ms.mil.xpnd.gd.zs" double precision,
+    "ms.mil.xpnd.zs" double precision,
+    "ms.mil.xprt.kd" double precision,
+    "ne.con.govt.cd" double precision,
+    "ne.con.govt.cn" double precision,
+    "ne.con.govt.kd" double precision,
+    "ne.con.govt.kd.zg" double precision,
+    "ne.con.govt.kn" double precision,
+    "ne.con.govt.zs" double precision,
+    "ne.con.prvt.cd" double precision,
+    "ne.con.prvt.cn" double precision,
+    "ne.con.prvt.kd" double precision,
+    "ne.con.prvt.kd.zg" double precision,
+    "ne.con.prvt.kn" double precision,
+    "ne.con.prvt.pc.kd" double precision,
+    "ne.con.prvt.pc.kd.zg" double precision,
+    "ne.con.prvt.pp.cd" double precision,
+    "ne.con.prvt.pp.kd" double precision,
+    "ne.con.prvt.zs" double precision,
+    "ne.con.totl.cd" double precision,
+    "ne.con.totl.cn" double precision,
+    "ne.con.totl.kd" double precision,
+    "ne.con.totl.kd.zg" double precision,
+    "ne.con.totl.kn" double precision,
+    "ne.con.totl.zs" double precision,
+    "ne.dab.defl.zs" double precision,
+    "ne.dab.totl.cd" double precision,
+    "ne.dab.totl.cn" double precision,
+    "ne.dab.totl.kd" double precision,
+    "ne.dab.totl.kn" double precision,
+    "ne.dab.totl.zs" double precision,
+    "ne.exp.gnfs.cd" double precision,
+    "ne.exp.gnfs.cn" double precision,
+    "ne.exp.gnfs.kd" double precision,
+    "ne.exp.gnfs.kd.zg" double precision,
+    "ne.exp.gnfs.kn" double precision,
+    "ne.exp.gnfs.zs" double precision,
+    "ne.gdi.fprv.cn" double precision,
+    "ne.gdi.fprv.zs" double precision,
+    "ne.gdi.ftot.cd" double precision,
+    "ne.gdi.ftot.cn" double precision,
+    "ne.gdi.ftot.kd" double precision,
+    "ne.gdi.ftot.kd.zg" double precision,
+    "ne.gdi.ftot.kn" double precision,
+    "ne.gdi.ftot.zs" double precision,
+    "ne.gdi.stkb.cd" double precision,
+    "ne.gdi.stkb.cn" double precision,
+    "ne.gdi.stkb.kn" double precision,
+    "ne.gdi.totl.cd" double precision,
+    "ne.gdi.totl.cn" double precision,
+    "ne.gdi.totl.kd" double precision,
+    "ne.gdi.totl.kd.zg" double precision,
+    "ne.gdi.totl.kn" double precision,
+    "ne.gdi.totl.zs" double precision,
+    "ne.imp.gnfs.cd" double precision,
+    "ne.imp.gnfs.cn" double precision,
+    "ne.imp.gnfs.kd" double precision,
+    "ne.imp.gnfs.kd.zg" double precision,
+    "ne.imp.gnfs.kn" double precision,
+    "ne.imp.gnfs.zs" double precision,
+    "ne.rsb.gnfs.cd" double precision,
+    "ne.rsb.gnfs.cn" double precision,
+    "ne.rsb.gnfs.kn" double precision,
+    "ne.rsb.gnfs.zs" double precision,
+    "ne.trd.gnfs.zs" double precision,
+    "nv.agr.empl.kd" double precision,
+    "nv.agr.totl.cd" double precision,
+    "nv.agr.totl.cn" double precision,
+    "nv.agr.totl.kd" double precision,
+    "nv.agr.totl.kd.zg" double precision,
+    "nv.agr.totl.kn" double precision,
+    "nv.agr.totl.zs" double precision,
+    "nv.fsm.totl.cn" double precision,
+    "nv.fsm.totl.kn" double precision,
+    "nv.ind.empl.kd" double precision,
+    "nv.ind.manf.cd" double precision,
+    "nv.ind.manf.cn" double precision,
+    "nv.ind.manf.kd" double precision,
+    "nv.ind.manf.kd.zg" double precision,
+    "nv.ind.manf.kn" double precision,
+    "nv.ind.manf.zs" double precision,
+    "nv.ind.totl.cd" double precision,
+    "nv.ind.totl.cn" double precision,
+    "nv.ind.totl.kd" double precision,
+    "nv.ind.totl.kd.zg" double precision,
+    "nv.ind.totl.kn" double precision,
+    "nv.ind.totl.zs" double precision,
+    "nv.mnf.chem.zs.un" double precision,
+    "nv.mnf.fbto.zs.un" double precision,
+    "nv.mnf.mtrn.zs.un" double precision,
+    "nv.mnf.othr.zs.un" double precision,
+    "nv.mnf.tech.zs.un" double precision,
+    "nv.mnf.txtl.zs.un" double precision,
+    "nv.srv.empl.kd" double precision,
+    "nv.srv.totl.cd" double precision,
+    "nv.srv.totl.cn" double precision,
+    "nv.srv.totl.kd" double precision,
+    "nv.srv.totl.kd.zg" double precision,
+    "nv.srv.totl.kn" double precision,
+    "nv.srv.totl.zs" double precision,
+    "ny.adj.aedu.cd" double precision,
+    "ny.adj.aedu.gn.zs" double precision,
+    "ny.adj.dco2.cd" double precision,
+    "ny.adj.dco2.gn.zs" double precision,
+    "ny.adj.dfor.cd" double precision,
+    "ny.adj.dfor.gn.zs" double precision,
+    "ny.adj.dkap.cd" double precision,
+    "ny.adj.dkap.gn.zs" double precision,
+    "ny.adj.dmin.cd" double precision,
+    "ny.adj.dmin.gn.zs" double precision,
+    "ny.adj.dngy.cd" double precision,
+    "ny.adj.dngy.gn.zs" double precision,
+    "ny.adj.dpem.cd" double precision,
+    "ny.adj.dpem.gn.zs" double precision,
+    "ny.adj.dres.gn.zs" double precision,
+    "ny.adj.ictr.gn.zs" double precision,
+    "ny.adj.nnat.cd" double precision,
+    "ny.adj.nnat.gn.zs" double precision,
+    "ny.adj.nnty.cd" double precision,
+    "ny.adj.nnty.kd" double precision,
+    "ny.adj.nnty.kd.zg" double precision,
+    "ny.adj.nnty.pc.cd" double precision,
+    "ny.adj.nnty.pc.kd" double precision,
+    "ny.adj.nnty.pc.kd.zg" double precision,
+    "ny.adj.svng.cd" double precision,
+    "ny.adj.svng.gn.zs" double precision,
+    "ny.adj.svnx.cd" double precision,
+    "ny.adj.svnx.gn.zs" double precision,
+    "ny.exp.capm.kn" double precision,
+    "ny.gdp.coal.rt.zs" double precision,
+    "ny.gdp.defl.kd.zg" double precision,
+    "ny.gdp.defl.kd.zg.ad" double precision,
+    "ny.gdp.defl.zs" double precision,
+    "ny.gdp.defl.zs.ad" double precision,
+    "ny.gdp.disc.cn" double precision,
+    "ny.gdp.disc.kn" double precision,
+    "ny.gdp.fcst.cd" double precision,
+    "ny.gdp.fcst.cn" double precision,
+    "ny.gdp.fcst.kd" double precision,
+    "ny.gdp.fcst.kn" double precision,
+    "ny.gdp.frst.rt.zs" double precision,
+    "ny.gdp.minr.rt.zs" double precision,
+    "ny.gdp.mktp.cd" double precision,
+    "ny.gdp.mktp.cn" double precision,
+    "ny.gdp.mktp.cn.ad" double precision,
+    "ny.gdp.mktp.kd" double precision,
+    "ny.gdp.mktp.kd.zg" double precision,
+    "ny.gdp.mktp.kn" double precision,
+    "ny.gdp.mktp.pp.cd" double precision,
+    "ny.gdp.mktp.pp.kd" double precision,
+    "ny.gdp.ngas.rt.zs" double precision,
+    "ny.gdp.pcap.cd" double precision,
+    "ny.gdp.pcap.cn" double precision,
+    "ny.gdp.pcap.kd" double precision,
+    "ny.gdp.pcap.kd.zg" double precision,
+    "ny.gdp.pcap.kn" double precision,
+    "ny.gdp.pcap.pp.cd" double precision,
+    "ny.gdp.pcap.pp.kd" double precision,
+    "ny.gdp.petr.rt.zs" double precision,
+    "ny.gdp.totl.rt.zs" double precision,
+    "ny.gds.totl.cd" double precision,
+    "ny.gds.totl.cn" double precision,
+    "ny.gds.totl.zs" double precision,
+    "ny.gdy.totl.kn" double precision,
+    "ny.gnp.atls.cd" double precision,
+    "ny.gnp.mktp.cd" double precision,
+    "ny.gnp.mktp.cn" double precision,
+    "ny.gnp.mktp.kd" double precision,
+    "ny.gnp.mktp.kd.zg" double precision,
+    "ny.gnp.mktp.kn" double precision,
+    "ny.gnp.mktp.pp.cd" double precision,
+    "ny.gnp.mktp.pp.kd" double precision,
+    "ny.gnp.pcap.cd" double precision,
+    "ny.gnp.pcap.cn" double precision,
+    "ny.gnp.pcap.kd" double precision,
+    "ny.gnp.pcap.kd.zg" double precision,
+    "ny.gnp.pcap.kn" double precision,
+    "ny.gnp.pcap.pp.cd" double precision,
+    "ny.gnp.pcap.pp.kd" double precision,
+    "ny.gns.ictr.cd" double precision,
+    "ny.gns.ictr.cn" double precision,
+    "ny.gns.ictr.gn.zs" double precision,
+    "ny.gns.ictr.zs" double precision,
+    "ny.gsr.nfcy.cd" double precision,
+    "ny.gsr.nfcy.cn" double precision,
+    "ny.gsr.nfcy.kn" double precision,
+    "ny.tax.nind.cd" double precision,
+    "ny.tax.nind.cn" double precision,
+    "ny.tax.nind.kn" double precision,
+    "ny.trf.nctr.cd" double precision,
+    "ny.trf.nctr.cn" double precision,
+    "ny.trf.nctr.kn" double precision,
+    "ny.ttf.gnfs.kn" double precision,
+    "pa.nus.atls" double precision,
+    "pa.nus.fcrf" double precision,
+    "pa.nus.ppp" double precision,
+    "pa.nus.pppc.rf" double precision,
+    "pa.nus.prvt.pp" double precision,
+    "px.rex.reer" double precision,
+    "se.adt.1524.lt.fe.zs" double precision,
+    "se.adt.1524.lt.fm.zs" double precision,
+    "se.adt.1524.lt.ma.zs" double precision,
+    "se.adt.1524.lt.zs" double precision,
+    "se.adt.litr.fe.zs" double precision,
+    "se.adt.litr.ma.zs" double precision,
+    "se.adt.litr.zs" double precision,
+    "se.com.durs" double precision,
+    "se.enr.prim.fm.zs" double precision,
+    "se.enr.prsc.fm.zs" double precision,
+    "se.enr.seco.fm.zs" double precision,
+    "se.enr.tert.fm.zs" double precision,
+    "se.pre.durs" double precision,
+    "se.pre.enrl.tc.zs" double precision,
+    "se.pre.enrr" double precision,
+    "se.pre.enrr.fe" double precision,
+    "se.pre.enrr.ma" double precision,
+    "se.pre.tcaq.fe.zs" double precision,
+    "se.pre.tcaq.ma.zs" double precision,
+    "se.pre.tcaq.zs" double precision,
+    "se.prm.ages" double precision,
+    "se.prm.cmpt.fe.zs" double precision,
+    "se.prm.cmpt.ma.zs" double precision,
+    "se.prm.cmpt.zs" double precision,
+    "se.prm.cuat.fe.zs" double precision,
+    "se.prm.cuat.ma.zs" double precision,
+    "se.prm.cuat.zs" double precision,
+    "se.prm.durs" double precision,
+    "se.prm.enrl" double precision,
+    "se.prm.enrl.fe.zs" double precision,
+    "se.prm.enrl.tc.zs" double precision,
+    "se.prm.enrr" double precision,
+    "se.prm.enrr.fe" double precision,
+    "se.prm.enrr.ma" double precision,
+    "se.prm.gint.fe.zs" double precision,
+    "se.prm.gint.ma.zs" double precision,
+    "se.prm.gint.zs" double precision,
+    "se.prm.nenr" double precision,
+    "se.prm.nenr.fe" double precision,
+    "se.prm.nenr.ma" double precision,
+    "se.prm.nint.fe.zs" double precision,
+    "se.prm.nint.ma.zs" double precision,
+    "se.prm.nint.zs" double precision,
+    "se.prm.oenr.fe.zs" double precision,
+    "se.prm.oenr.ma.zs" double precision,
+    "se.prm.oenr.zs" double precision,
+    "se.prm.priv.zs" double precision,
+    "se.prm.prs5.fe.zs" double precision,
+    "se.prm.prs5.ma.zs" double precision,
+    "se.prm.prs5.zs" double precision,
+    "se.prm.prsl.fe.zs" double precision,
+    "se.prm.prsl.ma.zs" double precision,
+    "se.prm.prsl.zs" double precision,
+    "se.prm.rept.fe.zs" double precision,
+    "se.prm.rept.ma.zs" double precision,
+    "se.prm.rept.zs" double precision,
+    "se.prm.tcaq.fe.zs" double precision,
+    "se.prm.tcaq.ma.zs" double precision,
+    "se.prm.tcaq.zs" double precision,
+    "se.prm.tchr" double precision,
+    "se.prm.tchr.fe.zs" double precision,
+    "se.prm.tenr" double precision,
+    "se.prm.tenr.fe" double precision,
+    "se.prm.tenr.ma" double precision,
+    "se.prm.uner" double precision,
+    "se.prm.uner.fe" double precision,
+    "se.prm.uner.fe.zs" double precision,
+    "se.prm.uner.ma" double precision,
+    "se.prm.uner.ma.zs" double precision,
+    "se.prm.uner.zs" double precision,
+    "se.sec.ages" double precision,
+    "se.sec.cmpt.lo.fe.zs" double precision,
+    "se.sec.cmpt.lo.ma.zs" double precision,
+    "se.sec.cmpt.lo.zs" double precision,
+    "se.sec.cuat.lo.fe.zs" double precision,
+    "se.sec.cuat.lo.ma.zs" double precision,
+    "se.sec.cuat.lo.zs" double precision,
+    "se.sec.cuat.po.fe.zs" double precision,
+    "se.sec.cuat.po.ma.zs" double precision,
+    "se.sec.cuat.po.zs" double precision,
+    "se.sec.cuat.up.fe.zs" double precision,
+    "se.sec.cuat.up.ma.zs" double precision,
+    "se.sec.cuat.up.zs" double precision,
+    "se.sec.durs" double precision,
+    "se.sec.enrl" double precision,
+    "se.sec.enrl.fe.zs" double precision,
+    "se.sec.enrl.gc" double precision,
+    "se.sec.enrl.gc.fe.zs" double precision,
+    "se.sec.enrl.lo.tc.zs" double precision,
+    "se.sec.enrl.tc.zs" double precision,
+    "se.sec.enrl.up.tc.zs" double precision,
+    "se.sec.enrl.vo" double precision,
+    "se.sec.enrl.vo.fe.zs" double precision,
+    "se.sec.enrr" double precision,
+    "se.sec.enrr.fe" double precision,
+    "se.sec.enrr.ma" double precision,
+    "se.sec.nenr" double precision,
+    "se.sec.nenr.fe" double precision,
+    "se.sec.nenr.ma" double precision,
+    "se.sec.priv.zs" double precision,
+    "se.sec.prog.fe.zs" double precision,
+    "se.sec.prog.ma.zs" double precision,
+    "se.sec.prog.zs" double precision,
+    "se.sec.tcaq.fe.zs" double precision,
+    "se.sec.tcaq.lo.fe.zs" double precision,
+    "se.sec.tcaq.lo.ma.zs" double precision,
+    "se.sec.tcaq.lo.zs" double precision,
+    "se.sec.tcaq.ma.zs" double precision,
+    "se.sec.tcaq.up.fe.zs" double precision,
+    "se.sec.tcaq.up.ma.zs" double precision,
+    "se.sec.tcaq.up.zs" double precision,
+    "se.sec.tcaq.zs" double precision,
+    "se.sec.tchr" double precision,
+    "se.sec.tchr.fe" double precision,
+    "se.sec.tchr.fe.zs" double precision,
+    "se.sec.uner.lo.fe.zs" double precision,
+    "se.sec.uner.lo.ma.zs" double precision,
+    "se.sec.uner.lo.zs" double precision,
+    "se.ter.cuat.ba.fe.zs" double precision,
+    "se.ter.cuat.ba.ma.zs" double precision,
+    "se.ter.cuat.ba.zs" double precision,
+    "se.ter.cuat.do.fe.zs" double precision,
+    "se.ter.cuat.do.ma.zs" double precision,
+    "se.ter.cuat.do.zs" double precision,
+    "se.ter.cuat.ms.fe.zs" double precision,
+    "se.ter.cuat.ms.ma.zs" double precision,
+    "se.ter.cuat.ms.zs" double precision,
+    "se.ter.cuat.st.fe.zs" double precision,
+    "se.ter.cuat.st.ma.zs" double precision,
+    "se.ter.cuat.st.zs" double precision,
+    "se.ter.enrl.tc.zs" double precision,
+    "se.ter.enrr" double precision,
+    "se.ter.enrr.fe" double precision,
+    "se.ter.enrr.ma" double precision,
+    "se.ter.tchr.fe.zs" double precision,
+    "se.xpd.cprm.zs" double precision,
+    "se.xpd.csec.zs" double precision,
+    "se.xpd.cter.zs" double precision,
+    "se.xpd.ctot.zs" double precision,
+    "se.xpd.prim.pc.zs" double precision,
+    "se.xpd.prim.zs" double precision,
+    "se.xpd.seco.pc.zs" double precision,
+    "se.xpd.seco.zs" double precision,
+    "se.xpd.tert.pc.zs" double precision,
+    "se.xpd.tert.zs" double precision,
+    "se.xpd.totl.gb.zs" double precision,
+    "se.xpd.totl.gd.zs" double precision,
+    "sg.dmk.alld.fn.zs" double precision,
+    "sg.dmk.srcr.fn.zs" double precision,
+    "sg.gen.parl.zs" double precision,
+    "sg.law.indx" double precision,
+    "sg.tim.uwrk.fe" double precision,
+    "sg.tim.uwrk.ma" double precision,
+    "sg.vaw.1549.zs" double precision,
+    "sg.vaw.argu.zs" double precision,
+    "sg.vaw.burn.zs" double precision,
+    "sg.vaw.goes.zs" double precision,
+    "sg.vaw.negl.zs" double precision,
+    "sg.vaw.reas.zs" double precision,
+    "sg.vaw.refu.zs" double precision,
+    "sh.alc.pcap.fe.li" double precision,
+    "sh.alc.pcap.li" double precision,
+    "sh.alc.pcap.ma.li" double precision,
+    "sh.anm.allw.zs" double precision,
+    "sh.anm.chld.zs" double precision,
+    "sh.anm.nprg.zs" double precision,
+    "sh.con.1524.fe.zs" double precision,
+    "sh.con.1524.ma.zs" double precision,
+    "sh.dth.0514" double precision,
+    "sh.dth.comm.zs" double precision,
+    "sh.dth.imrt" double precision,
+    "sh.dth.injr.zs" double precision,
+    "sh.dth.mort" double precision,
+    "sh.dth.ncom.zs" double precision,
+    "sh.dth.nmrt" double precision,
+    "sh.dyn.0514" double precision,
+    "sh.dyn.aids.fe.zs" double precision,
+    "sh.dyn.aids.zs" double precision,
+    "sh.dyn.mort" double precision,
+    "sh.dyn.mort.fe" double precision,
+    "sh.dyn.mort.ma" double precision,
+    "sh.dyn.ncom.fe.zs" double precision,
+    "sh.dyn.ncom.ma.zs" double precision,
+    "sh.dyn.ncom.zs" double precision,
+    "sh.dyn.nmrt" double precision,
+    "sh.fpl.satm.zs" double precision,
+    "sh.h2o.basw.ru.zs" double precision,
+    "sh.h2o.basw.ur.zs" double precision,
+    "sh.h2o.basw.zs" double precision,
+    "sh.h2o.smdw.ru.zs" double precision,
+    "sh.h2o.smdw.ur.zs" double precision,
+    "sh.h2o.smdw.zs" double precision,
+    "sh.hiv.0014" double precision,
+    "sh.hiv.1524.fe.zs" double precision,
+    "sh.hiv.1524.ma.zs" double precision,
+    "sh.hiv.artc.zs" double precision,
+    "sh.hiv.incd" double precision,
+    "sh.hiv.incd.14" double precision,
+    "sh.hiv.incd.tl" double precision,
+    "sh.hiv.incd.zs" double precision,
+    "sh.hiv.pmtc.zs" double precision,
+    "sh.imm.hepb" double precision,
+    "sh.imm.idpt" double precision,
+    "sh.imm.meas" double precision,
+    "sh.med.beds.zs" double precision,
+    "sh.med.cmhw.p3" double precision,
+    "sh.med.numw.p3" double precision,
+    "sh.med.phys.zs" double precision,
+    "sh.med.saop.p5" double precision,
+    "sh.mlr.incd.p3" double precision,
+    "sh.mlr.nets.zs" double precision,
+    "sh.mlr.tret.zs" double precision,
+    "sh.mmr.dths" double precision,
+    "sh.mmr.risk" double precision,
+    "sh.mmr.risk.zs" double precision,
+    "sh.prg.anem" double precision,
+    "sh.prv.smok" double precision,
+    "sh.prv.smok.fe" double precision,
+    "sh.prv.smok.ma" double precision,
+    "sh.sgr.crsk.zs" double precision,
+    "sh.sgr.irsk.zs" double precision,
+    "sh.sgr.proc.p5" double precision,
+    "sh.sta.airp.fe.p5" double precision,
+    "sh.sta.airp.ma.p5" double precision,
+    "sh.sta.airp.p5" double precision,
+    "sh.sta.anvc.zs" double precision,
+    "sh.sta.aric.zs" double precision,
+    "sh.sta.bass.ru.zs" double precision,
+    "sh.sta.bass.ur.zs" double precision,
+    "sh.sta.bass.zs" double precision,
+    "sh.sta.bfed.zs" double precision,
+    "sh.sta.brtc.zs" double precision,
+    "sh.sta.brtw.zs" double precision,
+    "sh.sta.diab.zs" double precision,
+    "sh.sta.fgms.zs" double precision,
+    "sh.sta.hygn.ru.zs" double precision,
+    "sh.sta.hygn.ur.zs" double precision,
+    "sh.sta.hygn.zs" double precision,
+    "sh.sta.maln.fe.zs" double precision,
+    "sh.sta.maln.ma.zs" double precision,
+    "sh.sta.maln.zs" double precision,
+    "sh.sta.mmrt" double precision,
+    "sh.sta.mmrt.ne" double precision,
+    "sh.sta.odfc.ru.zs" double precision,
+    "sh.sta.odfc.ur.zs" double precision,
+    "sh.sta.odfc.zs" double precision,
+    "sh.sta.orcf.zs" double precision,
+    "sh.sta.orth" double precision,
+    "sh.sta.owgh.fe.zs" double precision,
+    "sh.sta.owgh.ma.zs" double precision,
+    "sh.sta.owgh.zs" double precision,
+    "sh.sta.pois.p5" double precision,
+    "sh.sta.pois.p5.fe" double precision,
+    "sh.sta.pois.p5.ma" double precision,
+    "sh.sta.smss.ru.zs" double precision,
+    "sh.sta.smss.ur.zs" double precision,
+    "sh.sta.smss.zs" double precision,
+    "sh.sta.stnt.fe.zs" double precision,
+    "sh.sta.stnt.ma.zs" double precision,
+    "sh.sta.stnt.zs" double precision,
+    "sh.sta.suic.fe.p5" double precision,
+    "sh.sta.suic.ma.p5" double precision,
+    "sh.sta.suic.p5" double precision,
+    "sh.sta.traf.p5" double precision,
+    "sh.sta.wash.p5" double precision,
+    "sh.sta.wast.fe.zs" double precision,
+    "sh.sta.wast.ma.zs" double precision,
+    "sh.sta.wast.zs" double precision,
+    "sh.svr.wast.fe.zs" double precision,
+    "sh.svr.wast.ma.zs" double precision,
+    "sh.svr.wast.zs" double precision,
+    "sh.tbs.cure.zs" double precision,
+    "sh.tbs.dtec.zs" double precision,
+    "sh.tbs.incd" double precision,
+    "sh.uhc.nop1.cg" double precision,
+    "sh.uhc.nop1.to" double precision,
+    "sh.uhc.nop1.zg" double precision,
+    "sh.uhc.nop1.zs" double precision,
+    "sh.uhc.nop2.cg" double precision,
+    "sh.uhc.nop2.to" double precision,
+    "sh.uhc.nop2.zg" double precision,
+    "sh.uhc.nop2.zs" double precision,
+    "sh.uhc.oopc.10.to" double precision,
+    "sh.uhc.oopc.10.zs" double precision,
+    "sh.uhc.oopc.25.to" double precision,
+    "sh.uhc.oopc.25.zs" double precision,
+    "sh.uhc.srvs.cv.xd" double precision,
+    "sh.vac.ttns.zs" double precision,
+    "sh.xpd.chex.gd.zs" double precision,
+    "sh.xpd.chex.pc.cd" double precision,
+    "sh.xpd.chex.pp.cd" double precision,
+    "sh.xpd.ehex.ch.zs" double precision,
+    "sh.xpd.ehex.pc.cd" double precision,
+    "sh.xpd.ehex.pp.cd" double precision,
+    "sh.xpd.ghed.ch.zs" double precision,
+    "sh.xpd.ghed.gd.zs" double precision,
+    "sh.xpd.ghed.ge.zs" double precision,
+    "sh.xpd.ghed.pc.cd" double precision,
+    "sh.xpd.ghed.pp.cd" double precision,
+    "sh.xpd.oopc.ch.zs" double precision,
+    "sh.xpd.oopc.pc.cd" double precision,
+    "sh.xpd.oopc.pp.cd" double precision,
+    "sh.xpd.pvtd.ch.zs" double precision,
+    "sh.xpd.pvtd.pc.cd" double precision,
+    "sh.xpd.pvtd.pp.cd" double precision,
+    "si.dst.02nd.20" double precision,
+    "si.dst.03rd.20" double precision,
+    "si.dst.04th.20" double precision,
+    "si.dst.05th.20" double precision,
+    "si.dst.10th.10" double precision,
+    "si.dst.50md" double precision,
+    "si.dst.frst.10" double precision,
+    "si.dst.frst.20" double precision,
+    "si.pov.dday" double precision,
+    "si.pov.gaps" double precision,
+    "si.pov.gini" double precision,
+    "si.pov.lmic" double precision,
+    "si.pov.lmic.gp" double precision,
+    "si.pov.mdim" double precision,
+    "si.pov.mdim.17" double precision,
+    "si.pov.mdim.17.xq" double precision,
+    "si.pov.mdim.fe" double precision,
+    "si.pov.mdim.hh" double precision,
+    "si.pov.mdim.it" double precision,
+    "si.pov.mdim.ma" double precision,
+    "si.pov.mdim.xq" double precision,
+    "si.pov.nagp" double precision,
+    "si.pov.nahc" double precision,
+    "si.pov.rugp" double precision,
+    "si.pov.umic" double precision,
+    "si.pov.umic.gp" double precision,
+    "si.pov.urgp" double precision,
+    "si.rmt.cost.ib.zs" double precision,
+    "si.rmt.cost.ob.zs" double precision,
+    "si.spr.pc40" double precision,
+    "si.spr.pc40.zg" double precision,
+    "si.spr.pcap" double precision,
+    "si.spr.pcap.zg" double precision,
+    "sl.agr.0714.fe.zs" double precision,
+    "sl.agr.0714.ma.zs" double precision,
+    "sl.agr.0714.zs" double precision,
+    "sl.agr.empl.fe.zs" double precision,
+    "sl.agr.empl.ma.zs" double precision,
+    "sl.agr.empl.zs" double precision,
+    "sl.emp.1524.sp.fe.ne.zs" double precision,
+    "sl.emp.1524.sp.fe.zs" double precision,
+    "sl.emp.1524.sp.ma.ne.zs" double precision,
+    "sl.emp.1524.sp.ma.zs" double precision,
+    "sl.emp.1524.sp.ne.zs" double precision,
+    "sl.emp.1524.sp.zs" double precision,
+    "sl.emp.mpyr.fe.zs" double precision,
+    "sl.emp.mpyr.ma.zs" double precision,
+    "sl.emp.mpyr.zs" double precision,
+    "sl.emp.self.fe.zs" double precision,
+    "sl.emp.self.ma.zs" double precision,
+    "sl.emp.self.zs" double precision,
+    "sl.emp.smgt.fe.zs" double precision,
+    "sl.emp.totl.sp.fe.ne.zs" double precision,
+    "sl.emp.totl.sp.fe.zs" double precision,
+    "sl.emp.totl.sp.ma.ne.zs" double precision,
+    "sl.emp.totl.sp.ma.zs" double precision,
+    "sl.emp.totl.sp.ne.zs" double precision,
+    "sl.emp.totl.sp.zs" double precision,
+    "sl.emp.vuln.fe.zs" double precision,
+    "sl.emp.vuln.ma.zs" double precision,
+    "sl.emp.vuln.zs" double precision,
+    "sl.emp.work.fe.zs" double precision,
+    "sl.emp.work.ma.zs" double precision,
+    "sl.emp.work.zs" double precision,
+    "sl.fam.0714.fe.zs" double precision,
+    "sl.fam.0714.ma.zs" double precision,
+    "sl.fam.0714.zs" double precision,
+    "sl.fam.work.fe.zs" double precision,
+    "sl.fam.work.ma.zs" double precision,
+    "sl.fam.work.zs" double precision,
+    "sl.gdp.pcap.em.kd" double precision,
+    "sl.ind.empl.fe.zs" double precision,
+    "sl.ind.empl.ma.zs" double precision,
+    "sl.ind.empl.zs" double precision,
+    "sl.isv.ifrm.fe.zs" double precision,
+    "sl.isv.ifrm.ma.zs" double precision,
+    "sl.isv.ifrm.zs" double precision,
+    "sl.mnf.0714.fe.zs" double precision,
+    "sl.mnf.0714.ma.zs" double precision,
+    "sl.mnf.0714.zs" double precision,
+    "sl.slf.0714.fe.zs" double precision,
+    "sl.slf.0714.ma.zs" double precision,
+    "sl.slf.0714.zs" double precision,
+    "sl.srv.0714.fe.zs" double precision,
+    "sl.srv.0714.ma.zs" double precision,
+    "sl.srv.0714.zs" double precision,
+    "sl.srv.empl.fe.zs" double precision,
+    "sl.srv.empl.ma.zs" double precision,
+    "sl.srv.empl.zs" double precision,
+    "sl.tlf.0714.fe.zs" double precision,
+    "sl.tlf.0714.ma.zs" double precision,
+    "sl.tlf.0714.sw.fe.tm" double precision,
+    "sl.tlf.0714.sw.fe.zs" double precision,
+    "sl.tlf.0714.sw.ma.tm" double precision,
+    "sl.tlf.0714.sw.ma.zs" double precision,
+    "sl.tlf.0714.sw.tm" double precision,
+    "sl.tlf.0714.sw.zs" double precision,
+    "sl.tlf.0714.wk.fe.tm" double precision,
+    "sl.tlf.0714.wk.fe.zs" double precision,
+    "sl.tlf.0714.wk.ma.tm" double precision,
+    "sl.tlf.0714.wk.ma.zs" double precision,
+    "sl.tlf.0714.wk.tm" double precision,
+    "sl.tlf.0714.wk.zs" double precision,
+    "sl.tlf.0714.zs" double precision,
+    "sl.tlf.acti.1524.fe.ne.zs" double precision,
+    "sl.tlf.acti.1524.fe.zs" double precision,
+    "sl.tlf.acti.1524.ma.ne.zs" double precision,
+    "sl.tlf.acti.1524.ma.zs" double precision,
+    "sl.tlf.acti.1524.ne.zs" double precision,
+    "sl.tlf.acti.1524.zs" double precision,
+    "sl.tlf.acti.fe.zs" double precision,
+    "sl.tlf.acti.ma.zs" double precision,
+    "sl.tlf.acti.zs" double precision,
+    "sl.tlf.advn.fe.zs" double precision,
+    "sl.tlf.advn.ma.zs" double precision,
+    "sl.tlf.advn.zs" double precision,
+    "sl.tlf.basc.fe.zs" double precision,
+    "sl.tlf.basc.ma.zs" double precision,
+    "sl.tlf.basc.zs" double precision,
+    "sl.tlf.cact.fe.ne.zs" double precision,
+    "sl.tlf.cact.fe.zs" double precision,
+    "sl.tlf.cact.fm.ne.zs" double precision,
+    "sl.tlf.cact.fm.zs" double precision,
+    "sl.tlf.cact.ma.ne.zs" double precision,
+    "sl.tlf.cact.ma.zs" double precision,
+    "sl.tlf.cact.ne.zs" double precision,
+    "sl.tlf.cact.zs" double precision,
+    "sl.tlf.intm.fe.zs" double precision,
+    "sl.tlf.intm.ma.zs" double precision,
+    "sl.tlf.intm.zs" double precision,
+    "sl.tlf.part.fe.zs" double precision,
+    "sl.tlf.part.ma.zs" double precision,
+    "sl.tlf.part.zs" double precision,
+    "sl.tlf.totl.fe.zs" double precision,
+    "sl.tlf.totl.in" double precision,
+    "sl.uem.1524.fe.ne.zs" double precision,
+    "sl.uem.1524.fe.zs" double precision,
+    "sl.uem.1524.ma.ne.zs" double precision,
+    "sl.uem.1524.ma.zs" double precision,
+    "sl.uem.1524.ne.zs" double precision,
+    "sl.uem.1524.zs" double precision,
+    "sl.uem.advn.fe.zs" double precision,
+    "sl.uem.advn.ma.zs" double precision,
+    "sl.uem.advn.zs" double precision,
+    "sl.uem.basc.fe.zs" double precision,
+    "sl.uem.basc.ma.zs" double precision,
+    "sl.uem.basc.zs" double precision,
+    "sl.uem.intm.fe.zs" double precision,
+    "sl.uem.intm.ma.zs" double precision,
+    "sl.uem.intm.zs" double precision,
+    "sl.uem.neet.fe.zs" double precision,
+    "sl.uem.neet.ma.zs" double precision,
+    "sl.uem.neet.zs" double precision,
+    "sl.uem.totl.fe.ne.zs" double precision,
+    "sl.uem.totl.fe.zs" double precision,
+    "sl.uem.totl.ma.ne.zs" double precision,
+    "sl.uem.totl.ma.zs" double precision,
+    "sl.uem.totl.ne.zs" double precision,
+    "sl.uem.totl.zs" double precision,
+    "sl.wag.0714.fe.zs" double precision,
+    "sl.wag.0714.ma.zs" double precision,
+    "sl.wag.0714.zs" double precision,
+    "sm.pop.netm" double precision,
+    "sm.pop.refg" double precision,
+    "sm.pop.refg.or" double precision,
+    "sm.pop.totl" double precision,
+    "sm.pop.totl.zs" double precision,
+    "sn.itk.defc.zs" double precision,
+    "sn.itk.msfi.zs" double precision,
+    "sn.itk.salt.zs" double precision,
+    "sn.itk.svfi.zs" double precision,
+    "sn.itk.vita.zs" double precision,
+    "sp.ado.tfrt" double precision,
+    "sp.dyn.amrt.fe" double precision,
+    "sp.dyn.amrt.ma" double precision,
+    "sp.dyn.cbrt.in" double precision,
+    "sp.dyn.cdrt.in" double precision,
+    "sp.dyn.conm.zs" double precision,
+    "sp.dyn.conu.zs" double precision,
+    "sp.dyn.imrt.fe.in" double precision,
+    "sp.dyn.imrt.in" double precision,
+    "sp.dyn.imrt.ma.in" double precision,
+    "sp.dyn.le00.fe.in" double precision,
+    "sp.dyn.le00.in" double precision,
+    "sp.dyn.le00.ma.in" double precision,
+    "sp.dyn.tfrt.in" double precision,
+    "sp.dyn.to65.fe.zs" double precision,
+    "sp.dyn.to65.ma.zs" double precision,
+    "sp.dyn.wfrt" double precision,
+    "sp.hou.fema.zs" double precision,
+    "sp.m15.2024.fe.zs" double precision,
+    "sp.m18.2024.fe.zs" double precision,
+    "sp.mtr.1519.zs" double precision,
+    "sp.pop.0004.fe.5y" double precision,
+    "sp.pop.0004.ma.5y" double precision,
+    "sp.pop.0014.fe.in" double precision,
+    "sp.pop.0014.fe.zs" double precision,
+    "sp.pop.0014.ma.in" double precision,
+    "sp.pop.0014.ma.zs" double precision,
+    "sp.pop.0014.to" double precision,
+    "sp.pop.0014.to.zs" double precision,
+    "sp.pop.0509.fe.5y" double precision,
+    "sp.pop.0509.ma.5y" double precision,
+    "sp.pop.1014.fe.5y" double precision,
+    "sp.pop.1014.ma.5y" double precision,
+    "sp.pop.1519.fe.5y" double precision,
+    "sp.pop.1519.ma.5y" double precision,
+    "sp.pop.1564.fe.in" double precision,
+    "sp.pop.1564.fe.zs" double precision,
+    "sp.pop.1564.ma.in" double precision,
+    "sp.pop.1564.ma.zs" double precision,
+    "sp.pop.1564.to" double precision,
+    "sp.pop.1564.to.zs" double precision,
+    "sp.pop.2024.fe.5y" double precision,
+    "sp.pop.2024.ma.5y" double precision,
+    "sp.pop.2529.fe.5y" double precision,
+    "sp.pop.2529.ma.5y" double precision,
+    "sp.pop.3034.fe.5y" double precision,
+    "sp.pop.3034.ma.5y" double precision,
+    "sp.pop.3539.fe.5y" double precision,
+    "sp.pop.3539.ma.5y" double precision,
+    "sp.pop.4044.fe.5y" double precision,
+    "sp.pop.4044.ma.5y" double precision,
+    "sp.pop.4549.fe.5y" double precision,
+    "sp.pop.4549.ma.5y" double precision,
+    "sp.pop.5054.fe.5y" double precision,
+    "sp.pop.5054.ma.5y" double precision,
+    "sp.pop.5559.fe.5y" double precision,
+    "sp.pop.5559.ma.5y" double precision,
+    "sp.pop.6064.fe.5y" double precision,
+    "sp.pop.6064.ma.5y" double precision,
+    "sp.pop.6569.fe.5y" double precision,
+    "sp.pop.6569.ma.5y" double precision,
+    "sp.pop.65up.fe.in" double precision,
+    "sp.pop.65up.fe.zs" double precision,
+    "sp.pop.65up.ma.in" double precision,
+    "sp.pop.65up.ma.zs" double precision,
+    "sp.pop.65up.to" double precision,
+    "sp.pop.65up.to.zs" double precision,
+    "sp.pop.7074.fe.5y" double precision,
+    "sp.pop.7074.ma.5y" double precision,
+    "sp.pop.7579.fe.5y" double precision,
+    "sp.pop.7579.ma.5y" double precision,
+    "sp.pop.80up.fe.5y" double precision,
+    "sp.pop.80up.ma.5y" double precision,
+    "sp.pop.brth.mf" double precision,
+    "sp.pop.dpnd" double precision,
+    "sp.pop.dpnd.ol" double precision,
+    "sp.pop.dpnd.yg" double precision,
+    "sp.pop.grow" double precision,
+    "sp.pop.scie.rd.p6" double precision,
+    "sp.pop.tech.rd.p6" double precision,
+    "sp.pop.totl" double precision,
+    "sp.pop.totl.fe.in" double precision,
+    "sp.pop.totl.fe.zs" double precision,
+    "sp.pop.totl.ma.in" double precision,
+    "sp.pop.totl.ma.zs" double precision,
+    "sp.reg.brth.fe.zs" double precision,
+    "sp.reg.brth.ma.zs" double precision,
+    "sp.reg.brth.ru.zs" double precision,
+    "sp.reg.brth.ur.zs" double precision,
+    "sp.reg.brth.zs" double precision,
+    "sp.reg.dths.zs" double precision,
+    "sp.rur.totl" double precision,
+    "sp.rur.totl.zg" double precision,
+    "sp.rur.totl.zs" double precision,
+    "sp.urb.grow" double precision,
+    "sp.urb.totl" double precision,
+    "sp.urb.totl.in.zs" double precision,
+    "sp.uwt.tfrt" double precision,
+    "st.int.arvl" double precision,
+    "st.int.dprt" double precision,
+    "st.int.rcpt.cd" double precision,
+    "st.int.rcpt.xp.zs" double precision,
+    "st.int.trnr.cd" double precision,
+    "st.int.trnx.cd" double precision,
+    "st.int.tvlr.cd" double precision,
+    "st.int.tvlx.cd" double precision,
+    "st.int.xpnd.cd" double precision,
+    "st.int.xpnd.mp.zs" double precision,
+    "tg.val.totl.gd.zs" double precision,
+    "tm.qty.mrch.xd.wd" double precision,
+    "tm.tax.manf.bc.zs" double precision,
+    "tm.tax.manf.br.zs" double precision,
+    "tm.tax.manf.ip.zs" double precision,
+    "tm.tax.manf.sm.ar.zs" double precision,
+    "tm.tax.manf.sm.fn.zs" double precision,
+    "tm.tax.manf.sr.zs" double precision,
+    "tm.tax.manf.wm.ar.zs" double precision,
+    "tm.tax.manf.wm.fn.zs" double precision,
+    "tm.tax.mrch.bc.zs" double precision,
+    "tm.tax.mrch.br.zs" double precision,
+    "tm.tax.mrch.ip.zs" double precision,
+    "tm.tax.mrch.sm.ar.zs" double precision,
+    "tm.tax.mrch.sm.fn.zs" double precision,
+    "tm.tax.mrch.sr.zs" double precision,
+    "tm.tax.mrch.wm.ar.zs" double precision,
+    "tm.tax.mrch.wm.fn.zs" double precision,
+    "tm.tax.tcom.bc.zs" double precision,
+    "tm.tax.tcom.br.zs" double precision,
+    "tm.tax.tcom.ip.zs" double precision,
+    "tm.tax.tcom.sm.ar.zs" double precision,
+    "tm.tax.tcom.sm.fn.zs" double precision,
+    "tm.tax.tcom.sr.zs" double precision,
+    "tm.tax.tcom.wm.ar.zs" double precision,
+    "tm.tax.tcom.wm.fn.zs" double precision,
+    "tm.uvi.mrch.xd.wd" double precision,
+    "tm.val.agri.zs.un" double precision,
+    "tm.val.food.zs.un" double precision,
+    "tm.val.fuel.zs.un" double precision,
+    "tm.val.ictg.zs.un" double precision,
+    "tm.val.insf.zs.wt" double precision,
+    "tm.val.manf.zs.un" double precision,
+    "tm.val.mmtl.zs.un" double precision,
+    "tm.val.mrch.al.zs" double precision,
+    "tm.val.mrch.cd.wt" double precision,
+    "tm.val.mrch.hi.zs" double precision,
+    "tm.val.mrch.or.zs" double precision,
+    "tm.val.mrch.r1.zs" double precision,
+    "tm.val.mrch.r2.zs" double precision,
+    "tm.val.mrch.r3.zs" double precision,
+    "tm.val.mrch.r4.zs" double precision,
+    "tm.val.mrch.r5.zs" double precision,
+    "tm.val.mrch.r6.zs" double precision,
+    "tm.val.mrch.rs.zs" double precision,
+    "tm.val.mrch.wl.cd" double precision,
+    "tm.val.mrch.wr.zs" double precision,
+    "tm.val.mrch.xd.wd" double precision,
+    "tm.val.othr.zs.wt" double precision,
+    "tm.val.serv.cd.wt" double precision,
+    "tm.val.tran.zs.wt" double precision,
+    "tm.val.trvl.zs.wt" double precision,
+    "tt.pri.mrch.xd.wd" double precision,
+    "tx.mnf.tech.zs.un" double precision,
+    "tx.qty.mrch.xd.wd" double precision,
+    "tx.uvi.mrch.xd.wd" double precision,
+    "tx.val.agri.zs.un" double precision,
+    "tx.val.food.zs.un" double precision,
+    "tx.val.fuel.zs.un" double precision,
+    "tx.val.ictg.zs.un" double precision,
+    "tx.val.insf.zs.wt" double precision,
+    "tx.val.manf.zs.un" double precision,
+    "tx.val.mmtl.zs.un" double precision,
+    "tx.val.mrch.al.zs" double precision,
+    "tx.val.mrch.cd.wt" double precision,
+    "tx.val.mrch.hi.zs" double precision,
+    "tx.val.mrch.or.zs" double precision,
+    "tx.val.mrch.r1.zs" double precision,
+    "tx.val.mrch.r2.zs" double precision,
+    "tx.val.mrch.r3.zs" double precision,
+    "tx.val.mrch.r4.zs" double precision,
+    "tx.val.mrch.r5.zs" double precision,
+    "tx.val.mrch.r6.zs" double precision,
+    "tx.val.mrch.rs.zs" double precision,
+    "tx.val.mrch.wl.cd" double precision,
+    "tx.val.mrch.wr.zs" double precision,
+    "tx.val.mrch.xd.wd" double precision,
+    "tx.val.othr.zs.wt" double precision,
+    "tx.val.serv.cd.wt" double precision,
+    "tx.val.tech.cd" double precision,
+    "tx.val.tech.mf.zs" double precision,
+    "tx.val.tran.zs.wt" double precision,
+    "tx.val.trvl.zs.wt" double precision,
+    "vc.btl.deth" double precision,
+    "vc.idp.nwcv" double precision,
+    "vc.idp.nwds" double precision,
+    "vc.idp.tocv" double precision,
+    "vc.ihr.psrc.fe.p5" double precision,
+    "vc.ihr.psrc.ma.p5" double precision,
+    "vc.ihr.psrc.p5" double precision,
+    "vc.pkp.totl.un" double precision
+);
+
+
+ALTER TABLE google_health.worldbank OWNER TO dev_epigraph;
 
 --
 -- Name: ABW_0; Type: TABLE; Schema: public; Owner: dev_epigraph
@@ -5647,6 +16064,25 @@ CREATE TABLE public."GAB_2" (
 
 
 ALTER TABLE public."GAB_2" OWNER TO dev_epigraph;
+
+--
+-- Name: GAMDB_0; Type: TABLE; Schema: public; Owner: dev_admin
+--
+
+CREATE TABLE public."GAMDB_0" (
+    "Indicator" text,
+    "Unit" text,
+    "Subgroup" text,
+    "Area" text,
+    "Area ID" text,
+    "Time Period" bigint,
+    "Source" text,
+    "Data Value" double precision,
+    "Footnotes" text
+);
+
+
+ALTER TABLE public."GAMDB_0" OWNER TO dev_admin;
 
 --
 -- Name: GBR_0; Type: TABLE; Schema: public; Owner: dev_epigraph
@@ -16643,135 +27079,93 @@ CREATE TABLE public."ZWE_2" (
 ALTER TABLE public."ZWE_2" OWNER TO dev_epigraph;
 
 --
--- Name: gadm36; Type: TABLE; Schema: public; Owner: dev_epigraph
+-- Name: colombia_covid_geo; Type: TABLE; Schema: public; Owner: dev_admin
 --
 
-CREATE TABLE public.gadm36 (
-    "GID_0" text,
-    "NAME_0" text,
-    "GID_1" text,
-    "NAME_1" text,
-    "NL_NAME_1" text,
-    "GID_2" text,
-    "NAME_2" text,
-    "VARNAME_2" text,
-    "NL_NAME_2" text,
-    "TYPE_2" text,
-    "ENGTYPE_2" text,
-    "CC_2" text,
-    "HASC_2" text,
-    geometry public.geometry(Polygon,4326)
+CREATE TABLE public.colombia_covid_geo (
+    id_ bigint,
+    id_de_caso bigint,
+    fecha_reporte_web timestamp without time zone,
+    fecha_de_notificaci_n timestamp without time zone,
+    departamento bigint,
+    departamento_nom text,
+    ciudad_municipio bigint,
+    ciudad_municipio_nom text,
+    edad bigint,
+    unidad_medida bigint,
+    sexo text,
+    fuente_tipo_contagio text,
+    ubicacion text,
+    estado text,
+    recuperado text,
+    fecha_inicio_sintomas timestamp without time zone,
+    fecha_diagnostico timestamp without time zone,
+    fecha_recuperado timestamp without time zone,
+    tipo_recuperacion text,
+    per_etn_ bigint,
+    nom_grupo_ text,
+    fecha_muerte timestamp without time zone,
+    pais_viajo_1_cod bigint,
+    pais_viajo_1_nom text,
+    geometry public.geometry(MultiPolygon,4326),
+    json text
 );
 
 
-ALTER TABLE public.gadm36 OWNER TO dev_epigraph;
+ALTER TABLE public.colombia_covid_geo OWNER TO dev_admin;
 
 --
--- Name: iso_alpha3_country_codes; Type: TABLE; Schema: public; Owner: dev_admin
+-- Name: environmental_joined; Type: TABLE; Schema: public; Owner: dev_admin
 --
 
-CREATE TABLE public.iso_alpha3_country_codes (
-    iso_code text,
-    country_name text
+CREATE TABLE public.environmental_joined (
+    cd_gecm bigint,
+    nm_municip text,
+    "N_portos" bigint,
+    "Hidrov" double precision,
+    "SecVeg_06" double precision,
+    "Past_06" double precision,
+    "Crop_06" double precision,
+    "Fire_06" double precision,
+    "Urban_06" double precision,
+    "Min_06" double precision,
+    "Proplc_06" double precision,
+    "Edge_06" double precision,
+    "Rod_06" double precision,
+    "Precp_06" double precision,
+    "Precn_06" double precision,
+    "Tempp_06" double precision,
+    "ReFor_06" double precision,
+    "DeFor_06" double precision,
+    "DeOrg_06" double precision
 );
 
 
-ALTER TABLE public.iso_alpha3_country_codes OWNER TO dev_admin;
+ALTER TABLE public.environmental_joined OWNER TO dev_admin;
 
 --
--- Name: owid_covid; Type: TABLE; Schema: public; Owner: dev_epigraph
+-- Name: epinow_rt; Type: TABLE; Schema: public; Owner: dev_epigraph
 --
 
-CREATE TABLE public.owid_covid (
-    iso_code text,
-    continent text,
-    location text,
-    date timestamp without time zone,
-    total_cases bigint,
-    new_cases bigint,
-    new_cases_smoothed double precision,
-    total_deaths bigint,
-    new_deaths bigint,
-    new_deaths_smoothed double precision,
-    total_cases_per_million double precision,
-    new_cases_per_million double precision,
-    new_cases_smoothed_per_million double precision,
-    total_deaths_per_million double precision,
-    new_deaths_per_million double precision,
-    new_deaths_smoothed_per_million double precision,
-    reproduction_rate double precision,
-    icu_patients bigint,
-    icu_patients_per_million double precision,
-    hosp_patients bigint,
-    hosp_patients_per_million double precision,
-    weekly_icu_admissions bigint,
-    weekly_icu_admissions_per_million double precision,
-    weekly_hosp_admissions bigint,
-    weekly_hosp_admissions_per_million double precision,
-    new_tests bigint,
-    total_tests bigint,
-    total_tests_per_thousand double precision,
-    new_tests_per_thousand double precision,
-    new_tests_smoothed bigint,
-    new_tests_smoothed_per_thousand double precision,
-    positive_rate double precision,
-    tests_per_case double precision,
-    tests_units text,
-    total_vaccinations bigint,
-    people_vaccinated bigint,
-    people_fully_vaccinated bigint,
-    total_boosters bigint,
-    new_vaccinations bigint,
-    new_vaccinations_smoothed bigint,
-    total_vaccinations_per_hundred double precision,
-    people_vaccinated_per_hundred double precision,
-    people_fully_vaccinated_per_hundred double precision,
-    total_boosters_per_hundred double precision,
-    new_vaccinations_smoothed_per_million bigint,
-    new_people_vaccinated_smoothed bigint,
-    new_people_vaccinated_smoothed_per_hundred double precision,
-    stringency_index double precision,
-    population bigint,
-    population_density double precision,
-    median_age double precision,
-    aged_65_older double precision,
-    aged_70_older double precision,
-    gdp_per_capita double precision,
-    extreme_poverty double precision,
-    cardiovasc_death_rate double precision,
-    diabetes_prevalence double precision,
-    female_smokers double precision,
-    male_smokers double precision,
-    handwashing_facilities double precision,
-    hospital_beds_per_thousand double precision,
-    life_expectancy double precision,
-    human_development_index double precision,
-    excess_mortality_cumulative_absolute double precision,
-    excess_mortality_cumulative double precision,
-    excess_mortality double precision,
-    excess_mortality_cumulative_per_million double precision
-);
-
-
-ALTER TABLE public.owid_covid OWNER TO dev_epigraph;
-
---
--- Name: df_val_hosp_cantons; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.df_val_hosp_cantons (
-    index bigint,
-    target double precision,
+CREATE TABLE public.epinow_rt (
+    "row.names" text,
+    region text,
     date text,
-    lower double precision,
+    strat boolean,
+    type text,
     median double precision,
-    upper double precision,
-    train_size bigint,
-    canton text
+    mean double precision,
+    sd double precision,
+    lower_90 double precision,
+    lower_50 double precision,
+    lower_20 double precision,
+    upper_20 double precision,
+    upper_50 double precision,
+    upper_90 double precision
 );
 
 
-ALTER TABLE switzerland.df_val_hosp_cantons OWNER TO dev_epigraph;
+ALTER TABLE public.epinow_rt OWNER TO dev_epigraph;
 
 --
 -- Name: foph_cases; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
@@ -16847,285 +27241,8 @@ CREATE TABLE switzerland.foph_cases (
     "inzsumTotal_Phase6" double precision
 );
 
+
 ALTER TABLE switzerland.foph_cases OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_cases_d ( LIKE switzerland.foph_cases INCLUDING DEFAULTS );
-
-ALTER TABLE switzerland.foph_cases_d OWNER TO dev_epigraph;
-
---
--- Name: foph_cases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE SEQUENCE switzerland.foph_cases_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_cases_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_cases_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_cases_id__seq OWNED BY switzerland.foph_cases.id_;
-
-
---
--- Name: foph_casesvaccpersons; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.foph_casesvaccpersons (
-    id_ bigint NOT NULL,
-    date timestamp without time zone,
-    vaccine text,
-    vaccination_status text,
-    entries bigint,
-    "sumTotal" bigint,
-    pop double precision,
-    inz_entries double precision,
-    "inzsumTotal" double precision,
-    mean7d double precision,
-    inzmean7d double precision,
-    prct double precision,
-    "prctSumTotal" double precision,
-    prct_mean7d double precision,
-    "geoRegion" text,
-    type text,
-    type_variant text,
-    data_completeness text,
-    version text
-);
-
-
-ALTER TABLE switzerland.foph_casesvaccpersons OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_casesvaccpersons_d ( LIKE switzerland.foph_casesvaccpersons INCLUDING DEFAULTS );
-
-ALTER TABLE switzerland.foph_casesvaccpersons_d OWNER TO dev_epigraph;
-
---
--- Name: foph_casesvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE SEQUENCE switzerland.foph_casesvaccpersons_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_casesvaccpersons_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_casesvaccpersons_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_casesvaccpersons_id__seq OWNED BY switzerland.foph_casesvaccpersons.id_;
-
-
---
--- Name: foph_covidcertificates; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.foph_covidcertificates (
-    id_ bigint NOT NULL,
-    date timestamp without time zone,
-    type text,
-    "geoRegion" text,
-    type_variant text,
-    entries bigint,
-    "sumTotal" bigint,
-    version text
-);
-
-
-ALTER TABLE switzerland.foph_covidcertificates OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_covidcertificates_d ( LIKE switzerland.foph_covidcertificates INCLUDING DEFAULTS );
-
-ALTER TABLE switzerland.foph_covidcertificates_d OWNER TO dev_epigraph;
-
---
--- Name: foph_covidcertificates_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE SEQUENCE switzerland.foph_covidcertificates_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_covidcertificates_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_covidcertificates_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_covidcertificates_id__seq OWNED BY switzerland.foph_covidcertificates.id_;
-
-
---
--- Name: foph_death; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.foph_death (
-    id_ bigint NOT NULL,
-    "geoRegion" text,
-    datum text,
-    entries bigint,
-    "sumTotal" bigint,
-    timeframe_7d boolean,
-    offset_last7d bigint,
-    "sumTotal_last7d" bigint,
-    timeframe_14d boolean,
-    offset_last14d bigint,
-    "sumTotal_last14d" bigint,
-    timeframe_28d boolean,
-    offset_last28d bigint,
-    "sumTotal_last28d" bigint,
-    timeframe_phase2 boolean,
-    "offset_Phase2" bigint,
-    "sumTotal_Phase2" bigint,
-    timeframe_phase2b boolean,
-    "offset_Phase2b" bigint,
-    "sumTotal_Phase2b" bigint,
-    timeframe_phase3 boolean,
-    "offset_Phase3" bigint,
-    "sumTotal_Phase3" bigint,
-    timeframe_vacc_info boolean,
-    offset_vacc_info bigint,
-    "sumTotal_vacc_info" bigint,
-    timeframe_phase4 boolean,
-    "offset_Phase4" bigint,
-    "sumTotal_Phase4" bigint,
-    timeframe_phase5 boolean,
-    "offset_Phase5" bigint,
-    "sumTotal_Phase5" bigint,
-    sum7d double precision,
-    sum14d double precision,
-    mean7d double precision,
-    mean14d double precision,
-    timeframe_all boolean,
-    entries_diff_last_age bigint,
-    pop bigint,
-    inz_entries double precision,
-    inzmean7d double precision,
-    inzmean14d double precision,
-    "inzsumTotal" double precision,
-    "inzsumTotal_last7d" double precision,
-    "inzsumTotal_last14d" double precision,
-    "inzsumTotal_last28d" double precision,
-    "inzsumTotal_Phase2" double precision,
-    "inzsumTotal_Phase2b" double precision,
-    "inzsumTotal_Phase3" double precision,
-    "inzsumTotal_Phase4" double precision,
-    "inzsumTotal_Phase5" double precision,
-    inzsum7d double precision,
-    inzsum14d double precision,
-    sumdelta7d double precision,
-    inzdelta7d double precision,
-    type text,
-    type_variant double precision,
-    version text,
-    datum_unit text,
-    entries_letzter_stand bigint,
-    entries_neu_gemeldet bigint,
-    entries_diff_last bigint,
-    date timestamp without time zone,
-    timeframe_phase6 boolean,
-    "offset_Phase6" bigint,
-    "sumTotal_Phase6" bigint,
-    "inzsumTotal_Phase6" double precision
-);
-
-
-ALTER TABLE switzerland.foph_death OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_death_d ( LIKE switzerland.foph_death INCLUDING DEFAULTS );
-
-ALTER TABLE switzerland.foph_death_d OWNER TO dev_epigraph;
-
---
--- Name: foph_death_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE SEQUENCE switzerland.foph_death_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_death_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_death_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_death_id__seq OWNED BY switzerland.foph_death.id_;
-
-
---
--- Name: foph_deathvaccpersons; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.foph_deathvaccpersons (
-    id_ bigint NOT NULL,
-    date timestamp without time zone,
-    vaccine text,
-    vaccination_status text,
-    entries bigint,
-    "sumTotal" bigint,
-    pop double precision,
-    inz_entries double precision,
-    "inzsumTotal" double precision,
-    mean7d double precision,
-    inzmean7d double precision,
-    prct double precision,
-    "prctSumTotal" double precision,
-    prct_mean7d double precision,
-    "geoRegion" text,
-    type text,
-    type_variant text,
-    data_completeness text,
-    version text
-);
-
-
-ALTER TABLE switzerland.foph_deathvaccpersons OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_deathvaccpersons_d ( LIKE switzerland.foph_deathvaccpersons INCLUDING DEFAULTS );
-
-ALTER TABLE switzerland.foph_deathvaccpersons_d OWNER TO dev_epigraph;
-
---
--- Name: foph_deathvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE SEQUENCE switzerland.foph_deathvaccpersons_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_deathvaccpersons_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_deathvaccpersons_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_deathvaccpersons_id__seq OWNED BY switzerland.foph_deathvaccpersons.id_;
-
 
 --
 -- Name: foph_hosp; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
@@ -17204,9 +27321,970 @@ CREATE TABLE switzerland.foph_hosp (
 
 ALTER TABLE switzerland.foph_hosp OWNER TO dev_epigraph;
 
-CREATE TABLE switzerland.foph_hosp_d ( LIKE switzerland.foph_hosp INCLUDING DEFAULTS );
+--
+-- Name: foph_cases_hosp; Type: VIEW; Schema: public; Owner: dev_admin
+--
+
+CREATE VIEW public.foph_cases_hosp AS
+ SELECT cases.date,
+    cases.entries AS n_cases,
+    hosp.entries AS n_hosp
+   FROM switzerland.foph_cases cases,
+    switzerland.foph_hosp hosp
+  WHERE (cases.date = hosp.date)
+  ORDER BY cases.date
+ LIMIT 100001;
+
+
+ALTER TABLE public.foph_cases_hosp OWNER TO dev_admin;
+
+--
+-- Name: foph_hosp_isocode; Type: VIEW; Schema: public; Owner: dev_admin
+--
+
+CREATE VIEW public.foph_hosp_isocode AS
+ SELECT foph_hosp.id_,
+    foph_hosp."geoRegion",
+    foph_hosp.datum,
+    foph_hosp.entries,
+    foph_hosp."sumTotal",
+    foph_hosp.timeframe_7d,
+    foph_hosp.offset_last7d,
+    foph_hosp."sumTotal_last7d",
+    foph_hosp.timeframe_14d,
+    foph_hosp.offset_last14d,
+    foph_hosp."sumTotal_last14d",
+    foph_hosp.timeframe_28d,
+    foph_hosp.offset_last28d,
+    foph_hosp."sumTotal_last28d",
+    foph_hosp.timeframe_phase2,
+    foph_hosp."offset_Phase2",
+    foph_hosp."sumTotal_Phase2",
+    foph_hosp.timeframe_phase2b,
+    foph_hosp."offset_Phase2b",
+    foph_hosp."sumTotal_Phase2b",
+    foph_hosp.timeframe_phase3,
+    foph_hosp."offset_Phase3",
+    foph_hosp."sumTotal_Phase3",
+    foph_hosp.timeframe_vacc_info,
+    foph_hosp.offset_vacc_info,
+    foph_hosp."sumTotal_vacc_info",
+    foph_hosp.timeframe_phase4,
+    foph_hosp."offset_Phase4",
+    foph_hosp."sumTotal_Phase4",
+    foph_hosp.timeframe_phase5,
+    foph_hosp."offset_Phase5",
+    foph_hosp."sumTotal_Phase5",
+    foph_hosp.sum7d,
+    foph_hosp.sum14d,
+    foph_hosp.mean7d,
+    foph_hosp.mean14d,
+    foph_hosp.timeframe_all,
+    foph_hosp.entries_diff_last_age,
+    foph_hosp.pop,
+    foph_hosp.inz_entries,
+    foph_hosp.inzmean7d,
+    foph_hosp.inzmean14d,
+    foph_hosp."inzsumTotal",
+    foph_hosp."inzsumTotal_last7d",
+    foph_hosp."inzsumTotal_last14d",
+    foph_hosp."inzsumTotal_last28d",
+    foph_hosp."inzsumTotal_Phase2",
+    foph_hosp."inzsumTotal_Phase2b",
+    foph_hosp."inzsumTotal_Phase3",
+    foph_hosp."inzsumTotal_Phase4",
+    foph_hosp."inzsumTotal_Phase5",
+    foph_hosp.inzsum7d,
+    foph_hosp.inzsum14d,
+    foph_hosp.sumdelta7d,
+    foph_hosp.inzdelta7d,
+    foph_hosp.type,
+    foph_hosp.type_variant,
+    foph_hosp.version,
+    foph_hosp.datum_unit,
+    foph_hosp.entries_letzter_stand,
+    foph_hosp.entries_neu_gemeldet,
+    foph_hosp.entries_diff_last,
+    foph_hosp.date,
+    foph_hosp.timeframe_phase6,
+    foph_hosp."offset_Phase6",
+    foph_hosp."sumTotal_Phase6",
+    foph_hosp."inzsumTotal_Phase6",
+    concat('CH-', foph_hosp."geoRegion") AS isocode
+   FROM switzerland.foph_hosp
+  WHERE (foph_hosp."geoRegion" <> ALL (ARRAY['CH'::text, 'CHFL'::text]))
+ LIMIT 100001;
+
+
+ALTER TABLE public.foph_hosp_isocode OWNER TO dev_admin;
+
+--
+-- Name: foph_hosp_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_hosp_d (
+    id_ bigint NOT NULL,
+    georegion text,
+    datum text,
+    entries bigint,
+    sumtotal bigint,
+    timeframe_7d boolean,
+    offset_last7d bigint,
+    sumtotal_last7d bigint,
+    timeframe_14d boolean,
+    offset_last14d bigint,
+    sumtotal_last14d bigint,
+    timeframe_28d boolean,
+    offset_last28d bigint,
+    sumtotal_last28d bigint,
+    timeframe_phase2 boolean,
+    offset_phase2 bigint,
+    sumtotal_phase2 bigint,
+    timeframe_phase2b boolean,
+    offset_phase2b bigint,
+    sumtotal_phase2b bigint,
+    timeframe_phase3 boolean,
+    offset_phase3 bigint,
+    sumtotal_phase3 bigint,
+    timeframe_vacc_info boolean,
+    offset_vacc_info bigint,
+    sumtotal_vacc_info bigint,
+    timeframe_phase4 boolean,
+    offset_phase4 bigint,
+    sumtotal_phase4 bigint,
+    timeframe_phase5 boolean,
+    offset_phase5 bigint,
+    sumtotal_phase5 bigint,
+    timeframe_phase6 boolean,
+    offset_phase6 bigint,
+    sumtotal_phase6 bigint,
+    sum7d double precision,
+    sum14d double precision,
+    mean7d double precision,
+    mean14d double precision,
+    timeframe_all boolean,
+    entries_diff_last_age bigint,
+    pop bigint,
+    inz_entries double precision,
+    inzmean7d double precision,
+    inzmean14d double precision,
+    inzsumtotal double precision,
+    inzsumtotal_last7d double precision,
+    inzsumtotal_last14d double precision,
+    inzsumtotal_last28d double precision,
+    inzsumtotal_phase2 double precision,
+    inzsumtotal_phase2b double precision,
+    inzsumtotal_phase3 double precision,
+    inzsumtotal_phase4 double precision,
+    inzsumtotal_phase5 double precision,
+    inzsumtotal_phase6 double precision,
+    inzsum7d double precision,
+    inzsum14d double precision,
+    sumdelta7d double precision,
+    inzdelta7d double precision,
+    type text,
+    type_variant double precision,
+    version text,
+    datum_unit text,
+    entries_letzter_stand bigint,
+    entries_neu_gemeldet bigint,
+    entries_diff_last bigint,
+    date timestamp without time zone
+);
+
 
 ALTER TABLE switzerland.foph_hosp_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_hosp_isocode2; Type: VIEW; Schema: public; Owner: dev_admin
+--
+
+CREATE VIEW public.foph_hosp_isocode2 AS
+ SELECT foph_hosp_d.id_,
+    foph_hosp_d.georegion,
+    foph_hosp_d.datum,
+    foph_hosp_d.entries,
+    foph_hosp_d.sumtotal,
+    foph_hosp_d.timeframe_7d,
+    foph_hosp_d.offset_last7d,
+    foph_hosp_d.sumtotal_last7d,
+    foph_hosp_d.timeframe_14d,
+    foph_hosp_d.offset_last14d,
+    foph_hosp_d.sumtotal_last14d,
+    foph_hosp_d.timeframe_28d,
+    foph_hosp_d.offset_last28d,
+    foph_hosp_d.sumtotal_last28d,
+    foph_hosp_d.timeframe_phase2,
+    foph_hosp_d.offset_phase2,
+    foph_hosp_d.sumtotal_phase2,
+    foph_hosp_d.timeframe_phase2b,
+    foph_hosp_d.offset_phase2b,
+    foph_hosp_d.sumtotal_phase2b,
+    foph_hosp_d.timeframe_phase3,
+    foph_hosp_d.offset_phase3,
+    foph_hosp_d.sumtotal_phase3,
+    foph_hosp_d.timeframe_vacc_info,
+    foph_hosp_d.offset_vacc_info,
+    foph_hosp_d.sumtotal_vacc_info,
+    foph_hosp_d.timeframe_phase4,
+    foph_hosp_d.offset_phase4,
+    foph_hosp_d.sumtotal_phase4,
+    foph_hosp_d.timeframe_phase5,
+    foph_hosp_d.offset_phase5,
+    foph_hosp_d.sumtotal_phase5,
+    foph_hosp_d.timeframe_phase6,
+    foph_hosp_d.offset_phase6,
+    foph_hosp_d.sumtotal_phase6,
+    foph_hosp_d.sum7d,
+    foph_hosp_d.sum14d,
+    foph_hosp_d.mean7d,
+    foph_hosp_d.mean14d,
+    foph_hosp_d.timeframe_all,
+    foph_hosp_d.entries_diff_last_age,
+    foph_hosp_d.pop,
+    foph_hosp_d.inz_entries,
+    foph_hosp_d.inzmean7d,
+    foph_hosp_d.inzmean14d,
+    foph_hosp_d.inzsumtotal,
+    foph_hosp_d.inzsumtotal_last7d,
+    foph_hosp_d.inzsumtotal_last14d,
+    foph_hosp_d.inzsumtotal_last28d,
+    foph_hosp_d.inzsumtotal_phase2,
+    foph_hosp_d.inzsumtotal_phase2b,
+    foph_hosp_d.inzsumtotal_phase3,
+    foph_hosp_d.inzsumtotal_phase4,
+    foph_hosp_d.inzsumtotal_phase5,
+    foph_hosp_d.inzsumtotal_phase6,
+    foph_hosp_d.inzsum7d,
+    foph_hosp_d.inzsum14d,
+    foph_hosp_d.sumdelta7d,
+    foph_hosp_d.inzdelta7d,
+    foph_hosp_d.type,
+    foph_hosp_d.type_variant,
+    foph_hosp_d.version,
+    foph_hosp_d.datum_unit,
+    foph_hosp_d.entries_letzter_stand,
+    foph_hosp_d.entries_neu_gemeldet,
+    foph_hosp_d.entries_diff_last,
+    foph_hosp_d.date,
+    concat('CH-', foph_hosp_d.georegion) AS isocode
+   FROM switzerland.foph_hosp_d
+  WHERE (foph_hosp_d.georegion <> ALL (ARRAY['CH'::text, 'CHFL'::text]))
+  ORDER BY foph_hosp_d.date DESC
+ LIMIT 1001;
+
+
+ALTER TABLE public.foph_hosp_isocode2 OWNER TO dev_admin;
+
+--
+-- Name: gadm36; Type: TABLE; Schema: public; Owner: dev_epigraph
+--
+
+CREATE TABLE public.gadm36 (
+    "GID_0" text,
+    "NAME_0" text,
+    "GID_1" text,
+    "NAME_1" text,
+    "NL_NAME_1" text,
+    "GID_2" text,
+    "NAME_2" text,
+    "VARNAME_2" text,
+    "NL_NAME_2" text,
+    "TYPE_2" text,
+    "ENGTYPE_2" text,
+    "CC_2" text,
+    "HASC_2" text,
+    geometry public.geometry(Polygon,4326)
+);
+
+
+ALTER TABLE public.gadm36 OWNER TO dev_epigraph;
+
+--
+-- Name: owid_covid; Type: TABLE; Schema: public; Owner: dev_epigraph
+--
+
+CREATE TABLE public.owid_covid (
+    iso_code text,
+    continent text,
+    location text,
+    date timestamp without time zone,
+    total_cases bigint,
+    new_cases bigint,
+    new_cases_smoothed double precision,
+    total_deaths bigint,
+    new_deaths bigint,
+    new_deaths_smoothed double precision,
+    total_cases_per_million double precision,
+    new_cases_per_million double precision,
+    new_cases_smoothed_per_million double precision,
+    total_deaths_per_million double precision,
+    new_deaths_per_million double precision,
+    new_deaths_smoothed_per_million double precision,
+    reproduction_rate double precision,
+    icu_patients bigint,
+    icu_patients_per_million double precision,
+    hosp_patients bigint,
+    hosp_patients_per_million double precision,
+    weekly_icu_admissions bigint,
+    weekly_icu_admissions_per_million double precision,
+    weekly_hosp_admissions bigint,
+    weekly_hosp_admissions_per_million double precision,
+    total_tests bigint,
+    new_tests bigint,
+    total_tests_per_thousand double precision,
+    new_tests_per_thousand double precision,
+    new_tests_smoothed bigint,
+    new_tests_smoothed_per_thousand double precision,
+    positive_rate double precision,
+    tests_per_case double precision,
+    tests_units text,
+    total_vaccinations bigint,
+    people_vaccinated bigint,
+    people_fully_vaccinated bigint,
+    total_boosters bigint,
+    new_vaccinations bigint,
+    new_vaccinations_smoothed bigint,
+    total_vaccinations_per_hundred double precision,
+    people_vaccinated_per_hundred double precision,
+    people_fully_vaccinated_per_hundred double precision,
+    total_boosters_per_hundred double precision,
+    new_vaccinations_smoothed_per_million bigint,
+    new_people_vaccinated_smoothed bigint,
+    new_people_vaccinated_smoothed_per_hundred double precision,
+    stringency_index double precision,
+    population_density double precision,
+    median_age double precision,
+    aged_65_older double precision,
+    aged_70_older double precision,
+    gdp_per_capita double precision,
+    extreme_poverty double precision,
+    cardiovasc_death_rate double precision,
+    diabetes_prevalence double precision,
+    female_smokers double precision,
+    male_smokers double precision,
+    handwashing_facilities double precision,
+    hospital_beds_per_thousand double precision,
+    life_expectancy double precision,
+    human_development_index double precision,
+    population bigint,
+    excess_mortality_cumulative_absolute double precision,
+    excess_mortality_cumulative double precision,
+    excess_mortality double precision,
+    excess_mortality_cumulative_per_million double precision
+);
+
+
+ALTER TABLE public.owid_covid OWNER TO dev_epigraph;
+
+--
+-- Name: owid_covid_meta; Type: TABLE; Schema: public; Owner: dev_epigraph
+--
+
+CREATE TABLE public.owid_covid_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE public.owid_covid_meta OWNER TO dev_epigraph;
+
+--
+-- Name: test_positive_covid; Type: TABLE; Schema: public; Owner: dev_epigraph
+--
+
+CREATE TABLE public.test_positive_covid (
+    index bigint,
+    id_de_caso bigint,
+    fecha_reporte_web text,
+    fecha_de_notificaci_n text,
+    departamento bigint,
+    departamento_nom text,
+    ciudad_municipio bigint,
+    ciudad_municipio_nom text,
+    edad double precision,
+    unidad_medida bigint,
+    sexo text,
+    fuente_tipo_contagio text,
+    ubicacion text,
+    estado text,
+    recuperado text,
+    fecha_inicio_sintomas text,
+    fecha_diagnostico text,
+    fecha_recuperado text,
+    tipo_recuperacion text,
+    per_etn_ bigint,
+    nom_grupo_ text,
+    fecha_muerte text,
+    pais_viajo_1_cod double precision,
+    pais_viajo_1_nom double precision
+);
+
+
+ALTER TABLE public.test_positive_covid OWNER TO dev_epigraph;
+
+--
+-- Name: teste_table; Type: TABLE; Schema: public; Owner: dev_epigraph
+--
+
+CREATE TABLE public.teste_table (
+    a double precision,
+    b double precision,
+    c double precision,
+    d double precision,
+    e double precision,
+    f double precision,
+    g double precision,
+    h double precision,
+    i double precision,
+    j double precision,
+    k double precision,
+    l double precision,
+    m double precision,
+    n double precision,
+    o double precision
+);
+
+
+ALTER TABLE public.teste_table OWNER TO dev_epigraph;
+
+--
+-- Name: environmental_2006; Type: TABLE; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+CREATE TABLE trajetorias_project.environmental_2006 (
+    cd_gecm bigint,
+    nm_municip text,
+    "N_portos" bigint,
+    "Hidrov" double precision,
+    "SecVeg_06" double precision,
+    "Past_06" double precision,
+    "Crop_06" double precision,
+    "Fire_06" double precision,
+    "Urban_06" double precision,
+    "Min_06" double precision,
+    "Proplc_06" double precision,
+    "Edge_06" double precision,
+    "Rod_06" double precision,
+    "Precp_06" double precision,
+    "Precn_06" double precision,
+    "Tempp_06" double precision,
+    "ReFor_06" double precision,
+    "DeFor_06" double precision,
+    "DeOrg_06" double precision
+);
+
+
+ALTER TABLE trajetorias_project.environmental_2006 OWNER TO dev_epigraph;
+
+--
+-- Name: environmental_2017; Type: TABLE; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+CREATE TABLE trajetorias_project.environmental_2017 (
+    cd_gecm bigint,
+    nm_municip text,
+    "SecVeg_17" double precision,
+    "Past_17" double precision,
+    "Crop_17" double precision,
+    "Fire_17" double precision,
+    "Urban_17" double precision,
+    "Min_17" double precision,
+    "Proplc_17" double precision,
+    "Edge_17" double precision,
+    "Rod_17" double precision,
+    "Precp_17" double precision,
+    "Precn_17" double precision,
+    "Tempp_17" double precision,
+    "ReFor_17" double precision,
+    "DeFor_17" double precision,
+    "DeOrg_17" double precision,
+    "DgOrg_17" double precision,
+    "DgFor_17" double precision
+);
+
+
+ALTER TABLE trajetorias_project.environmental_2017 OWNER TO dev_epigraph;
+
+--
+-- Name: trajetorias_environment_joined; Type: VIEW; Schema: public; Owner: dev_admin
+--
+
+CREATE VIEW public.trajetorias_environment_joined AS
+ SELECT e06.cd_gecm,
+    e06.nm_municip,
+    e06."N_portos",
+    e06."Hidrov" AS "SecVeg_17",
+    e17."Past_17",
+    e17."Crop_17",
+    e17."Fire_17",
+    e17."Urban_17",
+    e17."Min_17",
+    e17."Proplc_17",
+    e17."Edge_17",
+    e17."Rod_17",
+    e17."Precp_17",
+    e17."Precn_17",
+    e17."Tempp_17",
+    e17."ReFor_17",
+    e17."DeFor_17",
+    e17."DeOrg_17",
+    e17."DgOrg_17",
+    e17."DgFor_17",
+    e06."SecVeg_06",
+    e06."Past_06",
+    e06."Crop_06",
+    e06."Fire_06",
+    e06."Urban_06",
+    e06."Min_06",
+    e06."Proplc_06",
+    e06."Edge_06",
+    e06."Rod_06",
+    e06."Precp_06",
+    e06."Precn_06",
+    e06."Tempp_06",
+    e06."ReFor_06",
+    e06."DeFor_06",
+    e06."DeOrg_06"
+   FROM (trajetorias_project.environmental_2006 e06
+     JOIN trajetorias_project.environmental_2017 e17 ON ((e06.cd_gecm = e17.cd_gecm)))
+ LIMIT 1001;
+
+
+ALTER TABLE public.trajetorias_environment_joined OWNER TO dev_admin;
+
+--
+-- Name: che_epinowcasesinfection_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.che_epinowcasesinfection_d_results (
+    "row.names" text,
+    region text,
+    date date,
+    strat text,
+    type text,
+    median double precision,
+    mean double precision,
+    sd double precision,
+    lower_90 double precision,
+    lower_50 double precision,
+    lower_20 double precision,
+    upper_20 double precision,
+    upper_50 double precision,
+    upper_90 double precision
+);
+
+
+ALTER TABLE switzerland.che_epinowcasesinfection_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: che_epinowcasesreport_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.che_epinowcasesreport_d_results (
+    "row.names" text,
+    region text,
+    date date,
+    strat text,
+    type text,
+    median double precision,
+    mean double precision,
+    sd double precision,
+    lower_90 double precision,
+    lower_50 double precision,
+    lower_20 double precision,
+    upper_20 double precision,
+    upper_50 double precision,
+    upper_90 double precision
+);
+
+
+ALTER TABLE switzerland.che_epinowcasesreport_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: che_epinowgrowthrate_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.che_epinowgrowthrate_d_results (
+    "row.names" text,
+    region text,
+    date date,
+    strat text,
+    type text,
+    median double precision,
+    mean double precision,
+    sd double precision,
+    lower_90 double precision,
+    lower_50 double precision,
+    lower_20 double precision,
+    upper_20 double precision,
+    upper_50 double precision,
+    upper_90 double precision
+);
+
+
+ALTER TABLE switzerland.che_epinowgrowthrate_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: che_epinowrt_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.che_epinowrt_d_results (
+    "row.names" text,
+    region text,
+    date date,
+    strat text,
+    type text,
+    median double precision,
+    mean double precision,
+    sd double precision,
+    lower_90 double precision,
+    lower_50 double precision,
+    lower_20 double precision,
+    upper_20 double precision,
+    upper_50 double precision,
+    upper_90 double precision
+);
+
+
+ALTER TABLE switzerland.che_epinowrt_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: foph_cases_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_cases_d (
+    id_ bigint NOT NULL,
+    georegion text,
+    datum text,
+    entries bigint,
+    sumtotal bigint,
+    timeframe_7d boolean,
+    offset_last7d bigint,
+    sumtotal_last7d bigint,
+    timeframe_14d boolean,
+    offset_last14d bigint,
+    sumtotal_last14d bigint,
+    timeframe_28d boolean,
+    offset_last28d bigint,
+    sumtotal_last28d bigint,
+    timeframe_phase2 boolean,
+    offset_phase2 bigint,
+    sumtotal_phase2 bigint,
+    timeframe_phase2b boolean,
+    offset_phase2b bigint,
+    sumtotal_phase2b bigint,
+    timeframe_phase3 boolean,
+    offset_phase3 bigint,
+    sumtotal_phase3 bigint,
+    timeframe_vacc_info boolean,
+    offset_vacc_info bigint,
+    sumtotal_vacc_info bigint,
+    timeframe_phase4 boolean,
+    offset_phase4 bigint,
+    sumtotal_phase4 bigint,
+    timeframe_phase5 boolean,
+    offset_phase5 bigint,
+    sumtotal_phase5 bigint,
+    timeframe_phase6 boolean,
+    offset_phase6 bigint,
+    sumtotal_phase6 bigint,
+    sum7d double precision,
+    sum14d double precision,
+    mean7d double precision,
+    mean14d double precision,
+    timeframe_all boolean,
+    entries_diff_last_age bigint,
+    pop bigint,
+    inz_entries double precision,
+    inzmean7d double precision,
+    inzmean14d double precision,
+    inzsumtotal double precision,
+    inzsumtotal_last7d double precision,
+    inzsumtotal_last14d double precision,
+    inzsumtotal_last28d double precision,
+    inzsumtotal_phase2 double precision,
+    inzsumtotal_phase2b double precision,
+    inzsumtotal_phase3 double precision,
+    inzsumtotal_phase4 double precision,
+    inzsumtotal_phase5 double precision,
+    inzsumtotal_phase6 double precision,
+    inzsum7d double precision,
+    inzsum14d double precision,
+    sumdelta7d double precision,
+    inzdelta7d double precision,
+    type text,
+    type_variant double precision,
+    version text,
+    datum_unit text,
+    entries_letzter_stand bigint,
+    entries_neu_gemeldet bigint,
+    entries_diff_last bigint,
+    date timestamp without time zone
+);
+
+
+ALTER TABLE switzerland.foph_cases_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_cases_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_cases_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_cases_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_cases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE SEQUENCE switzerland.foph_cases_id__seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE switzerland.foph_cases_id__seq OWNER TO dev_epigraph;
+
+--
+-- Name: foph_cases_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER SEQUENCE switzerland.foph_cases_id__seq OWNED BY switzerland.foph_cases.id_;
+
+
+--
+-- Name: foph_casesvaccpersons_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_casesvaccpersons_d (
+    id_ bigint NOT NULL,
+    date timestamp without time zone,
+    vaccine text,
+    vaccination_status text,
+    entries bigint,
+    sumtotal bigint,
+    pop double precision,
+    inz_entries double precision,
+    inzsumtotal double precision,
+    mean7d double precision,
+    inzmean7d double precision,
+    prct double precision,
+    prctsumtotal double precision,
+    prct_mean7d double precision,
+    georegion text,
+    type text,
+    type_variant text,
+    data_completeness text,
+    version text
+);
+
+
+ALTER TABLE switzerland.foph_casesvaccpersons_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_casesvaccpersons_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_casesvaccpersons_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_casesvaccpersons_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_covidcertificates_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_covidcertificates_d (
+    id_ bigint NOT NULL,
+    date timestamp without time zone,
+    type text,
+    georegion text,
+    type_variant text,
+    entries bigint,
+    sumtotal bigint,
+    version text
+);
+
+
+ALTER TABLE switzerland.foph_covidcertificates_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_covidcertificates_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_covidcertificates_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_covidcertificates_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_death_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_death_d (
+    id_ bigint NOT NULL,
+    georegion text,
+    datum text,
+    entries bigint,
+    sumtotal bigint,
+    timeframe_7d boolean,
+    offset_last7d bigint,
+    sumtotal_last7d bigint,
+    timeframe_14d boolean,
+    offset_last14d bigint,
+    sumtotal_last14d bigint,
+    timeframe_28d boolean,
+    offset_last28d bigint,
+    sumtotal_last28d bigint,
+    timeframe_phase2 boolean,
+    offset_phase2 bigint,
+    sumtotal_phase2 bigint,
+    timeframe_phase2b boolean,
+    offset_phase2b bigint,
+    sumtotal_phase2b bigint,
+    timeframe_phase3 boolean,
+    offset_phase3 bigint,
+    sumtotal_phase3 bigint,
+    timeframe_vacc_info boolean,
+    offset_vacc_info bigint,
+    sumtotal_vacc_info bigint,
+    timeframe_phase4 boolean,
+    offset_phase4 bigint,
+    sumtotal_phase4 bigint,
+    timeframe_phase5 boolean,
+    offset_phase5 bigint,
+    sumtotal_phase5 bigint,
+    timeframe_phase6 boolean,
+    offset_phase6 bigint,
+    sumtotal_phase6 bigint,
+    sum7d double precision,
+    sum14d double precision,
+    mean7d double precision,
+    mean14d double precision,
+    timeframe_all boolean,
+    entries_diff_last_age bigint,
+    pop bigint,
+    inz_entries double precision,
+    inzmean7d double precision,
+    inzmean14d double precision,
+    inzsumtotal double precision,
+    inzsumtotal_last7d double precision,
+    inzsumtotal_last14d double precision,
+    inzsumtotal_last28d double precision,
+    inzsumtotal_phase2 double precision,
+    inzsumtotal_phase2b double precision,
+    inzsumtotal_phase3 double precision,
+    inzsumtotal_phase4 double precision,
+    inzsumtotal_phase5 double precision,
+    inzsumtotal_phase6 double precision,
+    inzsum7d double precision,
+    inzsum14d double precision,
+    sumdelta7d double precision,
+    inzdelta7d double precision,
+    type text,
+    type_variant double precision,
+    version text,
+    datum_unit text,
+    entries_letzter_stand bigint,
+    entries_neu_gemeldet bigint,
+    entries_diff_last bigint,
+    date timestamp without time zone
+);
+
+
+ALTER TABLE switzerland.foph_death_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_death_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_death_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_death_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_deathvaccpersons_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_deathvaccpersons_d (
+    id_ bigint NOT NULL,
+    date timestamp without time zone,
+    vaccine text,
+    vaccination_status text,
+    entries bigint,
+    sumtotal bigint,
+    pop double precision,
+    inz_entries double precision,
+    inzsumtotal double precision,
+    mean7d double precision,
+    inzmean7d double precision,
+    prct double precision,
+    prctsumtotal double precision,
+    prct_mean7d double precision,
+    georegion text,
+    type text,
+    type_variant text,
+    data_completeness text,
+    version text
+);
+
+
+ALTER TABLE switzerland.foph_deathvaccpersons_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_deathvaccpersons_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_deathvaccpersons_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_deathvaccpersons_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_hosp_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_hosp_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_hosp_d_meta OWNER TO dev_epigraph;
 
 --
 -- Name: foph_hosp_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
@@ -17234,7 +28312,7 @@ ALTER SEQUENCE switzerland.foph_hosp_id__seq OWNED BY switzerland.foph_hosp.id_;
 --
 
 CREATE TABLE switzerland.foph_hospcapacity (
-    id_ bigint NOT NULL,
+    id_ bigint,
     date timestamp without time zone,
     "geoRegion" text,
     "ICU_AllPatients" double precision,
@@ -17254,6 +28332,7 @@ CREATE TABLE switzerland.foph_hospcapacity (
     timeframe_phase3 boolean,
     timeframe_phase4 boolean,
     timeframe_phase5 boolean,
+    timeframe_phase6 boolean,
     timeframe_all boolean,
     "Total_Capacity_mean15d" double precision,
     "Total_AllPatients_mean15d" double precision,
@@ -17279,58 +28358,136 @@ CREATE TABLE switzerland.foph_hospcapacity (
     "ICU_exists" boolean,
     "Total_exists" boolean,
     type text,
-    version text,
-    timeframe_phase6 boolean
+    version text
 );
 
 
 ALTER TABLE switzerland.foph_hospcapacity OWNER TO dev_epigraph;
 
-CREATE TABLE switzerland.foph_hospcapacity_d ( LIKE switzerland.foph_hospcapacity INCLUDING DEFAULTS );
+--
+-- Name: foph_hospcapacity_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_hospcapacity_d (
+    id_ bigint NOT NULL,
+    date timestamp without time zone,
+    georegion text,
+    icu_allpatients double precision,
+    icu_covid19patients double precision,
+    icu_capacity double precision,
+    total_allpatients double precision,
+    total_covid19patients double precision,
+    total_capacity double precision,
+    icu_noncovid19patients double precision,
+    icu_freecapacity double precision,
+    total_noncovid19patients double precision,
+    total_freecapacity double precision,
+    timeframe_14d boolean,
+    timeframe_28d boolean,
+    timeframe_phase2 boolean,
+    timeframe_phase2b boolean,
+    timeframe_phase3 boolean,
+    timeframe_phase4 boolean,
+    timeframe_phase5 boolean,
+    timeframe_phase6 boolean,
+    timeframe_all boolean,
+    total_capacity_mean15d double precision,
+    total_allpatients_mean15d double precision,
+    total_covid19patients_mean15d double precision,
+    total_noncovid19patients_mean15d double precision,
+    total_freecapacity_mean15d double precision,
+    icu_capacity_mean15d double precision,
+    icu_allpatients_mean15d double precision,
+    icu_covid19patients_mean15d double precision,
+    icu_noncovid19patients_mean15d double precision,
+    icu_freecapacity_mean15d double precision,
+    type_variant text,
+    icupercent_allpatients double precision,
+    icupercent_noncovid19patients double precision,
+    icupercent_covid19patients double precision,
+    icupercent_freecapacity double precision,
+    icupercent_capacity double precision,
+    totalpercent_allpatients double precision,
+    totalpercent_noncovid19patients double precision,
+    totalpercent_covid19patients double precision,
+    totalpercent_freecapacity double precision,
+    totalpercent_capacity double precision,
+    icu_exists boolean,
+    total_exists boolean,
+    type text,
+    version text
+);
+
 
 ALTER TABLE switzerland.foph_hospcapacity_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_hospcapacity_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_hospcapacity_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_hospcapacity_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_hospcapacity_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_hospcapacity_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_hospcapacity_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_hospcapacity_id__seq OWNED BY switzerland.foph_hospcapacity.id_;
-
+ALTER TABLE switzerland.foph_hospcapacity_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_hospvaccpersons; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_hospcapacitycertstatus_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_hospvaccpersons (
+CREATE TABLE switzerland.foph_hospcapacitycertstatus_d (
+    id_ bigint NOT NULL,
+    date timestamp without time zone,
+    georegion text,
+    certified_icu_beds_target double precision,
+    icu_beds_operational double precision,
+    adhoc_icu_beds_operational double precision,
+    certified_icu_beds_operational double precision,
+    version text,
+    type_variant text
+);
+
+
+ALTER TABLE switzerland.foph_hospcapacitycertstatus_d OWNER TO dev_epigraph;
+
+--
+-- Name: foph_hospcapacitycertstatus_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_hospcapacitycertstatus_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE switzerland.foph_hospcapacitycertstatus_d_meta OWNER TO dev_epigraph;
+
+--
+-- Name: foph_hospvaccpersons_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.foph_hospvaccpersons_d (
     id_ bigint NOT NULL,
     date timestamp without time zone,
     vaccine text,
     vaccination_status text,
     entries bigint,
-    "sumTotal" bigint,
+    sumtotal bigint,
     pop double precision,
     inz_entries double precision,
-    "inzsumTotal" double precision,
+    inzsumtotal double precision,
     mean7d double precision,
     inzmean7d double precision,
     prct double precision,
-    "prctSumTotal" double precision,
+    prctsumtotal double precision,
     prct_mean7d double precision,
-    "geoRegion" text,
+    georegion text,
     type text,
     type_variant text,
     data_completeness text,
@@ -17338,50 +28495,39 @@ CREATE TABLE switzerland.foph_hospvaccpersons (
 );
 
 
-ALTER TABLE switzerland.foph_hospvaccpersons OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_hospvaccpersons_d ( LIKE switzerland.foph_hospvaccpersons INCLUDING DEFAULTS );
-
 ALTER TABLE switzerland.foph_hospvaccpersons_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_hospvaccpersons_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_hospvaccpersons_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_hospvaccpersons_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_hospvaccpersons_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_hospvaccpersons_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_hospvaccpersons_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_hospvaccpersons_id__seq OWNED BY switzerland.foph_hospvaccpersons.id_;
-
+ALTER TABLE switzerland.foph_hospvaccpersons_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_intcases; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_intcases_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_intcases (
+CREATE TABLE switzerland.foph_intcases_d (
     id_ bigint NOT NULL,
-    "geoRegion" text,
-    "geoRegionName" text,
+    georegion text,
+    georegionname text,
     date timestamp without time zone,
     entries double precision,
     population double precision,
     source text,
     sum14d double precision,
-    "sumTotal" bigint,
+    sumtotal bigint,
     inz_entries double precision,
     inzsum14d double precision,
-    "inzsumTotal" double precision,
+    inzsumtotal double precision,
     timeframe_14d boolean,
     timeframe_28d boolean,
     timeframe_phase2 boolean,
@@ -17389,52 +28535,41 @@ CREATE TABLE switzerland.foph_intcases (
     timeframe_phase3 boolean,
     timeframe_phase4 boolean,
     timeframe_phase5 boolean,
+    timeframe_phase6 boolean,
     timeframe_all boolean,
     type text,
-    "geoLevel" text,
-    version text,
-    timeframe_phase6 boolean
+    geolevel text,
+    version text
 );
 
-
-ALTER TABLE switzerland.foph_intcases OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_intcases_d ( LIKE switzerland.foph_intcases INCLUDING DEFAULTS );
 
 ALTER TABLE switzerland.foph_intcases_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_intcases_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_intcases_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_intcases_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_intcases_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_intcases_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_intcases_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_intcases_id__seq OWNED BY switzerland.foph_intcases.id_;
-
+ALTER TABLE switzerland.foph_intcases_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_re; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_re_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_re (
+CREATE TABLE switzerland.foph_re_d (
     id_ bigint NOT NULL,
-    "geoRegion" text,
+    georegion text,
     date timestamp without time zone,
-    "median_R_mean" double precision,
-    "median_R_highHPD" double precision,
-    "median_R_lowHPD" double precision,
+    median_r_mean double precision,
+    median_r_highhpd double precision,
+    median_r_lowhpd double precision,
     timeframe_14d boolean,
     timeframe_28d boolean,
     timeframe_phase2 boolean,
@@ -17442,68 +28577,59 @@ CREATE TABLE switzerland.foph_re (
     timeframe_phase3 boolean,
     timeframe_phase4 boolean,
     timeframe_phase5 boolean,
+    timeframe_phase6 boolean,
     timeframe_all boolean,
     type text,
     version text,
-    "median_R_mean_mean7d" double precision,
-    timeframe_phase6 boolean
+    median_r_mean_mean7d double precision
 );
 
-
-ALTER TABLE switzerland.foph_re OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_re_d ( LIKE switzerland.foph_re INCLUDING DEFAULTS );
 
 ALTER TABLE switzerland.foph_re_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_re_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_re_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_re_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_re_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_re_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_re_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_re_id__seq OWNED BY switzerland.foph_re.id_;
-
+ALTER TABLE switzerland.foph_re_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_test; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_test_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_test (
+CREATE TABLE switzerland.foph_test_d (
     id_ bigint NOT NULL,
     datum text,
     entries double precision,
     entries_pos double precision,
     entries_neg double precision,
-    "sumTotal" double precision,
+    sumtotal double precision,
     timeframe_7d boolean,
-    "sumTotal_last7d" double precision,
+    sumtotal_last7d double precision,
     timeframe_14d boolean,
-    "sumTotal_last14d" double precision,
+    sumtotal_last14d double precision,
     timeframe_28d boolean,
-    "sumTotal_last28d" double precision,
+    sumtotal_last28d double precision,
     timeframe_phase2 boolean,
-    "sumTotal_Phase2" double precision,
+    sumtotal_phase2 double precision,
     timeframe_phase2b boolean,
-    "sumTotal_Phase2b" double precision,
+    sumtotal_phase2b double precision,
     timeframe_phase3 boolean,
-    "sumTotal_Phase3" double precision,
+    sumtotal_phase3 double precision,
     timeframe_phase4 boolean,
-    "sumTotal_Phase4" double precision,
+    sumtotal_phase4 double precision,
     timeframe_phase5 boolean,
-    "sumTotal_Phase5" double precision,
+    sumtotal_phase5 double precision,
+    timeframe_phase6 boolean,
+    sumtotal_phase6 double precision,
     sum7d double precision,
     sum14d double precision,
     mean7d double precision,
@@ -17519,90 +28645,87 @@ CREATE TABLE switzerland.foph_test (
     anteil_pos_phase3 double precision,
     anteil_pos_phase4 double precision,
     anteil_pos_phase5 double precision,
+    anteil_pos_phase6 double precision,
     pop double precision,
     inz_entries double precision,
     inzmean7d double precision,
     inzmean14d double precision,
-    "inzsumTotal" double precision,
-    "inzsumTotal_last7d" double precision,
-    "inzsumTotal_last14d" double precision,
-    "inzsumTotal_last28d" double precision,
-    "inzsumTotal_Phase2" double precision,
-    "inzsumTotal_Phase2b" double precision,
-    "inzsumTotal_Phase3" double precision,
-    "inzsumTotal_Phase4" double precision,
-    "inzsumTotal_Phase5" double precision,
+    inzsumtotal double precision,
+    inzsumtotal_last7d double precision,
+    inzsumtotal_last14d double precision,
+    inzsumtotal_last28d double precision,
+    inzsumtotal_phase2 double precision,
+    inzsumtotal_phase2b double precision,
+    inzsumtotal_phase3 double precision,
+    inzsumtotal_phase4 double precision,
+    inzsumtotal_phase5 double precision,
+    inzsumtotal_phase6 double precision,
     inzsum7d double precision,
     inzsum14d double precision,
     type text,
     version text,
     datum_unit text,
     nachweismethode text,
-    "geoRegion" text,
+    georegion text,
     entries_diff_last_age bigint,
     entries_diff_last bigint,
     date timestamp without time zone,
-    timeframe_phase6 boolean,
-    "sumTotal_Phase6" double precision,
-    anteil_pos_phase6 double precision,
-    "inzsumTotal_Phase6" double precision
+    offset_last7d bigint,
+    offset_last14d bigint,
+    offset_last28d bigint,
+    sumdelta7d double precision,
+    inzdelta7d double precision,
+    type_variant double precision,
+    entries_letzter_stand bigint,
+    entries_neu_gemeldet bigint
 );
 
-
-ALTER TABLE switzerland.foph_test OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_test_d ( LIKE switzerland.foph_test INCLUDING DEFAULTS );
 
 ALTER TABLE switzerland.foph_test_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_test_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_test_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_test_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_test_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_test_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_test_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_test_id__seq OWNED BY switzerland.foph_test.id_;
-
+ALTER TABLE switzerland.foph_test_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_testpcrantigen; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_testpcrantigen_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_testpcrantigen (
+CREATE TABLE switzerland.foph_testpcrantigen_d (
     id_ bigint NOT NULL,
     datum text,
     entries double precision,
     entries_pos double precision,
     entries_neg double precision,
-    "sumTotal" double precision,
+    sumtotal double precision,
     timeframe_7d boolean,
-    "sumTotal_last7d" double precision,
+    sumtotal_last7d bigint,
     timeframe_14d boolean,
-    "sumTotal_last14d" double precision,
+    sumtotal_last14d bigint,
     timeframe_28d boolean,
-    "sumTotal_last28d" double precision,
+    sumtotal_last28d bigint,
     timeframe_phase2 boolean,
-    "sumTotal_Phase2" double precision,
+    sumtotal_phase2 bigint,
     timeframe_phase2b boolean,
-    "sumTotal_Phase2b" double precision,
+    sumtotal_phase2b bigint,
     timeframe_phase3 boolean,
-    "sumTotal_Phase3" double precision,
+    sumtotal_phase3 bigint,
     timeframe_phase4 boolean,
-    "sumTotal_Phase4" double precision,
+    sumtotal_phase4 bigint,
     timeframe_phase5 boolean,
-    "sumTotal_Phase5" double precision,
+    sumtotal_phase5 bigint,
+    timeframe_phase6 boolean,
+    sumtotal_phase6 bigint,
     sum7d double precision,
     sum14d double precision,
     mean7d double precision,
@@ -17618,74 +28741,69 @@ CREATE TABLE switzerland.foph_testpcrantigen (
     anteil_pos_phase3 double precision,
     anteil_pos_phase4 double precision,
     anteil_pos_phase5 double precision,
-    pop double precision,
+    anteil_pos_phase6 double precision,
+    pop bigint,
     inz_entries double precision,
     inzmean7d double precision,
     inzmean14d double precision,
-    "inzsumTotal" double precision,
-    "inzsumTotal_last7d" double precision,
-    "inzsumTotal_last14d" double precision,
-    "inzsumTotal_last28d" double precision,
-    "inzsumTotal_Phase2" double precision,
-    "inzsumTotal_Phase2b" double precision,
-    "inzsumTotal_Phase3" double precision,
-    "inzsumTotal_Phase4" double precision,
-    "inzsumTotal_Phase5" double precision,
+    inzsumtotal double precision,
+    inzsumtotal_last7d double precision,
+    inzsumtotal_last14d double precision,
+    inzsumtotal_last28d double precision,
+    inzsumtotal_phase2 double precision,
+    inzsumtotal_phase2b double precision,
+    inzsumtotal_phase3 double precision,
+    inzsumtotal_phase4 double precision,
+    inzsumtotal_phase5 double precision,
+    inzsumtotal_phase6 double precision,
     inzsum7d double precision,
     inzsum14d double precision,
     type text,
     version text,
     datum_unit text,
     nachweismethode text,
-    "geoRegion" text,
+    georegion text,
     entries_diff_last_age bigint,
     entries_diff_last bigint,
     date timestamp without time zone,
-    timeframe_phase6 boolean,
-    "sumTotal_Phase6" double precision,
-    anteil_pos_phase6 double precision,
-    "inzsumTotal_Phase6" double precision
+    offset_last7d bigint,
+    offset_last14d bigint,
+    offset_last28d bigint,
+    sumdelta7d double precision,
+    inzdelta7d double precision,
+    type_variant double precision,
+    entries_letzter_stand bigint,
+    entries_neu_gemeldet bigint
 );
 
-
-ALTER TABLE switzerland.foph_testpcrantigen OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_testpcrantigen_d ( LIKE switzerland.foph_testpcrantigen INCLUDING DEFAULTS );
 
 ALTER TABLE switzerland.foph_testpcrantigen_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_testpcrantigen_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_testpcrantigen_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_testpcrantigen_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE switzerland.foph_testpcrantigen_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
 
 
-ALTER TABLE switzerland.foph_testpcrantigen_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_testpcrantigen_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_testpcrantigen_id__seq OWNED BY switzerland.foph_testpcrantigen.id_;
-
+ALTER TABLE switzerland.foph_testpcrantigen_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: foph_virusvariantswgs; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_virusvariantswgs_d; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.foph_virusvariantswgs (
+CREATE TABLE switzerland.foph_virusvariantswgs_d (
     id_ bigint NOT NULL,
-    "geoRegion" text,
+    georegion text,
     variant_type text,
     date timestamp without time zone,
     entries bigint,
-    "sumTotal" bigint,
+    sumtotal bigint,
     freq double precision,
     prct double precision,
     prct_lower_ci double precision,
@@ -17699,133 +28817,176 @@ CREATE TABLE switzerland.foph_virusvariantswgs (
 );
 
 
-ALTER TABLE switzerland.foph_virusvariantswgs OWNER TO dev_epigraph;
-
-CREATE TABLE switzerland.foph_virusvariantswgs_d ( LIKE switzerland.foph_virusvariantswgs INCLUDING DEFAULTS );
-
 ALTER TABLE switzerland.foph_virusvariantswgs_d OWNER TO dev_epigraph;
 
 --
--- Name: foph_virusvariantswgs_id__seq; Type: SEQUENCE; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_virusvariantswgs_d_meta; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE SEQUENCE switzerland.foph_virusvariantswgs_id__seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE switzerland.foph_virusvariantswgs_id__seq OWNER TO dev_epigraph;
-
---
--- Name: foph_virusvariantswgs_id__seq; Type: SEQUENCE OWNED BY; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER SEQUENCE switzerland.foph_virusvariantswgs_id__seq OWNED BY switzerland.foph_virusvariantswgs.id_;
-
-
---
--- Name: janne_scenario_1; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE TABLE switzerland.janne_scenario_1 (
-    "Date" timestamp without time zone,
-    "Unnamed: 0" bigint,
-    "Infections_children" bigint,
-    "Infections_adults" bigint,
-    "Infetions_senior" bigint,
-    "New_hospitalisations_adult" bigint,
-    "New_hospitalisations_senior" bigint,
-    "Deaths_adult" bigint,
-    "Deaths_senior" bigint,
-    "In_normalward_adult" bigint,
-    "In_ICU_adult" bigint,
-    "In_normalward_senior" bigint,
-    "In_ICU_senior" bigint,
-    "New_hospitalisations" bigint,
-    "Total_hospitalisations" bigint,
-    "Total_ICU" bigint
+CREATE TABLE switzerland.foph_virusvariantswgs_d_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
 );
 
 
-ALTER TABLE switzerland.janne_scenario_1 OWNER TO dev_epigraph;
+ALTER TABLE switzerland.foph_virusvariantswgs_d_meta OWNER TO dev_epigraph;
 
 --
--- Name: janne_scenario_2; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: forecast_lstm_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.janne_scenario_2 (
-    "Date" timestamp without time zone,
-    "Infections_children" bigint,
-    "Infections_adults" bigint,
-    "Infetions_senior" bigint,
-    "New_hospitalisations_adult" bigint,
-    "New_hospitalisations_senior" bigint,
-    "Deaths_adult" bigint,
-    "Deaths_senior" bigint,
-    "In_normalward_adult" bigint,
-    "In_ICU_adult" bigint,
-    "In_normalward_senior" bigint,
-    "In_ICU_senior" bigint,
-    "New_hospitalisations" bigint,
-    "Total_hospitalisations" bigint,
-    "Total_ICU" bigint
+CREATE TABLE switzerland.forecast_lstm_hosp_d_results (
+    index bigint,
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
 );
 
 
-ALTER TABLE switzerland.janne_scenario_2 OWNER TO dev_epigraph;
+ALTER TABLE switzerland.forecast_lstm_hosp_d_results OWNER TO dev_epigraph;
 
 --
--- Name: janne_scenario_3; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: forecast_lstm_icu_patients_d_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.janne_scenario_3 (
-    "Date" timestamp without time zone,
-    "Infections_children" bigint,
-    "Infections_adults" bigint,
-    "Infetions_senior" bigint,
-    "New_hospitalisations_adult" bigint,
-    "New_hospitalisations_senior" bigint,
-    "Deaths_adult" bigint,
-    "Deaths_senior" bigint,
-    "In_normalward_adult" bigint,
-    "In_ICU_adult" bigint,
-    "In_normalward_senior" bigint,
-    "In_ICU_senior" bigint,
-    "New_hospitalisations" bigint,
-    "Total_hospitalisations" bigint,
-    "Total_ICU" bigint
+CREATE TABLE switzerland.forecast_lstm_icu_patients_d_d_results (
+    date timestamp without time zone,
+    index bigint,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
 );
 
 
-ALTER TABLE switzerland.janne_scenario_3 OWNER TO dev_epigraph;
+ALTER TABLE switzerland.forecast_lstm_icu_patients_d_d_results OWNER TO dev_epigraph;
 
 --
--- Name: janne_scenario_4; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+-- Name: forecast_lstm_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE TABLE switzerland.janne_scenario_4 (
-    "Date" timestamp without time zone,
-    "Infections_children" bigint,
-    "Infections_adults" bigint,
-    "Infetions_senior" bigint,
-    "New_hospitalisations_adult" bigint,
-    "New_hospitalisations_senior" bigint,
-    "Deaths_adult" bigint,
-    "Deaths_senior" bigint,
-    "In_normalward_adult" bigint,
-    "In_ICU_adult" bigint,
-    "In_normalward_senior" bigint,
-    "In_ICU_senior" bigint,
-    "New_hospitalisations" bigint,
-    "Total_hospitalisations" bigint,
-    "Total_ICU" bigint
+CREATE TABLE switzerland.forecast_lstm_icu_patients_d_results (
+    index bigint,
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
 );
 
 
-ALTER TABLE switzerland.janne_scenario_4 OWNER TO dev_epigraph;
+ALTER TABLE switzerland.forecast_lstm_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_lstm_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_lstm_total_hosp_d_results (
+    index bigint,
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_lstm_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ml_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ml_hosp_d_results (
+    index bigint,
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ml_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ml_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ml_icu_patients_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ml_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ml_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ml_total_hosp_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ml_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ngboost_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ngboost_hosp_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ngboost_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ngboost_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ngboost_icu_patients_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ngboost_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: forecast_ngboost_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.forecast_ngboost_total_hosp_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.forecast_ngboost_total_hosp_d_results OWNER TO dev_epigraph;
 
 --
 -- Name: map_cantons; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
@@ -17995,9 +29156,9 @@ ALTER TABLE switzerland.ml_forecast_total OWNER TO dev_epigraph;
 --
 
 CREATE TABLE switzerland.ml_val_hosp_all_cantons (
-    index bigint,
+    datum timestamp without time zone,
     target double precision,
-    date text,
+    date timestamp without time zone,
     lower double precision,
     median double precision,
     upper double precision,
@@ -18013,7 +29174,7 @@ ALTER TABLE switzerland.ml_val_hosp_all_cantons OWNER TO dev_epigraph;
 --
 
 CREATE TABLE switzerland.ml_val_icu_all_cantons (
-    index bigint,
+    index timestamp without time zone,
     target double precision,
     date timestamp without time zone,
     lower double precision,
@@ -18031,9 +29192,9 @@ ALTER TABLE switzerland.ml_val_icu_all_cantons OWNER TO dev_epigraph;
 --
 
 CREATE TABLE switzerland.ml_val_total_all_cantons (
-    index bigint,
+    index timestamp without time zone,
     target double precision,
-    date text,
+    date timestamp without time zone,
     lower double precision,
     median double precision,
     upper double precision,
@@ -18132,6 +29293,102 @@ CREATE TABLE switzerland.ml_validation_total (
 ALTER TABLE switzerland.ml_validation_total OWNER TO dev_epigraph;
 
 --
+-- Name: ngboost_forecast_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_forecast_hosp_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_forecast_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: ngboost_forecast_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_forecast_icu_patients_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_forecast_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: ngboost_forecast_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_forecast_total_hosp_d_results (
+    date timestamp without time zone,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_forecast_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: ngboost_validation_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_validation_hosp_d_results (
+    date text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_validation_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: ngboost_validation_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_validation_icu_patients_d_results (
+    date text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_validation_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: ngboost_validation_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.ngboost_validation_total_hosp_d_results (
+    date text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.ngboost_validation_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
 -- Name: phosp_post; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -18160,38 +29417,247 @@ CREATE TABLE switzerland.prev_post (
 ALTER TABLE switzerland.prev_post OWNER TO dev_epigraph;
 
 --
+-- Name: validation_lstm_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_lstm_hosp_d_results (
+    date timestamp without time zone,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_lstm_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: validation_lstm_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_lstm_icu_patients_d_results (
+    date timestamp without time zone,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_lstm_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: validation_lstm_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_lstm_total_hosp_d_results (
+    date timestamp without time zone,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_lstm_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: validation_ngboost_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_ngboost_hosp_d_results (
+    date text,
+    index bigint,
+    datum text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_ngboost_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: validation_ngboost_icu_patients_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_ngboost_icu_patients_d_results (
+    date text,
+    index bigint,
+    "Unnamed: 0" text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_ngboost_icu_patients_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: validation_ngboost_total_hosp_d_results; Type: TABLE; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE TABLE switzerland.validation_ngboost_total_hosp_d_results (
+    date text,
+    index bigint,
+    "Unnamed: 0" text,
+    target double precision,
+    lower double precision,
+    median double precision,
+    upper double precision,
+    train_size bigint,
+    canton text
+);
+
+
+ALTER TABLE switzerland.validation_ngboost_total_hosp_d_results OWNER TO dev_epigraph;
+
+--
+-- Name: brasil_co_0; Type: TABLE; Schema: unicef; Owner: dev_epigraph
+--
+
+CREATE TABLE unicef.brasil_co_0 (
+    index bigint,
+    data_source text,
+    ref_area text,
+    indicator text,
+    time_period text,
+    value double precision
+);
+
+
+ALTER TABLE unicef.brasil_co_0 OWNER TO dev_epigraph;
+
+--
+-- Name: brasil_co_0_meta; Type: TABLE; Schema: unicef; Owner: dev_epigraph
+--
+
+CREATE TABLE unicef.brasil_co_0_meta (
+    index bigint,
+    indicator_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE unicef.brasil_co_0_meta OWNER TO dev_epigraph;
+
+--
+-- Name: law_policies_by_legal_status; Type: TABLE; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+CREATE TABLE unsafe_abortion.law_policies_by_legal_status (
+    "Legal status of abortion" text,
+    "country " text,
+    "List all laws / policies / strategies / regulations / guideline" text,
+    "Year Enacted" double precision,
+    "Year of 
+most
+ Recent
+ Update
+" double precision,
+    "SRHR areas covered: SAC" double precision,
+    "SRHR areas covered: PAC
+" double precision,
+    "SRHR areas covered: FP" double precision,
+    "SRHR areas covered: others
+
+" text,
+    "Aligned with current WHO guidance: SAC" text,
+    "Aligned with current WHO guidance: PAC" text,
+    "Aligned with current WHO guidance: 
+FP" text
+);
+
+
+ALTER TABLE unsafe_abortion.law_policies_by_legal_status OWNER TO dev_epigraph;
+
+--
+-- Name: laws_policies_strategies; Type: TABLE; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+CREATE TABLE unsafe_abortion.laws_policies_strategies (
+    index bigint,
+    _parent_index double precision,
+    country text,
+    "List all  laws / policies / strategies / regulations / guidelin" text,
+    "Year enacted" double precision,
+    "Year of most recent update" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Safe Abortion Care (SAC)" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Post-abortion Care (PAC)" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Contraceptive Care (FP)" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Other (manually specify)" double precision,
+    "Please specify." text,
+    "Aligned with current WHO  / global guidance?" double precision,
+    "SAC" text,
+    "Please specify..1" text,
+    "PAC" text,
+    "Please specify..2" text,
+    "FP" text,
+    "Please specify..3" double precision,
+    "Document filed? " text,
+    "Please specify..4" double precision,
+    "Comment" text,
+    "SRHR areas covered: SAC? PAC? FP?/Safe Abortion Care (SAC).1" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Post-abortion Care (PAC).1" double precision,
+    "SRHR areas covered: SAC? PAC? FP?/Contraceptive Care (FP).1" double precision
+);
+
+
+ALTER TABLE unsafe_abortion.laws_policies_strategies OWNER TO dev_epigraph;
+
+--
+-- Name: total_population_0; Type: TABLE; Schema: worldbank; Owner: dev_epigraph
+--
+
+CREATE TABLE worldbank.total_population_0 (
+    year text,
+    iso_code text,
+    country text,
+    total_pop double precision
+);
+
+
+ALTER TABLE worldbank.total_population_0 OWNER TO dev_epigraph;
+
+--
+-- Name: total_population_0_meta; Type: TABLE; Schema: worldbank; Owner: dev_epigraph
+--
+
+CREATE TABLE worldbank.total_population_0_meta (
+    index bigint,
+    column_name text,
+    type text,
+    description text
+);
+
+
+ALTER TABLE worldbank.total_population_0_meta OWNER TO dev_epigraph;
+
+--
+-- Name: positive_cases_covid_d id_; Type: DEFAULT; Schema: colombia; Owner: dev_admin
+--
+
+ALTER TABLE ONLY colombia.positive_cases_covid_d ALTER COLUMN id_ SET DEFAULT nextval('colombia.positive_cases_covid_d_id__seq'::regclass);
+
+
+--
 -- Name: foph_cases id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_cases ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_cases_id__seq'::regclass);
-
-
---
--- Name: foph_casesvaccpersons id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_casesvaccpersons ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_casesvaccpersons_id__seq'::regclass);
-
-
---
--- Name: foph_covidcertificates id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_covidcertificates ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_covidcertificates_id__seq'::regclass);
-
-
---
--- Name: foph_death id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_death ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_death_id__seq'::regclass);
-
-
---
--- Name: foph_deathvaccpersons id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_deathvaccpersons ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_deathvaccpersons_id__seq'::regclass);
 
 
 --
@@ -18202,61 +29668,299 @@ ALTER TABLE ONLY switzerland.foph_hosp ALTER COLUMN id_ SET DEFAULT nextval('swi
 
 
 --
--- Name: foph_hospcapacity id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
+-- Name: acbi acbi_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_hospcapacity ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_hospcapacity_id__seq'::regclass);
-
-
---
--- Name: foph_hospvaccpersons id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_hospvaccpersons ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_hospvaccpersons_id__seq'::regclass);
+ALTER TABLE ONLY brasil.acbi
+    ADD CONSTRAINT acbi_pkey PRIMARY KEY (index);
 
 
 --
--- Name: foph_intcases id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
+-- Name: acgr acgr_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_intcases ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_intcases_id__seq'::regclass);
-
-
---
--- Name: foph_re id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_re ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_re_id__seq'::regclass);
+ALTER TABLE ONLY brasil.acgr
+    ADD CONSTRAINT acgr_pkey PRIMARY KEY (index);
 
 
 --
--- Name: foph_test id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
+-- Name: anim anim_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_test ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_test_id__seq'::regclass);
-
-
---
--- Name: foph_testpcrantigen id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_testpcrantigen ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_testpcrantigen_id__seq'::regclass);
+ALTER TABLE ONLY brasil.anim
+    ADD CONSTRAINT anim_pkey PRIMARY KEY (index);
 
 
 --
--- Name: foph_virusvariantswgs id_; Type: DEFAULT; Schema: switzerland; Owner: dev_epigraph
+-- Name: botu botu_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_virusvariantswgs ALTER COLUMN id_ SET DEFAULT nextval('switzerland.foph_virusvariantswgs_id__seq'::regclass);
-
+ALTER TABLE ONLY brasil.botu
+    ADD CONSTRAINT botu_pkey PRIMARY KEY (index);
 
 
 --
--- Name: foph_cases foph_cases_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+-- Name: canc canc_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_cases
-    ADD CONSTRAINT foph_cases_pkey PRIMARY KEY (id_);
+ALTER TABLE ONLY brasil.canc
+    ADD CONSTRAINT canc_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: chag chag_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.chag
+    ADD CONSTRAINT chag_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: chik chik_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.chik
+    ADD CONSTRAINT chik_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: cole cole_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.cole
+    ADD CONSTRAINT cole_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: coqu coqu_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.coqu
+    ADD CONSTRAINT coqu_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: deng deng_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.deng
+    ADD CONSTRAINT deng_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: dift dift_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.dift
+    ADD CONSTRAINT dift_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: esqu esqu_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.esqu
+    ADD CONSTRAINT esqu_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: fmac fmac_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.fmac
+    ADD CONSTRAINT fmac_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: ftif ftif_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.ftif
+    ADD CONSTRAINT ftif_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: hans hans_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.hans
+    ADD CONSTRAINT hans_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: hant hant_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.hant
+    ADD CONSTRAINT hant_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: hepa hepa_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.hepa
+    ADD CONSTRAINT hepa_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: iexo iexo_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.iexo
+    ADD CONSTRAINT iexo_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: leiv leiv_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.leiv
+    ADD CONSTRAINT leiv_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: lept lept_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.lept
+    ADD CONSTRAINT lept_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: ltan ltan_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.ltan
+    ADD CONSTRAINT ltan_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: mala mala_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.mala
+    ADD CONSTRAINT mala_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: meni meni_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.meni
+    ADD CONSTRAINT meni_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: pest pest_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.pest
+    ADD CONSTRAINT pest_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: pfan pfan_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.pfan
+    ADD CONSTRAINT pfan_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: raiv raiv_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.raiv
+    ADD CONSTRAINT raiv_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: sifa sifa_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.sifa
+    ADD CONSTRAINT sifa_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: sifc sifc_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.sifc
+    ADD CONSTRAINT sifc_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: sifg sifg_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.sifg
+    ADD CONSTRAINT sifg_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: teta teta_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.teta
+    ADD CONSTRAINT teta_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: tetn tetn_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.tetn
+    ADD CONSTRAINT tetn_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: tube tube_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.tube
+    ADD CONSTRAINT tube_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: viol viol_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.viol
+    ADD CONSTRAINT viol_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: zika zika_pkey; Type: CONSTRAINT; Schema: brasil; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY brasil.zika
+    ADD CONSTRAINT zika_pkey PRIMARY KEY (index);
+
+
+--
+-- Name: positive_cases_covid_d positive_cases_covid_d_id_de_caso_key; Type: CONSTRAINT; Schema: colombia; Owner: dev_admin
+--
+
+ALTER TABLE ONLY colombia.positive_cases_covid_d
+    ADD CONSTRAINT positive_cases_covid_d_id_de_caso_key UNIQUE (id_de_caso);
+
+
+--
+-- Name: positive_cases_covid_d positive_cases_covid_d_pkey; Type: CONSTRAINT; Schema: colombia; Owner: dev_admin
+--
+
+ALTER TABLE ONLY colombia.positive_cases_covid_d
+    ADD CONSTRAINT positive_cases_covid_d_pkey PRIMARY KEY (id_);
+
+
+--
+-- Name: worldbank worldbank_pkey; Type: CONSTRAINT; Schema: google_health; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY google_health.worldbank
+    ADD CONSTRAINT worldbank_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18268,11 +29972,11 @@ ALTER TABLE ONLY switzerland.foph_cases_d
 
 
 --
--- Name: foph_casesvaccpersons foph_casesvaccpersons_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_cases foph_cases_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_casesvaccpersons
-    ADD CONSTRAINT foph_casesvaccpersons_pkey PRIMARY KEY (id_);
+ALTER TABLE ONLY switzerland.foph_cases
+    ADD CONSTRAINT foph_cases_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18284,15 +29988,7 @@ ALTER TABLE ONLY switzerland.foph_casesvaccpersons_d
 
 
 --
--- Name: foph_covidcertificates foph_covidcertificates_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_covidcertificates
-    ADD CONSTRAINT foph_covidcertificates_pkey PRIMARY KEY (id_);
-
-
---
--- Name: foph_covidcertificates_d foph_covidcertificates_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_covidcertificates_d foph_covidcertificates_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_covidcertificates_d
@@ -18300,27 +29996,11 @@ ALTER TABLE ONLY switzerland.foph_covidcertificates_d
 
 
 --
--- Name: foph_death foph_death_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_death
-    ADD CONSTRAINT foph_death_pkey PRIMARY KEY (id_);
-
---
 -- Name: foph_death_d foph_death_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_death_d
     ADD CONSTRAINT foph_death_d_pkey PRIMARY KEY (id_);
-
-
-
---
--- Name: foph_deathvaccpersons foph_deathvaccpersons_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_deathvaccpersons
-    ADD CONSTRAINT foph_deathvaccpersons_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18332,27 +30012,19 @@ ALTER TABLE ONLY switzerland.foph_deathvaccpersons_d
 
 
 --
+-- Name: foph_hosp_d foph_hosp_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+--
+
+ALTER TABLE ONLY switzerland.foph_hosp_d
+    ADD CONSTRAINT foph_hosp_d_pkey PRIMARY KEY (id_);
+
+
+--
 -- Name: foph_hosp foph_hosp_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_hosp
     ADD CONSTRAINT foph_hosp_pkey PRIMARY KEY (id_);
-
-
---
--- Name: foph_hosp foph_hosp_pkey_d; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_hosp_d
-    ADD CONSTRAINT foph_hosp_pkey_d PRIMARY KEY (id_);
-
-
---
--- Name: foph_hospcapacity foph_hospcapacity_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_hospcapacity
-    ADD CONSTRAINT foph_hospcapacity_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18364,11 +30036,11 @@ ALTER TABLE ONLY switzerland.foph_hospcapacity_d
 
 
 --
--- Name: foph_hospvaccpersons foph_hospvaccpersons_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
+-- Name: foph_hospcapacitycertstatus_d foph_hospcapacitycertstatus_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
-ALTER TABLE ONLY switzerland.foph_hospvaccpersons
-    ADD CONSTRAINT foph_hospvaccpersons_pkey PRIMARY KEY (id_);
+ALTER TABLE ONLY switzerland.foph_hospcapacitycertstatus_d
+    ADD CONSTRAINT foph_hospcapacitycertstatus_d_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18380,27 +30052,11 @@ ALTER TABLE ONLY switzerland.foph_hospvaccpersons_d
 
 
 --
--- Name: foph_intcases foph_intcases_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_intcases
-    ADD CONSTRAINT foph_intcases_pkey PRIMARY KEY (id_);
-
-
---
 -- Name: foph_intcases_d foph_intcases_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_intcases_d
     ADD CONSTRAINT foph_intcases_d_pkey PRIMARY KEY (id_);
-
-
---
--- Name: foph_re foph_re_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_re
-    ADD CONSTRAINT foph_re_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18412,14 +30068,6 @@ ALTER TABLE ONLY switzerland.foph_re_d
 
 
 --
--- Name: foph_test foph_test_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_test
-    ADD CONSTRAINT foph_test_pkey PRIMARY KEY (id_);
-
-
---
 -- Name: foph_test_d foph_test_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -18428,26 +30076,11 @@ ALTER TABLE ONLY switzerland.foph_test_d
 
 
 --
--- Name: foph_testpcrantigen foph_testpcrantigen_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_testpcrantigen
-    ADD CONSTRAINT foph_testpcrantigen_pkey PRIMARY KEY (id_);
-
-
---
 -- Name: foph_testpcrantigen_d foph_testpcrantigen_d_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
 --
 
 ALTER TABLE ONLY switzerland.foph_testpcrantigen_d
     ADD CONSTRAINT foph_testpcrantigen_d_pkey PRIMARY KEY (id_);
-
---
--- Name: foph_virusvariantswgs foph_virusvariantswgs_pkey; Type: CONSTRAINT; Schema: switzerland; Owner: dev_epigraph
---
-
-ALTER TABLE ONLY switzerland.foph_virusvariantswgs
-    ADD CONSTRAINT foph_virusvariantswgs_pkey PRIMARY KEY (id_);
 
 
 --
@@ -18458,12 +30091,81 @@ ALTER TABLE ONLY switzerland.foph_virusvariantswgs_d
     ADD CONSTRAINT foph_virusvariantswgs_d_pkey PRIMARY KEY (id_);
 
 
+--
+-- Name: ix_brasil_acbi_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_acbi_index ON brasil.acbi USING btree (index);
+
+
+--
+-- Name: ix_brasil_acgr_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_acgr_index ON brasil.acgr USING btree (index);
+
+
+--
+-- Name: ix_brasil_anim_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_anim_index ON brasil.anim USING btree (index);
+
+
+--
+-- Name: ix_brasil_botu_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_botu_index ON brasil.botu USING btree (index);
+
+
+--
+-- Name: ix_brasil_br_municipalities_geocode_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_br_municipalities_geocode_index ON brasil.br_municipalities_geocode USING btree (index);
+
+
+--
+-- Name: ix_brasil_canc_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_canc_index ON brasil.canc USING btree (index);
+
 
 --
 -- Name: ix_brasil_caso_full_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
 --
 
 CREATE INDEX ix_brasil_caso_full_index ON brasil.caso_full USING btree (index);
+
+
+--
+-- Name: ix_brasil_chag_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_chag_index ON brasil.chag USING btree (index);
+
+
+--
+-- Name: ix_brasil_chik_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_chik_index ON brasil.chik USING btree (index);
+
+
+--
+-- Name: ix_brasil_cole_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_cole_index ON brasil.cole USING btree (index);
+
+
+--
+-- Name: ix_brasil_coqu_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_coqu_index ON brasil.coqu USING btree (index);
 
 
 --
@@ -18474,10 +30176,563 @@ CREATE INDEX "ix_brasil_data_SARI_16_08_21.csv_index" ON brasil."data_SARI_16_08
 
 
 --
--- Name: ix_colombia_casos_positivos_covid_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+-- Name: ix_brasil_deng_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_colombia_casos_positivos_covid_index ON colombia.casos_positivos_covid USING btree (index);
+CREATE INDEX ix_brasil_deng_index ON brasil.deng USING btree (index);
+
+
+--
+-- Name: ix_brasil_dift_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_dift_index ON brasil.dift USING btree (index);
+
+
+--
+-- Name: ix_brasil_esqu_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_esqu_index ON brasil.esqu USING btree (index);
+
+
+--
+-- Name: ix_brasil_fmac_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_fmac_index ON brasil.fmac USING btree (index);
+
+
+--
+-- Name: ix_brasil_ftif_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_ftif_index ON brasil.ftif USING btree (index);
+
+
+--
+-- Name: ix_brasil_hans_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_hans_index ON brasil.hans USING btree (index);
+
+
+--
+-- Name: ix_brasil_hant_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_hant_index ON brasil.hant USING btree (index);
+
+
+--
+-- Name: ix_brasil_hepa_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_hepa_index ON brasil.hepa USING btree (index);
+
+
+--
+-- Name: ix_brasil_iexo_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_iexo_index ON brasil.iexo USING btree (index);
+
+
+--
+-- Name: ix_brasil_leiv_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_leiv_index ON brasil.leiv USING btree (index);
+
+
+--
+-- Name: ix_brasil_lept_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_lept_index ON brasil.lept USING btree (index);
+
+
+--
+-- Name: ix_brasil_ltan_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_ltan_index ON brasil.ltan USING btree (index);
+
+
+--
+-- Name: ix_brasil_mala_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_mala_index ON brasil.mala USING btree (index);
+
+
+--
+-- Name: ix_brasil_meni_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_meni_index ON brasil.meni USING btree (index);
+
+
+--
+-- Name: ix_brasil_pest_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_pest_index ON brasil.pest USING btree (index);
+
+
+--
+-- Name: ix_brasil_pfan_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_pfan_index ON brasil.pfan USING btree (index);
+
+
+--
+-- Name: ix_brasil_raiv_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_raiv_index ON brasil.raiv USING btree (index);
+
+
+--
+-- Name: ix_brasil_sifa_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sifa_index ON brasil.sifa USING btree (index);
+
+
+--
+-- Name: ix_brasil_sifc_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sifc_index ON brasil.sifc USING btree (index);
+
+
+--
+-- Name: ix_brasil_sifg_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sifg_index ON brasil.sifg USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_animais_peconhentos_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_animais_peconhentos_metadata_index ON brasil.sinan_animais_peconhentos_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_botulismo_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_botulismo_metadata_index ON brasil.sinan_botulismo_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_chagas_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_chagas_metadata_index ON brasil.sinan_chagas_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_chikungunya_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_chikungunya_metadata_index ON brasil.sinan_chikungunya_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_colera_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_colera_metadata_index ON brasil.sinan_colera_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_coqueluche_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_coqueluche_metadata_index ON brasil.sinan_coqueluche_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_dengue_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_dengue_metadata_index ON brasil.sinan_dengue_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_difteria_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_difteria_metadata_index ON brasil.sinan_difteria_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_esquistossomose_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_esquistossomose_metadata_index ON brasil.sinan_esquistossomose_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_febre_amarela_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_febre_amarela_metadata_index ON brasil.sinan_febre_amarela_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_febre_maculosa_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_febre_maculosa_metadata_index ON brasil.sinan_febre_maculosa_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_febre_tifoide_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_febre_tifoide_metadata_index ON brasil.sinan_febre_tifoide_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_hanseniase_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_hanseniase_metadata_index ON brasil.sinan_hanseniase_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_hantavirose_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_hantavirose_metadata_index ON brasil.sinan_hantavirose_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_hepatites_virais_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_hepatites_virais_metadata_index ON brasil.sinan_hepatites_virais_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_intoxicacao_exogena_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_intoxicacao_exogena_metadata_index ON brasil.sinan_intoxicacao_exogena_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_leishmaniose_tegumentar_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_leishmaniose_tegumentar_metadata_index ON brasil.sinan_leishmaniose_tegumentar_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_leishmaniose_visceral_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_leishmaniose_visceral_metadata_index ON brasil.sinan_leishmaniose_visceral_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_leptospirose_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_leptospirose_metadata_index ON brasil.sinan_leptospirose_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_malaria_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_malaria_metadata_index ON brasil.sinan_malaria_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_meningite_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_meningite_metadata_index ON brasil.sinan_meningite_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_peste_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_peste_metadata_index ON brasil.sinan_peste_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_raiva_humana_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_raiva_humana_metadata_index ON brasil.sinan_raiva_humana_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_sifilis_congenita_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_sifilis_congenita_metadata_index ON brasil.sinan_sifilis_congenita_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_sifilis_em_gestante_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_sifilis_em_gestante_metadata_index ON brasil.sinan_sifilis_em_gestante_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_tetano_acidental_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_tetano_acidental_metadata_index ON brasil.sinan_tetano_acidental_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_tetano_neonatal_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_tetano_neonatal_metadata_index ON brasil.sinan_tetano_neonatal_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_sinan_tuberculose_metadata_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_sinan_tuberculose_metadata_index ON brasil.sinan_tuberculose_metadata USING btree (index);
+
+
+--
+-- Name: ix_brasil_teta_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_teta_index ON brasil.teta USING btree (index);
+
+
+--
+-- Name: ix_brasil_tetn_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_tetn_index ON brasil.tetn USING btree (index);
+
+
+--
+-- Name: ix_brasil_tube_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_tube_index ON brasil.tube USING btree (index);
+
+
+--
+-- Name: ix_brasil_viol_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_viol_index ON brasil.viol USING btree (index);
+
+
+--
+-- Name: ix_brasil_zika_index; Type: INDEX; Schema: brasil; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_brasil_zika_index ON brasil.zika USING btree (index);
+
+
+--
+-- Name: fecha_reporte_web; Type: INDEX; Schema: colombia; Owner: dev_admin
+--
+
+CREATE INDEX fecha_reporte_web ON colombia.positive_cases_covid_d USING btree (fecha_reporte_web);
+
+
+--
+-- Name: id_de_caso; Type: INDEX; Schema: colombia; Owner: dev_admin
+--
+
+CREATE INDEX id_de_caso ON colombia.positive_cases_covid_d USING btree (id_de_caso);
+
+
+--
+-- Name: ix_colombia_casos_covid_agg_m_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_casos_covid_agg_m_index ON colombia.casos_covid_agg_m USING btree (index);
+
+
+--
+-- Name: ix_colombia_casos_covid_agg_m_meta_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_casos_covid_agg_m_meta_index ON colombia.casos_covid_agg_m_meta USING btree (index);
+
+
+--
+-- Name: ix_colombia_casos_covid_deaths_agg_m_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_casos_covid_deaths_agg_m_index ON colombia.casos_covid_deaths_agg_m USING btree (index);
+
+
+--
+-- Name: ix_colombia_casos_covid_deaths_agg_m_meta_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_casos_covid_deaths_agg_m_meta_index ON colombia.casos_covid_deaths_agg_m_meta USING btree (index);
+
+
+--
+-- Name: ix_colombia_casos_positivos_bogota_d_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_casos_positivos_bogota_d_index ON colombia.casos_positivos_bogota_d USING btree (index);
+
+
+--
+-- Name: ix_colombia_test_positive_covid_index; Type: INDEX; Schema: colombia; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_colombia_test_positive_covid_index ON colombia.test_positive_covid USING btree (index);
+
+
+--
+-- Name: ix_global_gamdb_0_index; Type: INDEX; Schema: global; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_global_gamdb_0_index ON global.gamdb_0 USING btree (index);
+
+
+--
+-- Name: ix_google_health_covid19_series_by_age_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_covid19_series_by_age_d_meta_index ON google_health.covid19_series_by_age_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_covid19_series_by_sex_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_covid19_series_by_sex_d_meta_index ON google_health.covid19_series_by_sex_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_covid19_series_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_covid19_series_d_meta_index ON google_health.covid19_series_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_demographics_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_demographics_meta_index ON google_health.demographics_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_economy_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_economy_meta_index ON google_health.economy_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_emergency_declarations_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_emergency_declarations_d_meta_index ON google_health.emergency_declarations_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_geography_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_geography_meta_index ON google_health.geography_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_government_response_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_government_response_d_meta_index ON google_health.government_response_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_health_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_health_meta_index ON google_health.health_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_hospitalizations_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_hospitalizations_d_meta_index ON google_health.hospitalizations_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_locality_names_0_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_locality_names_0_meta_index ON google_health.locality_names_0_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_mobility_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_mobility_d_meta_index ON google_health.mobility_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_search_trends_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_search_trends_d_meta_index ON google_health.search_trends_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_vaccination_access_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_vaccination_access_meta_index ON google_health.vaccination_access_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_vaccination_search_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_vaccination_search_d_meta_index ON google_health.vaccination_search_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_vaccinations_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_vaccinations_d_meta_index ON google_health.vaccinations_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_weather_d_meta_index; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_weather_d_meta_index ON google_health.weather_d_meta USING btree (index);
+
+
+--
+-- Name: ix_google_health_worldbank_id_; Type: INDEX; Schema: google_health; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_google_health_worldbank_id_ ON google_health.worldbank USING btree (id_);
 
 
 --
@@ -23535,6 +35790,20 @@ CREATE INDEX iso_idx ON public.owid_covid USING btree (iso_code);
 
 
 --
+-- Name: ix_public_owid_covid_meta_index; Type: INDEX; Schema: public; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_public_owid_covid_meta_index ON public.owid_covid_meta USING btree (index);
+
+
+--
+-- Name: ix_test_positive_covid_index; Type: INDEX; Schema: public; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_test_positive_covid_index ON public.test_positive_covid USING btree (index);
+
+
+--
 -- Name: date_idx; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -23549,10 +35818,17 @@ CREATE INDEX idx_map_cantons_geometry ON switzerland.map_cantons USING gist (geo
 
 
 --
--- Name: ix_switzerland_df_val_hosp_cantons_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_cases_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_df_val_hosp_cantons_index ON switzerland.df_val_hosp_cantons USING btree (index);
+CREATE INDEX ix_switzerland_foph_cases_d_id_ ON switzerland.foph_cases_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_cases_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_cases_d_meta_index ON switzerland.foph_cases_d_meta USING btree (index);
 
 
 --
@@ -23563,31 +35839,73 @@ CREATE INDEX ix_switzerland_foph_cases_id_ ON switzerland.foph_cases USING btree
 
 
 --
--- Name: ix_switzerland_foph_casesvaccpersons_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_casesvaccpersons_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_casesvaccpersons_id_ ON switzerland.foph_casesvaccpersons USING btree (id_);
-
-
---
--- Name: ix_switzerland_foph_covidcertificates_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE INDEX ix_switzerland_foph_covidcertificates_id_ ON switzerland.foph_covidcertificates USING btree (id_);
+CREATE INDEX ix_switzerland_foph_casesvaccpersons_d_id_ ON switzerland.foph_casesvaccpersons_d USING btree (id_);
 
 
 --
--- Name: ix_switzerland_foph_death_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_casesvaccpersons_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_death_id_ ON switzerland.foph_death USING btree (id_);
+CREATE INDEX ix_switzerland_foph_casesvaccpersons_d_meta_index ON switzerland.foph_casesvaccpersons_d_meta USING btree (index);
 
 
 --
--- Name: ix_switzerland_foph_deathvaccpersons_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_covidcertificates_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_deathvaccpersons_id_ ON switzerland.foph_deathvaccpersons USING btree (id_);
+CREATE INDEX ix_switzerland_foph_covidcertificates_d_id_ ON switzerland.foph_covidcertificates_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_covidcertificates_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_covidcertificates_d_meta_index ON switzerland.foph_covidcertificates_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_death_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_death_d_id_ ON switzerland.foph_death_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_death_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_death_d_meta_index ON switzerland.foph_death_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_deathvaccpersons_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_deathvaccpersons_d_id_ ON switzerland.foph_deathvaccpersons_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_deathvaccpersons_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_deathvaccpersons_d_meta_index ON switzerland.foph_deathvaccpersons_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_hosp_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_hosp_d_id_ ON switzerland.foph_hosp_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_hosp_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_hosp_d_meta_index ON switzerland.foph_hosp_d_meta USING btree (index);
 
 
 --
@@ -23598,6 +35916,20 @@ CREATE INDEX ix_switzerland_foph_hosp_id_ ON switzerland.foph_hosp USING btree (
 
 
 --
+-- Name: ix_switzerland_foph_hospcapacity_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_hospcapacity_d_id_ ON switzerland.foph_hospcapacity_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_hospcapacity_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_hospcapacity_d_meta_index ON switzerland.foph_hospcapacity_d_meta USING btree (index);
+
+
+--
 -- Name: ix_switzerland_foph_hospcapacity_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -23605,73 +35937,171 @@ CREATE INDEX ix_switzerland_foph_hospcapacity_id_ ON switzerland.foph_hospcapaci
 
 
 --
--- Name: ix_switzerland_foph_hospvaccpersons_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_hospcapacitycertstatus_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_hospvaccpersons_id_ ON switzerland.foph_hospvaccpersons USING btree (id_);
-
-
---
--- Name: ix_switzerland_foph_intcases_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE INDEX ix_switzerland_foph_intcases_id_ ON switzerland.foph_intcases USING btree (id_);
+CREATE INDEX ix_switzerland_foph_hospcapacitycertstatus_d_id_ ON switzerland.foph_hospcapacitycertstatus_d USING btree (id_);
 
 
 --
--- Name: ix_switzerland_foph_re_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_hospcapacitycertstatus_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_re_id_ ON switzerland.foph_re USING btree (id_);
-
-
---
--- Name: ix_switzerland_foph_test_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE INDEX ix_switzerland_foph_test_id_ ON switzerland.foph_test USING btree (id_);
+CREATE INDEX ix_switzerland_foph_hospcapacitycertstatus_d_meta_index ON switzerland.foph_hospcapacitycertstatus_d_meta USING btree (index);
 
 
 --
--- Name: ix_switzerland_foph_testpcrantigen_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_hospvaccpersons_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_foph_testpcrantigen_id_ ON switzerland.foph_testpcrantigen USING btree (id_);
-
-
---
--- Name: ix_switzerland_foph_virusvariantswgs_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE INDEX ix_switzerland_foph_virusvariantswgs_id_ ON switzerland.foph_virusvariantswgs USING btree (id_);
+CREATE INDEX ix_switzerland_foph_hospvaccpersons_d_id_ ON switzerland.foph_hospvaccpersons_d USING btree (id_);
 
 
 --
--- Name: ix_switzerland_janne_scenario_1_Date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_hospvaccpersons_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX "ix_switzerland_janne_scenario_1_Date" ON switzerland.janne_scenario_1 USING btree ("Date");
-
-
---
--- Name: ix_switzerland_janne_scenario_2_Date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
---
-
-CREATE INDEX "ix_switzerland_janne_scenario_2_Date" ON switzerland.janne_scenario_2 USING btree ("Date");
+CREATE INDEX ix_switzerland_foph_hospvaccpersons_d_meta_index ON switzerland.foph_hospvaccpersons_d_meta USING btree (index);
 
 
 --
--- Name: ix_switzerland_janne_scenario_3_Date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_intcases_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX "ix_switzerland_janne_scenario_3_Date" ON switzerland.janne_scenario_3 USING btree ("Date");
+CREATE INDEX ix_switzerland_foph_intcases_d_id_ ON switzerland.foph_intcases_d USING btree (id_);
 
 
 --
--- Name: ix_switzerland_janne_scenario_4_Date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_foph_intcases_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX "ix_switzerland_janne_scenario_4_Date" ON switzerland.janne_scenario_4 USING btree ("Date");
+CREATE INDEX ix_switzerland_foph_intcases_d_meta_index ON switzerland.foph_intcases_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_re_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_re_d_id_ ON switzerland.foph_re_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_re_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_re_d_meta_index ON switzerland.foph_re_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_test_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_test_d_id_ ON switzerland.foph_test_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_test_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_test_d_meta_index ON switzerland.foph_test_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_testpcrantigen_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_testpcrantigen_d_id_ ON switzerland.foph_testpcrantigen_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_testpcrantigen_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_testpcrantigen_d_meta_index ON switzerland.foph_testpcrantigen_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_foph_virusvariantswgs_d_id_; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_virusvariantswgs_d_id_ ON switzerland.foph_virusvariantswgs_d USING btree (id_);
+
+
+--
+-- Name: ix_switzerland_foph_virusvariantswgs_d_meta_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_foph_virusvariantswgs_d_meta_index ON switzerland.foph_virusvariantswgs_d_meta USING btree (index);
+
+
+--
+-- Name: ix_switzerland_forecast_lstm_hosp_d_results_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_lstm_hosp_d_results_index ON switzerland.forecast_lstm_hosp_d_results USING btree (index);
+
+
+--
+-- Name: ix_switzerland_forecast_lstm_icu_patients_d_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_lstm_icu_patients_d_d_results_date ON switzerland.forecast_lstm_icu_patients_d_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_forecast_lstm_icu_patients_d_results_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_lstm_icu_patients_d_results_index ON switzerland.forecast_lstm_icu_patients_d_results USING btree (index);
+
+
+--
+-- Name: ix_switzerland_forecast_lstm_total_hosp_d_results_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_lstm_total_hosp_d_results_index ON switzerland.forecast_lstm_total_hosp_d_results USING btree (index);
+
+
+--
+-- Name: ix_switzerland_forecast_ml_hosp_d_results_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ml_hosp_d_results_index ON switzerland.forecast_ml_hosp_d_results USING btree (index);
+
+
+--
+-- Name: ix_switzerland_forecast_ml_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ml_icu_patients_d_results_date ON switzerland.forecast_ml_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_forecast_ml_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ml_total_hosp_d_results_date ON switzerland.forecast_ml_total_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_forecast_ngboost_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ngboost_hosp_d_results_date ON switzerland.forecast_ngboost_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_forecast_ngboost_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ngboost_icu_patients_d_results_date ON switzerland.forecast_ngboost_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_forecast_ngboost_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_forecast_ngboost_total_hosp_d_results_date ON switzerland.forecast_ngboost_total_hosp_d_results USING btree (date);
 
 
 --
@@ -23738,10 +36168,10 @@ CREATE INDEX ix_switzerland_ml_forecast_total_index ON switzerland.ml_forecast_t
 
 
 --
--- Name: ix_switzerland_ml_val_hosp_all_cantons_index; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+-- Name: ix_switzerland_ml_val_hosp_all_cantons_datum; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
-CREATE INDEX ix_switzerland_ml_val_hosp_all_cantons_index ON switzerland.ml_val_hosp_all_cantons USING btree (index);
+CREATE INDEX ix_switzerland_ml_val_hosp_all_cantons_datum ON switzerland.ml_val_hosp_all_cantons USING btree (datum);
 
 
 --
@@ -23794,6 +36224,48 @@ CREATE INDEX ix_switzerland_ml_validation_total_index ON switzerland.ml_validati
 
 
 --
+-- Name: ix_switzerland_ngboost_forecast_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_forecast_hosp_d_results_date ON switzerland.ngboost_forecast_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_ngboost_forecast_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_forecast_icu_patients_d_results_date ON switzerland.ngboost_forecast_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_ngboost_forecast_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_forecast_total_hosp_d_results_date ON switzerland.ngboost_forecast_total_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_ngboost_validation_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_validation_hosp_d_results_date ON switzerland.ngboost_validation_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_ngboost_validation_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_validation_icu_patients_d_results_date ON switzerland.ngboost_validation_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_ngboost_validation_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_ngboost_validation_total_hosp_d_results_date ON switzerland.ngboost_validation_total_hosp_d_results USING btree (date);
+
+
+--
 -- Name: ix_switzerland_phosp_post_datum; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
 --
 
@@ -23808,11 +36280,116 @@ CREATE INDEX ix_switzerland_prev_post_datum ON switzerland.prev_post USING btree
 
 
 --
+-- Name: ix_switzerland_validation_lstm_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_lstm_hosp_d_results_date ON switzerland.validation_lstm_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_validation_lstm_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_lstm_icu_patients_d_results_date ON switzerland.validation_lstm_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_validation_lstm_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_lstm_total_hosp_d_results_date ON switzerland.validation_lstm_total_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_validation_ngboost_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_ngboost_hosp_d_results_date ON switzerland.validation_ngboost_hosp_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_validation_ngboost_icu_patients_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_ngboost_icu_patients_d_results_date ON switzerland.validation_ngboost_icu_patients_d_results USING btree (date);
+
+
+--
+-- Name: ix_switzerland_validation_ngboost_total_hosp_d_results_date; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_switzerland_validation_ngboost_total_hosp_d_results_date ON switzerland.validation_ngboost_total_hosp_d_results USING btree (date);
+
+
+--
+-- Name: region_idx; Type: INDEX; Schema: switzerland; Owner: dev_epigraph
+--
+
+CREATE INDEX region_idx ON switzerland.foph_cases USING btree ("geoRegion");
+
+
+--
+-- Name: geocode; Type: INDEX; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+CREATE UNIQUE INDEX geocode ON trajetorias_project.environmental_2006 USING btree (cd_gecm);
+
+
+--
+-- Name: geocode17; Type: INDEX; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+CREATE UNIQUE INDEX geocode17 ON trajetorias_project.environmental_2017 USING btree (cd_gecm);
+
+
+--
+-- Name: ix_unicef_brasil_co_0_index; Type: INDEX; Schema: unicef; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_unicef_brasil_co_0_index ON unicef.brasil_co_0 USING btree (index);
+
+
+--
+-- Name: ix_unicef_brasil_co_0_meta_index; Type: INDEX; Schema: unicef; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_unicef_brasil_co_0_meta_index ON unicef.brasil_co_0_meta USING btree (index);
+
+
+--
+-- Name: ix_unsafe_abortion_law_policies_by_legal_status_Legal s_1646; Type: INDEX; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+CREATE INDEX "ix_unsafe_abortion_law_policies_by_legal_status_Legal s_1646" ON unsafe_abortion.law_policies_by_legal_status USING btree ("Legal status of abortion");
+
+
+--
+-- Name: ix_unsafe_abortion_laws_policies_strategies_index; Type: INDEX; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_unsafe_abortion_laws_policies_strategies_index ON unsafe_abortion.laws_policies_strategies USING btree (index);
+
+
+--
+-- Name: ix_worldbank_total_population_0_meta_index; Type: INDEX; Schema: worldbank; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_worldbank_total_population_0_meta_index ON worldbank.total_population_0_meta USING btree (index);
+
+
+--
+-- Name: ix_worldbank_total_population_0_year; Type: INDEX; Schema: worldbank; Owner: dev_epigraph
+--
+
+CREATE INDEX ix_worldbank_total_population_0_year ON worldbank.total_population_0 USING btree (year);
+
+
+--
 -- Name: SCHEMA brasil; Type: ACL; Schema: -; Owner: dev_admin
 --
 
 GRANT ALL ON SCHEMA brasil TO dev_epigraph;
-GRANT ALL PRIVILEGES ON SCHEMA brasil TO dev_epigraph;
+GRANT ALL ON SCHEMA brasil TO dev_epigraph;
 
 
 --
@@ -23820,5044 +36397,7092 @@ GRANT ALL PRIVILEGES ON SCHEMA brasil TO dev_epigraph;
 --
 
 GRANT ALL ON SCHEMA colombia TO dev_epigraph;
-GRANT ALL PRIVILEGES ON SCHEMA colombia TO dev_epigraph;
+GRANT ALL ON SCHEMA colombia TO dev_epigraph;
+GRANT ALL ON SCHEMA colombia TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA global; Type: ACL; Schema: -; Owner: dev_admin
+--
+
+GRANT ALL ON SCHEMA global TO dev_epigraph;
+GRANT ALL ON SCHEMA global TO dev_epigraph;
+GRANT ALL ON SCHEMA global TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA google_health; Type: ACL; Schema: -; Owner: dev_admin
+--
+
+GRANT ALL ON SCHEMA google_health TO dev_epigraph;
+GRANT ALL ON SCHEMA google_health TO dev_epigraph;
+GRANT ALL ON SCHEMA google_health TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA pg_catalog; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA pg_catalog TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA public TO dev_epigraph;
+
 
 --
 -- Name: SCHEMA switzerland; Type: ACL; Schema: -; Owner: dev_admin
 --
 
+GRANT ALL ON SCHEMA switzerland TO dev_epigraph;
 GRANT USAGE ON SCHEMA switzerland TO dev_epigraph;
-GRANT USAGE ON  SCHEMA switzerland TO dev_epigraph;
-GRANT ALL PRIVILEGES ON SCHEMA switzerland TO dev_epigraph;
-GRANT ALL ON ALL TABLES IN SCHEMA switzerland TO dev_epigraph;
-GRANT ALL ON ALL FUNCTIONS IN SCHEMA switzerland TO dev_epigraph;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA switzerland TO dev_epigraph;
+GRANT ALL ON SCHEMA switzerland TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA trajetorias_project; Type: ACL; Schema: -; Owner: dev_admin
+--
+
+GRANT USAGE ON SCHEMA trajetorias_project TO dev_epigraph;
+GRANT ALL ON SCHEMA trajetorias_project TO dev_epigraph;
+GRANT ALL ON SCHEMA trajetorias_project TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA unicef; Type: ACL; Schema: -; Owner: dev_epigraph
+--
+
+GRANT ALL ON SCHEMA unicef TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA unsafe_abortion; Type: ACL; Schema: -; Owner: dev_epigraph
+--
+
+GRANT ALL ON SCHEMA unsafe_abortion TO dev_epigraph;
+
+
+--
+-- Name: SCHEMA worldbank; Type: ACL; Schema: -; Owner: dev_epigraph
+--
+
+GRANT ALL ON SCHEMA worldbank TO dev_epigraph;
+
+
+--
+-- Name: TABLE br_municipalities_geocode; Type: ACL; Schema: brasil; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE brasil.br_municipalities_geocode TO dev_epigraph;
+
+
+--
+-- Name: TABLE caso_full; Type: ACL; Schema: brasil; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE brasil.caso_full TO dev_epigraph;
+
+
+--
+-- Name: TABLE "data_SARI_16_08_21.csv"; Type: ACL; Schema: brasil; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE brasil."data_SARI_16_08_21.csv" TO dev_epigraph;
+
+
+--
+-- Name: TABLE casos_covid_agg_m; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.casos_covid_agg_m TO dev_epigraph;
+
+
+--
+-- Name: TABLE casos_covid_agg_m_meta; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.casos_covid_agg_m_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE casos_covid_deaths_agg_m; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.casos_covid_deaths_agg_m TO dev_epigraph;
+
+
+--
+-- Name: TABLE casos_covid_deaths_agg_m_meta; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.casos_covid_deaths_agg_m_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE casos_positivos_bogota_d; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.casos_positivos_bogota_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE positive_cases_covid_d; Type: ACL; Schema: colombia; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE colombia.positive_cases_covid_d TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.positive_cases_covid_d TO dev_epigraph;
+
+
+--
+-- Name: SEQUENCE positive_cases_covid_d_id__seq; Type: ACL; Schema: colombia; Owner: dev_admin
+--
+
+GRANT SELECT,USAGE ON SEQUENCE colombia.positive_cases_covid_d_id__seq TO dev_epigraph;
+
+
+--
+-- Name: TABLE positive_cases_covid_meta; Type: ACL; Schema: colombia; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE colombia.positive_cases_covid_meta TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.positive_cases_covid_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE positive_cases_teste; Type: ACL; Schema: colombia; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE colombia.positive_cases_teste TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.positive_cases_teste TO dev_epigraph;
+
+
+--
+-- Name: TABLE test_positive_covid; Type: ACL; Schema: colombia; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE colombia.test_positive_covid TO dev_epigraph;
+
+
+--
+-- Name: TABLE gamdb_0; Type: ACL; Schema: global; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE global.gamdb_0 TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_by_age_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_by_age_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_by_age_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_by_age_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_by_sex_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_by_sex_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_by_sex_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_by_sex_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE covid19_series_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.covid19_series_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE demographics; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.demographics TO dev_epigraph;
+
+
+--
+-- Name: TABLE demographics_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.demographics_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE economy; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.economy TO dev_epigraph;
+
+
+--
+-- Name: TABLE economy_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.economy_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE emergency_declarations_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.emergency_declarations_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE emergency_declarations_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.emergency_declarations_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE geography; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.geography TO dev_epigraph;
+
+
+--
+-- Name: TABLE geography_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.geography_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE government_response_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.government_response_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE government_response_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.government_response_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE health; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.health TO dev_epigraph;
+
+
+--
+-- Name: TABLE health_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.health_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE hospitalizations_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.hospitalizations_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE hospitalizations_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.hospitalizations_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE locality_names_0; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.locality_names_0 TO dev_epigraph;
+
+
+--
+-- Name: TABLE locality_names_0_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.locality_names_0_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE mobility_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.mobility_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE mobility_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.mobility_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE search_trends_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.search_trends_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE search_trends_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.search_trends_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccination_access; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccination_access TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccination_access_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccination_access_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccination_search_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccination_search_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccination_search_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccination_search_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccinations_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccinations_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE vaccinations_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.vaccinations_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE weather_d; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.weather_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE weather_d_meta; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.weather_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE worldbank; Type: ACL; Schema: google_health; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE google_health.worldbank TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_aggregate; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_aggregate TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_am; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_am TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_amop; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_amop TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_amproc; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_amproc TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_attrdef; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_attrdef TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_attribute; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_attribute TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_auth_members; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_auth_members TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_authid; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_authid TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_available_extension_versions; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_available_extension_versions TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_available_extensions; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_available_extensions TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_cast; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_cast TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_class; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_class TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_collation; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_collation TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_config; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_config TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_constraint; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_constraint TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_conversion; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_conversion TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_cursors; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_cursors TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_database; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_database TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_db_role_setting; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_db_role_setting TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_default_acl; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_default_acl TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_depend; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_depend TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_description; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_description TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_enum; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_enum TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_event_trigger; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_event_trigger TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_extension; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_extension TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_file_settings; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_file_settings TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_foreign_data_wrapper; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_foreign_data_wrapper TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_foreign_server; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_foreign_server TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_foreign_table; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_foreign_table TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_group; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_group TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_hba_file_rules; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_hba_file_rules TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_index; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_index TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_inherits; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_inherits TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_init_privs; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_init_privs TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_language; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_language TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_largeobject; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_largeobject TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_largeobject_metadata; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_largeobject_metadata TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_locks; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_locks TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_matviews; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_matviews TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_namespace; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_namespace TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_opclass; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_opclass TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_operator; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_operator TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_opfamily; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_opfamily TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_partitioned_table; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_partitioned_table TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_pltemplate; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_pltemplate TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_policies; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_policies TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_policy; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_policy TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_prepared_statements; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_prepared_statements TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_prepared_xacts; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_prepared_xacts TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_proc; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_proc TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_publication; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_publication TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_publication_rel; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_publication_rel TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_publication_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_publication_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_range; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_range TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_replication_origin; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_replication_origin TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_replication_origin_status; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_replication_origin_status TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_replication_slots; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_replication_slots TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_rewrite; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_rewrite TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_roles; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_roles TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_rules; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_rules TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_seclabel; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_seclabel TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_seclabels; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_seclabels TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_sequence; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_sequence TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_sequences; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_sequences TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_settings; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_settings TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_shadow; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_shadow TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_shdepend; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_shdepend TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_shdescription; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_shdescription TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_shseclabel; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_shseclabel TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_activity; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_activity TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_all_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_all_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_all_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_all_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_archiver; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_archiver TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_bgwriter; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_bgwriter TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_database; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_database TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_database_conflicts; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_database_conflicts TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_progress_vacuum; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_progress_vacuum TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_replication; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_replication TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_ssl; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_ssl TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_subscription; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_subscription TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_sys_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_sys_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_sys_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_sys_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_user_functions; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_user_functions TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_user_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_user_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_user_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_user_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_wal_receiver; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_wal_receiver TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_xact_all_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_xact_all_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_xact_sys_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_xact_sys_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_xact_user_functions; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_xact_user_functions TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stat_xact_user_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stat_xact_user_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_all_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_all_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_all_sequences; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_all_sequences TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_all_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_all_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_sys_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_sys_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_sys_sequences; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_sys_sequences TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_sys_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_sys_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_user_indexes; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_user_indexes TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_user_sequences; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_user_sequences TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statio_user_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statio_user_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statistic; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statistic TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_statistic_ext; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_statistic_ext TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_stats; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_stats TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_subscription; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_subscription TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_subscription_rel; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_subscription_rel TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_tables; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_tables TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_tablespace; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_tablespace TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_timezone_abbrevs; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_timezone_abbrevs TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_timezone_names; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_timezone_names TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_transform; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_transform TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_trigger; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_trigger TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_ts_config; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_ts_config TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_ts_config_map; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_ts_config_map TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_ts_dict; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_ts_dict TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_ts_parser; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_ts_parser TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_ts_template; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_ts_template TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_type; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_type TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_user; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_user TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_user_mapping; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_user_mapping TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_user_mappings; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_user_mappings TO dev_epigraph;
+
+
+--
+-- Name: TABLE pg_views; Type: ACL; Schema: pg_catalog; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE pg_catalog.pg_views TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ABW_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ABW_0" TO dev_external;
+GRANT SELECT ON TABLE public."ABW_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ABW_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AFG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AFG_0" TO dev_external;
+GRANT SELECT ON TABLE public."AFG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AFG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AFG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AFG_1" TO dev_external;
+GRANT SELECT ON TABLE public."AFG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AFG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AFG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AFG_2" TO dev_external;
+GRANT SELECT ON TABLE public."AFG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AFG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AGO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AGO_0" TO dev_external;
+GRANT SELECT ON TABLE public."AGO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AGO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AGO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AGO_1" TO dev_external;
+GRANT SELECT ON TABLE public."AGO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AGO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AGO_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AGO_2" TO dev_external;
+GRANT SELECT ON TABLE public."AGO_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AGO_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AGO_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AGO_3" TO dev_external;
+GRANT SELECT ON TABLE public."AGO_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AGO_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AIA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AIA_0" TO dev_external;
+GRANT SELECT ON TABLE public."AIA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AIA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALA_0" TO dev_external;
+GRANT SELECT ON TABLE public."ALA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALA_1" TO dev_external;
+GRANT SELECT ON TABLE public."ALA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALB_0" TO dev_external;
+GRANT SELECT ON TABLE public."ALB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALB_1" TO dev_external;
+GRANT SELECT ON TABLE public."ALB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALB_2" TO dev_external;
+GRANT SELECT ON TABLE public."ALB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ALB_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ALB_3" TO dev_external;
+GRANT SELECT ON TABLE public."ALB_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ALB_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AND_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AND_0" TO dev_external;
+GRANT SELECT ON TABLE public."AND_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AND_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AND_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AND_1" TO dev_external;
+GRANT SELECT ON TABLE public."AND_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AND_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARE_0" TO dev_external;
+GRANT SELECT ON TABLE public."ARE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARE_1" TO dev_external;
+GRANT SELECT ON TABLE public."ARE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARE_2" TO dev_external;
+GRANT SELECT ON TABLE public."ARE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARE_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARE_3" TO dev_external;
+GRANT SELECT ON TABLE public."ARE_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARE_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARG_0" TO dev_external;
+GRANT SELECT ON TABLE public."ARG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARG_1" TO dev_external;
+GRANT SELECT ON TABLE public."ARG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARG_2" TO dev_external;
+GRANT SELECT ON TABLE public."ARG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARM_0" TO dev_external;
+GRANT SELECT ON TABLE public."ARM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ARM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ARM_1" TO dev_external;
+GRANT SELECT ON TABLE public."ARM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ARM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ASM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ASM_0" TO dev_external;
+GRANT SELECT ON TABLE public."ASM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ASM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ASM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ASM_1" TO dev_external;
+GRANT SELECT ON TABLE public."ASM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ASM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ASM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ASM_2" TO dev_external;
+GRANT SELECT ON TABLE public."ASM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ASM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ASM_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ASM_3" TO dev_external;
+GRANT SELECT ON TABLE public."ASM_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ASM_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ATA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ATA_0" TO dev_external;
+GRANT SELECT ON TABLE public."ATA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ATA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ATF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ATF_0" TO dev_external;
+GRANT SELECT ON TABLE public."ATF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ATF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ATF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ATF_1" TO dev_external;
+GRANT SELECT ON TABLE public."ATF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ATF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ATG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ATG_0" TO dev_external;
+GRANT SELECT ON TABLE public."ATG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ATG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ATG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ATG_1" TO dev_external;
+GRANT SELECT ON TABLE public."ATG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ATG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUS_0" TO dev_external;
+GRANT SELECT ON TABLE public."AUS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUS_1" TO dev_external;
+GRANT SELECT ON TABLE public."AUS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUS_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUS_2" TO dev_external;
+GRANT SELECT ON TABLE public."AUS_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUS_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUT_0" TO dev_external;
+GRANT SELECT ON TABLE public."AUT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUT_1" TO dev_external;
+GRANT SELECT ON TABLE public."AUT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUT_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUT_2" TO dev_external;
+GRANT SELECT ON TABLE public."AUT_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUT_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AUT_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AUT_3" TO dev_external;
+GRANT SELECT ON TABLE public."AUT_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AUT_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AZE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AZE_0" TO dev_external;
+GRANT SELECT ON TABLE public."AZE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AZE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AZE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AZE_1" TO dev_external;
+GRANT SELECT ON TABLE public."AZE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AZE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "AZE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."AZE_2" TO dev_external;
+GRANT SELECT ON TABLE public."AZE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."AZE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BDI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BDI_0" TO dev_external;
+GRANT SELECT ON TABLE public."BDI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BDI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BDI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BDI_1" TO dev_external;
+GRANT SELECT ON TABLE public."BDI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BDI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BDI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BDI_2" TO dev_external;
+GRANT SELECT ON TABLE public."BDI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BDI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BDI_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BDI_3" TO dev_external;
+GRANT SELECT ON TABLE public."BDI_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BDI_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BDI_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BDI_4" TO dev_external;
+GRANT SELECT ON TABLE public."BDI_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BDI_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEL_0" TO dev_external;
+GRANT SELECT ON TABLE public."BEL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEL_1" TO dev_external;
+GRANT SELECT ON TABLE public."BEL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEL_2" TO dev_external;
+GRANT SELECT ON TABLE public."BEL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEL_3" TO dev_external;
+GRANT SELECT ON TABLE public."BEL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEL_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEL_4" TO dev_external;
+GRANT SELECT ON TABLE public."BEL_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEL_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEN_0" TO dev_external;
+GRANT SELECT ON TABLE public."BEN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEN_1" TO dev_external;
+GRANT SELECT ON TABLE public."BEN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BEN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BEN_2" TO dev_external;
+GRANT SELECT ON TABLE public."BEN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BEN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BFA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BFA_0" TO dev_external;
+GRANT SELECT ON TABLE public."BFA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BFA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BFA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BFA_1" TO dev_external;
+GRANT SELECT ON TABLE public."BFA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BFA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BFA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BFA_2" TO dev_external;
+GRANT SELECT ON TABLE public."BFA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BFA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BFA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BFA_3" TO dev_external;
+GRANT SELECT ON TABLE public."BFA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BFA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGD_0" TO dev_external;
+GRANT SELECT ON TABLE public."BGD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGD_1" TO dev_external;
+GRANT SELECT ON TABLE public."BGD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGD_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGD_2" TO dev_external;
+GRANT SELECT ON TABLE public."BGD_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGD_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGD_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGD_3" TO dev_external;
+GRANT SELECT ON TABLE public."BGD_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGD_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGD_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGD_4" TO dev_external;
+GRANT SELECT ON TABLE public."BGD_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGD_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGR_0" TO dev_external;
+GRANT SELECT ON TABLE public."BGR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGR_1" TO dev_external;
+GRANT SELECT ON TABLE public."BGR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BGR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BGR_2" TO dev_external;
+GRANT SELECT ON TABLE public."BGR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BGR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BHR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BHR_0" TO dev_external;
+GRANT SELECT ON TABLE public."BHR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BHR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BHR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BHR_1" TO dev_external;
+GRANT SELECT ON TABLE public."BHR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BHR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BHS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BHS_0" TO dev_external;
+GRANT SELECT ON TABLE public."BHS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BHS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BHS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BHS_1" TO dev_external;
+GRANT SELECT ON TABLE public."BHS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BHS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BIH_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BIH_0" TO dev_external;
+GRANT SELECT ON TABLE public."BIH_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BIH_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BIH_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BIH_1" TO dev_external;
+GRANT SELECT ON TABLE public."BIH_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BIH_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BIH_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BIH_2" TO dev_external;
+GRANT SELECT ON TABLE public."BIH_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BIH_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BIH_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BIH_3" TO dev_external;
+GRANT SELECT ON TABLE public."BIH_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BIH_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLM_0" TO dev_external;
+GRANT SELECT ON TABLE public."BLM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLR_0" TO dev_external;
+GRANT SELECT ON TABLE public."BLR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLR_1" TO dev_external;
+GRANT SELECT ON TABLE public."BLR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLR_2" TO dev_external;
+GRANT SELECT ON TABLE public."BLR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLZ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLZ_0" TO dev_external;
+GRANT SELECT ON TABLE public."BLZ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLZ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BLZ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BLZ_1" TO dev_external;
+GRANT SELECT ON TABLE public."BLZ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BLZ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BMU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BMU_0" TO dev_external;
+GRANT SELECT ON TABLE public."BMU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BMU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BMU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BMU_1" TO dev_external;
+GRANT SELECT ON TABLE public."BMU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BMU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BOL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BOL_0" TO dev_external;
+GRANT SELECT ON TABLE public."BOL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BOL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BOL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BOL_1" TO dev_external;
+GRANT SELECT ON TABLE public."BOL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BOL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BOL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BOL_2" TO dev_external;
+GRANT SELECT ON TABLE public."BOL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BOL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BOL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BOL_3" TO dev_external;
+GRANT SELECT ON TABLE public."BOL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BOL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRA_0" TO dev_external;
+GRANT SELECT ON TABLE public."BRA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRA_1" TO dev_external;
+GRANT SELECT ON TABLE public."BRA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRA_2" TO dev_external;
+GRANT SELECT ON TABLE public."BRA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRA_3" TO dev_external;
+GRANT SELECT ON TABLE public."BRA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRB_0" TO dev_external;
+GRANT SELECT ON TABLE public."BRB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRB_1" TO dev_external;
+GRANT SELECT ON TABLE public."BRB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRN_0" TO dev_external;
+GRANT SELECT ON TABLE public."BRN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRN_1" TO dev_external;
+GRANT SELECT ON TABLE public."BRN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BRN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BRN_2" TO dev_external;
+GRANT SELECT ON TABLE public."BRN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BRN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BTN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BTN_0" TO dev_external;
+GRANT SELECT ON TABLE public."BTN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BTN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BTN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BTN_1" TO dev_external;
+GRANT SELECT ON TABLE public."BTN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BTN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BTN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BTN_2" TO dev_external;
+GRANT SELECT ON TABLE public."BTN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BTN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BVT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BVT_0" TO dev_external;
+GRANT SELECT ON TABLE public."BVT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BVT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BWA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BWA_0" TO dev_external;
+GRANT SELECT ON TABLE public."BWA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BWA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BWA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BWA_1" TO dev_external;
+GRANT SELECT ON TABLE public."BWA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BWA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "BWA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."BWA_2" TO dev_external;
+GRANT SELECT ON TABLE public."BWA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."BWA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAF_0" TO dev_external;
+GRANT SELECT ON TABLE public."CAF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAF_1" TO dev_external;
+GRANT SELECT ON TABLE public."CAF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAF_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAF_2" TO dev_external;
+GRANT SELECT ON TABLE public."CAF_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAF_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAN_0" TO dev_external;
+GRANT SELECT ON TABLE public."CAN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAN_1" TO dev_external;
+GRANT SELECT ON TABLE public."CAN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAN_2" TO dev_external;
+GRANT SELECT ON TABLE public."CAN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CAN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CAN_3" TO dev_external;
+GRANT SELECT ON TABLE public."CAN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CAN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CCK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CCK_0" TO dev_external;
+GRANT SELECT ON TABLE public."CCK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CCK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHE_0" TO dev_external;
+GRANT SELECT ON TABLE public."CHE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHE_1" TO dev_external;
+GRANT SELECT ON TABLE public."CHE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHE_2" TO dev_external;
+GRANT SELECT ON TABLE public."CHE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHE_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHE_3" TO dev_external;
+GRANT SELECT ON TABLE public."CHE_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHE_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHL_0" TO dev_external;
+GRANT SELECT ON TABLE public."CHL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHL_1" TO dev_external;
+GRANT SELECT ON TABLE public."CHL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHL_2" TO dev_external;
+GRANT SELECT ON TABLE public."CHL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHL_3" TO dev_external;
+GRANT SELECT ON TABLE public."CHL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHN_0" TO dev_external;
+GRANT SELECT ON TABLE public."CHN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHN_1" TO dev_external;
+GRANT SELECT ON TABLE public."CHN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHN_2" TO dev_external;
+GRANT SELECT ON TABLE public."CHN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CHN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CHN_3" TO dev_external;
+GRANT SELECT ON TABLE public."CHN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CHN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CIV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CIV_0" TO dev_external;
+GRANT SELECT ON TABLE public."CIV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CIV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CIV_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CIV_1" TO dev_external;
+GRANT SELECT ON TABLE public."CIV_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CIV_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CIV_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CIV_2" TO dev_external;
+GRANT SELECT ON TABLE public."CIV_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CIV_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CIV_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CIV_3" TO dev_external;
+GRANT SELECT ON TABLE public."CIV_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CIV_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CIV_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CIV_4" TO dev_external;
+GRANT SELECT ON TABLE public."CIV_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CIV_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CMR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CMR_0" TO dev_external;
+GRANT SELECT ON TABLE public."CMR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CMR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CMR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CMR_1" TO dev_external;
+GRANT SELECT ON TABLE public."CMR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CMR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CMR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CMR_2" TO dev_external;
+GRANT SELECT ON TABLE public."CMR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CMR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CMR_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CMR_3" TO dev_external;
+GRANT SELECT ON TABLE public."CMR_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CMR_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COD_0" TO dev_external;
+GRANT SELECT ON TABLE public."COD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COD_1" TO dev_external;
+GRANT SELECT ON TABLE public."COD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COD_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COD_2" TO dev_external;
+GRANT SELECT ON TABLE public."COD_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COD_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COG_0" TO dev_external;
+GRANT SELECT ON TABLE public."COG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COG_1" TO dev_external;
+GRANT SELECT ON TABLE public."COG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COG_2" TO dev_external;
+GRANT SELECT ON TABLE public."COG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COK_0" TO dev_external;
+GRANT SELECT ON TABLE public."COK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COL_0" TO dev_external;
+GRANT SELECT ON TABLE public."COL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COL_1" TO dev_external;
+GRANT SELECT ON TABLE public."COL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COL_2" TO dev_external;
+GRANT SELECT ON TABLE public."COL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COM_0" TO dev_external;
+GRANT SELECT ON TABLE public."COM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "COM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."COM_1" TO dev_external;
+GRANT SELECT ON TABLE public."COM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."COM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CPV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CPV_0" TO dev_external;
+GRANT SELECT ON TABLE public."CPV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CPV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CPV_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CPV_1" TO dev_external;
+GRANT SELECT ON TABLE public."CPV_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CPV_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CRI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CRI_0" TO dev_external;
+GRANT SELECT ON TABLE public."CRI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CRI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CRI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CRI_1" TO dev_external;
+GRANT SELECT ON TABLE public."CRI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CRI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CRI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CRI_2" TO dev_external;
+GRANT SELECT ON TABLE public."CRI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CRI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CUB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CUB_0" TO dev_external;
+GRANT SELECT ON TABLE public."CUB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CUB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CUB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CUB_1" TO dev_external;
+GRANT SELECT ON TABLE public."CUB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CUB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CUB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CUB_2" TO dev_external;
+GRANT SELECT ON TABLE public."CUB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CUB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CXR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CXR_0" TO dev_external;
+GRANT SELECT ON TABLE public."CXR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CXR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CYM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CYM_0" TO dev_external;
+GRANT SELECT ON TABLE public."CYM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CYM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CYM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CYM_1" TO dev_external;
+GRANT SELECT ON TABLE public."CYM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CYM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CYP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CYP_0" TO dev_external;
+GRANT SELECT ON TABLE public."CYP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CYP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CYP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CYP_1" TO dev_external;
+GRANT SELECT ON TABLE public."CYP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CYP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CZE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CZE_0" TO dev_external;
+GRANT SELECT ON TABLE public."CZE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CZE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CZE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CZE_1" TO dev_external;
+GRANT SELECT ON TABLE public."CZE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CZE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "CZE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."CZE_2" TO dev_external;
+GRANT SELECT ON TABLE public."CZE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."CZE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DEU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DEU_0" TO dev_external;
+GRANT SELECT ON TABLE public."DEU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DEU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DEU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DEU_1" TO dev_external;
+GRANT SELECT ON TABLE public."DEU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DEU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DEU_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DEU_2" TO dev_external;
+GRANT SELECT ON TABLE public."DEU_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DEU_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DEU_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DEU_3" TO dev_external;
+GRANT SELECT ON TABLE public."DEU_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DEU_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DEU_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DEU_4" TO dev_external;
+GRANT SELECT ON TABLE public."DEU_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DEU_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DJI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DJI_0" TO dev_external;
+GRANT SELECT ON TABLE public."DJI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DJI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DJI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DJI_1" TO dev_external;
+GRANT SELECT ON TABLE public."DJI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DJI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DJI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DJI_2" TO dev_external;
+GRANT SELECT ON TABLE public."DJI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DJI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DMA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DMA_0" TO dev_external;
+GRANT SELECT ON TABLE public."DMA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DMA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DMA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DMA_1" TO dev_external;
+GRANT SELECT ON TABLE public."DMA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DMA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DNK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DNK_0" TO dev_external;
+GRANT SELECT ON TABLE public."DNK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DNK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DNK_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DNK_1" TO dev_external;
+GRANT SELECT ON TABLE public."DNK_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DNK_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DNK_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DNK_2" TO dev_external;
+GRANT SELECT ON TABLE public."DNK_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DNK_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DOM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DOM_0" TO dev_external;
+GRANT SELECT ON TABLE public."DOM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DOM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DOM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DOM_1" TO dev_external;
+GRANT SELECT ON TABLE public."DOM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DOM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DOM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DOM_2" TO dev_external;
+GRANT SELECT ON TABLE public."DOM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DOM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DZA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DZA_0" TO dev_external;
+GRANT SELECT ON TABLE public."DZA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DZA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DZA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DZA_1" TO dev_external;
+GRANT SELECT ON TABLE public."DZA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DZA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "DZA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."DZA_2" TO dev_external;
+GRANT SELECT ON TABLE public."DZA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."DZA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ECU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ECU_0" TO dev_external;
+GRANT SELECT ON TABLE public."ECU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ECU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ECU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ECU_1" TO dev_external;
+GRANT SELECT ON TABLE public."ECU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ECU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ECU_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ECU_2" TO dev_external;
+GRANT SELECT ON TABLE public."ECU_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ECU_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ECU_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ECU_3" TO dev_external;
+GRANT SELECT ON TABLE public."ECU_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ECU_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EGY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EGY_0" TO dev_external;
+GRANT SELECT ON TABLE public."EGY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EGY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EGY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EGY_1" TO dev_external;
+GRANT SELECT ON TABLE public."EGY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EGY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EGY_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EGY_2" TO dev_external;
+GRANT SELECT ON TABLE public."EGY_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EGY_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ERI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ERI_0" TO dev_external;
+GRANT SELECT ON TABLE public."ERI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ERI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ERI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ERI_1" TO dev_external;
+GRANT SELECT ON TABLE public."ERI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ERI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ERI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ERI_2" TO dev_external;
+GRANT SELECT ON TABLE public."ERI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ERI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESH_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESH_0" TO dev_external;
+GRANT SELECT ON TABLE public."ESH_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESH_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESH_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESH_1" TO dev_external;
+GRANT SELECT ON TABLE public."ESH_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESH_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESP_0" TO dev_external;
+GRANT SELECT ON TABLE public."ESP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESP_1" TO dev_external;
+GRANT SELECT ON TABLE public."ESP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESP_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESP_2" TO dev_external;
+GRANT SELECT ON TABLE public."ESP_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESP_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESP_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESP_3" TO dev_external;
+GRANT SELECT ON TABLE public."ESP_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESP_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ESP_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ESP_4" TO dev_external;
+GRANT SELECT ON TABLE public."ESP_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ESP_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EST_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EST_0" TO dev_external;
+GRANT SELECT ON TABLE public."EST_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EST_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EST_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EST_1" TO dev_external;
+GRANT SELECT ON TABLE public."EST_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EST_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EST_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EST_2" TO dev_external;
+GRANT SELECT ON TABLE public."EST_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EST_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "EST_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."EST_3" TO dev_external;
+GRANT SELECT ON TABLE public."EST_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."EST_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ETH_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ETH_0" TO dev_external;
+GRANT SELECT ON TABLE public."ETH_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ETH_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ETH_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ETH_1" TO dev_external;
+GRANT SELECT ON TABLE public."ETH_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ETH_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ETH_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ETH_2" TO dev_external;
+GRANT SELECT ON TABLE public."ETH_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ETH_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ETH_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ETH_3" TO dev_external;
+GRANT SELECT ON TABLE public."ETH_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ETH_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FIN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FIN_0" TO dev_external;
+GRANT SELECT ON TABLE public."FIN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FIN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FIN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FIN_1" TO dev_external;
+GRANT SELECT ON TABLE public."FIN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FIN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FIN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FIN_2" TO dev_external;
+GRANT SELECT ON TABLE public."FIN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FIN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FIN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FIN_3" TO dev_external;
+GRANT SELECT ON TABLE public."FIN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FIN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FIN_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FIN_4" TO dev_external;
+GRANT SELECT ON TABLE public."FIN_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FIN_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FJI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FJI_0" TO dev_external;
+GRANT SELECT ON TABLE public."FJI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FJI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FJI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FJI_1" TO dev_external;
+GRANT SELECT ON TABLE public."FJI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FJI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FJI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FJI_2" TO dev_external;
+GRANT SELECT ON TABLE public."FJI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FJI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FLK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FLK_0" TO dev_external;
+GRANT SELECT ON TABLE public."FLK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FLK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_0" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_1" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_2" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_3" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_4" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRA_5"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRA_5" TO dev_external;
+GRANT SELECT ON TABLE public."FRA_5" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRA_5" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRO_0" TO dev_external;
+GRANT SELECT ON TABLE public."FRO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRO_1" TO dev_external;
+GRANT SELECT ON TABLE public."FRO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FRO_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FRO_2" TO dev_external;
+GRANT SELECT ON TABLE public."FRO_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FRO_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FSM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FSM_0" TO dev_external;
+GRANT SELECT ON TABLE public."FSM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FSM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "FSM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."FSM_1" TO dev_external;
+GRANT SELECT ON TABLE public."FSM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."FSM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GAB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GAB_0" TO dev_external;
+GRANT SELECT ON TABLE public."GAB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GAB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GAB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GAB_1" TO dev_external;
+GRANT SELECT ON TABLE public."GAB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GAB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GAB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GAB_2" TO dev_external;
+GRANT SELECT ON TABLE public."GAB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GAB_2" TO dev_epigraph;
+
+
+--
+-- Name: TABLE "GAMDB_0"; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public."GAMDB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GAMDB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GBR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GBR_0" TO dev_external;
+GRANT SELECT ON TABLE public."GBR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GBR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GBR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GBR_1" TO dev_external;
+GRANT SELECT ON TABLE public."GBR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GBR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GBR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GBR_2" TO dev_external;
+GRANT SELECT ON TABLE public."GBR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GBR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GBR_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GBR_3" TO dev_external;
+GRANT SELECT ON TABLE public."GBR_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GBR_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GEO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GEO_0" TO dev_external;
+GRANT SELECT ON TABLE public."GEO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GEO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GEO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GEO_1" TO dev_external;
+GRANT SELECT ON TABLE public."GEO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GEO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GEO_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GEO_2" TO dev_external;
+GRANT SELECT ON TABLE public."GEO_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GEO_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GGY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GGY_0" TO dev_external;
+GRANT SELECT ON TABLE public."GGY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GGY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GGY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GGY_1" TO dev_external;
+GRANT SELECT ON TABLE public."GGY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GGY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GHA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GHA_0" TO dev_external;
+GRANT SELECT ON TABLE public."GHA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GHA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GHA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GHA_1" TO dev_external;
+GRANT SELECT ON TABLE public."GHA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GHA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GHA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GHA_2" TO dev_external;
+GRANT SELECT ON TABLE public."GHA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GHA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GIB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GIB_0" TO dev_external;
+GRANT SELECT ON TABLE public."GIB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GIB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GIN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GIN_0" TO dev_external;
+GRANT SELECT ON TABLE public."GIN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GIN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GIN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GIN_1" TO dev_external;
+GRANT SELECT ON TABLE public."GIN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GIN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GIN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GIN_2" TO dev_external;
+GRANT SELECT ON TABLE public."GIN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GIN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GIN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GIN_3" TO dev_external;
+GRANT SELECT ON TABLE public."GIN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GIN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GLP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GLP_0" TO dev_external;
+GRANT SELECT ON TABLE public."GLP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GLP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GLP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GLP_1" TO dev_external;
+GRANT SELECT ON TABLE public."GLP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GLP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GLP_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GLP_2" TO dev_external;
+GRANT SELECT ON TABLE public."GLP_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GLP_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GMB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GMB_0" TO dev_external;
+GRANT SELECT ON TABLE public."GMB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GMB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GMB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GMB_1" TO dev_external;
+GRANT SELECT ON TABLE public."GMB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GMB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GMB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GMB_2" TO dev_external;
+GRANT SELECT ON TABLE public."GMB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GMB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNB_0" TO dev_external;
+GRANT SELECT ON TABLE public."GNB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNB_1" TO dev_external;
+GRANT SELECT ON TABLE public."GNB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNB_2" TO dev_external;
+GRANT SELECT ON TABLE public."GNB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNQ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNQ_0" TO dev_external;
+GRANT SELECT ON TABLE public."GNQ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNQ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNQ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNQ_1" TO dev_external;
+GRANT SELECT ON TABLE public."GNQ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNQ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GNQ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GNQ_2" TO dev_external;
+GRANT SELECT ON TABLE public."GNQ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GNQ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRC_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRC_0" TO dev_external;
+GRANT SELECT ON TABLE public."GRC_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRC_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRC_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRC_1" TO dev_external;
+GRANT SELECT ON TABLE public."GRC_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRC_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRC_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRC_2" TO dev_external;
+GRANT SELECT ON TABLE public."GRC_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRC_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRC_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRC_3" TO dev_external;
+GRANT SELECT ON TABLE public."GRC_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRC_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRD_0" TO dev_external;
+GRANT SELECT ON TABLE public."GRD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRD_1" TO dev_external;
+GRANT SELECT ON TABLE public."GRD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRL_0" TO dev_external;
+GRANT SELECT ON TABLE public."GRL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GRL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GRL_1" TO dev_external;
+GRANT SELECT ON TABLE public."GRL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GRL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GTM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GTM_0" TO dev_external;
+GRANT SELECT ON TABLE public."GTM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GTM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GTM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GTM_1" TO dev_external;
+GRANT SELECT ON TABLE public."GTM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GTM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GTM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GTM_2" TO dev_external;
+GRANT SELECT ON TABLE public."GTM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GTM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUF_0" TO dev_external;
+GRANT SELECT ON TABLE public."GUF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUF_1" TO dev_external;
+GRANT SELECT ON TABLE public."GUF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUF_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUF_2" TO dev_external;
+GRANT SELECT ON TABLE public."GUF_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUF_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUM_0" TO dev_external;
+GRANT SELECT ON TABLE public."GUM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUM_1" TO dev_external;
+GRANT SELECT ON TABLE public."GUM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUY_0" TO dev_external;
+GRANT SELECT ON TABLE public."GUY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUY_1" TO dev_external;
+GRANT SELECT ON TABLE public."GUY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "GUY_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."GUY_2" TO dev_external;
+GRANT SELECT ON TABLE public."GUY_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."GUY_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HKG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HKG_0" TO dev_external;
+GRANT SELECT ON TABLE public."HKG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HKG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HKG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HKG_1" TO dev_external;
+GRANT SELECT ON TABLE public."HKG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HKG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HMD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HMD_0" TO dev_external;
+GRANT SELECT ON TABLE public."HMD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HMD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HND_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HND_0" TO dev_external;
+GRANT SELECT ON TABLE public."HND_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HND_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HND_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HND_1" TO dev_external;
+GRANT SELECT ON TABLE public."HND_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HND_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HND_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HND_2" TO dev_external;
+GRANT SELECT ON TABLE public."HND_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HND_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HRV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HRV_0" TO dev_external;
+GRANT SELECT ON TABLE public."HRV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HRV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HRV_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HRV_1" TO dev_external;
+GRANT SELECT ON TABLE public."HRV_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HRV_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HRV_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HRV_2" TO dev_external;
+GRANT SELECT ON TABLE public."HRV_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HRV_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HTI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HTI_0" TO dev_external;
+GRANT SELECT ON TABLE public."HTI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HTI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HTI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HTI_1" TO dev_external;
+GRANT SELECT ON TABLE public."HTI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HTI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HTI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HTI_2" TO dev_external;
+GRANT SELECT ON TABLE public."HTI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HTI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HTI_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HTI_3" TO dev_external;
+GRANT SELECT ON TABLE public."HTI_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HTI_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HTI_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HTI_4" TO dev_external;
+GRANT SELECT ON TABLE public."HTI_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HTI_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HUN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HUN_0" TO dev_external;
+GRANT SELECT ON TABLE public."HUN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HUN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HUN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HUN_1" TO dev_external;
+GRANT SELECT ON TABLE public."HUN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HUN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "HUN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."HUN_2" TO dev_external;
+GRANT SELECT ON TABLE public."HUN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."HUN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IDN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IDN_0" TO dev_external;
+GRANT SELECT ON TABLE public."IDN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IDN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IDN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IDN_1" TO dev_external;
+GRANT SELECT ON TABLE public."IDN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IDN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IDN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IDN_2" TO dev_external;
+GRANT SELECT ON TABLE public."IDN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IDN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IDN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IDN_3" TO dev_external;
+GRANT SELECT ON TABLE public."IDN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IDN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IDN_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IDN_4" TO dev_external;
+GRANT SELECT ON TABLE public."IDN_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IDN_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IMN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IMN_0" TO dev_external;
+GRANT SELECT ON TABLE public."IMN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IMN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IMN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IMN_1" TO dev_external;
+GRANT SELECT ON TABLE public."IMN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IMN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IMN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IMN_2" TO dev_external;
+GRANT SELECT ON TABLE public."IMN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IMN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IND_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IND_0" TO dev_external;
+GRANT SELECT ON TABLE public."IND_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IND_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IND_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IND_1" TO dev_external;
+GRANT SELECT ON TABLE public."IND_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IND_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IND_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IND_2" TO dev_external;
+GRANT SELECT ON TABLE public."IND_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IND_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IND_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IND_3" TO dev_external;
+GRANT SELECT ON TABLE public."IND_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IND_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IOT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IOT_0" TO dev_external;
+GRANT SELECT ON TABLE public."IOT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IOT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRL_0" TO dev_external;
+GRANT SELECT ON TABLE public."IRL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRL_1" TO dev_external;
+GRANT SELECT ON TABLE public."IRL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRN_0" TO dev_external;
+GRANT SELECT ON TABLE public."IRN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRN_1" TO dev_external;
+GRANT SELECT ON TABLE public."IRN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRN_2" TO dev_external;
+GRANT SELECT ON TABLE public."IRN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRQ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRQ_0" TO dev_external;
+GRANT SELECT ON TABLE public."IRQ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRQ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRQ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRQ_1" TO dev_external;
+GRANT SELECT ON TABLE public."IRQ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRQ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "IRQ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."IRQ_2" TO dev_external;
+GRANT SELECT ON TABLE public."IRQ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."IRQ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ISL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ISL_0" TO dev_external;
+GRANT SELECT ON TABLE public."ISL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ISL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ISL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ISL_1" TO dev_external;
+GRANT SELECT ON TABLE public."ISL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ISL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ISL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ISL_2" TO dev_external;
+GRANT SELECT ON TABLE public."ISL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ISL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ISR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ISR_0" TO dev_external;
+GRANT SELECT ON TABLE public."ISR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ISR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ISR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ISR_1" TO dev_external;
+GRANT SELECT ON TABLE public."ISR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ISR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ITA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ITA_0" TO dev_external;
+GRANT SELECT ON TABLE public."ITA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ITA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ITA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ITA_1" TO dev_external;
+GRANT SELECT ON TABLE public."ITA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ITA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ITA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ITA_2" TO dev_external;
+GRANT SELECT ON TABLE public."ITA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ITA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ITA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ITA_3" TO dev_external;
+GRANT SELECT ON TABLE public."ITA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ITA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JAM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JAM_0" TO dev_external;
+GRANT SELECT ON TABLE public."JAM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JAM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JAM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JAM_1" TO dev_external;
+GRANT SELECT ON TABLE public."JAM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JAM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JEY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JEY_0" TO dev_external;
+GRANT SELECT ON TABLE public."JEY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JEY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JEY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JEY_1" TO dev_external;
+GRANT SELECT ON TABLE public."JEY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JEY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JOR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JOR_0" TO dev_external;
+GRANT SELECT ON TABLE public."JOR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JOR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JOR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JOR_1" TO dev_external;
+GRANT SELECT ON TABLE public."JOR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JOR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JOR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JOR_2" TO dev_external;
+GRANT SELECT ON TABLE public."JOR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JOR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JPN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JPN_0" TO dev_external;
+GRANT SELECT ON TABLE public."JPN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JPN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JPN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JPN_1" TO dev_external;
+GRANT SELECT ON TABLE public."JPN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JPN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "JPN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."JPN_2" TO dev_external;
+GRANT SELECT ON TABLE public."JPN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."JPN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KAZ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KAZ_0" TO dev_external;
+GRANT SELECT ON TABLE public."KAZ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KAZ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KAZ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KAZ_1" TO dev_external;
+GRANT SELECT ON TABLE public."KAZ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KAZ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KAZ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KAZ_2" TO dev_external;
+GRANT SELECT ON TABLE public."KAZ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KAZ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KEN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KEN_0" TO dev_external;
+GRANT SELECT ON TABLE public."KEN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KEN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KEN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KEN_1" TO dev_external;
+GRANT SELECT ON TABLE public."KEN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KEN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KEN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KEN_2" TO dev_external;
+GRANT SELECT ON TABLE public."KEN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KEN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KEN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KEN_3" TO dev_external;
+GRANT SELECT ON TABLE public."KEN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KEN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KGZ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KGZ_0" TO dev_external;
+GRANT SELECT ON TABLE public."KGZ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KGZ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KGZ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KGZ_1" TO dev_external;
+GRANT SELECT ON TABLE public."KGZ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KGZ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KGZ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KGZ_2" TO dev_external;
+GRANT SELECT ON TABLE public."KGZ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KGZ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KHM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KHM_0" TO dev_external;
+GRANT SELECT ON TABLE public."KHM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KHM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KHM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KHM_1" TO dev_external;
+GRANT SELECT ON TABLE public."KHM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KHM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KHM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KHM_2" TO dev_external;
+GRANT SELECT ON TABLE public."KHM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KHM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KHM_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KHM_3" TO dev_external;
+GRANT SELECT ON TABLE public."KHM_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KHM_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KHM_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KHM_4" TO dev_external;
+GRANT SELECT ON TABLE public."KHM_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KHM_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KIR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KIR_0" TO dev_external;
+GRANT SELECT ON TABLE public."KIR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KIR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KNA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KNA_0" TO dev_external;
+GRANT SELECT ON TABLE public."KNA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KNA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KNA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KNA_1" TO dev_external;
+GRANT SELECT ON TABLE public."KNA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KNA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KOR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KOR_0" TO dev_external;
+GRANT SELECT ON TABLE public."KOR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KOR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KOR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KOR_1" TO dev_external;
+GRANT SELECT ON TABLE public."KOR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KOR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KOR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KOR_2" TO dev_external;
+GRANT SELECT ON TABLE public."KOR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KOR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KWT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KWT_0" TO dev_external;
+GRANT SELECT ON TABLE public."KWT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KWT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "KWT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."KWT_1" TO dev_external;
+GRANT SELECT ON TABLE public."KWT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."KWT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LAO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LAO_0" TO dev_external;
+GRANT SELECT ON TABLE public."LAO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LAO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LAO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LAO_1" TO dev_external;
+GRANT SELECT ON TABLE public."LAO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LAO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LAO_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LAO_2" TO dev_external;
+GRANT SELECT ON TABLE public."LAO_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LAO_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBN_0" TO dev_external;
+GRANT SELECT ON TABLE public."LBN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBN_1" TO dev_external;
+GRANT SELECT ON TABLE public."LBN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBN_2" TO dev_external;
+GRANT SELECT ON TABLE public."LBN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBN_3" TO dev_external;
+GRANT SELECT ON TABLE public."LBN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBR_0" TO dev_external;
+GRANT SELECT ON TABLE public."LBR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBR_1" TO dev_external;
+GRANT SELECT ON TABLE public."LBR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBR_2" TO dev_external;
+GRANT SELECT ON TABLE public."LBR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBR_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBR_3" TO dev_external;
+GRANT SELECT ON TABLE public."LBR_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBR_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBY_0" TO dev_external;
+GRANT SELECT ON TABLE public."LBY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LBY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LBY_1" TO dev_external;
+GRANT SELECT ON TABLE public."LBY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LBY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LCA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LCA_0" TO dev_external;
+GRANT SELECT ON TABLE public."LCA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LCA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LCA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LCA_1" TO dev_external;
+GRANT SELECT ON TABLE public."LCA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LCA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LIE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LIE_0" TO dev_external;
+GRANT SELECT ON TABLE public."LIE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LIE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LIE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LIE_1" TO dev_external;
+GRANT SELECT ON TABLE public."LIE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LIE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LKA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LKA_0" TO dev_external;
+GRANT SELECT ON TABLE public."LKA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LKA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LKA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LKA_1" TO dev_external;
+GRANT SELECT ON TABLE public."LKA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LKA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LKA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LKA_2" TO dev_external;
+GRANT SELECT ON TABLE public."LKA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LKA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LSO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LSO_0" TO dev_external;
+GRANT SELECT ON TABLE public."LSO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LSO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LSO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LSO_1" TO dev_external;
+GRANT SELECT ON TABLE public."LSO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LSO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LTU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LTU_0" TO dev_external;
+GRANT SELECT ON TABLE public."LTU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LTU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LTU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LTU_1" TO dev_external;
+GRANT SELECT ON TABLE public."LTU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LTU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LTU_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LTU_2" TO dev_external;
+GRANT SELECT ON TABLE public."LTU_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LTU_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LUX_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LUX_0" TO dev_external;
+GRANT SELECT ON TABLE public."LUX_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LUX_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LUX_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LUX_1" TO dev_external;
+GRANT SELECT ON TABLE public."LUX_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LUX_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LUX_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LUX_2" TO dev_external;
+GRANT SELECT ON TABLE public."LUX_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LUX_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LUX_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LUX_3" TO dev_external;
+GRANT SELECT ON TABLE public."LUX_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LUX_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LUX_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LUX_4" TO dev_external;
+GRANT SELECT ON TABLE public."LUX_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LUX_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LVA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LVA_0" TO dev_external;
+GRANT SELECT ON TABLE public."LVA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LVA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LVA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LVA_1" TO dev_external;
+GRANT SELECT ON TABLE public."LVA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LVA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "LVA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."LVA_2" TO dev_external;
+GRANT SELECT ON TABLE public."LVA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."LVA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAC_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAC_0" TO dev_external;
+GRANT SELECT ON TABLE public."MAC_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAC_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAC_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAC_1" TO dev_external;
+GRANT SELECT ON TABLE public."MAC_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAC_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAC_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAC_2" TO dev_external;
+GRANT SELECT ON TABLE public."MAC_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAC_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAF_0" TO dev_external;
+GRANT SELECT ON TABLE public."MAF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAR_0" TO dev_external;
+GRANT SELECT ON TABLE public."MAR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAR_1" TO dev_external;
+GRANT SELECT ON TABLE public."MAR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAR_2" TO dev_external;
+GRANT SELECT ON TABLE public."MAR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAR_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAR_3" TO dev_external;
+GRANT SELECT ON TABLE public."MAR_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAR_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MAR_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MAR_4" TO dev_external;
+GRANT SELECT ON TABLE public."MAR_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MAR_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MCO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MCO_0" TO dev_external;
+GRANT SELECT ON TABLE public."MCO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MCO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDA_0" TO dev_external;
+GRANT SELECT ON TABLE public."MDA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDA_1" TO dev_external;
+GRANT SELECT ON TABLE public."MDA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDG_0" TO dev_external;
+GRANT SELECT ON TABLE public."MDG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDG_1" TO dev_external;
+GRANT SELECT ON TABLE public."MDG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDG_2" TO dev_external;
+GRANT SELECT ON TABLE public."MDG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDG_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDG_3" TO dev_external;
+GRANT SELECT ON TABLE public."MDG_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDG_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDG_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDG_4" TO dev_external;
+GRANT SELECT ON TABLE public."MDG_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDG_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MDV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MDV_0" TO dev_external;
+GRANT SELECT ON TABLE public."MDV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MDV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MEX_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MEX_0" TO dev_external;
+GRANT SELECT ON TABLE public."MEX_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MEX_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MEX_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MEX_1" TO dev_external;
+GRANT SELECT ON TABLE public."MEX_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MEX_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MEX_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MEX_2" TO dev_external;
+GRANT SELECT ON TABLE public."MEX_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MEX_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MHL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MHL_0" TO dev_external;
+GRANT SELECT ON TABLE public."MHL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MHL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MKD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MKD_0" TO dev_external;
+GRANT SELECT ON TABLE public."MKD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MKD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MKD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MKD_1" TO dev_external;
+GRANT SELECT ON TABLE public."MKD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MKD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLI_0" TO dev_external;
+GRANT SELECT ON TABLE public."MLI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLI_1" TO dev_external;
+GRANT SELECT ON TABLE public."MLI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLI_2" TO dev_external;
+GRANT SELECT ON TABLE public."MLI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLI_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLI_3" TO dev_external;
+GRANT SELECT ON TABLE public."MLI_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLI_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLI_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLI_4" TO dev_external;
+GRANT SELECT ON TABLE public."MLI_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLI_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLT_0" TO dev_external;
+GRANT SELECT ON TABLE public."MLT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLT_1" TO dev_external;
+GRANT SELECT ON TABLE public."MLT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MLT_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MLT_2" TO dev_external;
+GRANT SELECT ON TABLE public."MLT_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MLT_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MMR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MMR_0" TO dev_external;
+GRANT SELECT ON TABLE public."MMR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MMR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MMR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MMR_1" TO dev_external;
+GRANT SELECT ON TABLE public."MMR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MMR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MMR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MMR_2" TO dev_external;
+GRANT SELECT ON TABLE public."MMR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MMR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MMR_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MMR_3" TO dev_external;
+GRANT SELECT ON TABLE public."MMR_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MMR_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNE_0" TO dev_external;
+GRANT SELECT ON TABLE public."MNE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNE_1" TO dev_external;
+GRANT SELECT ON TABLE public."MNE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNG_0" TO dev_external;
+GRANT SELECT ON TABLE public."MNG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNG_1" TO dev_external;
+GRANT SELECT ON TABLE public."MNG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNG_2" TO dev_external;
+GRANT SELECT ON TABLE public."MNG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNP_0" TO dev_external;
+GRANT SELECT ON TABLE public."MNP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MNP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MNP_1" TO dev_external;
+GRANT SELECT ON TABLE public."MNP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MNP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MOZ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MOZ_0" TO dev_external;
+GRANT SELECT ON TABLE public."MOZ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MOZ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MOZ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MOZ_1" TO dev_external;
+GRANT SELECT ON TABLE public."MOZ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MOZ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MOZ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MOZ_2" TO dev_external;
+GRANT SELECT ON TABLE public."MOZ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MOZ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MOZ_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MOZ_3" TO dev_external;
+GRANT SELECT ON TABLE public."MOZ_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MOZ_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MRT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MRT_0" TO dev_external;
+GRANT SELECT ON TABLE public."MRT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MRT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MRT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MRT_1" TO dev_external;
+GRANT SELECT ON TABLE public."MRT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MRT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MRT_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MRT_2" TO dev_external;
+GRANT SELECT ON TABLE public."MRT_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MRT_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MSR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MSR_0" TO dev_external;
+GRANT SELECT ON TABLE public."MSR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MSR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MSR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MSR_1" TO dev_external;
+GRANT SELECT ON TABLE public."MSR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MSR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MTQ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MTQ_0" TO dev_external;
+GRANT SELECT ON TABLE public."MTQ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MTQ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MTQ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MTQ_1" TO dev_external;
+GRANT SELECT ON TABLE public."MTQ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MTQ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MTQ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MTQ_2" TO dev_external;
+GRANT SELECT ON TABLE public."MTQ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MTQ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MUS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MUS_0" TO dev_external;
+GRANT SELECT ON TABLE public."MUS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MUS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MUS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MUS_1" TO dev_external;
+GRANT SELECT ON TABLE public."MUS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MUS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MWI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MWI_0" TO dev_external;
+GRANT SELECT ON TABLE public."MWI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MWI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MWI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MWI_1" TO dev_external;
+GRANT SELECT ON TABLE public."MWI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MWI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MWI_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MWI_2" TO dev_external;
+GRANT SELECT ON TABLE public."MWI_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MWI_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MWI_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MWI_3" TO dev_external;
+GRANT SELECT ON TABLE public."MWI_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MWI_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MYS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MYS_0" TO dev_external;
+GRANT SELECT ON TABLE public."MYS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MYS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MYS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MYS_1" TO dev_external;
+GRANT SELECT ON TABLE public."MYS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MYS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MYS_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MYS_2" TO dev_external;
+GRANT SELECT ON TABLE public."MYS_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MYS_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MYT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MYT_0" TO dev_external;
+GRANT SELECT ON TABLE public."MYT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MYT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "MYT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."MYT_1" TO dev_external;
+GRANT SELECT ON TABLE public."MYT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."MYT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NAM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NAM_0" TO dev_external;
+GRANT SELECT ON TABLE public."NAM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NAM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NAM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NAM_1" TO dev_external;
+GRANT SELECT ON TABLE public."NAM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NAM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NAM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NAM_2" TO dev_external;
+GRANT SELECT ON TABLE public."NAM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NAM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NCL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NCL_0" TO dev_external;
+GRANT SELECT ON TABLE public."NCL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NCL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NCL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NCL_1" TO dev_external;
+GRANT SELECT ON TABLE public."NCL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NCL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NCL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NCL_2" TO dev_external;
+GRANT SELECT ON TABLE public."NCL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NCL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NER_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NER_0" TO dev_external;
+GRANT SELECT ON TABLE public."NER_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NER_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NER_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NER_1" TO dev_external;
+GRANT SELECT ON TABLE public."NER_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NER_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NER_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NER_2" TO dev_external;
+GRANT SELECT ON TABLE public."NER_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NER_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NER_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NER_3" TO dev_external;
+GRANT SELECT ON TABLE public."NER_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NER_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NFK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NFK_0" TO dev_external;
+GRANT SELECT ON TABLE public."NFK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NFK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NGA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NGA_0" TO dev_external;
+GRANT SELECT ON TABLE public."NGA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NGA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NGA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NGA_1" TO dev_external;
+GRANT SELECT ON TABLE public."NGA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NGA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NGA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NGA_2" TO dev_external;
+GRANT SELECT ON TABLE public."NGA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NGA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NIC_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NIC_0" TO dev_external;
+GRANT SELECT ON TABLE public."NIC_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NIC_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NIC_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NIC_1" TO dev_external;
+GRANT SELECT ON TABLE public."NIC_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NIC_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NIC_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NIC_2" TO dev_external;
+GRANT SELECT ON TABLE public."NIC_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NIC_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NIU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NIU_0" TO dev_external;
+GRANT SELECT ON TABLE public."NIU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NIU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NLD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NLD_0" TO dev_external;
+GRANT SELECT ON TABLE public."NLD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NLD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NLD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NLD_1" TO dev_external;
+GRANT SELECT ON TABLE public."NLD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NLD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NLD_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NLD_2" TO dev_external;
+GRANT SELECT ON TABLE public."NLD_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NLD_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NOR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NOR_0" TO dev_external;
+GRANT SELECT ON TABLE public."NOR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NOR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NOR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NOR_1" TO dev_external;
+GRANT SELECT ON TABLE public."NOR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NOR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NOR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NOR_2" TO dev_external;
+GRANT SELECT ON TABLE public."NOR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NOR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NPL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NPL_0" TO dev_external;
+GRANT SELECT ON TABLE public."NPL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NPL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NPL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NPL_1" TO dev_external;
+GRANT SELECT ON TABLE public."NPL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NPL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NPL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NPL_2" TO dev_external;
+GRANT SELECT ON TABLE public."NPL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NPL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NPL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NPL_3" TO dev_external;
+GRANT SELECT ON TABLE public."NPL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NPL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NPL_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NPL_4" TO dev_external;
+GRANT SELECT ON TABLE public."NPL_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NPL_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NRU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NRU_0" TO dev_external;
+GRANT SELECT ON TABLE public."NRU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NRU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NRU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NRU_1" TO dev_external;
+GRANT SELECT ON TABLE public."NRU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NRU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NZL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NZL_0" TO dev_external;
+GRANT SELECT ON TABLE public."NZL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NZL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NZL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NZL_1" TO dev_external;
+GRANT SELECT ON TABLE public."NZL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NZL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "NZL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."NZL_2" TO dev_external;
+GRANT SELECT ON TABLE public."NZL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."NZL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "OMN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."OMN_0" TO dev_external;
+GRANT SELECT ON TABLE public."OMN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."OMN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "OMN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."OMN_1" TO dev_external;
+GRANT SELECT ON TABLE public."OMN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."OMN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "OMN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."OMN_2" TO dev_external;
+GRANT SELECT ON TABLE public."OMN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."OMN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAK_0" TO dev_external;
+GRANT SELECT ON TABLE public."PAK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAK_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAK_1" TO dev_external;
+GRANT SELECT ON TABLE public."PAK_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAK_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAK_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAK_2" TO dev_external;
+GRANT SELECT ON TABLE public."PAK_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAK_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAK_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAK_3" TO dev_external;
+GRANT SELECT ON TABLE public."PAK_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAK_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAN_0" TO dev_external;
+GRANT SELECT ON TABLE public."PAN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAN_1" TO dev_external;
+GRANT SELECT ON TABLE public."PAN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAN_2" TO dev_external;
+GRANT SELECT ON TABLE public."PAN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PAN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PAN_3" TO dev_external;
+GRANT SELECT ON TABLE public."PAN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PAN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PCN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PCN_0" TO dev_external;
+GRANT SELECT ON TABLE public."PCN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PCN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PER_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PER_0" TO dev_external;
+GRANT SELECT ON TABLE public."PER_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PER_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PER_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PER_1" TO dev_external;
+GRANT SELECT ON TABLE public."PER_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PER_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PER_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PER_2" TO dev_external;
+GRANT SELECT ON TABLE public."PER_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PER_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PER_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PER_3" TO dev_external;
+GRANT SELECT ON TABLE public."PER_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PER_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PHL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PHL_0" TO dev_external;
+GRANT SELECT ON TABLE public."PHL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PHL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PHL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PHL_1" TO dev_external;
+GRANT SELECT ON TABLE public."PHL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PHL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PHL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PHL_2" TO dev_external;
+GRANT SELECT ON TABLE public."PHL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PHL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PHL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PHL_3" TO dev_external;
+GRANT SELECT ON TABLE public."PHL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PHL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PLW_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PLW_0" TO dev_external;
+GRANT SELECT ON TABLE public."PLW_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PLW_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PLW_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PLW_1" TO dev_external;
+GRANT SELECT ON TABLE public."PLW_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PLW_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PNG_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PNG_0" TO dev_external;
+GRANT SELECT ON TABLE public."PNG_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PNG_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PNG_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PNG_1" TO dev_external;
+GRANT SELECT ON TABLE public."PNG_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PNG_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PNG_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PNG_2" TO dev_external;
+GRANT SELECT ON TABLE public."PNG_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PNG_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "POL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."POL_0" TO dev_external;
+GRANT SELECT ON TABLE public."POL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."POL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "POL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."POL_1" TO dev_external;
+GRANT SELECT ON TABLE public."POL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."POL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "POL_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."POL_2" TO dev_external;
+GRANT SELECT ON TABLE public."POL_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."POL_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "POL_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."POL_3" TO dev_external;
+GRANT SELECT ON TABLE public."POL_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."POL_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRI_0" TO dev_external;
+GRANT SELECT ON TABLE public."PRI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRI_1" TO dev_external;
+GRANT SELECT ON TABLE public."PRI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRK_0" TO dev_external;
+GRANT SELECT ON TABLE public."PRK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRK_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRK_1" TO dev_external;
+GRANT SELECT ON TABLE public."PRK_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRK_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRK_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRK_2" TO dev_external;
+GRANT SELECT ON TABLE public."PRK_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRK_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRT_0" TO dev_external;
+GRANT SELECT ON TABLE public."PRT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRT_1" TO dev_external;
+GRANT SELECT ON TABLE public."PRT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRT_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRT_2" TO dev_external;
+GRANT SELECT ON TABLE public."PRT_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRT_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRT_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRT_3" TO dev_external;
+GRANT SELECT ON TABLE public."PRT_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRT_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRY_0" TO dev_external;
+GRANT SELECT ON TABLE public."PRY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRY_1" TO dev_external;
+GRANT SELECT ON TABLE public."PRY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PRY_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PRY_2" TO dev_external;
+GRANT SELECT ON TABLE public."PRY_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PRY_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PSE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PSE_0" TO dev_external;
+GRANT SELECT ON TABLE public."PSE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PSE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PSE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PSE_1" TO dev_external;
+GRANT SELECT ON TABLE public."PSE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PSE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PSE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PSE_2" TO dev_external;
+GRANT SELECT ON TABLE public."PSE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PSE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PYF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PYF_0" TO dev_external;
+GRANT SELECT ON TABLE public."PYF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PYF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "PYF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."PYF_1" TO dev_external;
+GRANT SELECT ON TABLE public."PYF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."PYF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "QAT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."QAT_0" TO dev_external;
+GRANT SELECT ON TABLE public."QAT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."QAT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "QAT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."QAT_1" TO dev_external;
+GRANT SELECT ON TABLE public."QAT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."QAT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "REU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."REU_0" TO dev_external;
+GRANT SELECT ON TABLE public."REU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."REU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "REU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."REU_1" TO dev_external;
+GRANT SELECT ON TABLE public."REU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."REU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "REU_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."REU_2" TO dev_external;
+GRANT SELECT ON TABLE public."REU_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."REU_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ROU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ROU_0" TO dev_external;
+GRANT SELECT ON TABLE public."ROU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ROU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ROU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ROU_1" TO dev_external;
+GRANT SELECT ON TABLE public."ROU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ROU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ROU_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ROU_2" TO dev_external;
+GRANT SELECT ON TABLE public."ROU_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ROU_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RUS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RUS_0" TO dev_external;
+GRANT SELECT ON TABLE public."RUS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RUS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RUS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RUS_1" TO dev_external;
+GRANT SELECT ON TABLE public."RUS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RUS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RUS_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RUS_2" TO dev_external;
+GRANT SELECT ON TABLE public."RUS_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RUS_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RUS_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RUS_3" TO dev_external;
+GRANT SELECT ON TABLE public."RUS_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RUS_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_0" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_1" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_2" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_3" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_4" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "RWA_5"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."RWA_5" TO dev_external;
+GRANT SELECT ON TABLE public."RWA_5" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."RWA_5" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SAU_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SAU_0" TO dev_external;
+GRANT SELECT ON TABLE public."SAU_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SAU_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SAU_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SAU_1" TO dev_external;
+GRANT SELECT ON TABLE public."SAU_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SAU_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SDN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SDN_0" TO dev_external;
+GRANT SELECT ON TABLE public."SDN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SDN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SDN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SDN_1" TO dev_external;
+GRANT SELECT ON TABLE public."SDN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SDN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SDN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SDN_2" TO dev_external;
+GRANT SELECT ON TABLE public."SDN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SDN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SDN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SDN_3" TO dev_external;
+GRANT SELECT ON TABLE public."SDN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SDN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SEN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SEN_0" TO dev_external;
+GRANT SELECT ON TABLE public."SEN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SEN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SEN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SEN_1" TO dev_external;
+GRANT SELECT ON TABLE public."SEN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SEN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SEN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SEN_2" TO dev_external;
+GRANT SELECT ON TABLE public."SEN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SEN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SEN_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SEN_3" TO dev_external;
+GRANT SELECT ON TABLE public."SEN_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SEN_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SEN_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SEN_4" TO dev_external;
+GRANT SELECT ON TABLE public."SEN_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SEN_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SGP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SGP_0" TO dev_external;
+GRANT SELECT ON TABLE public."SGP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SGP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SGP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SGP_1" TO dev_external;
+GRANT SELECT ON TABLE public."SGP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SGP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SGS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SGS_0" TO dev_external;
+GRANT SELECT ON TABLE public."SGS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SGS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SHN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SHN_0" TO dev_external;
+GRANT SELECT ON TABLE public."SHN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SHN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SHN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SHN_1" TO dev_external;
+GRANT SELECT ON TABLE public."SHN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SHN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SHN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SHN_2" TO dev_external;
+GRANT SELECT ON TABLE public."SHN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SHN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SJM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SJM_0" TO dev_external;
+GRANT SELECT ON TABLE public."SJM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SJM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SJM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SJM_1" TO dev_external;
+GRANT SELECT ON TABLE public."SJM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SJM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLB_0" TO dev_external;
+GRANT SELECT ON TABLE public."SLB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLB_1" TO dev_external;
+GRANT SELECT ON TABLE public."SLB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLB_2" TO dev_external;
+GRANT SELECT ON TABLE public."SLB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLE_0" TO dev_external;
+GRANT SELECT ON TABLE public."SLE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLE_1" TO dev_external;
+GRANT SELECT ON TABLE public."SLE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLE_2" TO dev_external;
+GRANT SELECT ON TABLE public."SLE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLE_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLE_3" TO dev_external;
+GRANT SELECT ON TABLE public."SLE_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLE_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLV_0" TO dev_external;
+GRANT SELECT ON TABLE public."SLV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLV_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLV_1" TO dev_external;
+GRANT SELECT ON TABLE public."SLV_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLV_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SLV_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SLV_2" TO dev_external;
+GRANT SELECT ON TABLE public."SLV_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SLV_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SMR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SMR_0" TO dev_external;
+GRANT SELECT ON TABLE public."SMR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SMR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SMR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SMR_1" TO dev_external;
+GRANT SELECT ON TABLE public."SMR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SMR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SOM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SOM_0" TO dev_external;
+GRANT SELECT ON TABLE public."SOM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SOM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SOM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SOM_1" TO dev_external;
+GRANT SELECT ON TABLE public."SOM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SOM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SOM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SOM_2" TO dev_external;
+GRANT SELECT ON TABLE public."SOM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SOM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SPM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SPM_0" TO dev_external;
+GRANT SELECT ON TABLE public."SPM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SPM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SPM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SPM_1" TO dev_external;
+GRANT SELECT ON TABLE public."SPM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SPM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SRB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SRB_0" TO dev_external;
+GRANT SELECT ON TABLE public."SRB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SRB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SRB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SRB_1" TO dev_external;
+GRANT SELECT ON TABLE public."SRB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SRB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SRB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SRB_2" TO dev_external;
+GRANT SELECT ON TABLE public."SRB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SRB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "STP_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."STP_0" TO dev_external;
+GRANT SELECT ON TABLE public."STP_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."STP_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "STP_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."STP_1" TO dev_external;
+GRANT SELECT ON TABLE public."STP_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."STP_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "STP_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."STP_2" TO dev_external;
+GRANT SELECT ON TABLE public."STP_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."STP_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SUR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SUR_0" TO dev_external;
+GRANT SELECT ON TABLE public."SUR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SUR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SUR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SUR_1" TO dev_external;
+GRANT SELECT ON TABLE public."SUR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SUR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SUR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SUR_2" TO dev_external;
+GRANT SELECT ON TABLE public."SUR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SUR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVK_0" TO dev_external;
+GRANT SELECT ON TABLE public."SVK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVK_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVK_1" TO dev_external;
+GRANT SELECT ON TABLE public."SVK_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVK_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVK_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVK_2" TO dev_external;
+GRANT SELECT ON TABLE public."SVK_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVK_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVN_0" TO dev_external;
+GRANT SELECT ON TABLE public."SVN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVN_1" TO dev_external;
+GRANT SELECT ON TABLE public."SVN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SVN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SVN_2" TO dev_external;
+GRANT SELECT ON TABLE public."SVN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SVN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWE_0" TO dev_external;
+GRANT SELECT ON TABLE public."SWE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWE_1" TO dev_external;
+GRANT SELECT ON TABLE public."SWE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWE_2" TO dev_external;
+GRANT SELECT ON TABLE public."SWE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWE_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWZ_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWZ_0" TO dev_external;
+GRANT SELECT ON TABLE public."SWZ_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWZ_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWZ_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWZ_1" TO dev_external;
+GRANT SELECT ON TABLE public."SWZ_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWZ_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SWZ_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SWZ_2" TO dev_external;
+GRANT SELECT ON TABLE public."SWZ_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SWZ_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SYC_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SYC_0" TO dev_external;
+GRANT SELECT ON TABLE public."SYC_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SYC_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SYC_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SYC_1" TO dev_external;
+GRANT SELECT ON TABLE public."SYC_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SYC_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SYR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SYR_0" TO dev_external;
+GRANT SELECT ON TABLE public."SYR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SYR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SYR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SYR_1" TO dev_external;
+GRANT SELECT ON TABLE public."SYR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SYR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "SYR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."SYR_2" TO dev_external;
+GRANT SELECT ON TABLE public."SYR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."SYR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCA_0" TO dev_external;
+GRANT SELECT ON TABLE public."TCA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCA_1" TO dev_external;
+GRANT SELECT ON TABLE public."TCA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCD_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCD_0" TO dev_external;
+GRANT SELECT ON TABLE public."TCD_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCD_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCD_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCD_1" TO dev_external;
+GRANT SELECT ON TABLE public."TCD_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCD_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCD_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCD_2" TO dev_external;
+GRANT SELECT ON TABLE public."TCD_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCD_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TCD_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TCD_3" TO dev_external;
+GRANT SELECT ON TABLE public."TCD_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TCD_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TGO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TGO_0" TO dev_external;
+GRANT SELECT ON TABLE public."TGO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TGO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TGO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TGO_1" TO dev_external;
+GRANT SELECT ON TABLE public."TGO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TGO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TGO_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TGO_2" TO dev_external;
+GRANT SELECT ON TABLE public."TGO_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TGO_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "THA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."THA_0" TO dev_external;
+GRANT SELECT ON TABLE public."THA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."THA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "THA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."THA_1" TO dev_external;
+GRANT SELECT ON TABLE public."THA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."THA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "THA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."THA_2" TO dev_external;
+GRANT SELECT ON TABLE public."THA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."THA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "THA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."THA_3" TO dev_external;
+GRANT SELECT ON TABLE public."THA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."THA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TJK_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TJK_0" TO dev_external;
+GRANT SELECT ON TABLE public."TJK_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TJK_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TJK_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TJK_1" TO dev_external;
+GRANT SELECT ON TABLE public."TJK_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TJK_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TJK_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TJK_2" TO dev_external;
+GRANT SELECT ON TABLE public."TJK_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TJK_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TJK_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TJK_3" TO dev_external;
+GRANT SELECT ON TABLE public."TJK_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TJK_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TKL_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TKL_0" TO dev_external;
+GRANT SELECT ON TABLE public."TKL_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TKL_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TKL_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TKL_1" TO dev_external;
+GRANT SELECT ON TABLE public."TKL_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TKL_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TKM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TKM_0" TO dev_external;
+GRANT SELECT ON TABLE public."TKM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TKM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TKM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TKM_1" TO dev_external;
+GRANT SELECT ON TABLE public."TKM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TKM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TLS_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TLS_0" TO dev_external;
+GRANT SELECT ON TABLE public."TLS_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TLS_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TLS_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TLS_1" TO dev_external;
+GRANT SELECT ON TABLE public."TLS_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TLS_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TLS_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TLS_2" TO dev_external;
+GRANT SELECT ON TABLE public."TLS_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TLS_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TLS_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TLS_3" TO dev_external;
+GRANT SELECT ON TABLE public."TLS_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TLS_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TON_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TON_0" TO dev_external;
+GRANT SELECT ON TABLE public."TON_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TON_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TON_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TON_1" TO dev_external;
+GRANT SELECT ON TABLE public."TON_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TON_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TTO_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TTO_0" TO dev_external;
+GRANT SELECT ON TABLE public."TTO_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TTO_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TTO_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TTO_1" TO dev_external;
+GRANT SELECT ON TABLE public."TTO_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TTO_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUN_0" TO dev_external;
+GRANT SELECT ON TABLE public."TUN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUN_1" TO dev_external;
+GRANT SELECT ON TABLE public."TUN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUN_2" TO dev_external;
+GRANT SELECT ON TABLE public."TUN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUR_0" TO dev_external;
+GRANT SELECT ON TABLE public."TUR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUR_1" TO dev_external;
+GRANT SELECT ON TABLE public."TUR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUR_2" TO dev_external;
+GRANT SELECT ON TABLE public."TUR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUV_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUV_0" TO dev_external;
+GRANT SELECT ON TABLE public."TUV_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUV_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TUV_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TUV_1" TO dev_external;
+GRANT SELECT ON TABLE public."TUV_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TUV_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TWN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TWN_0" TO dev_external;
+GRANT SELECT ON TABLE public."TWN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TWN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TWN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TWN_1" TO dev_external;
+GRANT SELECT ON TABLE public."TWN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TWN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TWN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TWN_2" TO dev_external;
+GRANT SELECT ON TABLE public."TWN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TWN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TZA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TZA_0" TO dev_external;
+GRANT SELECT ON TABLE public."TZA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TZA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TZA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TZA_1" TO dev_external;
+GRANT SELECT ON TABLE public."TZA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TZA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TZA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TZA_2" TO dev_external;
+GRANT SELECT ON TABLE public."TZA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TZA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "TZA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."TZA_3" TO dev_external;
+GRANT SELECT ON TABLE public."TZA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."TZA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UGA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UGA_0" TO dev_external;
+GRANT SELECT ON TABLE public."UGA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UGA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UGA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UGA_1" TO dev_external;
+GRANT SELECT ON TABLE public."UGA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UGA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UGA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UGA_2" TO dev_external;
+GRANT SELECT ON TABLE public."UGA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UGA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UGA_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UGA_3" TO dev_external;
+GRANT SELECT ON TABLE public."UGA_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UGA_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UGA_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UGA_4" TO dev_external;
+GRANT SELECT ON TABLE public."UGA_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UGA_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UKR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UKR_0" TO dev_external;
+GRANT SELECT ON TABLE public."UKR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UKR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UKR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UKR_1" TO dev_external;
+GRANT SELECT ON TABLE public."UKR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UKR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UKR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UKR_2" TO dev_external;
+GRANT SELECT ON TABLE public."UKR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UKR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UMI_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UMI_0" TO dev_external;
+GRANT SELECT ON TABLE public."UMI_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UMI_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UMI_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UMI_1" TO dev_external;
+GRANT SELECT ON TABLE public."UMI_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UMI_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "URY_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."URY_0" TO dev_external;
+GRANT SELECT ON TABLE public."URY_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."URY_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "URY_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."URY_1" TO dev_external;
+GRANT SELECT ON TABLE public."URY_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."URY_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "URY_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."URY_2" TO dev_external;
+GRANT SELECT ON TABLE public."URY_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."URY_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "USA_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."USA_0" TO dev_external;
+GRANT SELECT ON TABLE public."USA_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."USA_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "USA_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."USA_1" TO dev_external;
+GRANT SELECT ON TABLE public."USA_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."USA_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "USA_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."USA_2" TO dev_external;
+GRANT SELECT ON TABLE public."USA_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."USA_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UZB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UZB_0" TO dev_external;
+GRANT SELECT ON TABLE public."UZB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UZB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UZB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UZB_1" TO dev_external;
+GRANT SELECT ON TABLE public."UZB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UZB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "UZB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."UZB_2" TO dev_external;
+GRANT SELECT ON TABLE public."UZB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."UZB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VAT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VAT_0" TO dev_external;
+GRANT SELECT ON TABLE public."VAT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VAT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VCT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VCT_0" TO dev_external;
+GRANT SELECT ON TABLE public."VCT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VCT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VCT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VCT_1" TO dev_external;
+GRANT SELECT ON TABLE public."VCT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VCT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VEN_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VEN_0" TO dev_external;
+GRANT SELECT ON TABLE public."VEN_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VEN_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VEN_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VEN_1" TO dev_external;
+GRANT SELECT ON TABLE public."VEN_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VEN_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VEN_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VEN_2" TO dev_external;
+GRANT SELECT ON TABLE public."VEN_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VEN_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VGB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VGB_0" TO dev_external;
+GRANT SELECT ON TABLE public."VGB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VGB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VGB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VGB_1" TO dev_external;
+GRANT SELECT ON TABLE public."VGB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VGB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VIR_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VIR_0" TO dev_external;
+GRANT SELECT ON TABLE public."VIR_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VIR_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VIR_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VIR_1" TO dev_external;
+GRANT SELECT ON TABLE public."VIR_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VIR_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VIR_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VIR_2" TO dev_external;
+GRANT SELECT ON TABLE public."VIR_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VIR_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VNM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VNM_0" TO dev_external;
+GRANT SELECT ON TABLE public."VNM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VNM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VNM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VNM_1" TO dev_external;
+GRANT SELECT ON TABLE public."VNM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VNM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VNM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VNM_2" TO dev_external;
+GRANT SELECT ON TABLE public."VNM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VNM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VNM_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VNM_3" TO dev_external;
+GRANT SELECT ON TABLE public."VNM_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VNM_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VUT_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VUT_0" TO dev_external;
+GRANT SELECT ON TABLE public."VUT_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VUT_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VUT_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VUT_1" TO dev_external;
+GRANT SELECT ON TABLE public."VUT_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VUT_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "VUT_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."VUT_2" TO dev_external;
+GRANT SELECT ON TABLE public."VUT_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."VUT_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WLF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WLF_0" TO dev_external;
+GRANT SELECT ON TABLE public."WLF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WLF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WLF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WLF_1" TO dev_external;
+GRANT SELECT ON TABLE public."WLF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WLF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WLF_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WLF_2" TO dev_external;
+GRANT SELECT ON TABLE public."WLF_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WLF_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WSM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WSM_0" TO dev_external;
+GRANT SELECT ON TABLE public."WSM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WSM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WSM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WSM_1" TO dev_external;
+GRANT SELECT ON TABLE public."WSM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WSM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "WSM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."WSM_2" TO dev_external;
+GRANT SELECT ON TABLE public."WSM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."WSM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "YEM_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."YEM_0" TO dev_external;
+GRANT SELECT ON TABLE public."YEM_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."YEM_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "YEM_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."YEM_1" TO dev_external;
+GRANT SELECT ON TABLE public."YEM_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."YEM_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "YEM_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."YEM_2" TO dev_external;
+GRANT SELECT ON TABLE public."YEM_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."YEM_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZAF_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZAF_0" TO dev_external;
+GRANT SELECT ON TABLE public."ZAF_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZAF_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZAF_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZAF_1" TO dev_external;
+GRANT SELECT ON TABLE public."ZAF_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZAF_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZAF_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZAF_2" TO dev_external;
+GRANT SELECT ON TABLE public."ZAF_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZAF_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZAF_3"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZAF_3" TO dev_external;
+GRANT SELECT ON TABLE public."ZAF_3" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZAF_3" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZAF_4"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZAF_4" TO dev_external;
+GRANT SELECT ON TABLE public."ZAF_4" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZAF_4" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZMB_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZMB_0" TO dev_external;
+GRANT SELECT ON TABLE public."ZMB_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZMB_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZMB_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZMB_1" TO dev_external;
+GRANT SELECT ON TABLE public."ZMB_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZMB_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZMB_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZMB_2" TO dev_external;
+GRANT SELECT ON TABLE public."ZMB_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZMB_2" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZWE_0"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZWE_0" TO dev_external;
+GRANT SELECT ON TABLE public."ZWE_0" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZWE_0" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZWE_1"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZWE_1" TO dev_external;
+GRANT SELECT ON TABLE public."ZWE_1" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZWE_1" TO dev_epigraph;
 
 
 --
 -- Name: TABLE "ZWE_2"; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public."ZWE_2" TO dev_external;
+GRANT SELECT ON TABLE public."ZWE_2" TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public."ZWE_2" TO dev_epigraph;
+
+
+--
+-- Name: TABLE colombia_covid_geo; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.colombia_covid_geo TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.colombia_covid_geo TO dev_epigraph;
+
+
+--
+-- Name: TABLE environmental_joined; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.environmental_joined TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.environmental_joined TO dev_epigraph;
+
+
+--
+-- Name: TABLE epinow_rt; Type: ACL; Schema: public; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.epinow_rt TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_cases; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_cases TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hosp; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hosp TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_cases_hosp; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.foph_cases_hosp TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.foph_cases_hosp TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hosp_isocode; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.foph_hosp_isocode TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.foph_hosp_isocode TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hosp_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hosp_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hosp_isocode2; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.foph_hosp_isocode2 TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.foph_hosp_isocode2 TO dev_epigraph;
 
 
 --
@@ -28865,48 +43490,637 @@ GRANT SELECT ON TABLE public."ZWE_2" TO dev_external;
 --
 
 GRANT SELECT ON TABLE public.gadm36 TO dev_admin;
-GRANT SELECT ON TABLE public.gadm36 TO dev_external;
+GRANT SELECT ON TABLE public.gadm36 TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.gadm36 TO dev_epigraph;
 
 
 --
 -- Name: TABLE geography_columns; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT ON TABLE public.geography_columns TO dev_external;
+GRANT SELECT ON TABLE public.geography_columns TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.geography_columns TO dev_epigraph;
 
 
 --
 -- Name: TABLE geometry_columns; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT ON TABLE public.geometry_columns TO dev_external;
+GRANT SELECT ON TABLE public.geometry_columns TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.geometry_columns TO dev_epigraph;
 
 
 --
--- Name: TABLE iso_alpha3_country_codes; Type: ACL; Schema: public; Owner: dev_admin
+-- Name: TABLE owid_covid_meta; Type: ACL; Schema: public; Owner: dev_epigraph
 --
 
-GRANT SELECT ON TABLE public.iso_alpha3_country_codes TO dev_external;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.owid_covid_meta TO dev_epigraph;
 
 
 --
 -- Name: TABLE raster_columns; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT ON TABLE public.raster_columns TO dev_external;
+GRANT SELECT ON TABLE public.raster_columns TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raster_columns TO dev_epigraph;
+
 
 --
 -- Name: TABLE raster_overviews; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT ON TABLE public.raster_overviews TO dev_external;
+GRANT SELECT ON TABLE public.raster_overviews TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.raster_overviews TO dev_epigraph;
 
 
 --
 -- Name: TABLE spatial_ref_sys; Type: ACL; Schema: public; Owner: postgres
 --
 
-GRANT SELECT ON TABLE public.spatial_ref_sys TO dev_external;
+GRANT SELECT ON TABLE public.spatial_ref_sys TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.spatial_ref_sys TO dev_epigraph;
+
+
+--
+-- Name: TABLE test_positive_covid; Type: ACL; Schema: public; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.test_positive_covid TO dev_epigraph;
+
+
+--
+-- Name: TABLE teste_table; Type: ACL; Schema: public; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.teste_table TO dev_epigraph;
+
+
+--
+-- Name: TABLE environmental_2006; Type: ACL; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE trajetorias_project.environmental_2006 TO dev_epigraph;
+
+
+--
+-- Name: TABLE environmental_2017; Type: ACL; Schema: trajetorias_project; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE trajetorias_project.environmental_2017 TO dev_epigraph;
+
+
+--
+-- Name: TABLE trajetorias_environment_joined; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT ALL ON TABLE public.trajetorias_environment_joined TO dev_epigraph;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.trajetorias_environment_joined TO dev_epigraph;
+
+
+--
+-- Name: TABLE che_epinowcasesinfection_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowcasesinfection_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE che_epinowcasesreport_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowcasesreport_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE che_epinowgrowthrate_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowgrowthrate_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE che_epinowrt_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.che_epinowrt_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_cases_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_cases_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_cases_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_cases_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_casesvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_casesvaccpersons_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_casesvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_casesvaccpersons_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_covidcertificates_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_covidcertificates_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_covidcertificates_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_covidcertificates_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_death_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_death_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_death_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_death_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_deathvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_deathvaccpersons_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_deathvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_deathvaccpersons_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hosp_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hosp_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospcapacity; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospcapacity_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospcapacity_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacity_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospcapacitycertstatus_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacitycertstatus_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospcapacitycertstatus_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospcapacitycertstatus_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospvaccpersons_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospvaccpersons_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_hospvaccpersons_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_hospvaccpersons_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_intcases_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_intcases_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_intcases_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_intcases_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_re_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_re_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_re_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_re_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_test_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_test_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_test_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_test_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_testpcrantigen_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_testpcrantigen_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_testpcrantigen_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_testpcrantigen_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_virusvariantswgs_d; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_virusvariantswgs_d TO dev_epigraph;
+
+
+--
+-- Name: TABLE foph_virusvariantswgs_d_meta; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.foph_virusvariantswgs_d_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_lstm_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_lstm_icu_patients_d_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_icu_patients_d_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_lstm_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_lstm_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_lstm_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ml_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ml_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ml_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ml_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ngboost_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ngboost_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE forecast_ngboost_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.forecast_ngboost_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE map_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.map_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_for_hosp_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_hosp_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_for_icu_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_icu_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_for_total_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_for_total_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast_hosp; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_hosp TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast_hosp_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_hosp_up TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast_icu; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_icu TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast_icu_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_icu_up TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_forecast_total; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_forecast_total TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_val_hosp_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_hosp_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_val_icu_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_icu_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_val_total_all_cantons; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_val_total_all_cantons TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_validation; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_validation_hosp_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_hosp_up TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_validation_icu; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_icu TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_validation_icu_up; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_icu_up TO dev_epigraph;
+
+
+--
+-- Name: TABLE ml_validation_total; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ml_validation_total TO dev_epigraph;
+
+
+--
+-- Name: TABLE ngboost_validation_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE ngboost_validation_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE ngboost_validation_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.ngboost_validation_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE phosp_post; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.phosp_post TO dev_epigraph;
+
+
+--
+-- Name: TABLE prev_post; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.prev_post TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_lstm_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_lstm_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_lstm_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_lstm_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_ngboost_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_ngboost_icu_patients_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_icu_patients_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE validation_ngboost_total_hosp_d_results; Type: ACL; Schema: switzerland; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE switzerland.validation_ngboost_total_hosp_d_results TO dev_epigraph;
+
+
+--
+-- Name: TABLE brasil_co_0; Type: ACL; Schema: unicef; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unicef.brasil_co_0 TO dev_epigraph;
+
+
+--
+-- Name: TABLE brasil_co_0_meta; Type: ACL; Schema: unicef; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unicef.brasil_co_0_meta TO dev_epigraph;
+
+
+--
+-- Name: TABLE law_policies_by_legal_status; Type: ACL; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unsafe_abortion.law_policies_by_legal_status TO dev_epigraph;
+
+
+--
+-- Name: TABLE laws_policies_strategies; Type: ACL; Schema: unsafe_abortion; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE unsafe_abortion.laws_policies_strategies TO dev_epigraph;
+
+
+--
+-- Name: TABLE total_population_0; Type: ACL; Schema: worldbank; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE worldbank.total_population_0 TO dev_epigraph;
+
+
+--
+-- Name: TABLE total_population_0_meta; Type: ACL; Schema: worldbank; Owner: dev_epigraph
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE worldbank.total_population_0_meta TO dev_epigraph;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: colombia; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA colombia GRANT SELECT,USAGE ON SEQUENCES  TO dev_epigraph;
 
 
 --
@@ -28929,6 +44143,12 @@ ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON T
 
 ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON FUNCTIONS  TO dev_epigraph;
 
+--
+-- Name: TABLE iso_alpha3_country_codes; Type: ACL; Schema: public; Owner: dev_admin
+--
+
+GRANT SELECT ON TABLE public.iso_alpha3_country_codes TO dev_epigraph;
+
 
 --
 -- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: switzerland; Owner: dev_admin
@@ -28936,6 +44156,35 @@ ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON F
 
 ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON TABLES  TO dev_epigraph;
 ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA switzerland GRANT ALL ON TABLES  TO dev_epigraph;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON SEQUENCES  TO dev_epigraph;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TYPES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TYPES  TO dev_epigraph;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON FUNCTIONS  TO dev_epigraph;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: trajetorias_project; Owner: dev_admin
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TABLES  TO dev_epigraph;
+ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin IN SCHEMA trajetorias_project GRANT ALL ON TABLES  TO dev_epigraph;
 
 
 --
@@ -28948,3 +44197,4 @@ ALTER DEFAULT PRIVILEGES FOR ROLE dev_admin GRANT ALL ON TABLES  TO dev_epigraph
 --
 -- PostgreSQL database dump complete
 --
+
