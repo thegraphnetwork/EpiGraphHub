@@ -71,7 +71,6 @@ import pendulum
 import logging as logger
 
 from datetime import timedelta
-from psycopg2.errors import ProgrammingError
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator, BranchPythonOperator
@@ -96,12 +95,12 @@ default_args = {
 
 
 @dag(
-    schedule="@weekly",
+    schedule=None, # FOPH stopped updating the daily dataset
     default_args=default_args,
     catchup=False,
     tags = ['CHE', 'FOPH', 'Switzerland']
 )
-def foph():
+def FOPH():
     """
     This method represents the DAG itself using the @dag decorator. The method
     has to be instantiated so the Scheduler can recognize as a DAG. FOPH DAG
@@ -205,12 +204,12 @@ def foph():
         try:
             equal = loading.compare(filename, tablename)
             if not equal:
-                logger.info(f"Proceeding to update foph_{tablename}_d.")
+                logger.info(f"Proceeding to update foph_{tablename}.")
                 return f"{tablename}_need_update"
         except:
-            logger.info(f"Table not found, proceeding to update foph_{tablename}_d.")
+            logger.info(f"Table not found, proceeding to update foph_{tablename}.")
             return f"{tablename}_need_update"
-        logger.info(f"foph_{tablename}_d is up to date.")
+        logger.info(f"foph_{tablename} is up to date.")
         return f"{tablename}_up_to_date"
 
     def load_to_db(table, url):
@@ -224,7 +223,7 @@ def foph():
         """
         filename = str(url).split("/")[-1]
         loading.upload(table, filename)
-        logger.info(f"foph_{table}_d updated.")
+        logger.info(f"foph_{table} updated.")
 
     def parse_table(table):
         """
@@ -235,7 +234,7 @@ def foph():
             tablename (str) : Name of the table in the SQL Database
         """
         transform.parse_date_region(table)
-        logger.info(f"geoRegion and date index updated on foph_{table.lower()}_d")
+        logger.info(f"geoRegion and date index updated on foph_{table.lower()}")
 
     @task(trigger_rule="all_done")
     def remove_csv_dir():
@@ -253,6 +252,7 @@ def foph():
 
     for table in tables:
         tablename, url = table
+        tablename = f'{tablename}_d'
 
         down = PythonOperator(
             task_id=tablename,
@@ -309,4 +309,4 @@ def foph():
     end >> clean
 
 
-dag = foph()
+dag = FOPH()
