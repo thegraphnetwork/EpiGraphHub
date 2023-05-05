@@ -86,12 +86,6 @@ containers-wait-all:
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
 
-.PHONY:containers-dev-prepare-db
-containers-dev-prepare-db:
-	# used for development
-	$(CONTAINER_APP) exec -T superset \
-		bash /opt/EpiGraphHub/containers/postgresql/scripts/dev/prepare-db.sh
-
 .PHONY:containers-get-ip
 containers-get-ip:
 	@echo -n "${SERVICE}: "
