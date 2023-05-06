@@ -149,12 +149,6 @@ RUN apk add \
 
 COPY containers/postgresql/initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
 COPY containers/postgresql/update-postgis.sh /usr/local/bin
-COPY --chown=${USER}:${USER} containers/postgresql/docker-entrypoint.sh /docker-entrypoint.sh
-
 
 RUN chown -R ${USER}:${USER} /docker-entrypoint-initdb.d ${PGDATA} \
-    && chmod +x /docker-entrypoint-initdb.d/* /docker-entrypoint.sh
-
-USER ${USER}
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+    && chmod +x /docker-entrypoint-initdb.d/*
