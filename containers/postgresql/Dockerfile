@@ -1,8 +1,8 @@
 FROM postgres:15-alpine3.17
 
-LABEL maintainer="PostGIS Project - https://postgis.net" \
-      org.opencontainers.image.description="PostGIS 3.3.2 spatial database extension with PostgreSQL 15 Alpine" \
-      org.opencontainers.image.source="https://github.com/postgis/docker-postgis"
+LABEL maintainer="EpiGraphHub Team" \
+      org.opencontainers.image.description="EpiGraphHub postgres" \
+      org.opencontainers.image.source="https://github.com/thegraphnetwork/EpiGraphHub"
 
 ENV POSTGIS_VERSION 3.3.2
 ENV POSTGIS_SHA256 2a6858d1df06de1c5f85a5b780773e92f6ba3a5dc09ac31120ac895242f5a77b
@@ -147,8 +147,11 @@ RUN set -eux \
 RUN apk add \
     postgresql15-plpython3
 
+ARG environment=${ENV}
+
 COPY containers/postgresql/initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
 COPY containers/postgresql/update-postgis.sh /usr/local/bin
+COPY containers/postgresql/sql/${environment}/* /docker-entrypoint-initdb.d
 
 RUN chown -R ${USER}:${USER} /docker-entrypoint-initdb.d ${PGDATA} \
     && chmod +x /docker-entrypoint-initdb.d/*

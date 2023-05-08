@@ -156,3 +156,6 @@ Documentation/.Rhistory
 # airflow
 containers/airflow/files/logs/*
 containers/airflow/logs/*
+
+# psql
+containers/postgresql/sql/dev/data
