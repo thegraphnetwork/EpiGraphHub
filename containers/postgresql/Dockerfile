@@ -1,157 +1,32 @@
-FROM postgres:15-alpine3.17
+# from https://github.com/postgis/docker-postgis/blob/969ef8a9e4a22e1556ca99cab4178f6e60c1483d/14-3.2/Dockerfile
+# Reference: https://github.com/thegraphnetwork/epigraphhub_py/blob/main/docker/postgresql/Dockerfile
+FROM postgres:15-bullseye
 
-LABEL maintainer="EpiGraphHub Team" \
-      org.opencontainers.image.description="EpiGraphHub postgres" \
-      org.opencontainers.image.source="https://github.com/thegraphnetwork/EpiGraphHub"
+LABEL maintainer="PostGIS Project - https://postgis.net"
 
-ENV POSTGIS_VERSION 3.3.2
-ENV POSTGIS_SHA256 2a6858d1df06de1c5f85a5b780773e92f6ba3a5dc09ac31120ac895242f5a77b
-ENV USER ${POSTGRES_USER:-postgres}
+ENV POSTGIS_MAJOR 3
 ENV PGDATA ${PGDATA}
+ARG environment
+ARG UID
+ARG GID
 
-RUN set -eux \
-    \
-    &&  if   [ $(printf %.1s "$POSTGIS_VERSION") == 3 ]; then \
-            set -eux ; \
-            #
-            # using only v3.17
-            #
-            #GEOS: https://pkgs.alpinelinux.org/packages?name=geos&branch=v3.17 \
-            export GEOS_ALPINE_VER=3.11 ; \
-            #GDAL: https://pkgs.alpinelinux.org/packages?name=gdal&branch=v3.17 \
-            export GDAL_ALPINE_VER=3.5 ; \
-            #PROJ: https://pkgs.alpinelinux.org/packages?name=proj&branch=v3.17 \
-            export PROJ_ALPINE_VER=9.1 ; \
-            #
-        elif [ $(printf %.1s "$POSTGIS_VERSION") == 2 ]; then \
-            set -eux ; \
-            #
-            # using older branches v3.13; v3.14 for GEOS,GDAL,PROJ
-            #
-            #GEOS: https://pkgs.alpinelinux.org/packages?name=geos&branch=v3.13 \
-            export GEOS_ALPINE_VER=3.8 ; \
-            #GDAL: https://pkgs.alpinelinux.org/packages?name=gdal&branch=v3.14 \
-            export GDAL_ALPINE_VER=3.2 ; \
-            #PROJ: https://pkgs.alpinelinux.org/packages?name=proj&branch=v3.14 \
-            export PROJ_ALPINE_VER=7.2 ; \
-            #
-            \
-            echo 'https://dl-cdn.alpinelinux.org/alpine/v3.14/main'      >> /etc/apk/repositories ; \
-            echo 'https://dl-cdn.alpinelinux.org/alpine/v3.14/community' >> /etc/apk/repositories ; \
-            echo 'https://dl-cdn.alpinelinux.org/alpine/v3.13/main'      >> /etc/apk/repositories ; \
-            echo 'https://dl-cdn.alpinelinux.org/alpine/v3.13/community' >> /etc/apk/repositories ; \
-            \
-        else \
-            set -eux ; \
-            echo ".... unknown \$POSTGIS_VERSION ...." ; \
-            exit 1 ; \
-        fi \
-    \
-    && apk add --no-cache --virtual .fetch-deps \
-        ca-certificates \
-        openssl \
-        tar \
-    \
-    && wget -O postgis.tar.gz "https://github.com/postgis/postgis/archive/${POSTGIS_VERSION}.tar.gz" \
-    && echo "${POSTGIS_SHA256} *postgis.tar.gz" | sha256sum -c - \
-    && mkdir -p /usr/src/postgis \
-    && tar \
-        --extract \
-        --file postgis.tar.gz \
-        --directory /usr/src/postgis \
-        --strip-components 1 \
-    && rm postgis.tar.gz \
-    \
-    && apk add --no-cache --virtual .build-deps \
-        \
-        gdal-dev~=${GDAL_ALPINE_VER} \
-        geos-dev~=${GEOS_ALPINE_VER} \
-        proj-dev~=${PROJ_ALPINE_VER} \
-        \
-        autoconf \
-        automake \
-        clang-dev \
-        cunit-dev \
-        file \
-        g++ \
-        gcc \
-        gettext-dev \
-        git \
-        json-c-dev \
-        libtool \
-        libxml2-dev \
-        llvm-dev \
-        make \
-        pcre-dev \
-        perl \
-        protobuf-c-dev \
-    \
-# build PostGIS
-    \
-    && cd /usr/src/postgis \
-    && gettextize \
-    && ./autogen.sh \
-    && ./configure \
-        --with-pcredir="$(pcre-config --prefix)" \
-    && make -j$(nproc) \
-    && make install \
-    \
-# regress check
-    && mkdir /tempdb \
-    && chown -R ${USER}:${USER} /tempdb \
-    && su ${USER} -c 'pg_ctl -D /tempdb init' \
-    && su ${USER} -c 'pg_ctl -D /tempdb start' \
-    && cd regress \
-    && make -j$(nproc) check RUNTESTFLAGS=--extension   PGUSER=${USER} \
-    #&& make -j$(nproc) check RUNTESTFLAGS=--dumprestore PGUSER=${USER} \
-    #&& make garden                                      PGUSER=${USER} \
-    \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS postgis;"' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"' \
-    ## sfcgal expected with the next alpine release : 3.18
-    #&& su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS postgis_sfcgal;"' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS fuzzystrmatch; --needed for postgis_tiger_geocoder "' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS address_standardizer;"' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS address_standardizer_data_us;"' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;"' \
-    && su ${USER} -c 'psql    -c "CREATE EXTENSION IF NOT EXISTS postgis_topology;"' \
-    && su ${USER} -c 'psql -t -c "SELECT version();"'              >> /_pgis_full_version.txt \
-    && su ${USER} -c 'psql -t -c "SELECT PostGIS_Full_Version();"' >> /_pgis_full_version.txt \
-    && su ${USER} -c 'psql -t -c "\dx"' >> /_pgis_full_version.txt \
-    \
-    && su ${USER} -c 'pg_ctl -D /tempdb --mode=immediate stop' \
-    && rm -rf /tempdb \
-    && rm -rf /tmp/pgis_reg \
-# add .postgis-rundeps
-    && apk add --no-cache --virtual .postgis-rundeps \
-        \
-        gdal~=${GDAL_ALPINE_VER} \
-        geos~=${GEOS_ALPINE_VER} \
-        proj~=${PROJ_ALPINE_VER} \
-        \
-        json-c \
-        libstdc++ \
-        pcre \
-        protobuf-c \
-        \
-        # ca-certificates: for accessing remote raster files
-        #   fix https://github.com/postgis/docker-postgis/issues/307
-        ca-certificates \
-# clean
-    && cd / \
-    && rm -rf /usr/src/postgis \
-    && apk del .fetch-deps .build-deps \
-# print PostGIS_Full_Version() for the log. ( experimental & internal )
-    && cat /_pgis_full_version.txt
-
-RUN apk add \
-    postgresql15-plpython3
-
-ARG environment=${ENV}
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+    && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
+    && apt-get install -y --no-install-recommends \
+        build-essential ca-certificates \
+        postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
+        postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR-scripts \
+        postgresql-$PG_MAJOR-plr \
+        postgresql-plpython3-$PG_MAJOR \
+        postgresql-contrib \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY containers/postgresql/initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
+COPY containers/postgresql/sql/${environment}/* /docker-entrypoint-initdb.d/
 COPY containers/postgresql/update-postgis.sh /usr/local/bin
-COPY containers/postgresql/sql/${environment}/* /docker-entrypoint-initdb.d
 
-RUN chown -R ${USER}:${USER} /docker-entrypoint-initdb.d ${PGDATA} \
+RUN usermod -u ${UID} -d /home/postgres -s /bin/bash postgres \
     && chmod +x /docker-entrypoint-initdb.d/*
+
+USER postgres
