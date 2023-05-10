@@ -95,6 +95,8 @@ jobs:
         miniforge-variant: Mambaforge
 
     - uses: nanasess/setup-chromedriver@v2
+      with:
+        chromedriver-version: '111.0.5563.64'
 
     - name: configure chromedriver
       run: |
