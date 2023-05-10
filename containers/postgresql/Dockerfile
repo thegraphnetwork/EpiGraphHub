@@ -27,6 +27,7 @@ COPY containers/postgresql/sql/${environment}/* /docker-entrypoint-initdb.d/
 COPY containers/postgresql/update-postgis.sh /usr/local/bin
 
 RUN usermod -u ${UID} -d /home/postgres -s /bin/bash postgres \
-    && chmod +x /docker-entrypoint-initdb.d/*
+    && chmod +x /docker-entrypoint-initdb.d/* \
+    && chown -R postgres:postgres /var/lib/postgresql/data/pgdata
 
 USER postgres

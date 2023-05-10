@@ -56,7 +56,7 @@ env:
   SUPERSET_MAIL_USERNAME:
   SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
-  POSTGRES_DATA_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev/
+  POSTGRES_DATA_DIR_HOST: /home/runner/work/psql_data
 
 jobs:
   main:
@@ -78,6 +78,7 @@ jobs:
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
+        mkdir /home/runner/work/psql_data
 
     - name: setup
       run: |
