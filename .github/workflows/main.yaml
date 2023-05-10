@@ -56,7 +56,7 @@ env:
   SUPERSET_MAIL_USERNAME:
   SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
-  POSTGRES_DATA_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev/data
+  POSTGRES_DATA_DIR_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev
 
 jobs:
   main:
@@ -115,10 +115,6 @@ jobs:
     - name: start services
       run: |
         make containers-start-services SERVICES="superset airflow postgres"
-      
-    - name: Setup tmate session
-      if: "${{ failure() }}"
-      uses: mxschmitt/action-tmate@v3
 
     - name: wait for the services are properly working
       run: |
