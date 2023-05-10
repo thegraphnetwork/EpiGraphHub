@@ -77,9 +77,7 @@ containers-wait:
 
 .PHONY: containers-wait-all
 containers-wait-all:
-	if [ "${ENV}" = "dev" ]; then \
-		$(MAKE) containers-wait SERVICE="postgres"; \
-	fi
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="postgres"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"

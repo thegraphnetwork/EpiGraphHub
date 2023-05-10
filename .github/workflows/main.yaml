@@ -114,7 +114,11 @@ jobs:
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow"
+        make containers-start-services SERVICES="superset airflow postgres"
+      
+    - name: Setup tmate session
+      if: "${{ failure() }}"
+      uses: mxschmitt/action-tmate@v3
 
     - name: wait for the services are properly working
       run: |
