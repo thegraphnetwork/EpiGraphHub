@@ -56,6 +56,7 @@ env:
   SUPERSET_MAIL_USERNAME:
   SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
+  POSTGRES_DATA_DIR_HOST: /home/runner/work/psql_data
 
 jobs:
   main:
@@ -77,6 +78,7 @@ jobs:
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
         envsubst < .env.tpl > .env
+        mkdir /home/runner/work/psql_data
 
     - name: setup
       run: |
@@ -93,6 +95,8 @@ jobs:
         miniforge-variant: Mambaforge
 
     - uses: nanasess/setup-chromedriver@v2
+      with:
+        chromedriver-version: '111.0.5563.64'
 
     - name: configure chromedriver
       run: |
@@ -113,7 +117,7 @@ jobs:
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow"
+        make containers-start-services SERVICES="superset airflow postgres"      
 
     - name: wait for the services are properly working
       run: |

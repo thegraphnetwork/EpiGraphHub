@@ -77,20 +77,12 @@ containers-wait:
 
 .PHONY: containers-wait-all
 containers-wait-all:
-	if [ "${ENV}" = "dev" ]; then \
-		$(MAKE) containers-wait SERVICE="postgres"; \
-	fi
+	$(MAKE) containers-wait ENV=${ENV} SERVICE="postgres"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="minio"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="redis"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="flower"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="superset"
 	$(MAKE) containers-wait ENV=${ENV} SERVICE="airflow"
-
-.PHONY:containers-dev-prepare-db
-containers-dev-prepare-db:
-	# used for development
-	$(CONTAINER_APP) exec -T superset \
-		bash /opt/EpiGraphHub/containers/postgresql/scripts/dev/prepare-db.sh
 
 .PHONY:containers-get-ip
 containers-get-ip:

@@ -370,8 +370,12 @@ def task_flow_for(disease: str):
             raise AirflowSkipException()
 
         for dir in parquet_dirs:
-            shutil.rmtree(dir, ignore_errors=True)
-            logger.warning(f'{dir} removed')
+            for file in os.listdir(dir):
+                if str(file).endswith('.parquet'):
+                    os.remove(file)
+            if str(dir).endswith('.parquet'):
+                os.rmdir(dir)
+                logger.warning(f'{dir} removed')
 
     end = EmptyOperator(
         task_id='done',
