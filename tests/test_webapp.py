@@ -14,8 +14,9 @@ class TestEpiGraphHub(unittest.TestCase):
         chrome_options = Options()
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--headless")
+        chrome_options.binary_location = CHROMEDRIVER
         cls.driver = webdriver.Chrome(
-            service=Service(chromedriver_filename),
+            service=Service(executable_path=CHROMEDRIVER),
             options=chrome_options
         )
         cls.driver.get("http://localhost:8088")
