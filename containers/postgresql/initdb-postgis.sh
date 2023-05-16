@@ -7,19 +7,16 @@ set -e
 
 # Perform all actions as $POSTGRES_USER
 export PGUSER="$POSTGRES_USER"
-export PGPASSWORD="${POSTGRES_PASSWORD}"
-export PSQL_BIN="$(which psql)"
-export PSQL="$PSQL_BIN -h ${POSTGRES_DB} -p ${POSTGRES_PORT}"
 
 # Create the 'template_postgis' template db
-"$PSQL" <<- 'EOSQL'
+"${psql[@]}" <<- 'EOSQL'
 CREATE DATABASE template_postgis IS_TEMPLATE true;
 EOSQL
 
 # Load PostGIS into both template_database and $POSTGRES_DB
-for DB in template_postgis "${POSTGRES_DB}"; do
+for DB in template_postgis "$POSTGRES_DB"; do
 	echo "Loading PostGIS extensions into $DB"
-	"$PSQL" --dbname="$DB" <<-'EOSQL'
+	"${psql[@]}" --dbname="$DB" <<-'EOSQL'
 		CREATE EXTENSION IF NOT EXISTS postgis;
 		CREATE EXTENSION IF NOT EXISTS postgis_topology;
 		-- Reconnect to update pg_setting.resetval
