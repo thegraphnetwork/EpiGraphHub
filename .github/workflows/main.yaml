@@ -140,6 +140,10 @@ jobs:
     - name: Test MinIO access
       run: aws --endpoint-url http://localhost:9000/ s3 ls
 
+    - name: Setup tmate session
+      if: "${{ failure() }}"
+      uses: mxschmitt/action-tmate@v3
+
     - name: Generate logs
       if: ${{ failure() }}
       run: |
