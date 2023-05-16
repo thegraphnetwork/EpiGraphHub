@@ -57,7 +57,7 @@ env:
   SUPERSET_MAIL_USE_TLS: true
   SUPERSET_SECRET_KEY: superset-on-ci
   POSTGRES_DATA_DIR_HOST: /home/runner/work/psql_data
-  POSTGRES_CONFIG_FILE_HOST: /home/runner/work/psql_data/postgresql.conf
+  POSTGRES_CONFIG_FILE_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev/postgresql.conf
 
 jobs:
   main:
