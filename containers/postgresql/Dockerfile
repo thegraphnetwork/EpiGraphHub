@@ -10,6 +10,10 @@ ARG environment
 ARG UID
 ARG GID
 
+RUN usermod -u ${UID} postgres \
+    && groupmod -g ${GID} postgres \
+    && echo "postgres:x:${UID}:${GID}:PostgreSQL,,,:/var/lib/postgresql:/bin/bash" >> /etc/passwd 
+
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
@@ -26,9 +30,11 @@ COPY containers/postgresql/initdb-postgis.sh /docker-entrypoint-initdb.d/10_post
 COPY containers/postgresql/sql/${environment}/* /docker-entrypoint-initdb.d/
 COPY containers/postgresql/update-postgis.sh /usr/local/bin
 
-RUN usermod -u ${UID} -d /home/postgres -s /bin/bash postgres \
-    && chmod +x /docker-entrypoint-initdb.d/* \
+RUN chmod +x /docker-entrypoint-initdb.d/* \
     && mkdir -p /var/lib/postgresql/data/pgdata \
-    && chown -R postgres:postgres /var/lib/postgresql/data/pgdata
+    && chown -R postgres:postgres /var/lib/postgresql/data/pgdata /var/run/postgresql
 
 USER postgres
+
+# Overrides default image config
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
