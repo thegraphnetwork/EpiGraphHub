@@ -98,8 +98,8 @@ services:
       args:
         # note: if you want to use a specific UID and GID, ensure to add it to
         #       the .env file
-        - UID=${HOST_UID:-1000}
-        - GID=${HOST_GID:-1000}
+        - UID=${POSTGRES_HOST_UID}
+        - GID=${POSTGRES_HOST_GID}
         - environment=${ENV}
     env_file:
       - ../.env

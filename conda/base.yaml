@@ -9,7 +9,7 @@ dependencies:
   - git
   - make
   - sqlite
-  - python-chromedriver-binary 111.*
+  - webdriver-manager
   - pip
   - pip:
     - epigraphhub
