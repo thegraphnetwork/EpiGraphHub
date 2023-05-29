@@ -65,6 +65,7 @@ DEFAULT_ARGS = {
     'email_on_retry': False,
     'retries': 2,
     'retry_delay': timedelta(minutes=2),
+    'dagrun_timeout': timedelta(minutes=150),
 }
 
 
@@ -396,6 +397,7 @@ def task_flow_for(disease: str):
 
 # DAGs
 # Here its where the DAGs are created, an specific case can be specified
+from itertools import cycle
 from airflow.models.dag import DAG
 from epigraphhub.data.brasil.sinan import DISEASES
 
@@ -408,11 +410,9 @@ for disease in DISEASES:
         dag_id=dag_id,
         default_args=DEFAULT_ARGS,
         tags=['SINAN', 'Brasil', disease],
-        start_date=pendulum.datetime(
-            2022, 2, randint(2,28)
-        ),
+        start_date=pendulum.datetime(2022, 2, 1),
         catchup=False,
-        schedule='@monthly',
+        schedule=f'0 11 {next(cycle(range(1,28)))} * *',
         dagrun_timeout=None,
     ):
         task_flow_for(disease)
