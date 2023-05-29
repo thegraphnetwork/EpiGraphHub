@@ -155,9 +155,9 @@ def task_flow_for(disease: str):
         )
 
         return dict(
-            pqs_to_insert=extract_pqs('to_insert'),
-            pqs_to_finals=extract_pqs('to_finals'),
-            pqs_to_update=extract_pqs('to_update'),
+            pqs_to_insert=list(extract_pqs('to_insert')),
+            pqs_to_finals=list(extract_pqs('to_finals')),
+            pqs_to_update=list(extract_pqs('to_update')),
         )
 
     @task(task_id='first_insertion', trigger_rule='all_done')
