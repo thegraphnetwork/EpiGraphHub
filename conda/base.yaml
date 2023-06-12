@@ -10,6 +10,7 @@ dependencies:
   - make
   - sqlite
   - webdriver-manager
+  - python-chromedriver-binary
   - pip
   - pip:
     - epigraphhub
