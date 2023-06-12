@@ -11,10 +11,8 @@ class TestEpiGraphHub(unittest.TestCase):
         chrome_options = Options()
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--headless")
-        cls.driver = webdriver.Chrome(
-            ChromeDriverManager().install(),
-            options=chrome_options
-        )
+        ChromeDriverManager().install()
+        cls.driver = webdriver.Chrome()
         cls.driver.get("http://localhost:8088")
 
     @classmethod
@@ -26,7 +24,7 @@ class TestEpiGraphHub(unittest.TestCase):
 
     def test_title(self):
         title = self.driver.title
-        self.assertEqual(title, 'EpiGraphHub')
+        self.assertEqual(title, "EpiGraphHub")
 
     def test_login_as_guest(self):
         self.driver.implicitly_wait(0.5)
@@ -35,12 +33,11 @@ class TestEpiGraphHub(unittest.TestCase):
         login_button.click()
         self.driver.implicitly_wait(0.5)
         # guest:guest
-        self.find_css_element("input#username.form-control").send_keys('guest')
-        self.find_css_element("input#password.form-control").send_keys('guest')
+        self.find_css_element("input#username.form-control").send_keys("guest")
+        self.find_css_element("input#password.form-control").send_keys("guest")
         # Sign In
         self.find_css_element("input.btn.btn-primary.btn-block").click()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=2)
-

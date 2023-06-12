@@ -421,5 +421,6 @@ for disease in DISEASES:
         catchup=False,
         schedule=f"0 11 {next(cycle(range(1,28)))} * *",
         dagrun_timeout=None,
+        max_active_runs=2,
     ):
         task_flow_for(disease)
