@@ -1,18 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 import unittest
 
 
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        chrome_options = Options()
-        chrome_options.add_argument("--disable-gpu")
+        chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
-        chrome_options.binary_location = ChromeDriverManager().install()
-        cls.driver = webdriver.Chrome()
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        cls.driver = webdriver.Chrome(options=chrome_options)
         cls.driver.get("http://localhost:8088")
 
     @classmethod
