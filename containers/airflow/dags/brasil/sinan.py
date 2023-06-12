@@ -66,6 +66,7 @@ DEFAULT_ARGS = {
     "retries": 2,
     "retry_delay": timedelta(minutes=2),
     "dagrun_timeout": timedelta(minutes=600),
+    "max_active_runs": 2,
 }
 
 
@@ -408,7 +409,8 @@ from itertools import cycle
 from airflow.models.dag import DAG
 from epigraphhub.data.brasil.sinan import DISEASES
 
-from random import randint
+
+day = cycle(range(1, 28))
 
 for disease in DISEASES:
     dag_id = "SINAN_" + DISEASES[disease]
@@ -419,7 +421,7 @@ for disease in DISEASES:
         tags=["SINAN", "Brasil", disease],
         start_date=pendulum.datetime(2022, 2, 1),
         catchup=False,
-        schedule=f"0 11 {next(cycle(range(1,28)))} * *",
+        schedule=f"0 11 {next(day)} * *",
         dagrun_timeout=None,
         max_active_runs=2,
     ):
