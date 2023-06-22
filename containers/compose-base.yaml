@@ -63,7 +63,7 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
-      start_period: 40s  # requires docker-compose 3.4
+      start_period: 40s  
     volumes:
       - ..:/opt/EpiGraphHub
       - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
@@ -118,7 +118,7 @@ services:
       interval: 60s
       timeout: 5s
       retries: 5
-      start_period: 30s  # requires docker-compose 3.4
+      start_period: 30s  
     volumes:
       - redis:/data
 
@@ -143,12 +143,12 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
-      start_period: 40s  # requires docker-compose 3.4
+      start_period: 40s  
 
   airflow_webserver:
     <<: *airflow-common
     command: webserver
-    image: eph_airflow:latest
+    image: eph_airflow
     hostname: webserver
     container_name: airflow_webserver
     restart: unless-stopped
@@ -157,9 +157,27 @@ services:
       interval: 30s
       timeout: 10s
       retries: 10
-      start_period: 40s  # requires docker-compose 3.4
+      start_period: 40s  
     ports:
       - ${AIRFLOW_PORT}:8080
+    depends_on:
+      <<: *airflow-common-depends-on
+      startup:
+        condition: service_completed_successfully
+
+  scheduler:
+    <<: *airflow-common
+    command: scheduler
+    image: eph_airflow
+    hostname: scheduler
+    container_name: eph_airflow_scheduler
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
     depends_on:
       <<: *airflow-common-depends-on
       startup:
