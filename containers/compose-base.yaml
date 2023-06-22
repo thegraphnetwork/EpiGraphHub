@@ -1,5 +1,46 @@
 version: '3.4'
 
+x-airflow-common:
+  &airflow-common
+  build: 
+    context: ..
+    dockerfile: containers/airflow/Dockerfile
+    args:
+      UID: ${HOST_UID}
+      GID: ${HOST_GID}
+  environment:
+    &airflow-common-env
+    AIRFLOW_HOME: /opt/airflow
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    HOST_UID: ${HOST_UID}
+    HOST_GID: ${HOST_GID}
+    _AIRFLOW_DB_UPGRADE: ${_AIRFLOW_DB_UPGRADE}
+    _AIRFLOW_WWW_USER_CREATE: ${_AIRFLOW_WWW_USER_CREATE}
+    _AIRFLOW_WWW_USER_EMAIL: ${_AIRFLOW_WWW_USER_EMAIL}
+    _AIRFLOW_WWW_USER_FIRST_NAME: ${_AIRFLOW_WWW_USER_FIRST_NAME}
+    _AIRFLOW_WWW_USER_LAST_NAME: ${_AIRFLOW_WWW_USER_LAST_NAME}
+    _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD}
+    _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME}
+    AIRFLOW_FILES_PATH_DIR_HOST: ${AIRFLOW_FILES_PATH_DIR_HOST}
+    AIRFLOW_PORT: ${AIRFLOW_PORT}
+    AIRFLOW__API__AUTH_BACKENDS: ${AIRFLOW__API__AUTH_BACKENDS}
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: ${AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION}
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+    AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW__WEBSERVER__SECRET_KEY}
+  volumes:
+    - ${AIRFLOW_FILES_PATH_DIR_HOST}/dags:${AIRFLOW_HOME}/dags
+    - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:${AIRFLOW_HOME}/logs
+    - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:${AIRFLOW_HOME}/plugins
+  user: "${HOST_GID}:0"
+  depends_on:
+    &airflow-common-depends-on
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+
+
 services:
   superset:
     platform: linux/amd64
@@ -30,63 +71,6 @@ services:
       - ${SUPERSET_PORT}:8088
     depends_on:
       - redis
-      - flower
-
-  airflow:
-    platform: linux/amd64
-    hostname: airflow
-    restart: unless-stopped
-    env_file:
-      - ../.env
-    build:
-      context: ..
-      dockerfile: containers/airflow/Dockerfile
-      args:
-        # note: if you want to use a specific UID and GID, ensure to add it to
-        #       the .env file
-        - UID=${HOST_UID:-1000}
-        - GID=${HOST_GID:-1000}
-    environment:
-      AIRFLOW_UID: "${HOST_UID:-1000}"
-    user: "epigraphhub:epigraphhub"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 40s  # requires docker-compose 3.4
-    volumes:
-      - ..:/opt/EpiGraphHub
-      - $HOME/.config:/home/epigraphhub/.config
-      - ${SUPERSET_DB_PATH_DIR_HOST}:/opt/data/superset/
-      - ${AIRFLOW_FILES_PATH_DIR_HOST}/logs:/opt/airflow/logs
-      - ${AIRFLOW_FILES_PATH_DIR_HOST}/plugins:/opt/airflow/plugins
-      - ./airflow/dags:/opt/airflow/dags
-      - ~/.config:/home/epigraphhub/.config
-    ports:
-      - ${AIRFLOW_PORT}:8080
-    depends_on:
-      - redis
-      - flower
-      - minio
-
-  redis:
-    platform: linux/amd64
-    image: redis:alpine
-    hostname: redis
-    restart: unless-stopped
-    # environment:
-    #   DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
-    #   ALLOW_EMPTY_PASSWORD: "no"
-    #   REDIS_PASSWORD: "${REDIS_PASSWORD}"
-    healthcheck:
-      test: ["CMD", "redis-cli","ping"]
-      interval: 60s
-      timeout: 5s
-      retries: 5
-      start_period: 30s  # requires docker-compose 3.4
-    volumes:
-      - redis:/data
 
   postgres:
     platform: linux/amd64
@@ -120,28 +104,23 @@ services:
       retries: 10
     command: -p ${POSTGRES_PORT}
 
-  flower:
+  redis:
     platform: linux/amd64
-    image: mher/flower:0.9.7
+    image: redis:alpine
+    hostname: redis
     restart: unless-stopped
-    env_file:
-      - ../.env
-    depends_on:
-      - redis
-    command: [
-      "flower",
-      "--broker=redis://redis:6379/0",
-      "--port=8888",
-      "--basic_auth=admin:${FLOWER_PASSWORD}"
-    ]
-    ports:
-      - ${FLOWER_PORT}:8888
+    # environment:
+    #   DISABLE_COMMANDS: "FLUSHDB,FLUSHALL,CONFIG"
+    #   ALLOW_EMPTY_PASSWORD: "no"
+    #   REDIS_PASSWORD: "${REDIS_PASSWORD}"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8888/healthcheck"]
+      test: ["CMD", "redis-cli","ping"]
       interval: 60s
-      timeout: 10s
+      timeout: 5s
       retries: 5
-      start_period: 40s  # requires docker-compose 3.4
+      start_period: 30s  # requires docker-compose 3.4
+    volumes:
+      - redis:/data
 
   minio:
     platform: linux/amd64
@@ -153,8 +132,7 @@ services:
       "server",
       "/data",
       "--console-address",
-      ":9090"
-    ]
+      ":9090"]
     ports:
       - ${MINIO_PORT_1}:9000
       - ${MINIO_PORT_2}:9090
@@ -167,6 +145,25 @@ services:
       retries: 5
       start_period: 40s  # requires docker-compose 3.4
 
+  airflow_webserver:
+    <<: *airflow-common
+    command: webserver
+    image: eph_airflow:latest
+    hostname: webserver
+    container_name: airflow_webserver
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${AIRFLOW_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 40s  # requires docker-compose 3.4
+    ports:
+      - ${AIRFLOW_PORT}:8080
+    depends_on:
+      <<: *airflow-common-depends-on
+      startup:
+        condition: service_completed_successfully
 
 volumes:
   redis:

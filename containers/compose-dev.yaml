@@ -6,9 +6,3 @@ services:
       - postgres
       - redis
       - flower
-
-  airflow:
-    depends_on:
-      - postgres
-      - redis
-      - flower
