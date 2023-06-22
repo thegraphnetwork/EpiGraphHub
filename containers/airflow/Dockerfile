@@ -111,4 +111,3 @@ RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo chown -R airflow /var/log/*
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
-CMD /opt/scripts/startup.sh
