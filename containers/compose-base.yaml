@@ -17,10 +17,11 @@ x-airflow-common:
     _AIRFLOW_DB_UPGRADE: ${_AIRFLOW_DB_UPGRADE}
     _AIRFLOW_WWW_USER_CREATE: ${_AIRFLOW_WWW_USER_CREATE}
     _AIRFLOW_WWW_USER_EMAIL: ${_AIRFLOW_WWW_USER_EMAIL}
-    _AIRFLOW_WWW_USER_FIRST_NAME: ${_AIRFLOW_WWW_USER_FIRST_NAME}
-    _AIRFLOW_WWW_USER_LAST_NAME: ${_AIRFLOW_WWW_USER_LAST_NAME}
+    _AIRFLOW_WWW_USER_FIRSTNAME: ${_AIRFLOW_WWW_USER_FIRSTNAME}
+    _AIRFLOW_WWW_USER_LASTNAME: ${_AIRFLOW_WWW_USER_LASTNAME}
     _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD}
     _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME}
+    _AIRFLOW_WWW_USER_ROLE: ${_AIRFLOW_WWW_USER_ROLE}
     AIRFLOW_FILES_PATH_DIR_HOST: ${AIRFLOW_FILES_PATH_DIR_HOST}
     AIRFLOW_PORT: ${AIRFLOW_PORT}
     AIRFLOW__API__AUTH_BACKENDS: ${AIRFLOW__API__AUTH_BACKENDS}
@@ -122,6 +123,28 @@ services:
     volumes:
       - redis:/data
 
+  flower:
+    platform: linux/amd64
+    image: mher/flower:0.9.7
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    depends_on:
+      - redis
+    command: [
+      "flower",
+      "--broker=redis://redis:6379/0",
+      "--port=8888",
+      "--basic_auth=admin:${FLOWER_PASSWORD}"]
+    ports:
+      - ${FLOWER_PORT}:8888
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8888/healthcheck"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 40s  # requires docker-compose 3.4
+
   minio:
     platform: linux/amd64
     image: quay.io/minio/minio
@@ -162,7 +185,7 @@ services:
       - ${AIRFLOW_PORT}:8080
     depends_on:
       <<: *airflow-common-depends-on
-      startup:
+      airflow_startup:
         condition: service_completed_successfully
 
   airflow_scheduler:
@@ -180,7 +203,7 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      startup:
+      airflow_startup:
         condition: service_completed_successfully
 
   airflow_worker:
@@ -205,7 +228,7 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      startup:
+      airflow_startup:
         condition: service_completed_successfully
 
   airflow_triggerer:
@@ -223,7 +246,7 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      startup:
+      airflow_startup:
         condition: service_completed_successfully
 
   airflow_startup:
@@ -236,7 +259,7 @@ services:
       - -c
       - |
         mkdir -p /sources/logs /sources/dags /sources/plugins
-        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        chown -R "${HOST_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
     # yamllint enable rule:line-length
     environment:
