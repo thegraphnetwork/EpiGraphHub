@@ -110,4 +110,4 @@ RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
   && sudo touch /var/log/colombia_fetch.log \
   && sudo chown -R airflow /var/log/*
 
-ENTRYPOINT [ "/opt/entrypoint.sh" ]
+ENTRYPOINT [ "/entrypoint.sh" ]

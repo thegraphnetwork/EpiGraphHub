@@ -208,6 +208,47 @@ services:
       startup:
         condition: service_completed_successfully
 
+  airflow_triggerer:
+    <<: *airflow-common
+    command: triggerer
+    image: eph_airflow
+    hostname: triggerer
+    container_name: eph_airflow_triggerer
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      startup:
+        condition: service_completed_successfully
+
+  airflow_startup:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    image: eph_airflow
+    container_name: eph_airflow_startup
+    # yamllint disable rule:line-length
+    command:
+      - -c
+      - |
+        mkdir -p /sources/logs /sources/dags /sources/plugins
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        exec /entrypoint airflow version
+    # yamllint enable rule:line-length
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD}
+    user: "0:0"
+    volumes:
+      - ${AIRFLOW_FILES_PATH_DIR_HOST}:/sources
+
 volumes:
   redis:
   minio:
