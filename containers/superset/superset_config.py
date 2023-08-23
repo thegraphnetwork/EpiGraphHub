@@ -89,7 +89,15 @@ class CeleryConfig:
 
 
 CELERY_CONFIG = CeleryConfig
-SQLALCHEMY_DATABASE_URI = "sqlite:////opt/data/superset/superset.db"
+
+DB_HOST = os.getenv("POSTGRES_HOST")
+DB_PORT = os.getenv("POSTGRES_PORT")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASS = os.getenv("POSTGRES_PASSWORD")
+DB_DATABASE = os.getenv("POSTGRES_DB")
+SQLALCHEMY_DATABASE_URI = (
+    f"postgresql://{DB_HOST}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}"
+)
 
 
 # ---------------------------------------------------

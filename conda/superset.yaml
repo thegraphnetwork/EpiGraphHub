@@ -14,7 +14,7 @@ dependencies:
   - python-dotenv
   - sqlalchemy
   - jsonschema<5,>=3
-  # dependencies from superset 1.5.*
+  # dependencies from superset 2.*
   - cryptography<39.0.0
   - pyOpenSSL 23.0.0
   - slackclient
@@ -29,4 +29,7 @@ dependencies:
     - 'msgpack<1.1,>=1.0.0'
     - markupsafe==2.0.1
     - 'six>=1.16'
-    - 'apache-superset>=1.5.0,<2.0.0'
+    - 'apache-superset>=2.0.0,<3.0.0'
+    # https://github.com/apache/superset/issues/23742
+    - 'sqlparse==0.4.3'
+    - marshmallow-enum
