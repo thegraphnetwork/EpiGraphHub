@@ -34,6 +34,7 @@ RUN apt-get update -y \
     sudo \
     tini \
     libecpg-dev \
+    unixodbc-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \

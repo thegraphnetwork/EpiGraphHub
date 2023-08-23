@@ -19,11 +19,11 @@ dependencies:
   - pyOpenSSL 23.0.0
   - slackclient
   - typing-extensions<4,>=3.10
-  - enum34
   - pip
   - 'numpy>=1.17.3'
   - pip:
     - -r pip.txt
+    - enum34
     - packaging
     - webencodings
     - 'msgpack<1.1,>=1.0.0'

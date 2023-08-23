@@ -5,11 +5,6 @@ export $(echo $(cat ${PROJECT_PATH}/.env | sed 's/#.*//g'| xargs -0) | envsubst)
 
 set -ex
 
-# superset
-mkdir -p ${SUPERSET_DB_PATH_DIR_HOST}
-sqlite3 ${SUPERSET_DB_PATH_HOST} "VACUUM;" ".quit"
-chmod -R 777 ${SUPERSET_DB_PATH_DIR_HOST}
-
 # airflow
 mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}
 mkdir -p ${AIRFLOW_FILES_PATH_DIR_HOST}/logs

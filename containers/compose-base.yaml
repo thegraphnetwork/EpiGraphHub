@@ -16,7 +16,7 @@ services:
         #       the .env file
         - UID=${HOST_UID:-1000}
         - GID=${HOST_GID:-1000}
-    user: "epigraphhub:epigraphhub"
+    user: "${HOST_UID}:${HOST_GID}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
       interval: 60s
