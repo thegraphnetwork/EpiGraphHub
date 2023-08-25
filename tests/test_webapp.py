@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 import unittest
@@ -11,10 +12,9 @@ class TestEpiGraphHub(unittest.TestCase):
         chrome_options = Options()
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--headless")
-        cls.driver = webdriver.Chrome(
-            ChromeDriverManager().install(),
-            options=chrome_options
-        )
+        chrome_path = ChromeDriverManager().install()
+        service = Service(executable_path=chrome_path)   
+        cls.driver = webdriver.Chrome(service=service)
         cls.driver.get("http://localhost:8088")
 
     @classmethod
