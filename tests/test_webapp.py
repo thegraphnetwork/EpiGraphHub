@@ -3,16 +3,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import unittest
 
+
 class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         chrome_options = Options()
-        chrome_options.add_argument("start-maximized");
-        chrome_options.add_argument("disable-infobars");
-        chrome_options.add_argument("--disable-extensions");
-        chrome_options.add_argument("--disable-gpu");
-        chrome_options.add_argument("--disable-dev-shm-usage");
-        chrome_options.add_argument("--no-sandbox");
+        chrome_options.add_argument("start-maximized")
+        chrome_options.add_argument("disable-infobars")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--no-sandbox")
 
         cls.driver = webdriver.Chrome()
 
@@ -27,7 +28,7 @@ class TestEpiGraphHub(unittest.TestCase):
 
     def test_title(self):
         title = self.driver.title
-        self.assertEqual(title, 'EpiGraphHub')
+        self.assertEqual(title, "EpiGraphHub")
 
     def test_login_as_guest(self):
         self.driver.implicitly_wait(0.5)
@@ -36,12 +37,11 @@ class TestEpiGraphHub(unittest.TestCase):
         login_button.click()
         self.driver.implicitly_wait(0.5)
         # guest:guest
-        self.find_css_element("input#username.form-control").send_keys('guest')
-        self.find_css_element("input#password.form-control").send_keys('guest')
+        self.find_css_element("input#username.form-control").send_keys("guest")
+        self.find_css_element("input#password.form-control").send_keys("guest")
         # Sign In
         self.find_css_element("input.btn.btn-primary.btn-block").click()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main(verbosity=2)
-
