@@ -20,6 +20,7 @@ dependencies:
   - pip
   - 'numpy>=1.17.3'
   - pip:
+    - 'flask-appbuilder>=4.3.0, <5.0.0'
     # https://stackoverflow.com/questions/75275563/attributeerror-module-sqlalchemy-has-no-attribute-all
     - 'Flask-SQLAlchemy==2.5.1'
     - 'sqlalchemy<2.0'
