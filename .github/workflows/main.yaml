@@ -58,6 +58,7 @@ env:
   SUPERSET_SECRET_KEY: superset-on-ci
   POSTGRES_DATA_DIR_HOST: /home/runner/work/psql_data
   POSTGRES_CONFIG_FILE_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev/postgresql.conf
+  CHROMEWEBDRIVER: /usr/local/share/chromedriver-linux64
 
 jobs:
   main:
