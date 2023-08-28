@@ -10,6 +10,20 @@ SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h"
 TALISMAN_ENABLED = None
 TALISMAN_CONFIG = {}
 
+SESSION_COOKIE_SAMESITE = "Lax"
+# Flask-WTF flag for CSRF
+WTF_CSRF_ENABLED = os.getenv("ENV") == "prod"
+# Add endpoints that need to be exempt from CSRF protection
+WTF_CSRF_EXEMPT_LIST = []
+# A CSRF token that expires in 1 year
+WTF_CSRF_TIME_LIMIT = 60 * 60 * 24 * 365
+
+FEATURE_FLAGS = {
+    'CLIENT_CACHE': False,
+    'ENABLE_EXPLORE_JSON_CSRF_PROTECTION': False,
+    'PRESTO_EXPAND_DATA': False,
+}
+
 ROW_LIMIT = 5000
 
 SIP_15_ENABLED = True
@@ -89,7 +103,15 @@ class CeleryConfig:
 
 
 CELERY_CONFIG = CeleryConfig
-SQLALCHEMY_DATABASE_URI = "sqlite:////opt/data/superset/superset.db"
+
+DB_HOST = os.getenv("POSTGRES_HOST")
+DB_PORT = os.getenv("POSTGRES_PORT")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASS = os.getenv("POSTGRES_PASSWORD")
+DB_DATABASE = os.getenv("POSTGRES_DB")
+SQLALCHEMY_DATABASE_URI = (
+    f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}"
+)
 
 
 # ---------------------------------------------------

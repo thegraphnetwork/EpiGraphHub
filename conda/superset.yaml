@@ -12,21 +12,19 @@ dependencies:
   - psycopg2
   - python 3.9.*
   - python-dotenv
-  - sqlalchemy
   - jsonschema<5,>=3
-  # dependencies from superset 1.5.*
-  - cryptography<39.0.0
+  # dependencies from superset 2.*
+  - superset 2.1.0
   - pyOpenSSL 23.0.0
   - slackclient
-  - typing-extensions<4,>=3.10
-  - enum34
   - pip
   - 'numpy>=1.17.3'
   - pip:
+    - 'flask-appbuilder>=4.3.0, <5.0.0'
+    # https://stackoverflow.com/questions/75275563/attributeerror-module-sqlalchemy-has-no-attribute-all
+    - 'Flask-SQLAlchemy==2.5.1'
+    - 'sqlalchemy<2.0'
     - -r pip.txt
+    - enum34
     - packaging
     - webencodings
-    - 'msgpack<1.1,>=1.0.0'
-    - markupsafe==2.0.1
-    - 'six>=1.16'
-    - 'apache-superset>=1.5.0,<2.0.0'

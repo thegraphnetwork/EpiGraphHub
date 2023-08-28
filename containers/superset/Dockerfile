@@ -34,6 +34,13 @@ RUN apt-get update -y \
     sudo \
     tini \
     libecpg-dev \
+    unixodbc-dev \
+    build-essential \
+    libssl-dev \
+    libffi-dev \
+    libsasl2-dev \
+    libldap2-dev \
+    default-libmysqlclient-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/* \

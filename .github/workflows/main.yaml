@@ -119,6 +119,10 @@ jobs:
 
     - name: run epigraphhub tests
       run: |
+        wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/116.0.5845.96/linux64/chromedriver-linux64.zip -O /tmp/chromedriver-linux64.zip
+        unzip /tmp/chromedriver-linux64.zip -d /tmp
+        sudo rm /usr/bin/chromedriver
+        sudo mv /tmp/chromedriver-linux64/chromedriver /usr/bin
         python -m unittest /home/runner/work/EpiGraphHub/EpiGraphHub/tests/*
 
     # TODO: Fix containers/postgres/sql/dev/02-epigraphhub.sql script
