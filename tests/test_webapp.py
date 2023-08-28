@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import unittest
 
 
@@ -8,15 +9,11 @@ class TestEpiGraphHub(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         chrome_options = Options()
-        chrome_options.add_argument("start-maximized")
-        chrome_options.add_argument("disable-infobars")
-        chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--no-sandbox")
-
-        cls.driver = webdriver.Chrome()
-
+        chrome_options.add_argument("--headless")
+        cls.driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options
+        )
         cls.driver.get("http://localhost:8088")
 
     @classmethod

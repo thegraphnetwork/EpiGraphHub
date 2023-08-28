@@ -13,4 +13,4 @@ dependencies:
   - pip
   - pip:
     - epigraphhub
-    - selenium
+    - "selenium<=4.0"
