@@ -58,6 +58,9 @@ env:
   SUPERSET_SECRET_KEY: superset-on-ci
   POSTGRES_DATA_DIR_HOST: /home/runner/work/psql_data
   POSTGRES_CONFIG_FILE_HOST: /home/runner/work/EpiGraphHub/EpiGraphHub/containers/postgresql/sql/dev/postgresql.conf
+  SUPERSET_DB_USER: postgres
+  SUPERSET_DB_PASSWORD: postgres
+  SUPERSET_DB_DATABASE: postgres
 
 jobs:
   main:
