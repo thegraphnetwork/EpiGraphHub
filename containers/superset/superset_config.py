@@ -106,9 +106,15 @@ CELERY_CONFIG = CeleryConfig
 
 DB_HOST = os.getenv("POSTGRES_HOST")
 DB_PORT = os.getenv("POSTGRES_PORT")
-DB_USER = os.getenv("SUPERSET_DB_USER")
-DB_PASS = os.getenv("SUPERSET_DB_PASSWORD")
-DB_DATABASE = os.getenv("SUPERSET_DB_DATABASE")
+if os.getenv("ENV") == "prod":
+    DB_USER = os.getenv("SUPERSET_DB_USER")
+    DB_PASS = os.getenv("SUPERSET_DB_PASSWORD")
+    DB_DATABASE = os.getenv("SUPERSET_DB_DATABASE")
+else: 
+    DB_USER = "dev_admin"
+    DB_PASS = "admin"
+    DB_DATABASE = "dev_superset"
+
 SQLALCHEMY_DATABASE_URI = (
     f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_DATABASE}"
 )

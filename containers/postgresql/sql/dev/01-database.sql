@@ -1,5 +1,6 @@
 /* Used for development only */
 
+DROP DATABASE IF EXISTS dev_superset;
 DROP DATABASE IF EXISTS dev_epigraphhub;
 DROP DATABASE IF EXISTS dev_privatehub;
 DROP DATABASE IF EXISTS dev_sandbox;
@@ -32,6 +33,7 @@ ALTER ROLE dev_external
   WITH NOSUPERUSER INHERIT NOCREATEROLE NOCREATEDB NOLOGIN NOREPLICATION NOBYPASSRLS;
 COMMENT ON ROLE dev_external IS 'External analysts with read-only access to  some databases';
 
+CREATE DATABASE dev_superset OWNER dev_admin;
 CREATE DATABASE dev_epigraphhub OWNER dev_epigraph;
 CREATE DATABASE dev_privatehub OWNER dev_epigraph;
 CREATE DATABASE dev_airflow OWNER dev_airflow_user;
