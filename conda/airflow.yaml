@@ -1,9 +1,11 @@
+# Note: these dependencies are for dev only. to work on container, they have
+# to be in an virtual environment to run in an isolated python version
 name: epigraphhub
 channels:
   - nodefaults
   - conda-forge
 dependencies:
-  - airflow 2.5.2
+  - airflow 2.7.1
   - fiona
   - geopandas
   - gsheetsdb
@@ -24,4 +26,4 @@ dependencies:
   - pip:
     - -r pip.txt
     - epigraphhub
-    - pysus
+    - pysus >= 0.10.1
