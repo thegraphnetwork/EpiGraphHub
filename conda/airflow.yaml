@@ -25,5 +25,3 @@ dependencies:
   - pip
   - pip:
     - -r pip.txt
-    - epigraphhub
-    - pysus >= 0.10.1
