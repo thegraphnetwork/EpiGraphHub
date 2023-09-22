@@ -9,7 +9,7 @@ service-groups:
       - containers/compose-airflow.yaml
     env-file: containers/airflow/.env
     services:
-      default: startup
+      default: webserver,scheduler,worker,triggerer
       available:
         - name: postgres
         - name: redis
