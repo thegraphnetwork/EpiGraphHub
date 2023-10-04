@@ -49,6 +49,7 @@ RUN usermod -u ${AIRFLOW_UID} -g 0 -d /home/airflow -s /bin/bash airflow \
 COPY --chown=airflow containers/airflow/config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 COPY --chown=airflow containers/airflow/scripts/*.sh ${AIRFLOW_HOME}/scripts/
 COPY --chown=airflow containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=airflow containers/airflow/envs/* /opt/envs/
 
 RUN curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz -o /tmp/Python-3.10.8.tgz \
     && tar -zxvf /tmp/Python-3.10.8.tgz -C /tmp \
@@ -56,7 +57,8 @@ RUN curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz -o /tmp/Pyth
     && ./configure --prefix=/opt/py310 --enable-optimizations \
     && make install \
     && chown -R airflow /opt/py310 \
-    && echo "alias python3.10=/opt/py310/bin/python3.10" >> /home/airflow/.bashrc
+    && echo "alias python3.10=/opt/py310/bin/python3.10" >> /home/airflow/.bashrc \
+    && rm -rf /tmp/Python-3.10*
 
 RUN curl https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz -o /tmp/Python-3.11.6.tgz \
     && tar -zxvf /tmp/Python-3.11.6.tgz -C /tmp \
@@ -64,21 +66,24 @@ RUN curl https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz -o /tmp/Pyth
     && ./configure --prefix=/opt/py311 --enable-optimizations \
     && make install \
     && chown -R airflow /opt/py311 \
-    && echo "alias python3.11=/opt/py311/bin/python3.11" >> /home/airflow/.bashrc
-
+    && echo "alias python3.11=/opt/py311/bin/python3.11" >> /home/airflow/.bashrc \
+    && rm -rf /tmp/Python-3.11*
+ 
 USER airflow
-
-RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin/python3.11" \
-    && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py311/pyvenv.cfg \
-    && source /opt/envs/py311/bin/activate \
-    && pip install \
-        "pysus >= 0.10.2"
 
 RUN /usr/local/bin/python -m virtualenv /opt/envs/py310 --python="/opt/py310/bin/python3.10" \
     && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py310/pyvenv.cfg \
     && source /opt/envs/py310/bin/activate \
-    && pip install \
-        "epigraphhub >= 2.1.0"
+    && pip install "cython<3.0.0" \
+    && pip install --no-build-isolation "pyyaml<6.0" \
+    && pip install -r /opt/envs/epigraphhub.txt
+
+RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin/python3.11" \
+    && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py311/pyvenv.cfg \
+    && source /opt/envs/py311/bin/activate \
+    && pip install "cython<3.0.0" \
+    && pip install --no-build-isolation "pyyaml<6.0" \
+    && pip install -r /opt/envs/pysus.txt
 
 WORKDIR ${AIRFLOW_HOME}
 
