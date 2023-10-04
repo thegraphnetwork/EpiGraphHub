@@ -11,8 +11,6 @@ service-groups:
     services:
       default: webserver,scheduler,worker,triggerer
       available:
-        - name: postgres
-        - name: redis
         - name: webserver
         - name: scheduler
         - name: worker
