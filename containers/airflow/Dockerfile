@@ -37,6 +37,7 @@ RUN apt-get update -y \
     zlib1g-dev \
     libffi-dev \
     libbz2-dev \
+    libsqlite3-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/*
