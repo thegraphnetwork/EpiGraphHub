@@ -1,13 +1,10 @@
 import pendulum
 import logging as logger
 from datetime import timedelta
-from airflow.decorators import dag, task
+from airflow import DAG
+from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator
-from epigraphhub.data.colombia import (
-    loading,
-    extract,
-)
+from airflow.operators.python import BranchExternalPythonOperator
 
 
 default_args = {
@@ -21,14 +18,13 @@ default_args = {
     "retry_delay": timedelta(minutes=1),
 }
 
-
-@dag(
+with DAG(
+    dag_id='colombia',
+    tags=['COLOMBIA'],
     schedule="@daily",
     default_args=default_args,
     catchup=False,
-)
-def colombia():
-
+):
     start = EmptyOperator(
         task_id="start",
     )
@@ -39,6 +35,8 @@ def colombia():
     )
 
     def compare():
+        import logging as logger
+        from epigraphhub.data.colombia import extract
         if not extract.compare():
             logger.info("Proceeding to update positive_cases_covid_d.")
             return "not_updated"
@@ -52,13 +50,18 @@ def colombia():
         task_id="up_to_date",
     )
 
-    check_dates = BranchPythonOperator(
+    check_dates = BranchExternalPythonOperator(
         task_id="check_last_update",
         python_callable=compare,
+        python='/opt/py310/bin/python3.10'
     )
 
-    @task(task_id="load_into_db", retries=2)
+    @task.external_python(
+        task_id='load_into_db', python='/opt/py310/bin/python3.10'
+    )
     def load():
+        import logging as logger
+        from epigraphhub.data.colombia import loading
         loading.upload()
         logger.info("Table positive_cases_covid_d updated.")
 
@@ -66,6 +69,3 @@ def colombia():
 
     check_dates >> updated >> done
     check_dates >> outdated >> load() >> done
-
-
-dag = colombia()
