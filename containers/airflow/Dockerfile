@@ -36,6 +36,7 @@ RUN apt-get update -y \
     libpam0g-dev \
     zlib1g-dev \
     libffi-dev \
+    libbz2-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
     /tmp/*
@@ -45,11 +46,6 @@ RUN usermod -u ${AIRFLOW_UID} -g 0 -d /home/airflow -s /bin/bash airflow \
  && chmod 0440 /etc/sudoers.d/airflow \
  && mkdir -p ${AIRFLOW_HOME}/scripts /opt/envs \
  && chown -R ${AIRFLOW_UID}:0 ${AIRFLOW_HOME} /opt/envs/
-
-COPY --chown=airflow containers/airflow/config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
-COPY --chown=airflow containers/airflow/scripts/*.sh ${AIRFLOW_HOME}/scripts/
-COPY --chown=airflow containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
-COPY --chown=airflow containers/airflow/envs/* /opt/envs/
 
 RUN curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz -o /tmp/Python-3.10.8.tgz \
     && tar -zxvf /tmp/Python-3.10.8.tgz -C /tmp \
@@ -69,14 +65,28 @@ RUN curl https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz -o /tmp/Pyth
     && echo "alias python3.11=/opt/py311/bin/python3.11" >> /home/airflow/.bashrc \
     && rm -rf /tmp/Python-3.11*
  
+COPY --chown=airflow containers/airflow/config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
+COPY --chown=airflow containers/airflow/scripts/*.sh ${AIRFLOW_HOME}/scripts/
+COPY --chown=airflow containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=airflow containers/airflow/envs/* /opt/envs/
+
 USER airflow
+
+ARG POSTGRES_EPIGRAPH_HOST
+ARG POSTGRES_EPIGRAPH_PORT
+ARG POSTGRES_EPIGRAPH_USER
+ARG POSTGRES_EPIGRAPH_PASSWORD
+ARG POSTGRES_EPIGRAPH_DB
+ENV DB_USER "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}"
+ENV DB_URI "${DB_USER}@${POSTGRES_EPIGRAPH_HOST}:${POSTGRES_EPIGRAPH_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
 RUN /usr/local/bin/python -m virtualenv /opt/envs/py310 --python="/opt/py310/bin/python3.10" \
     && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py310/pyvenv.cfg \
     && source /opt/envs/py310/bin/activate \
     && pip install "cython<3.0.0" \
     && pip install --no-build-isolation "pyyaml<6.0" \
-    && pip install -r /opt/envs/epigraphhub.txt
+    && pip install -r /opt/envs/epigraphhub.txt \
+    && epigraphhub-config --name "epigraphhub" --db-uri "${DB_URI}"
 
 RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin/python3.11" \
     && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py311/pyvenv.cfg \

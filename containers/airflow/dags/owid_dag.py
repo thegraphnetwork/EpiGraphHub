@@ -61,7 +61,7 @@ import pendulum
 import logging as logger
 from datetime import timedelta
 from airflow import DAG
-from airflow.decorators import dag, task
+from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import BranchExternalPythonOperator
 
