@@ -60,10 +60,10 @@ remove_csv (PythonOperator) :
 import pendulum
 import logging as logger
 from datetime import timedelta
-from airflow.decorators import dag, task
+from airflow import DAG
+from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator
-from epigraphhub.data.owid import extract, transform, loading
+from airflow.operators.python import BranchExternalPythonOperator
 
 
 default_args = {
@@ -77,14 +77,13 @@ default_args = {
     "retry_delay": timedelta(minutes=1),
 }
 
-
-@dag(
+with DAG(
+    dag_id='owid',
+    tags=['OWID'],
     schedule="@daily",
     default_args=default_args,
     catchup=False,
-    tags=['OWID']
-)
-def owid():
+):
     """
     This method represents the DAG itself using the @dag decorator. The method
     has to be instantiated so the Scheduler can recognize as a DAG. OWID DAG
@@ -137,12 +136,18 @@ def owid():
         task_id="start",
     )
 
-    @task(task_id="download_data")
+    @task.external_python(
+        task_id='download_data', python='/opt/py310/bin/python3.10'
+    )
     def download_owid():
+        import logging as logger
+        from epigraphhub.data.owid import extract
         extract.download()
         logger.info("OWID CSV downloaded")
 
     def comp_data():
+        import logging as logger
+        from epigraphhub.data.owid import extract
         """
         Returns:
             not_same_shape (str) : If evaluation is False, returns the string
@@ -163,9 +168,10 @@ def owid():
         logger.info("Table owid_covid up to date.")
         return "same_shape"
 
-    branch = BranchPythonOperator(
+    branch = BranchExternalPythonOperator(
         task_id="is_same_shape",
         python_callable=comp_data,
+        python='/opt/py310/bin/python3.10'
     )
 
     not_same_shape = EmptyOperator(
@@ -179,18 +185,30 @@ def owid():
         trigger_rule="one_success",
     )
 
-    @task(task_id="load_into_db")
+    @task.external_python(
+        task_id='load_into_db', python='/opt/py310/bin/python3.10'
+    )
     def insert_into_db():
+        import logging as logger
+        from epigraphhub.data.owid import loading
         loading.upload(remote=False)
         logger.info("Table owid_covid updated.")
 
-    @task(task_id="update_index")
+    @task.external_python(
+        task_id='update_index', python='/opt/py310/bin/python3.10'
+    )
     def parse_index():
+        import logging as logger
+        from epigraphhub.data.owid import transform
         transform.parse_indexes(remote=False)
         logger.info("location, iso_code and date indexes updated.")
 
-    @task(task_id="delete_csv")
+    @task.external_python(
+        task_id='delete_csv', python='/opt/py310/bin/python3.10'
+    )
     def remove_csv():
+        import logging as logger
+        from epigraphhub.data.owid import extract
         extract.remove()
         logger.info("OWID CSV removed.")
 
@@ -209,6 +227,3 @@ def owid():
     branch >> not_same_shape >> insert_into_db() >> parse_index() >> done
 
     done >> remove_csv()
-
-
-dag = owid()

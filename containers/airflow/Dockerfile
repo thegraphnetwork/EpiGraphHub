@@ -1,6 +1,4 @@
-# ref: https://github.com/mamba-org/micromamba-docker/blob/main/Dockerfile
-
-FROM condaforge/mambaforge:latest
+FROM apache/airflow:2.7.1
 
 LABEL maintainer="Ivan Ogasawara <ivan.ogasawara@gmail.com>"
 LABEL org.opencontainers.image.title="EpiGraphHub"
@@ -13,15 +11,8 @@ LABEL org.thegraphnetwork.epigraphhub.version="latest"
 # it is the default, but using it here to have it explicitly
 USER root
 
-SHELL ["/bin/bash", "-c"]
-# Use bash in Dockerfile RUN commands and make sure bashrc is sourced when
-# executing commands with /bin/bash -c
-# Needed to have the micromamba activate command configured etc.
-
-ENV ENV_NAME=epigraphhub
 ENV DEBIAN_FRONTEND=noninteractive
-ARG UID=1000
-ARG GID=1000
+ARG AIRFLOW_UID
 
 RUN apt-get update -y \
   && apt-get install -y --no-install-recommends \
@@ -39,100 +30,85 @@ RUN apt-get update -y \
     ca-certificates \
     gnupg \
     dirmngr \
-    freetds-bin \
-    freetds-dev \
-    gosu \
-    ldap-utils \
-    libffi-dev \
-    libpq-dev \
-    libsasl2-2 \
-    libsasl2-dev \
-    libsasl2-modules \
-    libssl-dev \
-    locales  \
-    lsb-release \
-    nodejs \
-    openssh-client \
-    postgresql-client \
-    sasl2-bin \
-    software-properties-common \
-    sqlite3 \
-    sudo \
-    unixodbc \
-    unixodbc-dev \
-    yarn \
     vim \
+    libssl-dev \
+    liblzo2-dev \
+    libpam0g-dev \
+    zlib1g-dev \
+    libffi-dev \
+    libbz2-dev \
+    libsqlite3-dev \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
-    /tmp/* \
-  && addgroup --gid ${GID} epigraphhub \
-  && useradd --uid ${UID} --gid ${GID} -ms /bin/bash epigraphhub \
-  && mkdir -p /opt/EpiGraphHub \
-  && chmod -R a+rwx /opt/conda /opt/EpiGraphHub \
-  && export ENV_NAME="$ENV_NAME" \
-  && echo "epigraphhub ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/epigraphhub \
-  && chmod 0440 /etc/sudoers.d/epigraphhub \
-  && mkdir -p /opt/superset \
-  && chown epigraphhub:epigraphhub /opt/superset \
-  && chmod a+rw /var/log/
+    /tmp/*
 
-USER epigraphhub
+RUN usermod -u ${AIRFLOW_UID} -g 0 -d /home/airflow -s /bin/bash airflow \
+ && echo "airflow ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/airflow \
+ && chmod 0440 /etc/sudoers.d/airflow \
+ && mkdir -p ${AIRFLOW_HOME}/scripts /opt/envs \
+ && chown -R ${AIRFLOW_UID}:0 ${AIRFLOW_HOME} /opt/envs/
 
-WORKDIR /opt/EpiGraphHub
+RUN curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz -o /tmp/Python-3.10.8.tgz \
+    && tar -zxvf /tmp/Python-3.10.8.tgz -C /tmp \
+    && cd /tmp/Python-3.10.8 \
+    && ./configure --prefix=/opt/py310 --enable-optimizations \
+    && make install \
+    && chown -R airflow /opt/py310 \
+    && echo "alias python3.10=/opt/py310/bin/python3.10" >> /home/airflow/.bashrc \
+    && rm -rf /tmp/Python-3.10*
 
-COPY --chown=epigraphhub:epigraphhub conda/ /tmp/conda
+RUN curl https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz -o /tmp/Python-3.11.6.tgz \
+    && tar -zxvf /tmp/Python-3.11.6.tgz -C /tmp \
+    && cd /tmp/Python-3.11.6 \
+    && ./configure --prefix=/opt/py311 --enable-optimizations \
+    && make install \
+    && chown -R airflow /opt/py311 \
+    && echo "alias python3.11=/opt/py311/bin/python3.11" >> /home/airflow/.bashrc \
+    && rm -rf /tmp/Python-3.11*
+ 
+COPY --chown=airflow containers/airflow/config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
+COPY --chown=airflow containers/airflow/scripts/*.sh ${AIRFLOW_HOME}/scripts/
+COPY --chown=airflow containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=airflow containers/airflow/envs/* /opt/envs/
 
-ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
-ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
-ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
+USER airflow
 
-RUN mamba env create -n $ENV_NAME --file /tmp/conda/airflow.yaml \
-  && conda clean --all \
-  && find /opt/conda/ -type f,l -name '*.a' -delete \
-  && find /opt/conda/ -type f,l -name '*.pyc' -delete \
-  && find /opt/conda/ -type f,l -name '*.js.map' -delete \
-  && rm -rf /opt/conda/pkgs /tmp/*
+ARG POSTGRES_EPIGRAPH_HOST
+ARG POSTGRES_EPIGRAPH_PORT
+ARG POSTGRES_EPIGRAPH_USER
+ARG POSTGRES_EPIGRAPH_PASSWORD
+ARG POSTGRES_EPIGRAPH_DB
+ENV DB_USER "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}"
+ENV DB_URI "${DB_USER}@${POSTGRES_EPIGRAPH_HOST}:${POSTGRES_EPIGRAPH_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
-# note: keeping it to the end of the recipes helps to avoid rebuilding the
-#       image after every change.
-# COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
+RUN /usr/local/bin/python -m virtualenv /opt/envs/py310 --python="/opt/py310/bin/python3.10" \
+    && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py310/pyvenv.cfg \
+    && source /opt/envs/py310/bin/activate \
+    && pip install "cython<3.0.0" \
+    && pip install --no-build-isolation "pyyaml<6.0" \
+    && pip install -r /opt/envs/epigraphhub.txt \
+    && epigraphhub-config --name "epigraphhub" --db-uri "${DB_URI}"
 
-COPY --chown=epigraphhub:epigraphhub containers/superset/superset.sh /opt/superset.sh
-# note: these files can be overwriten by docker compose volumes in order to
-#       use the last version without building the image again.
-COPY --chown=epigraphhub:epigraphhub containers/superset/ /opt/superset
-COPY --chown=epigraphhub:epigraphhub containers/superset/entrypoint.sh /opt/entrypoint.sh
+RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin/python3.11" \
+    && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py311/pyvenv.cfg \
+    && source /opt/envs/py311/bin/activate \
+    && pip install "cython<3.0.0" \
+    && pip install --no-build-isolation "pyyaml<6.0" \
+    && pip install -r /opt/envs/pysus.txt
 
-RUN chmod +x /opt/entrypoint.sh \
-  && echo "source /opt/entrypoint.sh" > ~/.bashrc \
-  && sudo mkdir -p /opt/data/superset/ \
-  && sudo chown -R epigraphhub:epigraphhub /opt/data \
-  && sudo chown -R epigraphhub:epigraphhub /var/log/*
-
-# note: the steps above were copied from the superset + some apt deps
-#       needed by airflow
-
-# ref: https://hub.docker.com/r/apache/airflow/dockerfile
-
-ENV AIRFLOW_HOME=/opt/airflow
-ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR ${AIRFLOW_HOME}
 
 # ref: https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
 RUN sudo ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 
 RUN sudo mkdir -p /opt/scripts /sources /opt/airflow \
-  && sudo chown -R epigraphhub:epigraphhub /opt/scripts \
-  && sudo chown -R epigraphhub:epigraphhub /sources \
-  && sudo chown -R epigraphhub:epigraphhub /opt/airflow \
+  && sudo chown -R airflow /opt/scripts \
+  && sudo chown -R airflow /sources \
+  && sudo chown -R airflow /opt/airflow \
   && sudo touch /var/log/owid_fetch.log \
   && sudo touch /var/log/foph_fetch.log \
   && sudo touch /var/log/colombia_fetch.log \
-  && sudo chown -R epigraphhub:epigraphhub /var/log/*
-
-COPY --chown=epigraphhub ./containers/airflow/airflow.cfg /opt/airflow/airflow.cfg
-COPY --chown=epigraphhub ./containers/airflow/scripts/*.sh /opt/scripts/
-COPY --chown=epigraphhub ./containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
-COPY --chown=epigraphhub ./containers/airflow/scripts/webserver_config.py /opt/airflow/webserver_config.py
+  && sudo chown -R airflow /var/log/*
 
 ENTRYPOINT [ "/opt/entrypoint.sh" ]
 CMD /opt/scripts/startup.sh

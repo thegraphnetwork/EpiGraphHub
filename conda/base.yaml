@@ -5,12 +5,13 @@ channels:
 dependencies:
   - python 3.9.*
   - awscli
-  - docker-compose
   - git
   - make
   - sqlite
   - webdriver-manager
   - pip
   - pip:
+    - containers-sugar
+    - compose-go
     - epigraphhub
     - "selenium<=4.0"

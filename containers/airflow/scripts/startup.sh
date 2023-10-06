@@ -4,7 +4,7 @@ set -e
 
 # initdb
 echo "=========== init-db ==========="
-. /opt/scripts/init-db.sh
+airflow db init
 
 # create admin user
 echo "=========== init-db ==========="

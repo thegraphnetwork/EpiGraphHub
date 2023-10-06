@@ -1,4 +1,4 @@
-"""
+''' DISABLED
 @author Luã Bida Vacaro | github.com/luabida
 @date Last change on 2022-10-24
 
@@ -66,7 +66,7 @@ end (EmptyOperator) :
 
 remove_csv_dir (PythonOperator) :
     This task will remove the FOPH CSV directory recursively.
-"""
+    
 import pendulum
 import logging as logger
 
@@ -309,4 +309,5 @@ def FOPH():
     end >> clean
 
 
-dag = FOPH()
+dag = FOPH()i""
+'''
