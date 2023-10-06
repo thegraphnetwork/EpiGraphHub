@@ -8,6 +8,7 @@ NOTE: This DAG is a modified copy of foph DAG to fetch weekly data.
       took its place, keeping the same workflow with minor changes.
 """
 import pendulum
+import requests
 
 from datetime import timedelta
 from airflow import DAG
@@ -29,6 +30,40 @@ default_args = {
 }
 
 
+def fetch(freq: str = "daily", by: str = "default") -> tuple:
+    """
+    A generator responsible for accessing FOPH and retrieve the CSV
+    relation, such as its Table name and URL as a tuple.
+
+    Parameters
+    ----------
+    freq : str
+        The frequency of the data (daily or weekly).
+    by : str
+        Available only for weekly data, fetches cases by age,
+        sex or default.
+
+    Returns
+    -------
+    table : str
+        Table name as in the json file.
+    url : str
+        URL to download the CSV.
+    """
+    url = "https://www.covid19.admin.ch/api/data/context"
+    context = requests.get(url).json()
+    tables = context["sources"]["individual"]["csv"][freq]
+    if freq.lower() == "weekly":
+        if by.lower() == "age":
+            tables = tables["byAge"]
+        elif by.lower() == "sex":
+            tables = tables["bySex"]
+        else:
+            tables = tables[by]
+    for table, url in tables.items():
+        yield table, url
+
+
 with DAG(
     dag_id='FOPH_WEEKLY',
     tags = ['CHE', 'FOPH', 'Switzerland'],
@@ -45,17 +80,10 @@ with DAG(
         trigger_rule="all_success",
     )
 
-    @task.external_python(
-        task_id='get_tables', python='/opt/py310/bin/python3.10'
-    )
-    def get_tables():
-        from epigraphhub.data.foph import extract
-        tables_default = [[f'{t}_w', u] for t, u in extract.fetch(freq='weekly')]
-        tables_by_age = [[f'{t}_byage_w', u] for t, u in extract.fetch(freq='weekly', by='age')]
-        tables_by_sex = [[f'{t}_bysex_w', u] for t, u in extract.fetch(freq='weekly', by='sex')]
-
-        tables = tables_default + tables_by_age + tables_by_sex
-
+    tables_default = [[f'{t}_w', u] for t, u in fetch(freq='weekly')]
+    tables_by_age = [[f'{t}_byage_w', u] for t, u in fetch(freq='weekly', by='age')]
+    tables_by_sex = [[f'{t}_bysex_w', u] for t, u in fetch(freq='weekly', by='sex')]
+    tables = tables_default + tables_by_age + tables_by_sex
 
     def download(url):
         import logging as logger
@@ -100,7 +128,6 @@ with DAG(
         from epigraphhub.data.foph import extract
         extract.remove(entire_dir=True)
         logger.info("CSVs directory removed.")
-
 
     for table in tables:
         tablename, url = table
