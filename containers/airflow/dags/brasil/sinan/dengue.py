@@ -34,7 +34,7 @@ with DAG(
     def update_dengue(egh_conn: dict):
         import logging
 
-        from sqlalchemy import create_engine
+        from sqlalchemy import create_engine, text
         from pysus.online_data import parquets_to_dataframe
         from pysus.ftp.databases.sinan import SINAN
 
@@ -56,29 +56,29 @@ with DAG(
         for year in f_stage['final']:
             # Check if final is already in DB
             with create_engine(egh_conn['URI']).connect() as conn:
-                cur = conn.execute(
+                cur = conn.execute(text(
                     f'SELECT COUNT(*) FROM brasil.{tablename}'
-                    f' WHERE year = {year} AND prelim = False'
-                )
-                count = cur.fetchone()
+                    f" WHERE year = '{year}' AND prelim = False"
+                ))
+                count = cur.fetchone()[0]
 
             logging.info(f"Final year {year}: {count}")
 
             if not count:
                 # Check on prelims
                 with create_engine(egh_conn['URI']).connect() as conn:
-                    cur = conn.execute(
+                    cur = conn.execute(text(
                         f'SELECT COUNT(*) FROM brasil.{tablename}'
-                        f' WHERE year = {year} AND prelim = True'
-                    )
-                    count = cur.fetchone()
+                        f" WHERE year = '{year}' AND prelim = True"
+                    ))
+                    count = cur.fetchone()[0]
 
                 if count:
                     # Update prelim to final
-                    cur = conn.execute(
+                    cur = conn.execute(text(
                         f'DELETE FROM brasil.{tablename}'
-                        f' WHERE year = {year} AND prelim = True'
-                    )
+                        f" WHERE year = '{year}' AND prelim = True"
+                    ))
 
                 file = sinan.download(sinan.get_files(dis_code, year))
 
@@ -96,10 +96,10 @@ with DAG(
         for year in f_stage['prelim']:
             with create_engine(egh_conn['URI']).connect() as conn:
                 # Update prelim
-                cur = conn.execute(
+                cur = conn.execute(text(
                     f'DELETE FROM brasil.{tablename}'
-                    f' WHERE year = {year} AND prelim = True'
-                )
+                    f" WHERE year = '{year}' AND prelim = True"
+                ))
 
             file = sinan.download(sinan.get_files(dis_code, year))
 
@@ -108,7 +108,7 @@ with DAG(
             df['prelim'] = True
             df.to_sql(
                 name=tablename, 
-                con=engine.connect(), 
+                con=create_engine(egh_conn['URI']), 
                 schema=schema, 
                 if_exists='append', 
                 index=False
