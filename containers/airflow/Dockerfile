@@ -96,10 +96,6 @@ RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin
     && pip install --no-build-isolation "pyyaml<6.0" \
     && pip install \
         psycopg2-binary \
-        "apache-airflow>=2.7.1" \
-        apache-airflow-providers-celery \
-        redis \
-        "dill>=0.3.7" \
         -r /opt/envs/pysus.txt
 
 WORKDIR ${AIRFLOW_HOME}

@@ -29,17 +29,19 @@ with DAG(
 
     @task.external_python(
         task_id='first', 
-        python='/opt/py311/bin/python3.11',
-        expect_airflow=True
+        python='/opt/py311/bin/python3.11'
     )
     def update_dengue(egh_conn: dict):
+        import logging
+
+        from sqlalchemy import create_engine
         from pysus.online_data import parquets_to_dataframe
         from pysus.ftp.databases.sinan import SINAN
 
         sinan = SINAN().load()
         dis_code = "DENG"
         tablename = "sinan_dengue_m"
-        files = sinan.get_files(dis_code=disease)
+        files = sinan.get_files(dis_code=dis_code)
 
         f_stage = {}
         for file in files:
@@ -59,6 +61,8 @@ with DAG(
                     f' WHERE year = {year} AND prelim = False'
                 )
                 count = cur.fetchone()
+
+            logging.info(f"Final year {year}: {count}")
 
             if not count:
                 # Check on prelims
