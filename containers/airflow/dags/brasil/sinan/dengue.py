@@ -83,12 +83,13 @@ with DAG(
                 file = sinan.download(sinan.get_files(dis_code, year))
 
                 df = parquets_to_dataframe(file.path)
+                df.columns = df.columns.str.lower()
                 df['year'] = year
                 df['prelim'] = False
                 df.to_sql(
                     name=tablename, 
-                    con=engine.connect(), 
-                    schema=schema, 
+                    con=create_engine(egh_conn['URI']), 
+                    schema="brasil", 
                     if_exists='append', 
                     index=False
                 )
@@ -104,12 +105,13 @@ with DAG(
             file = sinan.download(sinan.get_files(dis_code, year))
 
             df = parquets_to_dataframe(file.path)
+            df.columns = df.columns.str.lower()
             df['year'] = year
             df['prelim'] = True
             df.to_sql(
                 name=tablename, 
                 con=create_engine(egh_conn['URI']), 
-                schema=schema, 
+                schema="brasil", 
                 if_exists='append', 
                 index=False
             )
