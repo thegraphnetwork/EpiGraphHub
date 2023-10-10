@@ -3,6 +3,7 @@ import pendulum
 from datetime import timedelta
 from airflow import DAG
 from airflow.decorators import task
+from airflow.models import Variable
 
 
 default_args = {
@@ -23,16 +24,21 @@ with DAG(
     default_args=default_args,
     catchup=False,
 ) as dag:
-    from airflow.models import Variable
 
     CONN = Variable.get('egh_conn', deserialize_json=True)
 
     @task.external_python(
-        task_id='first', 
+        task_id='update_dengue', 
         python='/opt/py311/bin/python3.11'
     )
     def update_dengue(egh_conn: dict):
+        """
+        This task will run in an isolated python environment, containing PySUS
+        package. The task will fetch for all 
+        """
+        import os
         import logging
+        import pandas as pd
 
         from sqlalchemy import create_engine, text
         from pysus.online_data import parquets_to_dataframe
@@ -80,19 +86,25 @@ with DAG(
                         f" WHERE year = '{year}' AND prelim = True"
                     ))
 
-                file = sinan.download(sinan.get_files(dis_code, year))
+                parquets = sinan.download(sinan.get_files(dis_code, year))
 
-                df = parquets_to_dataframe(file.path)
-                df.columns = df.columns.str.lower()
-                df['year'] = year
-                df['prelim'] = False
-                df.to_sql(
-                    name=tablename, 
-                    con=create_engine(egh_conn['URI']), 
-                    schema="brasil", 
-                    if_exists='append', 
-                    index=False
-                )
+                for parquet in os.listdir(parquets.path):
+                    file = os.path.join(parquets.path, parquet)
+                    df = pd.read_parquet(str(file), engine='fastparquet')
+                    df.columns = df.columns.str.lower()
+                    df['year'] = year
+                    df['prelim'] = False
+                    df.to_sql(
+                        name=tablename, 
+                        con=create_engine(egh_conn['URI']), 
+                        schema="brasil", 
+                        if_exists='append', 
+                        index=False
+                    )
+                    del df
+                    os.remove(file)
+                    logging.debug(f"{file} inserted into db")
+                os.rmdir(parquets.path)
 
         for year in f_stage['prelim']:
             with create_engine(egh_conn['URI']).connect() as conn:
@@ -102,18 +114,24 @@ with DAG(
                     f" WHERE year = '{year}' AND prelim = True"
                 ))
 
-            file = sinan.download(sinan.get_files(dis_code, year))
+            parquets = sinan.download(sinan.get_files(dis_code, year))
 
-            df = parquets_to_dataframe(file.path)
-            df.columns = df.columns.str.lower()
-            df['year'] = year
-            df['prelim'] = True
-            df.to_sql(
-                name=tablename, 
-                con=create_engine(egh_conn['URI']), 
-                schema="brasil", 
-                if_exists='append', 
-                index=False
-            )
+            for parquet in os.listdir(parquets.path):
+                file = os.path.join(parquets.path, parquet)
+                df = pd.read_parquet(str(file), engine='fastparquet')
+                df.columns = df.columns.str.lower()
+                df['year'] = year
+                df['prelim'] = True
+                df.to_sql(
+                    name=tablename, 
+                    con=create_engine(egh_conn['URI']), 
+                    schema="brasil", 
+                    if_exists='append', 
+                    index=False
+                )
+                del df
+                os.remove(file)
+                logging.debug(f"{file} inserted into db")
+            os.rmdir(parquets.path)
 
     update_dengue(CONN)
