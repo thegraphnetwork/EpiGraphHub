@@ -42,8 +42,6 @@ with DAG(
         import pandas as pd
 
         from sqlalchemy import create_engine, text
-        from sqlalchemy.exc import ProgrammingError
-        from pysus.online_data import parquets_to_dataframe
         from pysus.ftp.databases.sinan import SINAN
 
         sinan = SINAN().load()
@@ -52,7 +50,7 @@ with DAG(
         files = sinan.get_files(dis_code=dis_code)
 
 
-        def to_sql_include_cols(df: pd.DataFrame, engine):
+        def to_sql_include_cols(df: pd.DataFrame, prelim: bool, engine):
             """
             Insert dataframe into db, include missing columns if needed
             """
@@ -77,6 +75,28 @@ with DAG(
                     conn.execute(text(sql))
                     conn.commit()
 
+            for col, dtype in df.dtypes.items():
+                if col in ['dt_notific', 'dt_sin_pri']:
+                    try:
+                        df[col] = pd.to_datetime(df[col]).dt.strftime('%d%m%Y').astype('object')
+                        dtype = 'object'
+                        logging.warning(
+                            f"Column '{col}' of type '{dtype}' has been parsed to 'object'"
+                        )
+                    except ValueError as error:
+                        logging.error(f'Could not format date column correctly: {error}')
+                        df[col] = df[col].astype('object')
+                        dtype = 'object'
+
+                if str(dtype) != 'object':
+                    df[col] = df[col].astype('object')
+                    logging.warning(
+                        f"Column '{col}' of type '{dtype}' has been parsed to 'object'"
+                    )
+
+            df['year'] = year
+            df['prelim'] = prelim
+
             df.to_sql(
                 name=tablename, 
                 con=engine, 
@@ -85,7 +105,7 @@ with DAG(
                 index=False
             )
 
-        def insert_parquets(parquet_dir: str, year: int):
+        def insert_parquets(parquet_dir: str, year: int, prelim: bool):
             """
             Insert parquet dir into database using its chunks. Delete the chunk
             and the directory after insertion
@@ -93,10 +113,8 @@ with DAG(
             for parquet in os.listdir(parquet_dir):
                 file = os.path.join(parquet_dir, parquet)
                 df = pd.read_parquet(str(file), engine='fastparquet')
-                df['year'] = year
-                df['prelim'] = False
 
-                to_sql_include_cols(df, create_engine(egh_conn['URI']))
+                to_sql_include_cols(df, prelim, create_engine(egh_conn['URI']))
                 logging.debug(f"{file} inserted into db")
 
                 del df
@@ -142,7 +160,7 @@ with DAG(
                     ))
 
                 parquets = sinan.download(sinan.get_files(dis_code, year))
-                insert_parquets(parquets.path, year)
+                insert_parquets(parquets.path, year, False)
 
         for year in f_stage['prelim']:
             with create_engine(egh_conn['URI']).connect() as conn:
@@ -153,6 +171,6 @@ with DAG(
                 ))
 
             parquets = sinan.download(sinan.get_files(dis_code, year))
-            insert_parquets(parquets.path, year)
+            insert_parquets(parquets.path, year, True)
 
     update_dengue(CONN)
