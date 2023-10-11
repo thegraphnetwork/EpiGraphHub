@@ -65,9 +65,11 @@ with DAG(
             columns_to_add = df_columns.difference(sql_columns)
 
             if columns_to_add:
-                sql_statements = [f"ALTER TABLE {tablename}"]
+                sql_statements = [f"ALTER TABLE brasil.{tablename}"]
                 for column in columns_to_add:
                     sql_statements.append(f"ADD COLUMN {column} TEXT,") # object
+
+                sql_statements[-1] = sql_statements[-1].replace(',', ';')
 
                 with create_engine(egh_conn['URI']).connect() as conn:
                     sql = ' '.join(sql_statements)
@@ -81,7 +83,7 @@ with DAG(
                         df[col] = pd.to_datetime(df[col]).dt.strftime('%d%m%Y').astype('object')
                         dtype = 'object'
                         logging.warning(
-                            f"Column '{col}' of type '{dtype}' has been parsed to 'object'"
+                            f"Column '{col}' of type 'DATE' has been parsed to 'TEXT'"
                         )
                     except ValueError as error:
                         logging.error(f'Could not format date column correctly: {error}')
