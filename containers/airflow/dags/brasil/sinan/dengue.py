@@ -41,6 +41,7 @@ with DAG(
         import pandas as pd
 
         from sqlalchemy import create_engine, text
+        from sqlalchemy.exc import ProgrammingError
         from pysus.online_data import parquets_to_dataframe
         from pysus.ftp.databases.sinan import SINAN
 
@@ -48,6 +49,31 @@ with DAG(
         dis_code = "DENG"
         tablename = "sinan_dengue_m"
         files = sinan.get_files(dis_code=dis_code)
+
+        
+        def insert_parquets(parquet_dir: str, year: int):
+            """
+            Insert parquet dir into database using its chunks. Delete the chunk
+            and the directory after insertion.
+            """
+            for parquet in os.listdir(parquet_dir):
+                file = os.path.join(parquet_dir, parquet)
+                df = pd.read_parquet(str(file), engine='fastparquet')
+                df.columns = df.columns.str.lower()
+                df['year'] = year
+                df['prelim'] = False
+                df.to_sql(
+                    name=tablename, 
+                    con=create_engine(egh_conn['URI']), 
+                    schema="brasil", 
+                    if_exists='append', 
+                    index=False
+                )
+                del df
+                os.remove(file)
+                logging.debug(f"{file} inserted into db")
+            os.rmdir(parquets.path)
+
 
         f_stage = {}
         for file in files:
@@ -88,22 +114,21 @@ with DAG(
 
                 parquets = sinan.download(sinan.get_files(dis_code, year))
 
-                for parquet in os.listdir(parquets.path):
-                    file = os.path.join(parquets.path, parquet)
-                    df = pd.read_parquet(str(file), engine='fastparquet')
-                    df.columns = df.columns.str.lower()
-                    df['year'] = year
-                    df['prelim'] = False
-                    df.to_sql(
-                        name=tablename, 
-                        con=create_engine(egh_conn['URI']), 
-                        schema="brasil", 
-                        if_exists='append', 
-                        index=False
-                    )
-                    del df
-                    os.remove(file)
-                    logging.debug(f"{file} inserted into db")
+                try:
+                    insert_parquets(parquets.path, year)
+                except ProgrammingError as error:
+                    if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
+                        # Include new columns to table
+                        column_name = str(error).split('"')[1]
+                        with create_engine(egh_conn['URI']).connect() as conn:
+                            conn.execute(text(
+                                f'ALTER TABLE brasil.{tablename}'
+                                f' ADD COLUMN {column_name} TEXT'
+                            ))
+                            conn.commit()
+                        logging.warning(f"Column {column_name} added into {tablename}")
+                        insert_parquets(parquets.path, year)
+
                 os.rmdir(parquets.path)
 
         for year in f_stage['prelim']:
@@ -116,22 +141,21 @@ with DAG(
 
             parquets = sinan.download(sinan.get_files(dis_code, year))
 
-            for parquet in os.listdir(parquets.path):
-                file = os.path.join(parquets.path, parquet)
-                df = pd.read_parquet(str(file), engine='fastparquet')
-                df.columns = df.columns.str.lower()
-                df['year'] = year
-                df['prelim'] = True
-                df.to_sql(
-                    name=tablename, 
-                    con=create_engine(egh_conn['URI']), 
-                    schema="brasil", 
-                    if_exists='append', 
-                    index=False
-                )
-                del df
-                os.remove(file)
-                logging.debug(f"{file} inserted into db")
+            try:
+                insert_parquets(parquets.path, year)
+            except ProgrammingError as error:
+                if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
+                    # Include new columns to table
+                    column_name = str(error).split('"')[1]
+                    with create_engine(egh_conn['URI']).connect() as conn:
+                        conn.execute(text(
+                            f'ALTER TABLE brasil.{tablename}'
+                            f' ADD COLUMN {column_name} TEXT'
+                        ))
+                        conn.commit()
+                    logging.warning(f"Column {column_name} added into {tablename}")
+                    insert_parquets(parquets.path, year)
+
             os.rmdir(parquets.path)
 
     update_dengue(CONN)
