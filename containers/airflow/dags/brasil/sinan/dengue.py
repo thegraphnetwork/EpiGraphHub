@@ -52,31 +52,38 @@ with DAG(
         files = sinan.get_files(dis_code=dis_code)
 
 
-        def recursive_to_sql(df: pd.DataFrame, engine):
+        def to_sql_include_cols(df: pd.DataFrame, engine):
             """
-            Try inserting a dataframe into db, handle error recursively if
-            a column is missing
+            Insert dataframe into db, include missing columns if needed
             """
-            try:
-                df.to_sql(
-                    name=tablename, 
-                    con=engine, 
-                    schema="brasil", 
-                    if_exists='append', 
-                    index=False
-                )
-            except ProgrammingError as error:
-                if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
-                    column_name = str(error).split('"')[1]
-                    with create_engine(egh_conn['URI']).connect() as conn:
-                        conn.execute(text(
-                            f'ALTER TABLE brasil.{tablename}'
-                            f' ADD COLUMN {column_name} TEXT'
-                        ))
-                        conn.commit()
-                    logging.warning(f"Column {column_name} added into {tablename}")
-                    recursive_to_sql(df, engine)
-        
+            df.columns = df.columns.str.lower()
+
+            with create_engine(egh_conn['URI']).connect() as conn:
+                # Get columns
+                res = conn.execute(text(f'SELECT * FROM brasil.{tablename} LIMIT 1'))
+                sql_columns = set(i[0] for i in res.cursor.description)
+
+            df_columns = set(df.columns)
+            columns_to_add = df_columns.difference(sql_columns)
+
+            if columns_to_add:
+                sql_statements = [f"ALTER TABLE {tablename}"]
+                for column in columns_to_add:
+                    sql_statements.append(f"ADD COLUMN {column} TEXT,") # object
+
+                with create_engine(egh_conn['URI']).connect() as conn:
+                    sql = ' '.join(sql_statements)
+                    logging.warning(f"EXECUTING: {sql}")
+                    conn.execute(text(sql))
+                    conn.commit()
+
+            df.to_sql(
+                name=tablename, 
+                con=engine, 
+                schema="brasil", 
+                if_exists='append', 
+                index=False
+            )
 
         def insert_parquets(parquet_dir: str, year: int):
             """
@@ -86,11 +93,10 @@ with DAG(
             for parquet in os.listdir(parquet_dir):
                 file = os.path.join(parquet_dir, parquet)
                 df = pd.read_parquet(str(file), engine='fastparquet')
-                df.columns = df.columns.str.lower()
                 df['year'] = year
                 df['prelim'] = False
 
-                recursive_to_sql(df, create_engine(egh_conn['URI']))
+                to_sql_include_cols(df, create_engine(egh_conn['URI']))
                 logging.debug(f"{file} inserted into db")
 
                 del df
