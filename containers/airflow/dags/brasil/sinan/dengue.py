@@ -34,7 +34,8 @@ with DAG(
     def update_dengue(egh_conn: dict):
         """
         This task will run in an isolated python environment, containing PySUS
-        package. The task will fetch for all 
+        package. The task will fetch for all Dengue years from DATASUS and insert
+        them into EGH database
         """
         import os
         import logging
@@ -50,11 +51,37 @@ with DAG(
         tablename = "sinan_dengue_m"
         files = sinan.get_files(dis_code=dis_code)
 
+
+        def recursive_to_sql(df: pd.DataFrame, engine):
+            """
+            Try inserting a dataframe into db, handle error recursively if
+            a column is missing
+            """
+            try:
+                df.to_sql(
+                    name=tablename, 
+                    con=engine, 
+                    schema="brasil", 
+                    if_exists='append', 
+                    index=False
+                )
+            except ProgrammingError as error:
+                if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
+                    column_name = str(error).split('"')[1]
+                    with create_engine(egh_conn['URI']).connect() as conn:
+                        conn.execute(text(
+                            f'ALTER TABLE brasil.{tablename}'
+                            f' ADD COLUMN {column_name} TEXT'
+                        ))
+                        conn.commit()
+                    logging.warning(f"Column {column_name} added into {tablename}")
+                    recursive_to_sql(df, engine)
         
+
         def insert_parquets(parquet_dir: str, year: int):
             """
             Insert parquet dir into database using its chunks. Delete the chunk
-            and the directory after insertion.
+            and the directory after insertion
             """
             for parquet in os.listdir(parquet_dir):
                 file = os.path.join(parquet_dir, parquet)
@@ -62,16 +89,12 @@ with DAG(
                 df.columns = df.columns.str.lower()
                 df['year'] = year
                 df['prelim'] = False
-                df.to_sql(
-                    name=tablename, 
-                    con=create_engine(egh_conn['URI']), 
-                    schema="brasil", 
-                    if_exists='append', 
-                    index=False
-                )
+
+                recursive_to_sql(df, create_engine(egh_conn['URI']))
+                logging.debug(f"{file} inserted into db")
+
                 del df
                 os.remove(file)
-                logging.debug(f"{file} inserted into db")
             os.rmdir(parquets.path)
 
 
@@ -113,23 +136,7 @@ with DAG(
                     ))
 
                 parquets = sinan.download(sinan.get_files(dis_code, year))
-
-                try:
-                    insert_parquets(parquets.path, year)
-                except ProgrammingError as error:
-                    if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
-                        # Include new columns to table
-                        column_name = str(error).split('"')[1]
-                        with create_engine(egh_conn['URI']).connect() as conn:
-                            conn.execute(text(
-                                f'ALTER TABLE brasil.{tablename}'
-                                f' ADD COLUMN {column_name} TEXT'
-                            ))
-                            conn.commit()
-                        logging.warning(f"Column {column_name} added into {tablename}")
-                        insert_parquets(parquets.path, year)
-
-                os.rmdir(parquets.path)
+                insert_parquets(parquets.path, year)
 
         for year in f_stage['prelim']:
             with create_engine(egh_conn['URI']).connect() as conn:
@@ -140,22 +147,6 @@ with DAG(
                 ))
 
             parquets = sinan.download(sinan.get_files(dis_code, year))
-
-            try:
-                insert_parquets(parquets.path, year)
-            except ProgrammingError as error:
-                if str(error).startswith("(psycopg2.errors.UndefinedColumn)"):
-                    # Include new columns to table
-                    column_name = str(error).split('"')[1]
-                    with create_engine(egh_conn['URI']).connect() as conn:
-                        conn.execute(text(
-                            f'ALTER TABLE brasil.{tablename}'
-                            f' ADD COLUMN {column_name} TEXT'
-                        ))
-                        conn.commit()
-                    logging.warning(f"Column {column_name} added into {tablename}")
-                    insert_parquets(parquets.path, year)
-
-            os.rmdir(parquets.path)
+            insert_parquets(parquets.path, year)
 
     update_dengue(CONN)
