@@ -117,7 +117,7 @@ with DAG(
                 df = pd.read_parquet(str(file), engine='fastparquet')
 
                 to_sql_include_cols(df, prelim, create_engine(egh_conn['URI']))
-                logging.debug(f"{file} inserted into db")
+                logging.warning(f"{len(df)} rows inserted into {tablename}")
 
                 del df
                 os.remove(file)
