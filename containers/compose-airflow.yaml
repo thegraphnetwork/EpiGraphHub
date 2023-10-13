@@ -5,11 +5,7 @@ x-airflow-common:
     context: .. 
     dockerfile: containers/airflow/Dockerfile
     args:
-      POSTGRES_EPIGRAPH_HOST: ${POSTGRES_EPIGRAPH_HOST}
-      POSTGRES_EPIGRAPH_PORT: ${POSTGRES_EPIGRAPH_PORT}
-      POSTGRES_EPIGRAPH_USER: ${POSTGRES_EPIGRAPH_USER}
-      POSTGRES_EPIGRAPH_PASSWORD: ${POSTGRES_EPIGRAPH_PASSWORD}
-      POSTGRES_EPIGRAPH_DB: ${POSTGRES_EPIGRAPH_DB}
+      DB_URI: ${DB_URI}
   environment:
     &airflow-common-env
     AIRFLOW_HOME: /opt/airflow
