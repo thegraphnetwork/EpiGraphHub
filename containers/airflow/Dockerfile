@@ -73,13 +73,8 @@ COPY --chown=airflow containers/airflow/envs/* /opt/envs/
 
 USER airflow
 
-ARG POSTGRES_EPIGRAPH_HOST
-ARG POSTGRES_EPIGRAPH_PORT
-ARG POSTGRES_EPIGRAPH_USER
-ARG POSTGRES_EPIGRAPH_PASSWORD
-ARG POSTGRES_EPIGRAPH_DB
-ENV DB_USER "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}"
-ENV DB_URI "${DB_USER}@${POSTGRES_EPIGRAPH_HOST}:${POSTGRES_EPIGRAPH_PORT}/${POSTGRES_EPIGRAPH_DB}"
+ARG DB_URI
+ENV DB_URI "${DB_URI}"
 
 RUN /usr/local/bin/python -m virtualenv /opt/envs/py310 --python="/opt/py310/bin/python3.10" \
     && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py310/pyvenv.cfg \
@@ -94,7 +89,9 @@ RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin
     && source /opt/envs/py311/bin/activate \
     && pip install "cython<3.0.0" \
     && pip install --no-build-isolation "pyyaml<6.0" \
-    && pip install -r /opt/envs/pysus.txt
+    && pip install \
+        psycopg2-binary \
+        -r /opt/envs/pysus.txt
 
 WORKDIR ${AIRFLOW_HOME}
 
