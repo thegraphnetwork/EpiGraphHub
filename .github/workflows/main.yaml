@@ -92,17 +92,16 @@ jobs:
 
     - name: setup
       run: |
-        make prepare-host
+        makim host.prepare
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
-        mamba-version: "*"
         environment-file: conda/base.yaml
         channels: conda-forge,r,nodefaults
         activate-environment: epigraphhub
-        use-mamba: true
-        miniforge-variant: Mambaforge
+        auto-update-conda: true
+        conda-solver: libmamba
 
     - name: configure epigraphhub credentials
       run: |
@@ -110,14 +109,14 @@ jobs:
           --db-uri "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
     - name: configure aws s3 credentials to minio
-      run: make dev-create-s3-credential
+      run: makim aws.create-s3-credential
 
     - name: build docker containers
       run: make containers-build
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow postgres"      
+        make containers-start-services SERVICES="superset airflow postgres"
 
     - name: wait for the services are properly working
       run: |
