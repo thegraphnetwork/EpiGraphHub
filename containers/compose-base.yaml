@@ -46,6 +46,12 @@ services:
         #       the .env file
         - UID=${HOST_UID:-1000}
         - GID=${HOST_GID:-1000}
+        - AIRFLOW_UID=${HOST_UID:-1000}
+        - POSTGRES_EPIGRAPH_HOST=${POSTGRES_EPIGRAPH_HOST}
+        - POSTGRES_EPIGRAPH_PORT=${POSTGRES_EPIGRAPH_PORT}
+        - POSTGRES_EPIGRAPH_USER=${POSTGRES_EPIGRAPH_USER}
+        - POSTGRES_EPIGRAPH_PASSWORD=${POSTGRES_EPIGRAPH_PASSWORD}
+        - POSTGRES_EPIGRAPH_DB=${POSTGRES_EPIGRAPH_DB}
     environment:
       AIRFLOW_UID: "${HOST_UID:-1000}"
     user: "epigraphhub:epigraphhub"

@@ -57,15 +57,6 @@ RUN curl https://www.python.org/ftp/python/3.10.8/Python-3.10.8.tgz -o /tmp/Pyth
     && echo "alias python3.10=/opt/py310/bin/python3.10" >> /home/airflow/.bashrc \
     && rm -rf /tmp/Python-3.10*
 
-RUN curl https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz -o /tmp/Python-3.11.6.tgz \
-    && tar -zxvf /tmp/Python-3.11.6.tgz -C /tmp \
-    && cd /tmp/Python-3.11.6 \
-    && ./configure --prefix=/opt/py311 --enable-optimizations \
-    && make install \
-    && chown -R airflow /opt/py311 \
-    && echo "alias python3.11=/opt/py311/bin/python3.11" >> /home/airflow/.bashrc \
-    && rm -rf /tmp/Python-3.11*
- 
 COPY --chown=airflow containers/airflow/config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 COPY --chown=airflow containers/airflow/scripts/*.sh ${AIRFLOW_HOME}/scripts/
 COPY --chown=airflow containers/airflow/scripts/entrypoint.sh /opt/entrypoint.sh
@@ -81,20 +72,17 @@ ARG POSTGRES_EPIGRAPH_DB
 ENV DB_USER "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}"
 ENV DB_URI "${DB_USER}@${POSTGRES_EPIGRAPH_HOST}:${POSTGRES_EPIGRAPH_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
+RUN python -c "assert '${DB_URI}' != ':@:/', 'DBI_URI ${DB_URI} is incorrect.'"
+
 RUN /usr/local/bin/python -m virtualenv /opt/envs/py310 --python="/opt/py310/bin/python3.10" \
     && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py310/pyvenv.cfg \
     && source /opt/envs/py310/bin/activate \
     && pip install "cython<3.0.0" \
     && pip install --no-build-isolation "pyyaml<6.0" \
     && pip install -r /opt/envs/epigraphhub.txt \
-    && epigraphhub-config --name "epigraphhub" --db-uri "${DB_URI}"
-
-RUN /usr/local/bin/python -m virtualenv /opt/envs/py311 --python="/opt/py311/bin/python3.11" \
-    && sed -i "s/include-system-site-packages = false/include-system-site-packages = true/" /opt/envs/py311/pyvenv.cfg \
-    && source /opt/envs/py311/bin/activate \
-    && pip install "cython<3.0.0" \
-    && pip install --no-build-isolation "pyyaml<6.0" \
     && pip install -r /opt/envs/pysus.txt
+
+RUN epigraphhub-config --name "epigraphhub" --db-uri "${DB_URI}"
 
 WORKDIR ${AIRFLOW_HOME}
 
