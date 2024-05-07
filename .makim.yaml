@@ -89,27 +89,27 @@ groups:
             default: 90
             required: false
         dependencies:
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: postgres
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: minio
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: redis
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: flower
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: superset
-          - task: wait
+          - task: containers.wait
             args:
               timeout: ${{ args.timeout }}
               service: airflow

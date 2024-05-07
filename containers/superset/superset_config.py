@@ -11,7 +11,7 @@ TALISMAN_ENABLED = None
 TALISMAN_CONFIG = {}
 
 # github.com/apache/superset/discussions/24435#discussioncomment-6282883
-# SESSION_PROTECTION = "basic"
+SESSION_PROTECTION = "basic"
 
 SESSION_COOKIE_SAMESITE = "Lax"
 # Flask-WTF flag for CSRF
