@@ -1,6 +1,7 @@
-version: 1.0.0
-compose-app: docker-compose
+version: 1.0
+compose-app: docker compose
 env-file: .env
+
 defaults:
   group: {{ env.ENV }}
 
@@ -21,6 +22,7 @@ groups:
 
   dev:
     project-name: egh-dev
+    env-file: .env
     compose-path:
       - containers/compose-base.yaml
       - containers/compose-dev.yaml
@@ -36,6 +38,7 @@ groups:
 
   prod:
     project-name: egh-prod
+    env-file: .env
     compose-path:
       - containers/compose-base.yaml
       - containers/compose-prod.yaml
