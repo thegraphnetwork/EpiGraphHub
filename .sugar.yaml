@@ -1,6 +1,8 @@
 version: 1.0.0
 compose-app: docker-compose
 env-file: .env
+defaults:
+  group: {{ env.ENV }}
 
 groups:
   airflow:
@@ -16,7 +18,6 @@ groups:
         - name: worker
         - name: triggerer
         - name: airflow-cli
-
 
   dev:
     project-name: egh-dev

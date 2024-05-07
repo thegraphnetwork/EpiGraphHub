@@ -79,7 +79,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Create environment variables file
       run: |
@@ -90,10 +90,6 @@ jobs:
         envsubst < .env.tpl > .env
         mkdir /home/runner/work/psql_data
 
-    - name: setup
-      run: |
-        makim host.prepare
-
     - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
@@ -102,6 +98,9 @@ jobs:
         activate-environment: epigraphhub
         auto-update-conda: true
         conda-solver: libmamba
+
+    - name: setup
+      run: makim host.prepare
 
     - name: configure epigraphhub credentials
       run: |
@@ -112,16 +111,16 @@ jobs:
       run: makim aws.create-s3-credential
 
     - name: build docker containers
-      run: make containers-build
+      run: sugar build
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow postgres"
+        sugar ext restart --services superset,airflow,postgres --options -d
 
     - name: wait for the services are properly working
       run: |
-        docker ps
-        make containers-wait-all
+        sugar ps
+        makim containers.wait-all
 
     - name: run epigraphhub tests
       run: |
@@ -145,7 +144,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make containers-logs ARGS="--tail 1000" SERVICES="" > /tmp/containers-services.log
+        sugar logs --options --tail 1000 > /tmp/containers-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3

@@ -65,6 +65,55 @@ groups:
         help: Reset container storage
         run: rm -rf ~/.local/share/containers/
 
+      wait:
+        help: Wait until container is healthy
+        args:
+          service:
+            help: the name of the service
+            type: str
+            required: true
+          timeout:
+            help: the time (in seconds) for waiting the service
+            type: int
+            default: 90
+            required: false
+        run: |
+          timeout ${{ args.timeout }} ./containers/healthcheck.sh ${{ args.service }}
+
+      wait-all:
+        help: Wait until container is healthy
+        args:
+          timeout:
+            help: the time (in seconds) for waiting the service
+            type: int
+            default: 90
+            required: false
+        dependencies:
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: postgres
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: minio
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: redis
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: flower
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: superset
+          - target: wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: airflow
+
   aws:
     tasks:
       create-s3-credential:

@@ -11,8 +11,8 @@ dependencies:
   - webdriver-manager
   - pip
   - pip:
-    - containers-sugar==1.11.2
-    - makim==1.15.0
+    - containers-sugar==1.11.4
+    - makim==1.15.2
     - compose-go
     - epigraphhub>=2.1.1
     - "selenium<=4.0"
