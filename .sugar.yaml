@@ -27,7 +27,7 @@ groups:
       - containers/compose-base.yaml
       - containers/compose-dev.yaml
     services:
-      default: superset,airflow
+      default: superset,airflow,postgres
       available:
         - name: superset
         - name: airflow
@@ -43,7 +43,7 @@ groups:
       - containers/compose-base.yaml
       - containers/compose-prod.yaml
     services:
-      default: superset,airflow
+      default: superset,airflow,postgres
       available:
         - name: superset
         - name: airflow

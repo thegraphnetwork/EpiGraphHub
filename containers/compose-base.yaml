@@ -54,7 +54,7 @@ services:
         - POSTGRES_EPIGRAPH_DB=${POSTGRES_EPIGRAPH_DB}
     environment:
       AIRFLOW_UID: "${HOST_UID:-1000}"
-    user: "epigraphhub:epigraphhub"
+    user: "airflow"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s

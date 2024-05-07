@@ -135,7 +135,7 @@ jobs:
 
     - name: start services
       run: |
-        sugar ext restart --services superset,airflow,postgres --options -d
+        sugar ext restart --options -d
 
     - name: wait for the services are properly working
       run: |
