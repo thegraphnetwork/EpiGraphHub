@@ -109,10 +109,6 @@ groups:
             args:
               timeout: ${{ args.timeout }}
               service: superset
-          - task: containers.wait
-            args:
-              timeout: ${{ args.timeout }}
-              service: airflow
 
   aws:
     tasks:
