@@ -27,10 +27,10 @@ groups:
       - containers/compose-base.yaml
       - containers/compose-dev.yaml
     services:
-      default: superset,airflow,postgres
+      default: superset,flower,minio,postgres
       available:
         - name: superset
-        - name: airflow
+        # - name: airflow
         - name: postgres
         - name: minio
         - name: redis
@@ -43,10 +43,10 @@ groups:
       - containers/compose-base.yaml
       - containers/compose-prod.yaml
     services:
-      default: superset,airflow,postgres
+      default: superset,flower,minio,postgres
       available:
         - name: superset
-        - name: airflow
+        # - name: airflow
         - name: postgres
         - name: minio
         - name: redis
