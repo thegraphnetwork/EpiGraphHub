@@ -1,0 +1,53 @@
+version: 1.0
+compose-app: docker compose
+env-file: .env
+
+defaults:
+  group: {{ env.ENV }}
+
+groups:
+  airflow:
+    project-name: egh-airflow
+    compose-path:
+      - containers/compose-airflow.yaml
+    env-file: containers/airflow/.env
+    services:
+      default: webserver,scheduler,worker,triggerer
+      available:
+        - name: webserver
+        - name: scheduler
+        - name: worker
+        - name: triggerer
+        - name: airflow-cli
+
+  dev:
+    project-name: egh-dev
+    env-file: .env
+    compose-path:
+      - containers/compose-base.yaml
+      - containers/compose-dev.yaml
+    services:
+      default: superset,flower,minio,postgres
+      available:
+        - name: superset
+        # - name: airflow
+        - name: postgres
+        - name: minio
+        - name: redis
+        - name: flower
+
+  prod:
+    project-name: egh-prod
+    env-file: .env
+    compose-path:
+      - containers/compose-base.yaml
+      - containers/compose-prod.yaml
+    services:
+      default: superset,flower,minio,postgres
+      available:
+        - name: superset
+        # - name: airflow
+        - name: postgres
+        - name: minio
+        - name: redis
+        - name: flower

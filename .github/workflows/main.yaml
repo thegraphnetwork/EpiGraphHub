@@ -67,8 +67,28 @@ env:
   SUPERSET_DB_DATABASE: postgres
 
 jobs:
-  main:
+  check-branch:
+    runs-on: ubuntu-latest
 
+    timeout-minutes: 2
+    concurrency:
+      group: ci-check-branch-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          fetch-depth: 0
+
+      - name: Check if the PR's branch is updated
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: osl-incubator/gh-check-pr-is-updated@1.0.0
+        with:
+          remote_branch: origin/main
+          pr_sha: ${{ github.event.pull_request.head.sha }}
+
+  main:
     runs-on: ubuntu-latest
     timeout-minutes: 55
     defaults:
@@ -79,7 +99,7 @@ jobs:
       cancel-in-progress: true
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Create environment variables file
       run: |
@@ -90,19 +110,17 @@ jobs:
         envsubst < .env.tpl > .env
         mkdir /home/runner/work/psql_data
 
-    - name: setup
-      run: |
-        make prepare-host
-
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         miniconda-version: "latest"
-        mamba-version: "*"
         environment-file: conda/base.yaml
         channels: conda-forge,r,nodefaults
         activate-environment: epigraphhub
-        use-mamba: true
-        miniforge-variant: Mambaforge
+        auto-update-conda: true
+        conda-solver: libmamba
+
+    - name: setup
+      run: makim host.prepare
 
     - name: configure epigraphhub credentials
       run: |
@@ -110,19 +128,19 @@ jobs:
           --db-uri "${POSTGRES_EPIGRAPH_USER}:${POSTGRES_EPIGRAPH_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_EPIGRAPH_DB}"
 
     - name: configure aws s3 credentials to minio
-      run: make dev-create-s3-credential
+      run: makim aws.create-s3-credential
 
     - name: build docker containers
-      run: make containers-build
+      run: sugar build
 
     - name: start services
       run: |
-        make containers-start-services SERVICES="superset airflow postgres"      
+        sugar ext restart --options -d
 
     - name: wait for the services are properly working
       run: |
-        docker ps
-        make containers-wait-all
+        sugar ps
+        makim containers.wait-all
 
     - name: run epigraphhub tests
       run: |
@@ -146,7 +164,7 @@ jobs:
     - name: Generate logs
       if: ${{ failure() }}
       run: |
-        make containers-logs ARGS="--tail 1000" SERVICES="" > /tmp/containers-services.log
+        sugar logs --options --tail 1000 > /tmp/containers-services.log
 
     - name: Archive log artifacts
       uses: actions/upload-artifact@v3

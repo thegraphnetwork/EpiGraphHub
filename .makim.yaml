@@ -1,0 +1,126 @@
+version: 1.0
+env-file: .env
+shell: bash
+
+groups:
+  host:
+    tasks:
+      prepare:
+        help: Prepare host environment
+        run: bash scripts/prepare-host.sh
+
+  containers:
+    tasks:
+      pull:
+        help: Pull container images
+        run: |
+          set -e
+          docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml pull ${SERVICES}
+
+      build:
+        help: Build containers
+        run: |
+          set -e
+          docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml build ${SERVICES}
+
+      start:
+        help: Start containers
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml up --remove-orphans -d ${SERVICES}
+
+      stop:
+        help: Stop containers
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml stop ${ARGS} ${SERVICES}
+
+      remove:
+        help: Remove containers
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml rm ${ARGS} ${SERVICES}
+
+      restart:
+        help: Restart containers
+        dependencies:
+          - task: containers.stop
+          - task: containers.start
+
+      logs:
+        help: Show container logs
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml logs ${ARGS} ${SERVICES}
+
+      logs-follow:
+        help: Follow container logs
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml logs --follow ${ARGS} ${SERVICES}
+
+      exec:
+        help: Execute command in a running container
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml exec ${ARGS} ${SERVICE} ${CMD}
+
+      console:
+        help: Open console in a container
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml exec ${ARGS} ${SERVICE} bash
+
+      down:
+        help: Take down containers and volumes
+        run: docker-compose --env-file=.env --project-name egh-${ENV} --file containers/compose-base.yaml --file containers/compose-${ENV}.yaml down --volumes --remove-orphans
+
+      reset-storage:
+        help: Reset container storage
+        run: rm -rf ~/.local/share/containers/
+
+      wait:
+        help: Wait until container is healthy
+        args:
+          service:
+            help: the name of the service
+            type: str
+            required: true
+          timeout:
+            help: the time (in seconds) for waiting the service
+            type: int
+            default: 90
+            required: false
+        run: |
+          timeout ${{ args.timeout }} ./containers/healthcheck.sh ${{ args.service }}
+
+      wait-all:
+        help: Wait until container is healthy
+        args:
+          timeout:
+            help: the time (in seconds) for waiting the service
+            type: int
+            default: 90
+            required: false
+        dependencies:
+          - task: containers.wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: postgres
+          - task: containers.wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: minio
+          - task: containers.wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: redis
+          - task: containers.wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: flower
+          - task: containers.wait
+            args:
+              timeout: ${{ args.timeout }}
+              service: superset
+
+  aws:
+    tasks:
+      create-s3-credential:
+        help: Create S3 credentials for development
+        run: ./scripts/dev/create-s3-credential.sh
+
+  conda:
+    tasks:
+      lock:
+        help: Generate lock files for Conda environments
+        run: |
+          cd conda
+          rm -f conda-*.lock
+          conda-lock --conda `which mamba` -f prod.yaml -p osx-64 -p linux-64 --kind explicit

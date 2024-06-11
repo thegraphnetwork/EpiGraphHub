@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-set -ex
+set -x
 
 export FLASK_APP=superset
 
 # Initialize the database
 superset db upgrade
+
+set -e
 
 if [[ $ENV = "dev" ]]; then
   echo "Running in development mode ..."

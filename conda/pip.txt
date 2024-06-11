@@ -3,3 +3,5 @@ pangres>=4.1
 sodapy
 shillelagh
 sqlalchemy-sybase
+# issue: ImportError: cannot import name 'url_quote' from 'werkzeug.urls'
+Werkzeug>=2.2,<3.0

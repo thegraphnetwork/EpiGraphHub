@@ -10,6 +10,9 @@ SECRET_KEY = os.getenv("SUPERSET_SECRET_KEY", "\2\1thisismyscretkey\1\2\e\y\y\h"
 TALISMAN_ENABLED = None
 TALISMAN_CONFIG = {}
 
+# github.com/apache/superset/discussions/24435#discussioncomment-6282883
+SESSION_PROTECTION = "basic"
+
 SESSION_COOKIE_SAMESITE = "Lax"
 # Flask-WTF flag for CSRF
 WTF_CSRF_ENABLED = os.getenv("ENV") == "prod"
@@ -110,7 +113,7 @@ if os.getenv("ENV") == "prod":
     DB_USER = os.getenv("SUPERSET_DB_USER")
     DB_PASS = os.getenv("SUPERSET_DB_PASSWORD")
     DB_DATABASE = os.getenv("SUPERSET_DB_DATABASE")
-else: 
+else:
     DB_USER = "dev_admin"
     DB_PASS = "admin"
     DB_DATABASE = "dev_superset"
